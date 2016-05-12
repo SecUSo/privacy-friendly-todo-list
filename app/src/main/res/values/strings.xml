@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ToDo</string>
+    <string name="toolbar_title_main">Meine Todo-Listen</string>
+    <string name="settings">Einstellungen</string>
+    <string name="help">Hilfe</string>
+    <string name="about">Über</string>
+    <string name="navigation_drawer_open">Seitenmenü öffnen</string>
+    <string name="navigation_drawer_close">Seitenmenü schließen</string>
+    <string name="menu_about">Über</string>
+    <string name="app_name_long">Privacy Friendly App</string>
+    <string name="version_number">v1.0</string>
+    <string name="about_author">Authors:</string>
+    <string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
+    <string name="about_affiliation">In affiliation with</string>
+    <string name="privacy_friendly">This application belongs to the Privacy Friendly Apps</string>
+    <string name="more_info">More information can be found on:</string>
+    <string name="url">https://www.secuso.org</string>
+
+</resources>
