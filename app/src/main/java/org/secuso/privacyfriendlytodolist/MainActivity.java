@@ -1,10 +1,14 @@
 package org.secuso.privacyfriendlytodolist;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,10 +17,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +43,18 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Test", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Dialog addListDialog = new Dialog(context);
+                addListDialog.setContentView(R.layout.add_todolist_popup);
+                addListDialog.setTitle("I18N: ADD LIST");
+                addListDialog.show();
+
+                // required to make the dialog use the full screen width
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                Window window = addListDialog.getWindow();
+                lp.copyFrom(window.getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.horizontalMargin = 20;
+                window.setAttributes(lp);
             }
         });
 

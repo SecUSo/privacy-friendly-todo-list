@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="0dp">
+
+    <EditText
+        android:id="@+id/et_todo_list_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New To-Do List"
+        android:inputType="text" />
+    <View
+        android:id="@+id/hr_text_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey" />
+    <EditText
+        android:id="@+id/et_todo_list_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description"
+        android:inputType="textMultiLine"
+        android:minLines="1"
+        android:maxLines="15" />
+    <EditText
+        android:id="@+id/et_todo_list_deadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deadline"
+        android:inputType="text" />
+</LinearLayout>
