@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -29,34 +30,61 @@ public class MainActivity extends AppCompatActivity
 
     Context context = this;
 
+
+    private class DeadlineButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Dialog deadlineDialog = new Dialog(context);
+            deadlineDialog.setContentView(R.layout.deadline_dialog);
+            deadlineDialog.setTitle("I18N: SELECT DEADLINE");
+
+            // required to make the dialog use the full screen width
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = deadlineDialog.getWindow();
+            lp.copyFrom(window.getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.horizontalMargin = 40;
+            window.setAttributes(lp);
+
+            deadlineDialog.show();
+        }
+    }
+
+    private class ActionButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Dialog addListDialog = new Dialog(context);
+            addListDialog.setContentView(R.layout.add_todolist_popup);
+            addListDialog.setTitle("I18N: ADD LIST");
+
+            TextView tvDeadline = (TextView)addListDialog.findViewById(R.id.tv_todo_list_deadline);
+            tvDeadline.setOnClickListener(new DeadlineButtonListener());
+
+            // required to make the dialog use the full screen width
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = addListDialog.getWindow();
+            lp.copyFrom(window.getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.horizontalMargin = 20;
+            window.setAttributes(lp);
+
+            addListDialog.show();
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.toolbar_title_main);
         setSupportActionBar(toolbar);
 
+        // add new to-do list entry
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialog addListDialog = new Dialog(context);
-                addListDialog.setContentView(R.layout.add_todolist_popup);
-                addListDialog.setTitle("I18N: ADD LIST");
-                addListDialog.show();
-
-                // required to make the dialog use the full screen width
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                Window window = addListDialog.getWindow();
-                lp.copyFrom(window.getAttributes());
-                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                lp.horizontalMargin = 20;
-                window.setAttributes(lp);
-            }
-        });
+        fab.setOnClickListener(new ActionButtonListener());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -66,8 +94,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
     }
 
     @Override
