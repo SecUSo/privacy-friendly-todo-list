@@ -1,9 +1,12 @@
-package org.secuso.privacyfriendlytodolist;
+package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +18,43 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.TodoListAdapter;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    private
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+
+    private DatabaseHelper dbHelper;
+    private DBQueryHandler dbQueryHandler;
+    private SQLiteDatabase db;
+
+    private void prepareData() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new DatabaseHelper(this);
+        db = dbHelper.getWritableDatabase();
+        dbQueryHandler = new DBQueryHandler();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_todo_lists);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(new TodoListAdapter());
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

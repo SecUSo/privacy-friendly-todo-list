@@ -1,10 +1,12 @@
-package org.secuso.privacyfriendlytodolist;
+package org.secuso.privacyfriendlytodolist.view;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import org.secuso.privacyfriendlytodolist.R;
 
 public class AboutActivity extends AppCompatActivity {
 
