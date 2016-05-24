@@ -2,14 +2,14 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:text="Hello World!"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
 </RelativeLayout>

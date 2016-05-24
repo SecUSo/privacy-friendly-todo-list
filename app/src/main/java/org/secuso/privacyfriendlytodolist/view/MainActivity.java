@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,48 +22,68 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.TodoListAdapter;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    private
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
 
     private DatabaseHelper dbHelper;
     private DBQueryHandler dbQueryHandler;
     private SQLiteDatabase db;
 
-    private void prepareData() {
 
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DatabaseHelper(this);
-        db = dbHelper.getWritableDatabase();
-        dbQueryHandler = new DBQueryHandler();
+        // Is the activity restored?
+        if (savedInstanceState == null) {
+            TodoListsFragment todoListOverviewFragment = new TodoListsFragment();
+            setFragment(todoListOverviewFragment);
+        }
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_todo_lists);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(new TodoListAdapter());
+        guiSetup();
+    }
 
 
+    public void setFragment(Fragment fragment) {
+
+        // Check that the activity is using the layout version with the fragment_container FrameLayout
+
+        if (findViewById(R.id.fragment_container) != null) {
+
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            if(fragmentManager.getFragments() == null) {
+                fragmentTransaction.add(R.id.fragment_container, fragment);
+                Log.i(TAG, "Fragment added.");
+            } else {
+                fragmentTransaction.replace(R.id.fragment_container, fragment);
+                fragmentTransaction.addToBackStack(null);
+                Log.i(TAG, "Fragment replaced.");
+            }
+
+            fragmentTransaction.commit();
+        }
+
+    }
+
+    private void guiSetup() {
+
+        // toolbar setup
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.toolbar_title_main);
         setSupportActionBar(toolbar);
 
+        // floating action button setup
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,16 +93,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // side menu setup
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
     }
 
     @Override

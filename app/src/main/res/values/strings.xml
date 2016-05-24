@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ToDo</string>
-    <string name="toolbar_title_main">Meine Todo-Listen</string>
+    <string name="toolbar_title_main">Privacy Friendly To-Do</string>
     <string name="settings">Einstellungen</string>
     <string name="help">Hilfe</string>
     <string name="about">Über</string>
@@ -15,5 +15,10 @@
     <string name="privacy_friendly">This application belongs to the Privacy Friendly Apps</string>
     <string name="more_info">More information can be found on:</string>
     <string name="url">https://www.secuso.org</string>
+    <string name="done">done</string>
+    <string name="no_todo_lists_available">No To-Do lists available.</string>
+    <string name="next_deadline">Next Deadline:</string>
+    <string name="description">Description</string>
+    <string name="todos">To-Do\'s</string>
 
 </resources>

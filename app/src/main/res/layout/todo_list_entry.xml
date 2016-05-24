@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/v_urgency_indicator"
+        android:layout_width="5dp"
+        android:layout_height="0px"
+        android:layout_alignBottom="@+id/tv_todo_str_done"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/tv_todo_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/v_urgency_indicator"
+        android:text="Test"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_todo_list_next_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_todo_list_title"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/tv_list_next_deadline_str"
+        android:text="Test" />
+
+    <TextView
+        android:id="@+id/tv_list_next_deadline_str"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_todo_list_title"
+        android:layout_below="@+id/tv_todo_list_title"
+        android:layout_toRightOf="@+id/v_urgency_indicator"
+        android:text="@string/next_deadline" />
+
+    <TextView
+        android:id="@+id/tv_todo_list_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_todo_list_title"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/tv_todo_str_done"
+        android:text="4/5" />
+
+    <TextView
+        android:id="@+id/tv_todo_str_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_todo_list_title"
+        android:layout_marginRight="5dp"
+        android:paddingBottom="10dp"
+        android:text="@string/done" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_below="@+id/tv_todo_str_done"
+        android:background="@color/colorPrimary" />
+
+</RelativeLayout>
