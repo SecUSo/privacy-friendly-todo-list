@@ -8,7 +8,7 @@
             android:title="@string/settings" />
     </group>
 
-    <item android:title="Sonstiges">
+    <item android:title="@string/other">
         <menu>
             <item
                 android:id="@+id/nav_help"
