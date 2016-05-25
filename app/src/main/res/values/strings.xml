@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">ToDo</string>
+	<string name="app_name">To-Do</string>
 	<string name="toolbar_title_main">Privacy Friendly To-Do</string>
 	<string name="settings">Settings</string>
 	<string name="help">Help</string>
