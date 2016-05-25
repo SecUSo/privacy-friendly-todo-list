@@ -1,5 +1,6 @@
 # Built application files
 /*/build/
+build/generated/mockable-android-23.jar
 
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
@@ -9,6 +10,7 @@ local.properties
 
 # Gradle generated files
 .gradle/
+.idea/gradle.xml
 
 # Signing files
 .signing/
@@ -25,7 +27,6 @@ local.properties
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
-.idea/gradle.xml
 *.iml
 
 # OS-specific files
