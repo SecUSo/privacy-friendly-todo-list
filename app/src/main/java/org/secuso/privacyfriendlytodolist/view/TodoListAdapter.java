@@ -1,17 +1,13 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 
@@ -36,8 +32,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     // invoked by the layout manager
     @Override
     public TodoListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                      int viewType) {
-
+                                                         int viewType) {
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.todo_list_entry, parent, false);
@@ -54,7 +49,6 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         holder.title.setText(list.getName());
         holder.deadline.setText(list.getDeadline());
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
-        if(position % 2 == 0)
         holder.urgency.setBackgroundColor(ContextCompat.getColor(contextActivity, R.color.colorPrimary));
     }
 

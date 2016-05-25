@@ -22,4 +22,6 @@
 	<string name="todos">To-Do\'s</string>
 	<string name="other">Other</string>
 	<string name="no_deadline">No Deadline</string>
+	<string name="empty_todo_list">No tasks available.</string>
+	<string name="deadline">Deadline:</string>
 </resources>

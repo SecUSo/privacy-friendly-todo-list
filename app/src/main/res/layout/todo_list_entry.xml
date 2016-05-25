@@ -7,7 +7,7 @@
         android:id="@+id/v_urgency_indicator"
         android:layout_width="5dp"
         android:layout_height="0px"
-        android:layout_alignBottom="@+id/tv_todo_str_done"
+        android:layout_alignBottom="@+id/v_separater"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
@@ -60,9 +60,11 @@
         android:text="@string/done" />
 
     <View
+        android:id="@+id/v_separater"
         android:layout_width="match_parent"
         android:layout_height="2px"
         android:layout_below="@+id/tv_todo_str_done"
-        android:background="@color/colorPrimary" />
+        android:layout_toRightOf="@+id/v_urgency_indicator"
+        android:background="@color/grey" />
 
 </RelativeLayout>

@@ -4,9 +4,9 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_task_description"
+        android:id="@+id/tv_subtask_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Furzen"/>
+        android:text="Test"/>
 
 </LinearLayout>

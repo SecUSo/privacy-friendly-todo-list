@@ -1,46 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_description_str"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="@string/description"/>
-
-    <ImageView
-        android:id="@+id/iv_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:background="@mipmap/pen"/>
-
-    <TextView
-        android:id="@+id/tv_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|right"
-        android:layout_below="@+id/iv_description"
-        android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo " />
-
-
-    <TextView
-        android:id="@+id/tv_todo_tasks_str"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_below="@+id/tv_description"
-        android:layout_marginTop="10dp"
-        android:text="@string/todos"/>
-    
     <ExpandableListView
-        android:id="@+id/elv_tasks"
+        android:id="@+id/exlv_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tv_todo_tasks_str">
-
+        android:divider="@null"
+        android:groupIndicator="@null">
     </ExpandableListView>
+
+    <TextView
+        android:id="@+id/tv_empty_view_no_tasks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:text="@string/empty_todo_list"
+        android:visibility="gone"/>
 </RelativeLayout>

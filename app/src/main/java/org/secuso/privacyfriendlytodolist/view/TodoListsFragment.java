@@ -8,12 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-
+import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
+import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import java.util.ArrayList;
 
 /**
@@ -58,11 +56,35 @@ public class TodoListsFragment extends Fragment {
     }
 
     private void prepareData() {
+        ArrayList<TodoSubTask> s1 = new ArrayList<TodoSubTask>();
+        s1.add(new TodoSubTask("Sub 1", false));
+        s1.add(new TodoSubTask("Sub 2", false));
+        s1.add(new TodoSubTask("Sub 3", false));
+
+        ArrayList<TodoTask> tlist = new ArrayList<TodoTask>();
+        TodoTask t1 = new TodoTask("Task 1", "Das ist eine Beschreibung", false, 3, 1464030736, 2, 3, 0, 0);
+        TodoTask t2 = new TodoTask("Task 2", "Das ist eine Beschreibung", false, 5, -1, 2, 3, 0, 0);
+        TodoTask t3 = new TodoTask("Task 3", "Das ist eine Beschreibung", false, 7, 1464030736, 2, 3, 0, 0);
+        TodoTask t4 = new TodoTask("Task 4", "Das ist eine Beschreibung", false, 1, 1464030736, 2, 3, 0, 0);
+
+        t1.setSubTasks(s1);
+        t2.setSubTasks(s1);
+
+        tlist.add(t1);
+        tlist.add(t2);
+        tlist.add(t3);
+        tlist.add(t4);
+
         TodoList l1 = new TodoList("List 1", "1.2.2012", 1464030736);
         TodoList l2 = new TodoList("List 2", "4.5.2015", 1464030736);
         TodoList l3 = new TodoList("List 3", "5.3.2013", 1464030736);
         TodoList l4 = new TodoList("List 4", "1.1.2023", 1464030736);
         TodoList l5 = new TodoList("List 5", "3.4.2002", 1464030736);
+
+        l1.setTasks(tlist);
+        l2.setTasks(tlist);
+        l3.setTasks(tlist);
+        l4.setTasks(tlist);
 
         lists = new ArrayList<TodoList>();
         lists.add(l1);

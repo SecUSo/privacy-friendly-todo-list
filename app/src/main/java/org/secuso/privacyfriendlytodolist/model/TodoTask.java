@@ -11,6 +11,8 @@ import java.util.ArrayList;
  */
 public class TodoTask implements Parcelable{
 
+    public static final int MAX_PRIORITY = 10;
+
     private String title;
     private String description;
     private boolean done;
@@ -31,6 +33,7 @@ public class TodoTask implements Parcelable{
         this.priority = priority;
         this.numSubtasks = numSubtasks;
         this.reminderTime = reminderTime;
+        this.deadline = deadline;
         this.deadlineWarning = deadlineWarning;
     }
 
@@ -54,7 +57,7 @@ public class TodoTask implements Parcelable{
         return subTasks;
     }
 
-    public String getTitle() {
+    public String getName() {
         return title;
     }
 
@@ -80,6 +83,12 @@ public class TodoTask implements Parcelable{
 
     public int getDeadlineWarning() {
         return deadlineWarning;
+    }
+
+    public String getDeadline() {
+        if(deadline < 0)
+            return null;
+        return Helper.getDate(deadline);
     }
 
     public static final Parcelable.Creator<TodoTask> CREATOR =

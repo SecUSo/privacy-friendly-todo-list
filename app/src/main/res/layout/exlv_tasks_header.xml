@@ -1,12 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/v_urgency_task"
+        android:layout_width="5dp"
+        android:layout_height="0px"
+        android:layout_alignBottom="@+id/v_expl_separater"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary" />
+
+    <View
+        android:id="@+id/v_urgency_indicator_task"
+        android:layout_width="5dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/tv_exlv_task_deadline"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="17dp">
+
+        <CheckBox
+            android:id="@+id/cb_task_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.80"
+            android:scaleY="0.80"
+            android:focusable="false"
+            android:text="Done" />
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_exlv_task_header"
+        android:id="@+id/tv_exlv_task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Group Header"/>
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:text="Task Name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_exlv_task_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_exlv_task_name"
+        android:layout_alignLeft="@+id/tv_exlv_task_name"
+        android:text="Task Deadline" />
+
+    <LinearLayout
+        android:id="@+id/ll_task_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_exlv_task_deadline"
+        android:layout_below="@+id/tv_exlv_task_deadline"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+
+        <!-- filled programmatically in the ExpandableToDoTaskAdapter -->
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v_expl_separater"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:layout_below="@+id/ll_task_progress"
+        android:layout_toRightOf="@+id/v_urgency_task"
+        android:background="@color/grey" />
+
+</RelativeLayout>

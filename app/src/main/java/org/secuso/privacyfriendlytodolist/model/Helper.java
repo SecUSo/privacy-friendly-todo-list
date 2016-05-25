@@ -1,5 +1,6 @@
 package org.secuso.privacyfriendlytodolist.model;
 
+import android.content.Context;
 import android.text.format.DateFormat;
 
 import java.util.Calendar;
@@ -14,6 +15,11 @@ public class Helper {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(time);
         return DateFormat.format("dd.MM.yyyy", cal).toString();
+    }
+
+    public static int dp2Px(Context context, int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * density + 0.5f);
     }
 
 }
