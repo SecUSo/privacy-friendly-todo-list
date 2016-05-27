@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity
             if(fragmentManager.getFragments() == null) {
                 fragmentTransaction.add(R.id.fragment_container, fragment);
             } else {
+                fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_slide_out);
                 fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.addToBackStack(null);
             }

@@ -8,7 +8,7 @@
         android:id="@+id/v_urgency_task"
         android:layout_width="5dp"
         android:layout_height="0px"
-        android:layout_alignBottom="@+id/v_expl_separater"
+        android:layout_alignBottom="@+id/v_exlv_header_align_anchor"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary" />
@@ -75,11 +75,18 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/v_expl_separater"
+        android:id="@+id/v_exlv_header_separator"
         android:layout_width="match_parent"
         android:layout_height="2px"
         android:layout_below="@+id/ll_task_progress"
         android:layout_toRightOf="@+id/v_urgency_task"
         android:background="@color/grey" />
+
+    <View
+        android:id="@+id/v_exlv_header_align_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_below="@+id/v_exlv_header_separator"
+        android:layout_toRightOf="@+id/v_urgency_task" />
 
 </RelativeLayout>

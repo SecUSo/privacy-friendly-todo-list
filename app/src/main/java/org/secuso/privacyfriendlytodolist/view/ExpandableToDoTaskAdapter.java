@@ -1,24 +1,23 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 
 import java.util.ArrayList;
@@ -29,19 +28,19 @@ import java.util.ArrayList;
 public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     private static final String TAG = ExpandableToDoTaskAdapter.class.getSimpleName();
+    private static final int TASK_DESCRIPTION_ROW = 0;
+    private static final int SETTING_ROW = 1;
+    private static final int SUBTASK_ROW = 2;
 
     private ArrayList<TodoTask> data;
     private Context context;
     private HeaderViewHolder headerViewHolder;
-    private ChildViewHolder childViewHolder;
 
     private int progressAccuracy = 10;
 
     public ExpandableToDoTaskAdapter(Context context, ArrayList<TodoTask> tasks) {
         this.context = context;
         data = tasks;
-
-
     }
 
     @Override
@@ -51,7 +50,22 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 1;
+        Log.i(TAG, String.valueOf(data.get(groupPosition).getSubTasks().size() + 2));
+        return data.get(groupPosition).getSubTasks().size() + 2;
+    }
+
+    @Override
+    public int getChildType(int groupPosition, int childPosition) {
+        if(childPosition == 0)
+            return TASK_DESCRIPTION_ROW;
+        else if(childPosition == data.get(groupPosition).getSubTasks().size()+1)
+            return SETTING_ROW;
+        return SUBTASK_ROW;
+    }
+
+    @Override
+    public int getChildTypeCount() {
+        return 3;
     }
 
     @Override
@@ -94,6 +108,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
             headerViewHolder.done = (CheckBox) convertView.findViewById(R.id.cb_task_done);
             headerViewHolder.deadline = (TextView) convertView.findViewById(R.id.tv_exlv_task_deadline);
             headerViewHolder.progressIndicator = (LinearLayout) convertView.findViewById(R.id.ll_task_progress);
+            headerViewHolder.seperator = (View) convertView.findViewById(R.id.v_exlv_header_separator);
 
             // add color boxest that indicate the progress of each task
             int boxWidth = Helper.dp2Px(context, 5);
@@ -134,30 +149,67 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-    private class ChildViewHolder {
-        public TextView taskDescription;
-        public ListView subtasks;
-    }
+
+
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         TodoTask currentTask = data.get(groupPosition);
+        int type = getChildType(groupPosition, childPosition);
 
+        switch(type) {
+            case TASK_DESCRIPTION_ROW:
 
-        if(convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_task_child, parent, false);
-            childViewHolder = new ChildViewHolder();
+                TaskDescriptionViewHolder vh1 = new TaskDescriptionViewHolder();
+                if(convertView == null) {
+                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_task_description_row, parent, false);
+                    vh1.taskDescription = (TextView) convertView.findViewById(R.id.tv_exlv_task_description);
+                    convertView.setTag(vh1);
+                } else {
+                    vh1 = (TaskDescriptionViewHolder) convertView.getTag();
+                }
 
-            childViewHolder.taskDescription = (TextView) convertView.findViewById(R.id.tv_exlv_task_description);
-            childViewHolder.subtasks = (ListView) convertView.findViewById(R.id.lv_subtasks);
-            childViewHolder.subtasks.setClickable(false);
-            childViewHolder.subtasks.setAdapter(new SubTaskAdapter(context, R.layout.subtask_list, currentTask.getSubTasks()));
+                String description = data.get(groupPosition).getDescription();
+                if(description == null || description.equals(""))
+                    vh1.taskDescription.setText(context.getString(R.string.no_task_description));
+                else
+                    vh1.taskDescription.setText(data.get(groupPosition).getDescription());
 
-            convertView.setTag(childViewHolder);
-        } else {
-            childViewHolder = (ChildViewHolder) convertView.getTag();
+                break;
+
+            case SETTING_ROW:
+                SettingViewHolder vh2 = new SettingViewHolder();
+                if(convertView == null) {
+                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_setting_row, parent, false);
+                    vh2.addSubTaskButton = (ImageView) convertView.findViewById(R.id.iv_add_subtask);
+                    convertView.setTag(vh2);
+                } else {
+                    vh2 = (SettingViewHolder) convertView.getTag();
+                }
+
+                vh2.addSubTaskButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "Add a new subtask", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                break;
+            default:
+                SubTaskViewHolder vh3 = new SubTaskViewHolder();
+                if(convertView == null) {
+                    convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_subtask_row, parent, false);
+                    vh3.subtaskName = (TextView) convertView.findViewById(R.id.tv_subtask_name);
+                    convertView.setTag(vh3);
+                } else {
+                    vh3 = (SubTaskViewHolder) convertView.getTag();
+                }
+
+                vh3.subtaskName.setText(data.get(groupPosition).getSubTasks().get(childPosition-1).getTitle());
+
         }
+
 
         return convertView;
     }
@@ -168,49 +220,27 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     }
 
 
-    private class HeaderViewHolder {
+
+    public class HeaderViewHolder {
         public TextView name;
         public TextView deadline;
         public CheckBox done;
         public View urgencyIndicator;
+        public View seperator;
         public LinearLayout progressIndicator;
     }
 
-    private class SubTaskAdapter extends ArrayAdapter<TodoSubTask> {
 
-        private SubTaskViewHolder viewHolder;
+    private class SubTaskViewHolder {
+        public TextView subtaskName;
+    }
 
-        public SubTaskAdapter(Context context, int resource, ArrayList<TodoSubTask> items) {
-            super(context, resource, items);
-        }
+    private class TaskDescriptionViewHolder {
+        public TextView taskDescription;
+    }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (convertView == null) {
-                convertView = LayoutInflater.from(this.getContext())
-                        .inflate(R.layout.subtask_list, parent, false);
-
-                viewHolder = new SubTaskViewHolder();
-                viewHolder.name = (TextView) convertView.findViewById(R.id.tv_subtask_name);
-
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (SubTaskViewHolder) convertView.getTag();
-            }
-
-            TodoSubTask subTask = getItem(position);
-            if(subTask != null) {
-                viewHolder.name.setText(subTask.getTitle());
-            } else {
-                Log.i(TAG, "Null");
-            }
-
-            return convertView;
-        }
-
-        private class SubTaskViewHolder {
-            public TextView name;
-        }
+    private class SettingViewHolder {
+        public ImageView addSubTaskButton;
     }
 
 }

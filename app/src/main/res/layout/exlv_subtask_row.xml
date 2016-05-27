@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/v_subtask_urgency"
+        android:layout_width="5dp"
+        android:layout_height="0px"
+        android:layout_alignBottom="@+id/tv_subtask_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/tv_subtask_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

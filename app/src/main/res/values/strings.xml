@@ -24,4 +24,8 @@
 	<string name="no_deadline">No Deadline</string>
 	<string name="empty_todo_list">No tasks available.</string>
 	<string name="deadline">Deadline:</string>
+	<string name="no_task_description">No task description available</string>
+	<string name="today">Today</string>
+	<string name="week">Week</string>
+	<string name="overdue">Overdue</string>
 </resources>

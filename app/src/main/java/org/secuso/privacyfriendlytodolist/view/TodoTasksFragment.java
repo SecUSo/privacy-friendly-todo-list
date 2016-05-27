@@ -3,6 +3,7 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
  * Created by dominik on 24.05.16.
  */
 public class TodoTasksFragment extends Fragment {
+
+    private static final String TAG = TodoTasksFragment.class.getSimpleName();
 
     private ExpandableListView expandableListView;
     private ExpandableToDoTaskAdapter adapter;
@@ -32,6 +35,34 @@ public class TodoTasksFragment extends Fragment {
         adapter = new ExpandableToDoTaskAdapter(getActivity(), currentList.getTasks());
         TextView emptyView = (TextView) v.findViewById(R.id.tv_empty_view_no_tasks);
         expandableListView = (ExpandableListView) v.findViewById(R.id.exlv_tasks);
+
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+                @Override
+                public void onGroupExpand(int groupPosition) {
+
+                }
+            }
+        );
+
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
+                ExpandableToDoTaskAdapter.HeaderViewHolder vh = (ExpandableToDoTaskAdapter.HeaderViewHolder) v.getTag();
+                Log.i(TAG, "clicked");
+                if(vh != null) {
+                    Log.i(TAG, "not null");
+                    if(vh.seperator.getVisibility() == View.GONE) {
+                        vh.seperator.setVisibility(View.VISIBLE);
+                    } else {
+                        vh.seperator.setVisibility(View.GONE);
+                    }
+
+                }
+                return false;
+
+            }
+        });
 
         expandableListView.setEmptyView(emptyView);
         expandableListView.setAdapter(adapter);

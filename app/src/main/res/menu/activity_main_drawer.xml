@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:title="@string/todos">
+        <menu>
+            <item
+                android:id="@+id/nav_todos_today"
+                android:icon="@mipmap/ic_star_black_24dp"
+                android:title="@string/today" />
+            <item
+                android:id="@+id/nav_todos_week"
+                android:icon="@mipmap/ic_date_range_black_24dp"
+                android:title="@string/week" />
+            <item
+                android:id="@+id/nav_todos_overdue"
+                android:icon="@mipmap/ic_thumb_down_black_24dp"
+                android:title="@string/overdue" />
+        </menu>
+    </item>
+
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_settings"
