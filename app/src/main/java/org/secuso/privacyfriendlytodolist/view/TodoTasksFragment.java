@@ -48,17 +48,19 @@ public class TodoTasksFragment extends Fragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
-                ExpandableToDoTaskAdapter.HeaderViewHolder vh = (ExpandableToDoTaskAdapter.HeaderViewHolder) v.getTag();
-                Log.i(TAG, "clicked");
-                if(vh != null) {
-                    Log.i(TAG, "not null");
-                    if(vh.seperator.getVisibility() == View.GONE) {
-                        vh.seperator.setVisibility(View.VISIBLE);
-                    } else {
-                        vh.seperator.setVisibility(View.GONE);
-                    }
+                Object vh = v.getTag();
 
+                if(vh != null && vh instanceof ExpandableToDoTaskAdapter.GroupTaskViewHolder) {
+
+                    ExpandableToDoTaskAdapter.GroupTaskViewHolder viewHolder = (ExpandableToDoTaskAdapter.GroupTaskViewHolder) vh;
+
+                    if(viewHolder.seperator.getVisibility() == View.GONE) {
+                        viewHolder.seperator.setVisibility(View.VISIBLE);
+                    } else {
+                        viewHolder.seperator.setVisibility(View.GONE);
+                    }
                 }
+
                 return false;
 
             }

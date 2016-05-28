@@ -28,4 +28,7 @@
 	<string name="today">Today</string>
 	<string name="week">Week</string>
 	<string name="overdue">Overdue</string>
+	<string name="high_priority">High Priority</string>
+	<string name="medium_priority">Medium Priority</string>
+	<string name="low_priority">Low Priority</string>
 </resources>

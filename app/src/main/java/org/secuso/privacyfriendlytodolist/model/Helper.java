@@ -3,6 +3,7 @@ package org.secuso.privacyfriendlytodolist.model;
 import android.content.Context;
 import android.text.format.DateFormat;
 
+
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -13,7 +14,7 @@ public class Helper {
 
     public static String getDate(long time) {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(time);
+        cal.setTimeInMillis(time*1000);
         return DateFormat.format("dd.MM.yyyy", cal).toString();
     }
 

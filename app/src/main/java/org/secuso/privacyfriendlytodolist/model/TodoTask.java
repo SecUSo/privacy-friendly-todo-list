@@ -2,6 +2,7 @@ package org.secuso.privacyfriendlytodolist.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -11,6 +12,20 @@ import java.util.ArrayList;
  */
 public class TodoTask implements Parcelable{
 
+    private static final String TAG = TodoTask.class.getSimpleName();
+
+    public enum Priority {
+        HIGH(0), MEDIUM(1), LOW(2); // Priority steps must be sorted in the same way like they will be displayed
+
+        private final int value;
+
+        Priority(final int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() { return value; }
+    };
+
     public static final int MAX_PRIORITY = 10;
 
     private String title;
@@ -18,14 +33,14 @@ public class TodoTask implements Parcelable{
     private boolean done;
     private int progress;
     private int deadline;
-    private int priority;
+    private Priority priority;
     private int numSubtasks;
     private int reminderTime;
     private int deadlineWarning;
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 
-    public TodoTask(String title, String description, boolean done, int progress, int deadline, int priority, int numSubtasks, int reminderTime, int deadlineWarning ) {
+    public TodoTask(String title, String description, boolean done, int progress, int deadline, Priority priority, int numSubtasks, int reminderTime, int deadlineWarning ) {
         this.title = title;
         this.description = description;
         this.progress = progress;
@@ -42,7 +57,10 @@ public class TodoTask implements Parcelable{
         description = parcel.readString();
         progress = parcel.readInt();
         deadline = parcel.readInt();
-        priority = parcel.readInt();
+        priority = Priority.valueOf(parcel.readString());
+
+        Log.i(TAG, priority.toString());
+
         numSubtasks = parcel.readInt();
         reminderTime = parcel.readInt();
         done = parcel.readByte() != 0;
@@ -73,7 +91,7 @@ public class TodoTask implements Parcelable{
         return progress;
     }
 
-    public int getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
@@ -115,7 +133,7 @@ public class TodoTask implements Parcelable{
         dest.writeString(description);
         dest.writeInt(progress);
         dest.writeInt(deadline);
-        dest.writeInt(priority);
+        dest.writeString(priority.toString());
         dest.writeInt(numSubtasks);
         dest.writeInt(reminderTime);
         dest.writeByte((byte) (done ? 1 : 0));
