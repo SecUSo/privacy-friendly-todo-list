@@ -297,7 +297,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                 if (deadline == null)
                     deadline = context.getResources().getString(R.string.no_deadline);
                 else
-                    deadline = context.getResources().getString(R.string.deadline) + " " + deadline;
+                    deadline = context.getResources().getString(R.string.deadline_dd) + " " + deadline;
                 vh2.deadline.setText(deadline);
 
                 break;

@@ -16,13 +16,18 @@
 	<string name="url">https://www.secuso.org</string>
 	<string name="done">done</string>
 	<string name="no_todo_lists_available">No To-Do lists available.</string>
-	<string name="next_deadline">Next Deadline:</string>
+	<string name="next_deadline_dd">Next Deadline:</string>
 	<string name="description">Description</string>
 	<string name="todos">To-Do\'s</string>
 	<string name="other">Other</string>
+
+	<string name="todo_list_name_hint">New To-Do List</string>
+	<string name="todo_list_description_hint">Description</string>
+
+	<string name="deadline">Deadline</string>
 	<string name="no_deadline">No Deadline</string>
 	<string name="empty_todo_list">No tasks available.</string>
-	<string name="deadline">Deadline:</string>
+	<string name="deadline_dd">Deadline:</string>
 	<string name="no_task_description">No task description available</string>
 	<string name="today">Today</string>
 	<string name="week">Week</string>
