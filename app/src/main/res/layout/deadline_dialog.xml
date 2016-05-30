@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <DatePicker
-        android:id="@+id/date_picker"
+        android:id="@+id/dp_deadline"
         android:layout_width="match_parent"
         android:calendarViewShown="false"
         android:spinnersShown="false"
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/ok"
+            android:id="@+id/bt_deadline_ok"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
@@ -24,7 +24,7 @@
             android:text="@android:string/ok"
             style="?android:attr/buttonBarButtonStyle" />
         <Button
-            android:id="@+id/dismiss"
+            android:id="@+id/bt_deadline_nodeadline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
