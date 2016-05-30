@@ -3,8 +3,12 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
@@ -21,27 +25,38 @@ public class TodoTasksFragment extends Fragment {
     private static final String TAG = TodoTasksFragment.class.getSimpleName();
 
     private ExpandableListView expandableListView;
-    private ExpandableToDoTaskAdapter adapter;
+    private ExpandableToDoTaskAdapter taskAdapter;
+
+    private TodoList listToShow;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        TodoList currentList = getArguments().getParcelable(TodoList.PARCELABLE_ID);
+        listToShow = getArguments().getParcelable(TodoList.PARCELABLE_ID);
 
         View v = inflater.inflate(R.layout.todo_list_detailed, container, false);
 
-        // initialize adapter and expandable listview
-        adapter = new ExpandableToDoTaskAdapter(getActivity(), currentList.getTasks());
+        initExListViewGUI(v);
+
+        // set toolbar title
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(listToShow.getName());
+
+        return v;
+    }
+
+    private void initExListViewGUI(View v) {
+
+        taskAdapter = new ExpandableToDoTaskAdapter(getActivity(), listToShow.getTasks());
         TextView emptyView = (TextView) v.findViewById(R.id.tv_empty_view_no_tasks);
         expandableListView = (ExpandableListView) v.findViewById(R.id.exlv_tasks);
 
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                @Override
-                public void onGroupExpand(int groupPosition) {
+                                                        @Override
+                                                        public void onGroupExpand(int groupPosition) {
 
-                }
-            }
+                                                        }
+                                                    }
         );
 
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
@@ -67,11 +82,48 @@ public class TodoTasksFragment extends Fragment {
         });
 
         expandableListView.setEmptyView(emptyView);
-        expandableListView.setAdapter(adapter);
+        expandableListView.setAdapter(taskAdapter);
+    }
 
-        // set toolbar title
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
-        return v;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu,inflater);
+        inflater.inflate(R.menu.main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.ac_show_all_tasks:
+
+                taskAdapter.setFilter(ExpandableToDoTaskAdapter.Filter.ALL_TASKS);
+                taskAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.ac_show_open_tasks:
+
+                taskAdapter.setFilter(ExpandableToDoTaskAdapter.Filter.OPEN_TASKS);
+                taskAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.ac_show_completed_tasks:
+                taskAdapter.setFilter(ExpandableToDoTaskAdapter.Filter.COMPLETED_TASKS);
+                taskAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.ac_sort_by_prio:
+                Log.i(TAG, String.valueOf(item.isChecked()));
+                boolean checked = !item.isChecked();
+                item.setChecked(checked);
+                taskAdapter.groupByPriority(checked);
+                taskAdapter.notifyDataSetChanged();
+               return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

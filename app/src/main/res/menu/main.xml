@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_settings"
-        android:title="@string/settings"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+
+    <group
+        android:id="@+id/group_task_filter_modes"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/ac_show_all_tasks"
+            android:orderInCategory="1"
+            android:title="@string/all_tasks"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/ac_show_open_tasks"
+            android:orderInCategory="2"
+            android:title="@string/open_tasks"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/ac_show_completed_tasks"
+            android:orderInCategory="3"
+            android:title="@string/completed_tasks"
+            app:showAsAction="never" />
+    </group>
+    <group
+        android:id="@+id/gr_task_group_by_priority"
+        android:checkableBehavior="all">
+        <item
+            android:id="@+id/ac_sort_by_prio"
+            android:checked="true"
+            android:orderInCategory="4"
+            android:title="@string/sort_by_priority" />
+    </group>
+
 </menu>

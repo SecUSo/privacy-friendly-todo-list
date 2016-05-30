@@ -62,10 +62,10 @@ public class TodoListsFragment extends Fragment {
         s1.add(new TodoSubTask("Sub 3", false));
 
         ArrayList<TodoTask> tlist = new ArrayList<TodoTask>();
-        TodoTask t1 = new TodoTask("Task 1", "Das ist eine Beschreibung", false, 3, 1464030736, TodoTask.Priority.MEDIUM, 3, 0, 0);
+        TodoTask t1 = new TodoTask("Task 1", "Das ist eine Beschreibung", true, 3, 1464030736, TodoTask.Priority.MEDIUM, 3, 0, 0);
         TodoTask t2 = new TodoTask("Task 2", "", false, 5, -1, TodoTask.Priority.HIGH, 1, 0, 0);
         TodoTask t3 = new TodoTask("Task 3", "Das ist eine Beschreibung", false, 7, 1464030736, TodoTask.Priority.MEDIUM, 3, 0, 0);
-        TodoTask t4 = new TodoTask("Task 4", "Das ist eine Beschreibung", false, 1, 1464030736, TodoTask.Priority.LOW, 3, 0, 0);
+        TodoTask t4 = new TodoTask("Task 4", "Das ist eine Beschreibung", true, 1, 1464030736, TodoTask.Priority.LOW, 3, 0, 0);
         TodoTask t5 = new TodoTask("Task 5", "", false, 5, -1, TodoTask.Priority.HIGH, 1, 0, 0);
         TodoTask t6 = new TodoTask("Task 6", "", false, 5, -1, TodoTask.Priority.MEDIUM, 1, 0, 0);
 

@@ -3,7 +3,6 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,15 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     private static final String TAG = ExpandableToDoTaskAdapter.class.getSimpleName();
 
+    public enum Filter {
+        ALL_TASKS,
+        COMPLETED_TASKS,
+        OPEN_TASKS
+    };
+
+    private Filter currentFilter;
+    private boolean groupByPriority;
+
     // group rows
     private static final int GR_TASK_ROW = 0;
     private static final int GR_PRIO_ROW = 1;
@@ -41,18 +49,39 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     private static final int CH_SETTING_ROW = 1;
     private static final int CH_SUBTASK_ROW = 2;
 
-    private ArrayList<TodoTask> data;
+    private ArrayList<TodoTask> rawData;
+    private ArrayList<TodoTask> filteredData = new ArrayList<>();
     private Context context;
     private HashMap<TodoTask.Priority, Integer> prioBarPositions = new HashMap<>();
 
-    private int progressAccuracy = 10;
 
     public ExpandableToDoTaskAdapter(Context context, ArrayList<TodoTask> tasks) {
         this.context = context;
-        data = tasks;
+        rawData = tasks;
+        currentFilter = Filter.ALL_TASKS;
+        setFilter(currentFilter);
+        groupByPriority(true); // TODO Preferences
+    }
 
-        // sort tasks by priority
-        Collections.sort(data, new Comparator<TodoTask>() {
+    public void setFilter(Filter filter) {
+        currentFilter = filter;
+        filterTasks();
+    }
+
+    public void groupByPriority(boolean groupByPriority) {
+        this.groupByPriority = groupByPriority;
+        prioBarPositions.clear();
+        if(groupByPriority) {
+            sortTasksByPriority();
+            countTasksPerPriority();
+        } else {
+            filterTasks();
+        }
+    }
+
+    private void sortTasksByPriority() {
+
+        Collections.sort(filteredData, new Comparator<TodoTask>() {
             @Override
             public int compare(TodoTask t1, TodoTask t2) {
                 TodoTask.Priority p1 = t1.getPriority();
@@ -60,14 +89,32 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                 return p1.compareTo(p2);
             }
         });
+    }
 
-        // count how many tasks belong to each priority group (tasks are now sorted by priority)
-        if (data.size() != 0) {
+    private void filterTasks () {
+
+        filteredData.clear();
+
+        boolean listDone = currentFilter != Filter.OPEN_TASKS;
+        boolean listOpen = currentFilter != Filter.COMPLETED_TASKS;
+
+        for(TodoTask task : rawData)
+            if((listDone && task.getDone()) || (listOpen && !task.getDone()))
+                filteredData.add(task);
+    }
+
+
+    // count how many tasks belong to each priority group (tasks are now sorted by priority)
+    private void countTasksPerPriority() {
+
+        prioBarPositions.clear();
+
+        if (filteredData.size() != 0) {
 
             int pos = 0;
             TodoTask.Priority currentPrio;
             HashSet<TodoTask.Priority> prioAlreadySeen = new HashSet<>();
-            for(TodoTask task : data) {
+            for(TodoTask task : filteredData) {
                 currentPrio = task.getPriority();
 
                 if(!prioAlreadySeen.contains(currentPrio)) {
@@ -93,13 +140,18 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        return data.get(groupPosition-seenPrioBars);
+        int pos = groupPosition-seenPrioBars ;
+        if(pos < filteredData.size())
+            return filteredData.get(pos);
+
+        return null;
     }
+
+
 
     @Override
     public int getGroupCount() {
-        // There are three groups (high, middle, low) that indicate the priority of the following tasks
-        return data.size() + prioBarPositions.size();
+        return filteredData.size() + prioBarPositions.size();
     }
 
     @Override
@@ -136,7 +188,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return data.get(groupPosition);
+        return filteredData.get(groupPosition);
     }
 
     @Override
