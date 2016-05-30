@@ -143,43 +143,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private class DeadlineButtonListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            Dialog deadlineDialog = new Dialog(context);
-            deadlineDialog.setContentView(R.layout.deadline_dialog);
-            deadlineDialog.setTitle("I18N: SELECT DEADLINE");
-
-            // required to make the dialog use the full screen width
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window = deadlineDialog.getWindow();
-            lp.copyFrom(window.getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.horizontalMargin = 40;
-            window.setAttributes(lp);
-
-            deadlineDialog.show();
-        }
-    }
-
     private class ActionButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Dialog addListDialog = new Dialog(context);
-            addListDialog.setContentView(R.layout.add_todolist_popup);
-            addListDialog.setTitle("I18N: ADD LIST");
-
-            TextView tvDeadline = (TextView)addListDialog.findViewById(R.id.tv_todo_list_deadline);
-            tvDeadline.setOnClickListener(new DeadlineButtonListener());
-
-            // required to make the dialog use the full screen width
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window = addListDialog.getWindow();
-            lp.copyFrom(window.getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.horizontalMargin = 20;
-            window.setAttributes(lp);
-
+            AddTodoListDialog addListDialog = new AddTodoListDialog(context);
             addListDialog.show();
         }
     }
