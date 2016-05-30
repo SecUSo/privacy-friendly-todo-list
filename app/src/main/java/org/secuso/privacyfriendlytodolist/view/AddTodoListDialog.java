@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
@@ -41,7 +42,7 @@ public class AddTodoListDialog extends Dialog {
     public void removeDeadline() {
         this.hasDeadline = false;
         TextView deadlineTextView = (TextView)findViewById(R.id.tv_todo_list_deadline);
-        deadlineTextView.setText("Deadline");
+        deadlineTextView.setText(context.getResources().getString(R.string.deadline));
     }
 
     boolean hasDeadline = false;
@@ -64,8 +65,27 @@ public class AddTodoListDialog extends Dialog {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.horizontalMargin = 40;
         window.setAttributes(lp);
+
+        Button buttonOkay = (Button)findViewById(R.id.bt_newtodolist_ok);
+        buttonOkay.setOnClickListener(new OkayButtonListener());
+
+        Button buttonCancel = (Button)findViewById(R.id.bt_newtodolist_cancel);
+        buttonCancel.setOnClickListener(new CancelButtonListener());
     }
 
+    private class OkayButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            Toast.makeText(context, "Save data", Toast.LENGTH_SHORT).show();
+            self.hide();
+        }
+    }
+    private class CancelButtonListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            self.hide();
+        }
+    }
 
     private class DeadlineButtonListener implements View.OnClickListener {
         @Override
@@ -90,7 +110,6 @@ public class AddTodoListDialog extends Dialog {
 
             deadlineDialog.show();
         }
-
 
         private class OkayButtonListener implements View.OnClickListener {
             Dialog dialog;
