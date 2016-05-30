@@ -34,5 +34,5 @@
 	<string name="open_tasks">Open tasks</string>
 	<string name="completed_tasks">Completed tasks</string>
 	<string name="settings">Settings</string>
-	<string name="sort_by_priority">Sort by priority</string>
+	<string name="group_by_priority">Group by priority</string>
 </resources>
