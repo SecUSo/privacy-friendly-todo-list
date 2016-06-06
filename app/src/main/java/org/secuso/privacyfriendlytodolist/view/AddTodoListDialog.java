@@ -8,11 +8,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,25 +31,26 @@ public class AddTodoListDialog extends Dialog {
 
     private static final String TAG = AddTodoListDialog.class.getSimpleName();
 
+    long deadline;
+
+
     public long getDeadline() {
-        return deadline;
+        return this.deadline;
     }
+    public boolean hasDeadline() { return this.deadline == -1; }
 
     public void setDeadline(long deadline) {
         this.deadline = deadline;
-        this.hasDeadline = true;
         TextView deadlineTextView = (TextView)findViewById(R.id.tv_todo_list_deadline);
         deadlineTextView.setText(Helper.getDate(deadline));
     }
 
     public void removeDeadline() {
-        this.hasDeadline = false;
+        this.deadline = -1;
         TextView deadlineTextView = (TextView)findViewById(R.id.tv_todo_list_deadline);
         deadlineTextView.setText(context.getResources().getString(R.string.deadline));
     }
 
-    boolean hasDeadline = false;
-    long deadline;
 
     public AddTodoListDialog(Context context)
     {
@@ -76,8 +80,22 @@ public class AddTodoListDialog extends Dialog {
     private class OkayButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            Toast.makeText(context, "Save data", Toast.LENGTH_SHORT).show();
-            self.hide();
+            // prepare list data
+            String listName = ((EditText)findViewById(R.id.et_todo_list_name)).getText().toString();
+            String listDescription = ((EditText)findViewById(R.id.et_todo_list_description)).getText().toString();
+
+            // try adding to database
+            DatabaseHelper dbHelper = new DatabaseHelper(context);
+            long newListId = DBQueryHandler.insertNewTodoList(dbHelper.getWritableDatabase(), listName, listDescription, self.getDeadline());
+
+            if(newListId != -1) {
+                Toast.makeText(context, String.format("List \"%s\" added", listName), Toast.LENGTH_SHORT).show();
+                self.hide();
+            }
+            else
+            {
+                Toast.makeText(context, "Could not add list", Toast.LENGTH_SHORT).show();
+            }
         }
     }
     private class CancelButtonListener implements View.OnClickListener {

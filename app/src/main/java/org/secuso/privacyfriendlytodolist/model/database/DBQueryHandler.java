@@ -12,15 +12,13 @@ import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoList;
  */
 public class DBQueryHandler {
 
-    public long insertNewTodoList(SQLiteDatabase db, String name, String description, int deadline) {
-
+    public static long insertNewTodoList(SQLiteDatabase db, String name, String description, long deadline) {
         ContentValues values = new ContentValues();
         values.put(TTodoList.COLUMN_NAME, name);
         values.put(TTodoList.COLUMN_DESCRIPTION, description);
-        values.put(TTodoList.COLUMN_DEADLINE, deadline);
+        if (deadline != -1)
+            values.put(TTodoList.COLUMN_DEADLINE, deadline);
 
-        return db.insert(TTodoList.TABLE_CREATE, null, values);
+        return db.insert(TTodoList.TABLE_NAME, null, values);
     }
-
-
 }
