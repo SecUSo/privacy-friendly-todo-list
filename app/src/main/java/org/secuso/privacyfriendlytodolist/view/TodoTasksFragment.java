@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoTask;
 
 /**
  * Created by dominik on 24.05.16.
@@ -100,14 +101,15 @@ public class TodoTasksFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        boolean checked;
+        ExpandableToDoTaskAdapter.SortTypes sortType = null;
+
         switch (item.getItemId()) {
             case R.id.ac_show_all_tasks:
-
                 taskAdapter.setFilter(ExpandableToDoTaskAdapter.Filter.ALL_TASKS);
                 taskAdapter.notifyDataSetChanged();
                 return true;
             case R.id.ac_show_open_tasks:
-
                 taskAdapter.setFilter(ExpandableToDoTaskAdapter.Filter.OPEN_TASKS);
                 taskAdapter.notifyDataSetChanged();
                 return true;
@@ -115,15 +117,28 @@ public class TodoTasksFragment extends Fragment {
                 taskAdapter.setFilter(ExpandableToDoTaskAdapter.Filter.COMPLETED_TASKS);
                 taskAdapter.notifyDataSetChanged();
                 return true;
-            case R.id.ac_sort_by_prio:
-                Log.i(TAG, String.valueOf(item.isChecked()));
-                boolean checked = !item.isChecked();
+            case R.id.ac_group_by_prio:
+                checked = !item.isChecked();
                 item.setChecked(checked);
-                taskAdapter.groupByPriority(checked);
-                taskAdapter.notifyDataSetChanged();
-               return true;
+                sortType = ExpandableToDoTaskAdapter.SortTypes.PRIORITY;
+                break;
+            case R.id.ac_sort_by_deadline:
+                checked = !item.isChecked();
+                item.setChecked(checked);
+                sortType = ExpandableToDoTaskAdapter.SortTypes.DEADLINE;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+        if(sortType != null) {
+            if(checked)
+                taskAdapter.addSortCondition(sortType);
+            else
+                taskAdapter.removeSortCondition(sortType);
+            taskAdapter.notifyDataSetChanged();
+        }
+
+        return true;
     }
 }

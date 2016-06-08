@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         holder.title.setText(list.getName());
         holder.deadline.setText(list.getDeadline());
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
-        holder.urgency.setBackgroundColor(ContextCompat.getColor(contextActivity, R.color.colorPrimary));
+        holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor()));
     }
 
     @Override

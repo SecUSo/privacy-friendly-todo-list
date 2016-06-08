@@ -94,4 +94,22 @@ public class TodoList implements Parcelable{
         dest.writeLong(deadline);
         dest.writeList(tasks);
     }
+
+    public TodoTask.DeadlineColors getDeadlineColor() {
+        int orangeCounter = 0;
+        for(TodoTask currentTask : tasks) {
+            switch (currentTask.getDeadlineColor()) {
+                case RED:
+                    return TodoTask.DeadlineColors.RED;
+                case ORANGE:
+                    orangeCounter++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if(orangeCounter > 0)
+            return TodoTask.DeadlineColors.ORANGE;
+        return TodoTask.DeadlineColors.BLUE;
+    }
 }
