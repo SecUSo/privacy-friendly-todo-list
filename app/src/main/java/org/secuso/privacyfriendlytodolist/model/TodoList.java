@@ -3,19 +3,21 @@ package org.secuso.privacyfriendlytodolist.model;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 
-/**
- * Created by dominik on 19.05.16.
- */
+
 public class TodoList implements Parcelable{
 
     public static final String PARCELABLE_ID = "CURRENT_TODO_LIST";
 
+    private long id;
     private String name;
     private String description;
     private long deadline;
+
+    private boolean changed = false;
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
@@ -23,18 +25,27 @@ public class TodoList implements Parcelable{
         this.name = name;
         this.description = description;
         this.deadline = deadline;
-        // TODO compute color
     }
 
     public TodoList(Parcel parcel) {
+        id = parcel.readLong();
         name = parcel.readString();
         description = parcel.readString();
         deadline = parcel.readLong();
         tasks = parcel.readArrayList(null);
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public int getSize() {
         return tasks.size();
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+        changed = true;
     }
 
 
@@ -55,11 +66,18 @@ public class TodoList implements Parcelable{
     }
 
     public String getDeadline() {
+        if (deadline <= 0)
+            return null;
+
         return Helper.getDate(deadline);
     }
 
     public int getColor() {
         return Color.BLACK;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public int getDoneTodos() {
@@ -89,6 +107,7 @@ public class TodoList implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(description);
         dest.writeLong(deadline);
@@ -111,5 +130,13 @@ public class TodoList implements Parcelable{
         if(orangeCounter > 0)
             return TodoTask.DeadlineColors.ORANGE;
         return TodoTask.DeadlineColors.BLUE;
+    }
+
+    public void setWriteDbFlag() {
+        changed = true;
+    }
+
+    public boolean isChanged() {
+        return changed;
     }
 }

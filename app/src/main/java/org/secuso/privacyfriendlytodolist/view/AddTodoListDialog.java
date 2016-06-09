@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
@@ -26,40 +27,43 @@ import java.util.concurrent.TimeUnit;
  * Created by Simon on 30.05.2016.
  */
 public class AddTodoListDialog extends Dialog {
-    Context context;
-    AddTodoListDialog self = this;
 
     private static final String TAG = AddTodoListDialog.class.getSimpleName();
 
-    long deadline;
+    private Context context;
+    private AddTodoListDialogResult acCallback;
+    private AddTodoListDialog self = this;
+    private long deadline;
 
 
     public long getDeadline() {
         return this.deadline;
     }
-    public boolean hasDeadline() { return this.deadline == -1; }
+
+    public boolean hasDeadline() {
+        return this.deadline == -1;
+    }
 
     public void setDeadline(long deadline) {
         this.deadline = deadline;
-        TextView deadlineTextView = (TextView)findViewById(R.id.tv_todo_list_deadline);
+        TextView deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
         deadlineTextView.setText(Helper.getDate(deadline));
     }
 
     public void removeDeadline() {
         this.deadline = -1;
-        TextView deadlineTextView = (TextView)findViewById(R.id.tv_todo_list_deadline);
+        TextView deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
         deadlineTextView.setText(context.getResources().getString(R.string.deadline));
     }
 
 
-    public AddTodoListDialog(Context context)
-    {
+    public AddTodoListDialog(Context context) {
         super(context);
         this.context = context;
         setContentView(R.layout.add_todolist_popup);
-        setTitle("I18N: ADD LIST");
+        // setTitle("I18N: ADD LIST");
 
-        TextView tvDeadline = (TextView)findViewById(R.id.tv_todo_list_deadline);
+        TextView tvDeadline = (TextView) findViewById(R.id.tv_todo_list_deadline);
         tvDeadline.setOnClickListener(new DeadlineButtonListener());
 
         // required to make the dialog use the full screen width
@@ -70,34 +74,42 @@ public class AddTodoListDialog extends Dialog {
         lp.horizontalMargin = 40;
         window.setAttributes(lp);
 
-        Button buttonOkay = (Button)findViewById(R.id.bt_newtodolist_ok);
+        Button buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
         buttonOkay.setOnClickListener(new OkayButtonListener());
 
-        Button buttonCancel = (Button)findViewById(R.id.bt_newtodolist_cancel);
+        Button buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
         buttonCancel.setOnClickListener(new CancelButtonListener());
     }
 
     private class OkayButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+
             // prepare list data
-            String listName = ((EditText)findViewById(R.id.et_todo_list_name)).getText().toString();
-            String listDescription = ((EditText)findViewById(R.id.et_todo_list_description)).getText().toString();
+            String listName = ((EditText) findViewById(R.id.et_todo_list_name)).getText().toString();
+            String listDescription = ((EditText) findViewById(R.id.et_todo_list_description)).getText().toString();
 
-            // try adding to database
-            DatabaseHelper dbHelper = new DatabaseHelper(context);
-            long newListId = DBQueryHandler.insertNewTodoList(dbHelper.getWritableDatabase(), listName, listDescription, self.getDeadline());
+            if(listName.equals("") || listName == null) {
+                Toast.makeText(getContext(), getContext().getString(R.string.list_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
+            } else {
+                TodoList newList = new TodoList(listName, listDescription, self.getDeadline());
+                newList.setWriteDbFlag();
+                acCallback.finish(newList);
+                self.dismiss();
+            }
 
-            if(newListId != -1) {
-                Toast.makeText(context, String.format("List \"%s\" added", listName), Toast.LENGTH_SHORT).show();
-                self.hide();
-            }
-            else
-            {
-                Toast.makeText(context, "Could not add list", Toast.LENGTH_SHORT).show();
-            }
+
         }
     }
+
+    public interface AddTodoListDialogResult {
+        void finish(TodoList newList);
+    }
+
+    public void setDialogResult(AddTodoListDialogResult resultCallback) {
+        acCallback = resultCallback;
+    }
+
     private class CancelButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -110,7 +122,6 @@ public class AddTodoListDialog extends Dialog {
         public void onClick(View view) {
             Dialog deadlineDialog = new Dialog(context);
             deadlineDialog.setContentView(R.layout.deadline_dialog);
-            deadlineDialog.setTitle("I18N: SELECT DEADLINE");
 
             // required to make the dialog use the full screen width
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -120,10 +131,10 @@ public class AddTodoListDialog extends Dialog {
             lp.horizontalMargin = 40;
             window.setAttributes(lp);
 
-            Button buttonOkay = (Button)deadlineDialog.findViewById(R.id.bt_deadline_ok);
+            Button buttonOkay = (Button) deadlineDialog.findViewById(R.id.bt_deadline_ok);
             buttonOkay.setOnClickListener(new OkayButtonListener(deadlineDialog));
 
-            Button buttonNoDeadline = (Button)deadlineDialog.findViewById(R.id.bt_deadline_nodeadline);
+            Button buttonNoDeadline = (Button) deadlineDialog.findViewById(R.id.bt_deadline_nodeadline);
             buttonNoDeadline.setOnClickListener(new NoDeadlineButtonListener(deadlineDialog));
 
             deadlineDialog.show();
@@ -132,29 +143,30 @@ public class AddTodoListDialog extends Dialog {
         private class OkayButtonListener implements View.OnClickListener {
             Dialog dialog;
 
-            public  OkayButtonListener(Dialog dialog) {
+            public OkayButtonListener(Dialog dialog) {
                 this.dialog = dialog;
             }
 
             @Override
             public void onClick(View view) {
-                DatePicker datePicker = (DatePicker)dialog.findViewById(R.id.dp_deadline);
+                DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.dp_deadline);
                 Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                 self.setDeadline(TimeUnit.MILLISECONDS.toSeconds(calendar.getTimeInMillis()));
-                dialog.hide();
+                dialog.dismiss();
             }
         }
+
         private class NoDeadlineButtonListener implements View.OnClickListener {
             Dialog dialog;
 
-            public  NoDeadlineButtonListener(Dialog dialog) {
+            public NoDeadlineButtonListener(Dialog dialog) {
                 this.dialog = dialog;
             }
 
             @Override
             public void onClick(View view) {
                 self.removeDeadline();
-                dialog.hide();
+                dialog.dismiss();
             }
         }
     }

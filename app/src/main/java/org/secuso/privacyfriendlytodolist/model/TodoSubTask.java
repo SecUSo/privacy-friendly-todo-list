@@ -8,15 +8,19 @@ import android.os.Parcelable;
  */
 public class TodoSubTask implements Parcelable {
 
+    private int id;
     private String title;
     private boolean done;
 
-    public TodoSubTask(String title, boolean done) {
+    private boolean changed = false; // if true, subtask is written back to database
+
+    public TodoSubTask(int id, String title, boolean done) {
         this.title = title;
         this.done = done;
     }
 
     public TodoSubTask(Parcel parcel) {
+        id = parcel.readInt();
         title = parcel.readString();
         done = parcel.readByte() != 0;
     }
@@ -27,6 +31,11 @@ public class TodoSubTask implements Parcelable {
 
     public boolean getDone() {
         return done;
+    }
+
+    public void setDone(boolean d) {
+        done = d;
+        changed = true;
     }
 
     public static final Parcelable.Creator<TodoSubTask> CREATOR =
@@ -49,7 +58,12 @@ public class TodoSubTask implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeByte((byte) (done ? 1 : 0));
+    }
+
+    public long getId() {
+        return id;
     }
 }

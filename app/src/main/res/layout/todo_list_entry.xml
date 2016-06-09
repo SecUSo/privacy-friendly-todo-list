@@ -27,18 +27,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_todo_list_title"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/tv_list_next_deadline_str"
+        android:layout_alignLeft="@+id/tv_todo_list_title"
         android:text="Test" />
 
-    <TextView
-        android:id="@+id/tv_list_next_deadline_str"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_todo_list_title"
-        android:layout_below="@+id/tv_todo_list_title"
-        android:layout_toRightOf="@+id/v_urgency_indicator"
-        android:text="@string/next_deadline_dd" />
 
     <TextView
         android:id="@+id/tv_todo_list_status"

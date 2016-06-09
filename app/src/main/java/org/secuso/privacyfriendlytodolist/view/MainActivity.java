@@ -1,15 +1,10 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,21 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import org.secuso.privacyfriendlytodolist.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-		private static final String TAG = MainActivity.class.getSimpleName();
-
-
-    Context context = this;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +46,7 @@ public class MainActivity extends AppCompatActivity
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if(fragmentManager.getFragments() == null) {
+            if (fragmentManager.getFragments() == null) {
                 fragmentTransaction.add(R.id.fragment_container, fragment);
             } else {
                 fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_slide_out);
@@ -73,13 +62,8 @@ public class MainActivity extends AppCompatActivity
     private void guiSetup() {
 
         // toolbar setup
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // floating action button setup
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new ActionButtonListener());
 
         // side menu setup
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -126,13 +110,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private class ActionButtonListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            AddTodoListDialog addListDialog = new AddTodoListDialog(context);
-            addListDialog.show();
-        }
     }
 }

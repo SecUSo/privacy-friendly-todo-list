@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -23,10 +26,21 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     private MainActivity contextActivity;
 
     private ArrayList<TodoList> data;
+    private int position;
 
     public TodoListAdapter(Activity ac, ArrayList<TodoList> data) {
         this.data = data;
         this.contextActivity = (MainActivity) ac;
+    }
+
+
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
 
@@ -45,12 +59,25 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
     // replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        TodoList list = data.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        TodoList list = data.get(data.size()-1-position);
         holder.title.setText(list.getName());
-        holder.deadline.setText(list.getDeadline());
+        String deadline = list.getDeadline();
+        if (deadline == null)
+            deadline = contextActivity.getResources().getString(R.string.no_deadline);
+        else
+            deadline = contextActivity.getResources().getString(R.string.deadline_dd) + " " + deadline;
+        holder.deadline.setText(deadline);
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
         holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor()));
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                setPosition(holder.getAdapterPosition());
+                return false;
+            }
+        });
     }
 
     @Override
@@ -58,8 +85,14 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         return data.size();
     }
 
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        holder.itemView.setOnLongClickListener(null);
+        super.onViewRecycled(holder);
+    }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener{
         public TextView title, deadline, done;
         public View urgency;
 
@@ -71,8 +104,8 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             urgency = v.findViewById(R.id.v_urgency_indicator);
 
             v.setOnClickListener(this);
+            v.setOnCreateContextMenuListener(this);
         }
-
 
         @Override
         public void onClick(View v) {
@@ -80,12 +113,19 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             Bundle bundle = new Bundle();
 
             int pos = getAdapterPosition();
-            TodoList currentList = data.get(pos);
+            TodoList currentList = data.get(data.size()-1-pos);
             bundle.putParcelable(TodoList.PARCELABLE_ID, currentList);
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);
 
             contextActivity.setFragment(fragment);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle(R.string.select_option);
+            MenuInflater inflater = contextActivity.getMenuInflater();
+            inflater.inflate(R.menu.todo_list_long_click, menu);
         }
     }
 }

@@ -21,7 +21,7 @@
 	<string name="todos">To-Do\'s</string>
 	<string name="other">Other</string>
 
-	<string name="todo_list_name_hint">New To-Do List</string>
+	<string name="name">Name</string>
 	<string name="todo_list_description_hint">Description</string>
 
 	<string name="deadline">Deadline</string>
@@ -41,4 +41,9 @@
 	<string name="settings">Settings</string>
 	<string name="group_by_priority">Group by priority</string>
 	<string name="sort_by_deadline">Sort by deadline</string>
+	<string name="delete_list">Delete To-Do list</string>
+	<string name="change_list_name">Rename To-Do list</string>
+	<string name="select_option">Select option</string>
+	<string name="list_name_must_not_be_empty">List name must not be empty!</string>
+	<string name="list_to_db_error">Error while creating new To-Do list.</string>
 </resources>

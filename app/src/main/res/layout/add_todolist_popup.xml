@@ -5,11 +5,20 @@
     android:orientation="vertical"
     android:layout_margin="0dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="New To-Do list"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"/>
+
     <EditText
         android:id="@+id/et_todo_list_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/todo_list_name_hint"
+        android:hint="@string/name"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

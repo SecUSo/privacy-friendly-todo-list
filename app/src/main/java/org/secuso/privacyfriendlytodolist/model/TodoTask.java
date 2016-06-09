@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by dominik on 19.05.16.
  */
-public class TodoTask implements Parcelable{
+public class TodoTask implements Parcelable {
 
     private static final String TAG = TodoTask.class.getSimpleName();
 
@@ -23,8 +23,19 @@ public class TodoTask implements Parcelable{
             value = newValue;
         }
 
-        public int getValue() { return value; }
-    };
+        public int getValue() {
+            return value;
+        }
+
+        public static Priority fromInt(int i) {
+            for (Priority p : Priority.values()) {
+                if (p.getValue() == i) {
+                    return p;
+                }
+            }
+            throw new IllegalArgumentException("No such priority defined.");
+        }
+    }
 
     public enum DeadlineColors {
         BLUE,
@@ -41,41 +52,36 @@ public class TodoTask implements Parcelable{
     private int progress;
     private int deadline;
     private Priority priority;
-    private int numSubtasks;
     private int reminderTime;
-    private int deadlineWarning;
     private int listPosition; // indicates at what position inside the list this task it placed
 
     private boolean changed = false; // true if task was changed and must written back to database
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 
-    public TodoTask(int id, int listPosition, String title, String description, boolean done, int progress, int deadline, Priority priority, int numSubtasks, int reminderTime, int deadlineWarning ) {
+    public TodoTask(int id, int listPosition, String title, String description, boolean done, int progress, int priority, int deadline, int reminderTime) {
         this.id = id;
+        this.reminderTime = reminderTime;
         this.title = title;
         this.description = description;
-        this.progress = progress;
         this.done = done;
-        this.priority = priority;
-        this.numSubtasks = numSubtasks;
-        this.reminderTime = reminderTime;
+        this.progress = progress;
+        this.priority = Priority.fromInt(priority);
         this.deadline = deadline;
-        this.deadlineWarning = deadlineWarning;
         this.listPosition = listPosition;
     }
 
     public TodoTask(Parcel parcel) {
         id = parcel.readInt();
+        reminderTime = parcel.readInt();
         title = parcel.readString();
         description = parcel.readString();
+        done = parcel.readByte() != 0;
         progress = parcel.readInt();
         deadline = parcel.readInt();
-        priority = Priority.valueOf(parcel.readString());
-        numSubtasks = parcel.readInt();
-        reminderTime = parcel.readInt();
-        done = parcel.readByte() != 0;
-        subTasks = parcel.readArrayList(null);
         listPosition = parcel.readInt();
+        priority = Priority.fromInt(parcel.readInt());
+        subTasks = parcel.readArrayList(null);
     }
 
     public void setSubTasks(ArrayList<TodoSubTask> tasks) {
@@ -107,12 +113,11 @@ public class TodoTask implements Parcelable{
     }
 
     public int getNumSubtasks() {
-        return numSubtasks;
+        if (subTasks != null)
+            return subTasks.size();
+        return 0;
     }
 
-    public int getDeadlineWarning() {
-        return deadlineWarning;
-    }
 
     public int getListPosition() {
         return listPosition;
@@ -124,7 +129,7 @@ public class TodoTask implements Parcelable{
     }
 
     public String getDeadline() {
-        if(deadline < 0)
+        if (deadline <= 0)
             return null;
         return Helper.getDate(deadline);
     }
@@ -134,7 +139,7 @@ public class TodoTask implements Parcelable{
     }
 
     public long getDeadlineTs() {
-        if(deadline < 0)
+        if (deadline < 0)
             return Long.MAX_VALUE;
         return deadline;
     }
@@ -142,8 +147,8 @@ public class TodoTask implements Parcelable{
     public DeadlineColors getDeadlineColor() {
         long currentTimeStamp = Helper.getCurrentTimestamp();
 
-        if(!done) {
-            if (deadline > currentTimeStamp - deadlineWarning && deadline < currentTimeStamp)
+        if (!done) {
+            if (deadline > currentTimeStamp - reminderTime && deadline < currentTimeStamp)
                 return DeadlineColors.ORANGE;
 
             if (currentTimeStamp > deadline && deadline > 0)
@@ -174,15 +179,14 @@ public class TodoTask implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeInt(reminderTime);
         dest.writeString(title);
         dest.writeString(description);
+        dest.writeByte((byte) (done ? 1 : 0));
         dest.writeInt(progress);
         dest.writeInt(deadline);
-        dest.writeString(priority.toString());
-        dest.writeInt(numSubtasks);
-        dest.writeInt(reminderTime);
-        dest.writeByte((byte) (done ? 1 : 0));
-        dest.writeList(subTasks);
         dest.writeInt(listPosition);
+        dest.writeInt(priority.getValue());
+        dest.writeList(subTasks);
     }
 }
