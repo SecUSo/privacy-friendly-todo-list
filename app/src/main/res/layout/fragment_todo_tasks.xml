@@ -5,36 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/ll_todo_list"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <org.secuso.privacyfriendlytodolist.view.TodoRecyclerView
-            android:id="@+id/rv_todo_lists"
+        <ExpandableListView
+            android:id="@+id/exlv_tasks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:scrollbars="vertical"></org.secuso.privacyfriendlytodolist.view.TodoRecyclerView>
-
+            android:divider="@null"
+            android:groupIndicator="@null"></ExpandableListView>
 
         <TextView
-            android:id="@+id/tv_rv_empty_view"
+            android:id="@+id/tv_empty_view_no_tasks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="@string/no_todo_lists_available"
-            android:textSize="18dp"
+            android:text="@string/empty_todo_list"
+            android:textSize="18sp"
             android:visibility="gone" />
-
-    </LinearLayout>
-
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_new_list"
+        android:id="@+id/fab_new_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

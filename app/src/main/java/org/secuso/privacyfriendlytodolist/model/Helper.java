@@ -7,11 +7,13 @@ import android.text.format.DateFormat;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors;
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority;
 
 import java.util.Calendar;
 import java.util.Locale;
 
 import static org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors.*;
+import static org.secuso.privacyfriendlytodolist.model.TodoTask.Priority.*;
 
 /**
  * Created by dominik on 19.05.16.
@@ -44,5 +46,20 @@ public class Helper {
         }
 
         throw new IllegalArgumentException("Deadline color not defined.");
+    }
+
+    public static String priority2String(Context context, Priority prio) {
+
+        switch(prio) {
+            case HIGH:
+                return context.getResources().getString(R.string.high_priority);
+            case MEDIUM:
+                return context.getResources().getString(R.string.medium_priority);
+            case LOW:
+                return context.getResources().getString(R.string.low_priority);
+            default:
+                return context.getResources().getString(R.string.unknown_priority);
+
+        }
     }
 }

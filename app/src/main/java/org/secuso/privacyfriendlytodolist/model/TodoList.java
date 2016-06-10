@@ -8,7 +8,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 
-public class TodoList implements Parcelable{
+public class TodoList implements Parcelable, BaseTodo{
 
     public static final String PARCELABLE_ID = "CURRENT_TODO_LIST";
 

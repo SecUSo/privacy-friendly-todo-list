@@ -46,27 +46,6 @@ public class DBQueryHandler {
         db.delete(TTodoTask.TABLE_NAME, where, whereArgs);
     }
 
-    public static void deleteTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {
-        long id = subTask.getId();
-
-        String where = TTodoSubTask.COLUMN_ID + " = ";
-        String whereArgs[] = {String.valueOf(id)};
-        db.delete(TTodoSubTask.TABLE_NAME, where, whereArgs);
-    }
-
-    public static long insertNewTodoList(SQLiteDatabase db, TodoList newList) {
-        ContentValues values = new ContentValues();
-        values.put(TTodoList.COLUMN_NAME, newList.getName());
-        values.put(TTodoList.COLUMN_DESCRIPTION, newList.getDescription());
-        values.put(TTodoList.COLUMN_DEADLINE, newList.getDeadline());
-
-        if(newList.getTasks() != null) {
-            // TODO insert new tasks and subtasks (make sure to do this in one transaction)
-        }
-
-        return db.insert(TTodoList.TABLE_NAME, null, values);
-    }
-
     public static ArrayList<TodoList> getAllToDoLists (SQLiteDatabase db) {
 
         ArrayList<TodoList> todoLists = new ArrayList<>();
@@ -96,7 +75,7 @@ public class DBQueryHandler {
     private static ArrayList<TodoTask> getTasksByList(SQLiteDatabase db, int listId) {
 
         ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
-        String where = TTodoTask.COLUMN_TOOD_LIST_ID + " = " + listId;
+        String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId;
         Cursor cursor = db.query(TTodoTask.TABLE_NAME, null, where, null, null, null, null);
         cursor.moveToFirst();
 
@@ -113,8 +92,11 @@ public class DBQueryHandler {
                 int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
                 int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
 
-                TodoTask currentTask = new TodoTask(id, listPosition, title, description, done, progress, deadline, reminderTime, priority);
+                TodoTask currentTask = new TodoTask(title, description, progress, TodoTask.Priority.fromInt(priority), deadline, reminderTime);
+                currentTask.setId(id);
+                currentTask.setPositionInList(listPosition);
                 currentTask.setSubTasks(getSubTasksByTask(db, id));
+                currentTask.setDone(done);
                 tasks.add(currentTask);
             }
         }
@@ -147,5 +129,45 @@ public class DBQueryHandler {
         }
 
         return subTasks;
+    }
+
+    public static long insertNewTask(SQLiteDatabase db, TodoTask newTask) {
+        ContentValues values = new ContentValues();
+        values.put(TTodoTask.COLUMN_TITLE, newTask.getName());
+        values.put(TTodoTask.COLUMN_DESCRIPTION, newTask.getDescription());
+        values.put(TTodoTask.COLUMN_PROGRESS, newTask.getProgress());
+        values.put(TTodoTask.COLUMN_DEADLINE, newTask.getDeadlineTs());
+        values.put(TTodoTask.COLUMN_DEADLINE_WARNING_TIME, newTask.getReminderTime());
+        values.put(TTodoTask.COLUMN_PRIORITY, newTask.getPriority().getValue());
+        values.put(TTodoTask.COLUMN_TODO_LIST_ID, newTask.getListId());
+        values.put(TTodoTask.COLUMN_LIST_POSITION, newTask.getListPosition());s
+
+        if(newTask.getSubTasks() != null) {
+            // TODO
+        }
+
+        return db.insert(TTodoTask.TABLE_NAME, null, values);
+    }
+
+
+    public static long insertNewTodoList(SQLiteDatabase db, TodoList newList) {
+        ContentValues values = new ContentValues();
+        values.put(TTodoList.COLUMN_NAME, newList.getName());
+        values.put(TTodoList.COLUMN_DESCRIPTION, newList.getDescription());
+        values.put(TTodoList.COLUMN_DEADLINE, newList.getDeadline());
+
+        if(newList.getTasks() != null) {
+            // TODO insert new tasks and subtasks (make sure to do this in one transaction)
+        }
+
+        return db.insert(TTodoList.TABLE_NAME, null, values);
+    }
+
+    public static void deleteTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {
+        long id = subTask.getId();
+
+        String where = TTodoSubTask.COLUMN_ID + " = ";
+        String whereArgs[] = {String.valueOf(id)};
+        db.delete(TTodoSubTask.TABLE_NAME, where, whereArgs);
     }
 }

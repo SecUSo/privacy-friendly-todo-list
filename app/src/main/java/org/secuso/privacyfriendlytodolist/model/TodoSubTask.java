@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by dominik on 19.05.16.
  */
-public class TodoSubTask implements Parcelable {
+public class TodoSubTask implements Parcelable, BaseTodo {
 
     private int id;
     private String title;

@@ -32,9 +32,9 @@
 	<string name="today">Today</string>
 	<string name="week">Week</string>
 	<string name="overdue">Overdue</string>
-	<string name="high_priority">High Priority</string>
-	<string name="medium_priority">Medium Priority</string>
-	<string name="low_priority">Low Priority</string>
+	<string name="high_priority">High</string>
+	<string name="medium_priority">Medium</string>
+	<string name="low_priority">Low</string>
 	<string name="all_tasks">All tasks</string>
 	<string name="open_tasks">Open tasks</string>
 	<string name="completed_tasks">Completed tasks</string>
@@ -46,4 +46,14 @@
 	<string name="select_option">Select option</string>
 	<string name="list_name_must_not_be_empty">List name must not be empty!</string>
 	<string name="list_to_db_error">Error while creating new To-Do list.</string>
+	<string name="new_todo_list">New To-Do list</string>
+	<string name="new_todo_task">New To-Do task</string>
+	<string name="reminder">Reminder</string>
+	<string name="progress_colon">Progress:</string>
+	<string name="priority_colon">Priority:</string>
+	<string name="select_priority">Select a priority for this task!</string>
+	<string name="unknown_priority">Unknown Priority</string>
+	<string name="zero_percent">0%</string>
+	<string name="no_task_name">Please enter a task name!</string>
+	<string name="no_task_priority">Please provide a task priority!</string>
 </resources>

@@ -298,15 +298,10 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     private String getPriorityNameByBarPos(int groupPosition) {
         for (Map.Entry<TodoTask.Priority, Integer> entry : prioBarPositions.entrySet()) {
             if (entry.getValue() == groupPosition) {
-                if (entry.getKey() == TodoTask.Priority.HIGH)
-                    return context.getResources().getString(R.string.high_priority);
-                else if (entry.getKey() == TodoTask.Priority.MEDIUM)
-                    return context.getResources().getString(R.string.medium_priority);
-                else
-                    return context.getResources().getString(R.string.low_priority);
+                return Helper.priority2String(context, entry.getKey());
             }
         }
-        return "UNKNOWN PRIORITY";
+        return context.getString(R.string.unknown_priority);
     }
 
     @Override

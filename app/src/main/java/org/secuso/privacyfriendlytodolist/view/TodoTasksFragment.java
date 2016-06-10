@@ -1,9 +1,9 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,69 +15,90 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.view.dialog.AddTaskDialog;
 
-/**
- * Created by dominik on 24.05.16.
- */
+import java.util.ArrayList;
+
 public class TodoTasksFragment extends Fragment {
 
     private static final String TAG = TodoTasksFragment.class.getSimpleName();
 
     private ExpandableListView expandableListView;
     private ExpandableToDoTaskAdapter taskAdapter;
+    private ArrayList<TodoTask> todoTasks;
 
-    private TodoList listToShow;
+    private TodoList currentList;
+    private DatabaseHelper dbHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        listToShow = getArguments().getParcelable(TodoList.PARCELABLE_ID);
+        currentList = getArguments().getParcelable(TodoList.PARCELABLE_ID);
+        todoTasks = currentList.getTasks();
+        dbHelper = new DatabaseHelper(getActivity());
 
-        View v = inflater.inflate(R.layout.todo_list_detailed, container, false);
+        View v = inflater.inflate(R.layout.fragment_todo_tasks, container, false);
 
         initExListViewGUI(v);
+        initFab(v);
 
         // set toolbar title
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(listToShow.getName());
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
 
         return v;
     }
 
+    private void initFab(View rootView) {
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_task);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddTaskDialog addListDialog = new AddTaskDialog(getActivity());
+                addListDialog.setDialogResult(new TodoCallback() {
+                    @Override
+                    public void finish(BaseTodo b) {
+                        if(b instanceof TodoTask) {
+                            todoTasks.add((TodoTask)b);
+                            taskAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                addListDialog.show();
+            }
+        });
+    }
+
     private void initExListViewGUI(View v) {
 
-        taskAdapter = new ExpandableToDoTaskAdapter(getActivity(), listToShow.getTasks());
+        taskAdapter = new ExpandableToDoTaskAdapter(getActivity(), todoTasks);
         TextView emptyView = (TextView) v.findViewById(R.id.tv_empty_view_no_tasks);
         expandableListView = (ExpandableListView) v.findViewById(R.id.exlv_tasks);
-
-        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                                                        @Override
-                                                        public void onGroupExpand(int groupPosition) {
-
-                                                        }
-                                                    }
-        );
 
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
-                Object vh = v.getTag();
+            Object vh = v.getTag();
 
-                if(vh != null && vh instanceof ExpandableToDoTaskAdapter.GroupTaskViewHolder) {
+            if(vh != null && vh instanceof ExpandableToDoTaskAdapter.GroupTaskViewHolder) {
 
-                    ExpandableToDoTaskAdapter.GroupTaskViewHolder viewHolder = (ExpandableToDoTaskAdapter.GroupTaskViewHolder) vh;
+                ExpandableToDoTaskAdapter.GroupTaskViewHolder viewHolder = (ExpandableToDoTaskAdapter.GroupTaskViewHolder) vh;
 
-                    if(viewHolder.seperator.getVisibility() == View.GONE) {
-                        viewHolder.seperator.setVisibility(View.VISIBLE);
-                    } else {
-                        viewHolder.seperator.setVisibility(View.GONE);
-                    }
+                if(viewHolder.seperator.getVisibility() == View.GONE) {
+                    viewHolder.seperator.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.seperator.setVisibility(View.GONE);
                 }
+            }
 
-                return false;
+            return false;
 
             }
         });
@@ -93,6 +114,26 @@ public class TodoTasksFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+
+        super.onPause();
+
+        // write new tasks to the database
+        for(int i=0; i<todoTasks.size(); i++) {
+            TodoTask currentTask = todoTasks.get(i);
+            if(currentTask.isChanged()) {
+                currentTask.setListId(currentList.getId());
+                currentTask.setPositionInList(i);
+                long id = DBQueryHandler.insertNewTask(dbHelper.getWritableDatabase(), currentTask);
+                if(id == -1)
+                    Log.e(TAG, getString(R.string.list_to_db_error));
+                else
+                    currentTask.setId(id);
+            }
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu,inflater);
         inflater.inflate(R.menu.main, menu);
@@ -102,7 +143,7 @@ public class TodoTasksFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         boolean checked;
-        ExpandableToDoTaskAdapter.SortTypes sortType = null;
+        ExpandableToDoTaskAdapter.SortTypes sortType;
 
         switch (item.getItemId()) {
             case R.id.ac_show_all_tasks:
@@ -131,13 +172,11 @@ public class TodoTasksFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
 
-        if(sortType != null) {
-            if(checked)
-                taskAdapter.addSortCondition(sortType);
-            else
-                taskAdapter.removeSortCondition(sortType);
-            taskAdapter.notifyDataSetChanged();
-        }
+        if(checked)
+            taskAdapter.addSortCondition(sortType);
+        else
+            taskAdapter.removeSortCondition(sortType);
+        taskAdapter.notifyDataSetChanged();
 
         return true;
     }

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="New To-Do list"
+        android:text="@string/new_todo_list"
         android:textSize="22sp"
         android:textColor="@color/white"
         android:background="@color/colorPrimary"/>
@@ -40,25 +40,14 @@
         android:minLines="1"
         android:maxLines="15" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_todo_list_deadline"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/deadline"
-            android:src="@android:drawable/ic_menu_my_calendar" />
-        <TextView
-            android:id="@+id/tv_todo_list_deadline"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:text="@string/deadline" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+        android:text="@string/deadline" />
 
     <View
         android:layout_width="match_parent"
@@ -68,6 +57,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
             android:id="@+id/bt_newtodolist_ok"
             android:layout_width="0dp"
@@ -84,5 +74,7 @@
             android:layout_weight="1"
             android:text="@android:string/cancel"
             style="?android:attr/buttonBarButtonStyle" />
+
     </LinearLayout>
+
 </LinearLayout>

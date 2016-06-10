@@ -10,15 +10,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.view.dialog.AddTodoListDialog;
 
 import java.util.ArrayList;
 
@@ -58,21 +58,23 @@ public class TodoListsFragment extends Fragment {
         registerForContextMenu(mRecyclerView);
 
         // floating action button setup
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_list);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddTodoListDialog addListDialog = new AddTodoListDialog(getActivity());
-                addListDialog.setDialogResult(new AddTodoListDialog.AddTodoListDialogResult() {
+                addListDialog.setDialogResult(new TodoCallback() {
+
                     @Override
-                    public void finish(TodoList newList) {
-                        todoLists.add(newList);
-                        adapter.notifyDataSetChanged();
-                        Log.i(TAG, "list added");
+                    public void finish(BaseTodo newList) {
+                        if(newList instanceof TodoList) {
+                            todoLists.add((TodoList) newList);
+                            adapter.notifyDataSetChanged();
+                            Log.i(TAG, "list added");
+                        }
                     }
                 });
-
                 addListDialog.show();
             }
         });
@@ -85,7 +87,6 @@ public class TodoListsFragment extends Fragment {
             case R.id.change_list_name:
                 break;
             case R.id.delete_list:
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 int pos = adapter.getPosition();
                 TodoList delList = todoLists.get(todoLists.size()-1-pos);
                 DBQueryHandler.deleteTodoList(dbHelper.getWritableDatabase(), delList);
@@ -95,7 +96,6 @@ public class TodoListsFragment extends Fragment {
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");
         }
-
 
         return super.onContextItemSelected(item);
     }
@@ -120,7 +120,6 @@ public class TodoListsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.toolbar_title_main);
     }
 
@@ -135,12 +134,12 @@ public class TodoListsFragment extends Fragment {
 
         // (int id, int listPosition, String title, String description, boolean done, int progress, int priority, int deadline, int reminderTime)
 
-        TodoTask t1 = new TodoTask(0, 0, "Task 1", "Das ist eine Beschreibung", false, 3, 0, 1465381890, 86400);
-        TodoTask t2 = new TodoTask(1, 1, "Task 2", "", false, 5, 0, -1, 0);
-        TodoTask t3 = new TodoTask(2, 2, "Task 3", "Das ist eine Beschreibung", false, 7, 1, 1464030736, 0);
-        TodoTask t4 = new TodoTask(3, 3, "Task 4", "Das ist eine Beschreibung", true, 1, 2, 1478860290, 0);
-        TodoTask t5 = new TodoTask(4, 4, "Task 5", "", false, 5, 0, -1,  0);
-        TodoTask t6 = new TodoTask(5, 5, "Task 6", "", true, 5, 1, -1, 0);
+        TodoTask t1 = new TodoTask("Task 1", "Das ist eine Beschreibung", 0, TodoTask.Priority.LOW, 1465381890, 86400);
+        TodoTask t2 = new TodoTask("Task 2", "", 0, TodoTask.Priority.HIGH, -1, 0);
+        TodoTask t3 = new TodoTask("Task 3", "Das ist eine Beschreibung", 7, TodoTask.Priority.MEDIUM, 1464030736, 0);
+        TodoTask t4 = new TodoTask("Task 4", "Das ist eine Beschreibung", 2, TodoTask.Priority.MEDIUM, 1478860290, 0);
+        TodoTask t5 = new TodoTask("Task 5", "", 5, TodoTask.Priority.HIGH, -1,  0);
+        TodoTask t6 = new TodoTask("Task 6", "", 5, TodoTask.Priority.MEDIUM, -1, 0);
 
         t1.setSubTasks(s1);
         t2.setSubTasks(s1);

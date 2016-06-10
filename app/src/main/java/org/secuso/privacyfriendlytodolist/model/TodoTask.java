@@ -2,17 +2,16 @@ package org.secuso.privacyfriendlytodolist.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
  * Created by dominik on 19.05.16.
  */
-public class TodoTask implements Parcelable {
+public class TodoTask implements Parcelable, BaseTodo {
 
     private static final String TAG = TodoTask.class.getSimpleName();
+
+
 
     public enum Priority {
         HIGH(0), MEDIUM(1), LOW(2); // Priority steps must be sorted in the same way like they will be displayed
@@ -48,40 +47,48 @@ public class TodoTask implements Parcelable {
     private String title;
     private String description;
     private boolean done;
-    private int id;
+    private long id;
     private int progress;
-    private int deadline;
+    private long deadline;
     private Priority priority;
     private int reminderTime;
     private int listPosition; // indicates at what position inside the list this task it placed
 
-    private boolean changed = false; // true if task was changed and must written back to database
+    private long listIdForeignKey;
+
+    private boolean writeBackToDb = false; // true if task was changed and must written back to database
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 
-    public TodoTask(int id, int listPosition, String title, String description, boolean done, int progress, int priority, int deadline, int reminderTime) {
-        this.id = id;
+    public TodoTask(String title, String description, int progress, Priority priority, long deadline, int reminderTime) {
         this.reminderTime = reminderTime;
         this.title = title;
         this.description = description;
-        this.done = done;
+        this.done = false;
         this.progress = progress;
-        this.priority = Priority.fromInt(priority);
+        this.priority = priority;
         this.deadline = deadline;
-        this.listPosition = listPosition;
     }
 
     public TodoTask(Parcel parcel) {
-        id = parcel.readInt();
+        id = parcel.readLong();
         reminderTime = parcel.readInt();
         title = parcel.readString();
         description = parcel.readString();
         done = parcel.readByte() != 0;
         progress = parcel.readInt();
-        deadline = parcel.readInt();
+        deadline = parcel.readLong();
         listPosition = parcel.readInt();
         priority = Priority.fromInt(parcel.readInt());
         subTasks = parcel.readArrayList(null);
+    }
+
+    public void setId(long id){
+        this.id = id;
+    }
+
+    public void setPositionInList(int pos) {
+        this.listPosition = pos;
     }
 
     public void setSubTasks(ArrayList<TodoSubTask> tasks) {
@@ -112,6 +119,10 @@ public class TodoTask implements Parcelable {
         return priority;
     }
 
+    public void setWriteDbFlag() {
+        writeBackToDb = true;
+    }
+
     public int getNumSubtasks() {
         if (subTasks != null)
             return subTasks.size();
@@ -125,7 +136,6 @@ public class TodoTask implements Parcelable {
 
     public void setDone(boolean done) {
         this.done = done;
-        changed = true;
     }
 
     public String getDeadline() {
@@ -134,7 +144,7 @@ public class TodoTask implements Parcelable {
         return Helper.getDate(deadline);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -178,15 +188,31 @@ public class TodoTask implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeInt(reminderTime);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeByte((byte) (done ? 1 : 0));
         dest.writeInt(progress);
-        dest.writeInt(deadline);
+        dest.writeLong(deadline);
         dest.writeInt(listPosition);
         dest.writeInt(priority.getValue());
         dest.writeList(subTasks);
+    }
+
+    public boolean isChanged() {
+        return writeBackToDb;
+    }
+
+    public int getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setListId(long listId) {
+        this.listIdForeignKey = listId;
+    }
+
+    public long getListId() {
+        return this.listIdForeignKey;
     }
 }
