@@ -41,7 +41,7 @@ public class DBQueryHandler {
         for(TodoSubTask subTask : todoTask.getSubTasks())
             deleteTodoSubTask(db, subTask);
 
-        String where = TTodoTask.COLUMN_ID + " = ";
+        String where = TTodoTask.COLUMN_ID + " = ?";
         String whereArgs[] = {String.valueOf(id)};
         db.delete(TTodoTask.TABLE_NAME, where, whereArgs);
     }
@@ -140,7 +140,7 @@ public class DBQueryHandler {
         values.put(TTodoTask.COLUMN_DEADLINE_WARNING_TIME, newTask.getReminderTime());
         values.put(TTodoTask.COLUMN_PRIORITY, newTask.getPriority().getValue());
         values.put(TTodoTask.COLUMN_TODO_LIST_ID, newTask.getListId());
-        values.put(TTodoTask.COLUMN_LIST_POSITION, newTask.getListPosition());s
+        values.put(TTodoTask.COLUMN_LIST_POSITION, newTask.getListPosition());
 
         if(newTask.getSubTasks() != null) {
             // TODO
@@ -166,7 +166,7 @@ public class DBQueryHandler {
     public static void deleteTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {
         long id = subTask.getId();
 
-        String where = TTodoSubTask.COLUMN_ID + " = ";
+        String where = TTodoSubTask.COLUMN_ID + " = ?";
         String whereArgs[] = {String.valueOf(id)};
         db.delete(TTodoSubTask.TABLE_NAME, where, whereArgs);
     }

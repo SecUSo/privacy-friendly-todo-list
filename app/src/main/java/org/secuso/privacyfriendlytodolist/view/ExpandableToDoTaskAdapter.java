@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,16 @@ import java.util.Map;
 
 
 public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
+
+    public long getLongClickTaskId() {
+        return longClickTaskId;
+    }
+
+    public void setLongClickTaskId(long id) {
+        this.longClickTaskId = id;
+    }
+
+    private long longClickTaskId;
 
     public enum Filter {
         ALL_TASKS,
@@ -311,7 +322,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
         int type = getGroupType(groupPosition);
 
@@ -342,7 +353,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
                 if (convertView == null) {
 
-                    convertView = LayoutInflater.from(context).inflate(R.layout.exlv_tasks_header, parent, false);
+                    convertView = LayoutInflater.from(context).inflate(R.layout.exlv_tasks_group, parent, false);
 
                     vh2 = new GroupTaskViewHolder();
                     vh2.name = (TextView) convertView.findViewById(R.id.tv_exlv_task_name);
@@ -378,6 +389,15 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                             if(buttonView.isPressed()) {
                                // TODO
                             }
+                        }
+                    });
+
+                    // remember position of long clicked task in order to identify it later on (e.g. when deleting or modifying it)
+                    convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            setLongClickTaskId(currentTask.getId());
+                            return false;
                         }
                     });
 
@@ -486,6 +506,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
         public View deadlineColorBar;
         public View seperator;
         public LinearLayout progressIndicator;
+
     }
 
     public class GroupPrioViewHolder {

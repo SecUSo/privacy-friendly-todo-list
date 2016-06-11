@@ -5,14 +5,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
@@ -60,17 +63,17 @@ public class TodoTasksFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddTaskDialog addListDialog = new AddTaskDialog(getActivity());
-                addListDialog.setDialogResult(new TodoCallback() {
-                    @Override
-                    public void finish(BaseTodo b) {
-                        if(b instanceof TodoTask) {
-                            todoTasks.add((TodoTask)b);
-                            taskAdapter.notifyDataSetChanged();
-                        }
+            AddTaskDialog addListDialog = new AddTaskDialog(getActivity());
+            addListDialog.setDialogResult(new TodoCallback() {
+                @Override
+                public void finish(BaseTodo b) {
+                    if(b instanceof TodoTask) {
+                        todoTasks.add((TodoTask)b);
+                        taskAdapter.notifyDataSetChanged();
                     }
-                });
-                addListDialog.show();
+                }
+            });
+            addListDialog.show();
             }
         });
     }
@@ -81,6 +84,7 @@ public class TodoTasksFragment extends Fragment {
         TextView emptyView = (TextView) v.findViewById(R.id.tv_empty_view_no_tasks);
         expandableListView = (ExpandableListView) v.findViewById(R.id.exlv_tasks);
 
+        // react when task expands
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -103,8 +107,52 @@ public class TodoTasksFragment extends Fragment {
             }
         });
 
+        // long click to delete or change a task
+        registerForContextMenu(expandableListView);
+
         expandableListView.setEmptyView(emptyView);
         expandableListView.setAdapter(taskAdapter);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+
+        menu.setHeaderTitle(R.string.select_option);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.todo_task_long_click, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        long posClickedTask = -1;
+
+        switch(item.getItemId()) {
+            case R.id.modify_task:
+                Toast.makeText(getContext(), "change", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.delete_task:
+                posClickedTask = taskAdapter.getLongClickTaskId();
+                TodoTask taskToDelete = getTaskById(posClickedTask);
+                DBQueryHandler.deleteTodoTask(dbHelper.getWritableDatabase(), taskToDelete);
+                todoTasks.remove(taskToDelete);
+                taskAdapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid menu item selected.");
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    private TodoTask getTaskById(long id) {
+        for(TodoTask task : todoTasks)
+            if(task.getId() == id)
+                return task;
+
+        throw new IllegalArgumentException(getString(R.string.unknown_task_id) + " " + String.valueOf(id));
     }
 
     @Override
@@ -115,7 +163,6 @@ public class TodoTasksFragment extends Fragment {
 
     @Override
     public void onPause() {
-
         super.onPause();
 
         // write new tasks to the database

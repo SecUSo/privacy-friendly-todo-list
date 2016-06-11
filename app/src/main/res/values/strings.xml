@@ -56,4 +56,8 @@
 	<string name="zero_percent">0%</string>
 	<string name="no_task_name">Please enter a task name!</string>
 	<string name="no_task_priority">Please provide a task priority!</string>
+	<string name="modify_task">Modify To-Do Task</string>
+	<string name="delete_task">Delete To-Do Task</string>
+	<string name="unknown_task_id">Cannot delete task. Unknown task id:</string>
+	<string name="task_removed">Task was successfully removed.</string>
 </resources>
