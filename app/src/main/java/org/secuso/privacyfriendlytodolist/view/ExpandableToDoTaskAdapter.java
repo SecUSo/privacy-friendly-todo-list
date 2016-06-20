@@ -29,15 +29,16 @@ import java.util.Map;
 
 public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
-    public long getLongClickTaskId() {
-        return longClickTaskId;
+    private TodoTask longClickedTask;
+
+    public void setLongClickedTaskByPos(int position) {
+        longClickedTask = getTaskByPosition(position);
     }
 
-    public void setLongClickTaskId(long id) {
-        this.longClickTaskId = id;
+    public TodoTask getLongClickedTask() {
+        return longClickedTask;
     }
 
-    private long longClickTaskId;
 
     public enum Filter {
         ALL_TASKS,
@@ -389,15 +390,6 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                             if(buttonView.isPressed()) {
                                // TODO
                             }
-                        }
-                    });
-
-                    // remember position of long clicked task in order to identify it later on (e.g. when deleting or modifying it)
-                    convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            setLongClickTaskId(currentTask.getId());
-                            return false;
                         }
                     });
 

@@ -68,11 +68,11 @@ public class TodoListsFragment extends Fragment {
 
                     @Override
                     public void finish(BaseTodo newList) {
-                        if(newList instanceof TodoList) {
-                            todoLists.add((TodoList) newList);
-                            adapter.notifyDataSetChanged();
-                            Log.i(TAG, "list added");
-                        }
+                    if(newList instanceof TodoList) {
+                        todoLists.add((TodoList) newList);
+                        adapter.notifyDataSetChanged();
+                        Log.i(TAG, "list added");
+                    }
                     }
                 });
                 addListDialog.show();
@@ -115,6 +115,10 @@ public class TodoListsFragment extends Fragment {
                     currentList.setId(id);
             }
         }
+
+        ArrayList<TodoList> debug = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        int size = debug.size();
+        TodoList deb = debug.get(0);
     }
 
     @Override

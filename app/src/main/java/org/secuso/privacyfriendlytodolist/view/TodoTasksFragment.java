@@ -84,6 +84,16 @@ public class TodoTasksFragment extends Fragment {
         TextView emptyView = (TextView) v.findViewById(R.id.tv_empty_view_no_tasks);
         expandableListView = (ExpandableListView) v.findViewById(R.id.exlv_tasks);
 
+        expandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                taskAdapter.setLongClickedTaskByPos(position);
+                return false;
+            }
+
+        });
+
         // react when task expands
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -133,8 +143,7 @@ public class TodoTasksFragment extends Fragment {
                 Toast.makeText(getContext(), "change", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.delete_task:
-                posClickedTask = taskAdapter.getLongClickTaskId();
-                TodoTask taskToDelete = getTaskById(posClickedTask);
+                TodoTask taskToDelete = taskAdapter.getLongClickedTask();
                 DBQueryHandler.deleteTodoTask(dbHelper.getWritableDatabase(), taskToDelete);
                 todoTasks.remove(taskToDelete);
                 taskAdapter.notifyDataSetChanged();
@@ -145,14 +154,6 @@ public class TodoTasksFragment extends Fragment {
         }
 
         return super.onContextItemSelected(item);
-    }
-
-    private TodoTask getTaskById(long id) {
-        for(TodoTask task : todoTasks)
-            if(task.getId() == id)
-                return task;
-
-        throw new IllegalArgumentException(getString(R.string.unknown_task_id) + " " + String.valueOf(id));
     }
 
     @Override
