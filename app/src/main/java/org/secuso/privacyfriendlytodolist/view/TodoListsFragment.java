@@ -18,7 +18,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.view.dialog.AddTodoListDialog;
+import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 
 import java.util.ArrayList;
 
@@ -63,7 +63,7 @@ public class TodoListsFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddTodoListDialog addListDialog = new AddTodoListDialog(getActivity());
+                ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
                 addListDialog.setDialogResult(new TodoCallback() {
 
                     @Override
@@ -83,14 +83,29 @@ public class TodoListsFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+        final int pos = adapter.getPosition();
+        final TodoList todoList = todoLists.get(todoLists.size()-1-pos);
+
         switch(item.getItemId()) {
-            case R.id.change_list_name:
+            case R.id.change_list:
+                ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity(), todoList);
+                addListDialog.setDialogResult(new TodoCallback() {
+
+                    @Override
+                    public void finish(BaseTodo alterdList) {
+                        if(alterdList instanceof TodoList) {
+                            todoLists.set(pos, todoList);
+                            adapter.notifyDataSetChanged();
+                            Log.i(TAG, "list altered");
+                        }
+                    }
+                });
+                addListDialog.show();
                 break;
             case R.id.delete_list:
-                int pos = adapter.getPosition();
-                TodoList delList = todoLists.get(todoLists.size()-1-pos);
-                DBQueryHandler.deleteTodoList(dbHelper.getWritableDatabase(), delList);
-                todoLists.remove(delList);
+
+                DBQueryHandler.deleteTodoList(dbHelper.getWritableDatabase(), todoList);
+                todoLists.remove(todoList);
                 adapter.notifyDataSetChanged();
                 break;
             default:
@@ -107,18 +122,12 @@ public class TodoListsFragment extends Fragment {
 
         // write new data back to the database
         for(TodoList currentList : todoLists) {
-            if(currentList.isChanged()) {
-                long id = DBQueryHandler.insertNewTodoList(dbHelper.getWritableDatabase(), currentList);
-                if(id == -1)
-                    Log.e(TAG, getString(R.string.list_to_db_error));
-                else
-                    currentList.setId(id);
-            }
+            long id = DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), currentList);
+            if(id == -1)
+                Log.e(TAG, getString(R.string.list_to_db_error));
+            else
+                currentList.setId(id);
         }
-
-        ArrayList<TodoList> debug = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        int size = debug.size();
-        TodoList deb = debug.get(0);
     }
 
     @Override

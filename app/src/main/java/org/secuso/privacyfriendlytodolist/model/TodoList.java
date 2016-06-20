@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+
 import java.util.ArrayList;
 
 
@@ -16,8 +18,7 @@ public class TodoList implements Parcelable, BaseTodo{
     private String name;
     private String description;
     private long deadline;
-
-    private boolean changed = false;
+    private DBQueryHandler.ObjectStates dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
@@ -33,6 +34,12 @@ public class TodoList implements Parcelable, BaseTodo{
         description = parcel.readString();
         deadline = parcel.readLong();
         tasks = parcel.readArrayList(null);
+
+        dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
+    }
+
+    public TodoList() {
+
     }
 
     public void setId(long id) {
@@ -45,7 +52,6 @@ public class TodoList implements Parcelable, BaseTodo{
 
     public void setDescription(String description) {
         this.description = description;
-        changed = true;
     }
 
 
@@ -65,11 +71,15 @@ public class TodoList implements Parcelable, BaseTodo{
         return description;
     }
 
-    public String getDeadline() {
+    public String getDeadlineString() {
         if (deadline <= 0)
             return null;
 
         return Helper.getDate(deadline);
+    }
+
+    public long getDeadline() {
+        return deadline;
     }
 
     public int getColor() {
@@ -132,11 +142,20 @@ public class TodoList implements Parcelable, BaseTodo{
         return TodoTask.DeadlineColors.BLUE;
     }
 
-    public void setWriteDbFlag() {
-        changed = true;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public boolean isChanged() {
-        return changed;
+    public DBQueryHandler.ObjectStates getDBState() {
+        return dbState;
+    }
+
+    public void setDbState(DBQueryHandler.ObjectStates dbState) {
+        this.dbState = dbState;
+    }
+
+
+    public void setDeadline(long deadline) {
+        this.deadline = deadline;
     }
 }

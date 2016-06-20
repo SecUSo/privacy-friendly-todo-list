@@ -136,11 +136,21 @@ public class TodoTasksFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        long posClickedTask = -1;
-
         switch(item.getItemId()) {
             case R.id.modify_task:
-                Toast.makeText(getContext(), "change", Toast.LENGTH_SHORT).show();
+
+            /*    AddTaskDialog addListDialog = new AddTaskDialog(getActivity());
+                addListDialog.setDialogResult(new TodoCallback() {
+                    @Override
+                    public void finish(BaseTodo b) {
+                        if(b instanceof TodoTask) {
+                            todoTasks.add((TodoTask)b);
+                            taskAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                addListDialog.show();
+*/
                 break;
             case R.id.delete_task:
                 TodoTask taskToDelete = taskAdapter.getLongClickedTask();

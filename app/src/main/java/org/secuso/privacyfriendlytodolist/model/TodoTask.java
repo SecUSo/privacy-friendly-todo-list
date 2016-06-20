@@ -112,7 +112,14 @@ public class TodoTask implements Parcelable, BaseTodo {
     }
 
     public int getProgress() {
-        return progress;
+        if(subTasks.size() == 0)
+            return progress;
+
+        int numDoneSubTasks = 0;
+        for(TodoSubTask subTask : subTasks) {
+            numDoneSubTasks += subTask.getDone() ? 1 : 0;
+        }
+        return (numDoneSubTasks * MAX_PRIORITY) / subTasks.size();
     }
 
     public Priority getPriority() {

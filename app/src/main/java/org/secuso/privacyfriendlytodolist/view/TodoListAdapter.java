@@ -2,11 +2,9 @@ package org.secuso.privacyfriendlytodolist.view;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +60,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     public void onBindViewHolder(final ViewHolder holder, int position) {
         TodoList list = data.get(data.size()-1-position);
         holder.title.setText(list.getName());
-        String deadline = list.getDeadline();
+        String deadline = list.getDeadlineString();
         if (deadline == null)
             deadline = contextActivity.getResources().getString(R.string.no_deadline);
         else

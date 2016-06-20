@@ -20,6 +20,12 @@ import java.util.ArrayList;
  */
 public class DBQueryHandler {
 
+    public enum ObjectStates {
+        INSERT_TO_DB,
+        UPDATE_DB,
+        NO_DB_ACTION
+    }
+
     public static void deleteTodoList(SQLiteDatabase db, TodoList todoList) {
 
         long id = todoList.getId();
@@ -154,18 +160,28 @@ public class DBQueryHandler {
         return db.insert(TTodoTask.TABLE_NAME, null, values);
     }
 
+    // returns the id of the todolist
+    public static long saveTodoListInDb(SQLiteDatabase db, TodoList todoList) {
 
-    public static long insertNewTodoList(SQLiteDatabase db, TodoList newList) {
         ContentValues values = new ContentValues();
-        values.put(TTodoList.COLUMN_NAME, newList.getName());
-        values.put(TTodoList.COLUMN_DESCRIPTION, newList.getDescription());
-        values.put(TTodoList.COLUMN_DEADLINE, newList.getDeadline());
+        values.put(TTodoList.COLUMN_NAME, todoList.getName());
+        values.put(TTodoList.COLUMN_DESCRIPTION, todoList.getDescription());
+        values.put(TTodoList.COLUMN_DEADLINE, todoList.getDeadline());
 
-        if(newList.getTasks() != null) {
-            // TODO insert new tasks and subtasks (make sure to do this in one transaction)
+        if(todoList.getDBState() == ObjectStates.INSERT_TO_DB) {
+
+            if(todoList.getTasks() != null) {
+                // TODO insert new tasks and subtasks (make sure to do this in one transaction)
+            }
+            return db.insert(TTodoList.TABLE_NAME, null, values);
+        } else if(todoList.getDBState() == ObjectStates.UPDATE_DB) {
+            String whereClause = TTodoList.COLUMN_ID + "=?";
+            String[] whereArgs = {String.valueOf(todoList.getId())};
+            db.update(TTodoList.TABLE_NAME, values, whereClause, whereArgs);
+            return todoList.getId();
         }
 
-        return db.insert(TTodoList.TABLE_NAME, null, values);
+        return -1;
     }
 
     public static void deleteTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {

@@ -45,7 +45,7 @@
 	<string name="group_by_priority">Group by priority</string>
 	<string name="sort_by_deadline">Sort by deadline</string>
 	<string name="delete_list">Delete To-Do list</string>
-	<string name="change_list_name">Rename To-Do list</string>
+	<string name="change_todo_list">Change To-Do list</string>
 	<string name="select_option">Select option</string>
 	<string name="list_name_must_not_be_empty">List name must not be empty!</string>
 	<string name="list_to_db_error">Error while creating new To-Do list.</string>
