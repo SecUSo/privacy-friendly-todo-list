@@ -28,6 +28,8 @@ public class AddTaskDialog extends FullScreenDialog {
     private long deadline;
     private long reminderTime;
 
+    private TodoTask.Priority defaultPriority = TodoTask.Priority.MEDIUM;
+
     private TodoCallback taskToFragCallback;
 
 
@@ -44,6 +46,8 @@ public class AddTaskDialog extends FullScreenDialog {
             }
         });
         prioritySelector.setOnCreateContextMenuListener(this);
+        taskPriority = defaultPriority;
+        prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
 
         // initialize seekbar that allows to select the progress
         final TextView selectedProgress = (TextView) findViewById(R.id.new_task_progress);

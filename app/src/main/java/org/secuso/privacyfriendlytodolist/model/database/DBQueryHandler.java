@@ -50,19 +50,21 @@ public class DBQueryHandler {
 
         ArrayList<TodoList> todoLists = new ArrayList<>();
         Cursor cursor = db.query(TTodoList.TABLE_NAME, null, null, null, null, null, null);
-        cursor.moveToFirst();
+
 
         try {
-            while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndex(TTodoList.COLUMN_ID));
-                String listName = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_NAME));
-                String listDescription = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_DESCRIPTION));
-                long deadline = cursor.getLong(cursor.getColumnIndex(TTodoList.COLUMN_DEADLINE));
+            if(cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndex(TTodoList.COLUMN_ID));
+                    String listName = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_NAME));
+                    String listDescription = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_DESCRIPTION));
+                    long deadline = cursor.getLong(cursor.getColumnIndex(TTodoList.COLUMN_DEADLINE));
 
-                TodoList currentList = new TodoList(listName, listDescription, deadline);
-                currentList.setId(id);
-                currentList.setTasks(getTasksByList(db, id));
-                todoLists.add(currentList);
+                    TodoList currentList = new TodoList(listName, listDescription, deadline);
+                    currentList.setId(id);
+                    currentList.setTasks(getTasksByList(db, id));
+                    todoLists.add(currentList);
+                } while (cursor.moveToNext());
             }
         } finally {
             cursor.close();
@@ -77,27 +79,28 @@ public class DBQueryHandler {
         ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
         String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId;
         Cursor cursor = db.query(TTodoTask.TABLE_NAME, null, where, null, null, null, null);
-        cursor.moveToFirst();
 
         try {
-            while (cursor.moveToNext()) {
+            if(cursor.moveToFirst()) {
+                do {
 
-                int id = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_ID));
-                int listPosition = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_LIST_POSITION));
-                String title = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_TITLE));
-                String description = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_TITLE));
-                boolean done = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DONE)) > 0;
-                int progress = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
-                int deadline = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
-                int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
-                int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
+                    int id = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_ID));
+                    int listPosition = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_LIST_POSITION));
+                    String title = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_TITLE));
+                    String description = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_TITLE));
+                    boolean done = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DONE)) > 0;
+                    int progress = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
+                    int deadline = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
+                    int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
+                    int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
 
-                TodoTask currentTask = new TodoTask(title, description, progress, TodoTask.Priority.fromInt(priority), deadline, reminderTime);
-                currentTask.setId(id);
-                currentTask.setPositionInList(listPosition);
-                currentTask.setSubTasks(getSubTasksByTask(db, id));
-                currentTask.setDone(done);
-                tasks.add(currentTask);
+                    TodoTask currentTask = new TodoTask(title, description, progress, TodoTask.Priority.fromInt(priority), deadline, reminderTime);
+                    currentTask.setId(id);
+                    currentTask.setPositionInList(listPosition);
+                    currentTask.setSubTasks(getSubTasksByTask(db, id));
+                    currentTask.setDone(done);
+                    tasks.add(currentTask);
+                } while (cursor.moveToNext());
             }
         }
         finally {
@@ -115,13 +118,15 @@ public class DBQueryHandler {
         cursor.moveToFirst();
 
         try {
-            while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_ID));
-                String title = cursor.getString(cursor.getColumnIndex(TTodoSubTask.COLUMN_TITLE));
-                boolean done = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_DONE)) > 0;
+            if(cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_ID));
+                    String title = cursor.getString(cursor.getColumnIndex(TTodoSubTask.COLUMN_TITLE));
+                    boolean done = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_DONE)) > 0;
 
-                TodoSubTask currentSubTask = new TodoSubTask(id, title, done);
-                subTasks.add(currentSubTask);
+                    TodoSubTask currentSubTask = new TodoSubTask(id, title, done);
+                    subTasks.add(currentSubTask);
+                } while (cursor.moveToNext());
             }
         }
         finally {
