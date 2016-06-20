@@ -69,7 +69,7 @@ public class AddTodoListDialog extends FullScreenDialog {
         @Override
         public void onClick(View view) {
 
-            DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), R.layout.deadline_dialog);
+            DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), deadline);
             deadlineDialog.setCallback(new DeadlineDialog.DeadlineCallback() {
                 @Override
                 public void setDeadline(long d) {

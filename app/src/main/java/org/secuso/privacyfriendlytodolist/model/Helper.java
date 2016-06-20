@@ -11,6 +11,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors.*;
 import static org.secuso.privacyfriendlytodolist.model.TodoTask.Priority.*;
@@ -21,9 +22,15 @@ import static org.secuso.privacyfriendlytodolist.model.TodoTask.Priority.*;
 public class Helper {
 
     public static String getDate(long time) {
-        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(time * 1000);
-        return DateFormat.format("dd.MM.yyyy", cal).toString();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time));
+        return DateFormat.format("dd.MM.yyyy", calendar).toString();
+    }
+
+    public static String getDateTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time));
+        return DateFormat.format("dd.MM.yyyy HH:mm", calendar).toString();
     }
 
     public static long getCurrentTimestamp() {
