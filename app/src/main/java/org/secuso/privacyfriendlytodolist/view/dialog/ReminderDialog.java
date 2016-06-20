@@ -1,6 +1,7 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -10,6 +11,7 @@ import android.widget.TimePicker;
 import org.secuso.privacyfriendlytodolist.R;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
@@ -18,8 +20,19 @@ public class ReminderDialog extends FullScreenDialog {
 
     private ReminderCallback callback;
 
-    public ReminderDialog(Context context, int layoutId) {
-        super(context, layoutId);
+    public ReminderDialog(Context context, long reminderTime, long deadline) {
+        super(context, R.layout.reminder_dialog);
+
+        Calendar calendar = GregorianCalendar.getInstance();
+        if(reminderTime != -1) calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(reminderTime));
+        else if(deadline != -1) calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline)); //TODO subtract predefined reminder interval
+        else calendar.setTime(Calendar.getInstance().getTime());
+        DatePicker datePicker = (DatePicker) findViewById(R.id.dp_reminder);
+        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        TimePicker timePicker = (TimePicker) findViewById(R.id.tp_reminder);
+        timePicker.setIs24HourView(true);
+        timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+        timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 
         Button buttonDate = (Button) findViewById(R.id.bt_reminder_date);
         buttonDate.setOnClickListener(new View.OnClickListener() {

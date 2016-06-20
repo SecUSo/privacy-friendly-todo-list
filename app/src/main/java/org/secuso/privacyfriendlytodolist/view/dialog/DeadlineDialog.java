@@ -14,8 +14,14 @@ public class DeadlineDialog extends FullScreenDialog {
 
     private DeadlineCallback callback;
 
-    public DeadlineDialog(Context context, int layoutId) {
-        super(context, layoutId);
+    public DeadlineDialog(Context context, long deadline) {
+        super(context, R.layout.deadline_dialog);
+
+        Calendar calendar = GregorianCalendar.getInstance();
+        if(deadline != -1) calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline));
+        else calendar.setTime(Calendar.getInstance().getTime());
+        DatePicker datePicker = (DatePicker) findViewById(R.id.dp_deadline);
+        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         Button buttonOkay = (Button) findViewById(R.id.bt_deadline_ok);
         buttonOkay.setOnClickListener(new View.OnClickListener() {

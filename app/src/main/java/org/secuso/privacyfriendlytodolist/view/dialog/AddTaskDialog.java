@@ -25,8 +25,8 @@ public class AddTaskDialog extends FullScreenDialog {
     private TodoTask.Priority taskPriority = null;
     private int taskProgress = 0;
     private String name, description;
-    private long deadline;
-    private long reminderTime;
+    private long deadline = -1;
+    private long reminderTime = -1;
 
     private TodoTask.Priority defaultPriority = TodoTask.Priority.MEDIUM;
 
@@ -104,9 +104,8 @@ public class AddTaskDialog extends FullScreenDialog {
         tvDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), R.layout.deadline_dialog);
+                DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), deadline);
                 deadlineDialog.setCallback(new DeadlineDialog.DeadlineCallback() {
-
                     @Override
                     public void setDeadline(long d) {
                         deadline = d;
@@ -129,14 +128,13 @@ public class AddTaskDialog extends FullScreenDialog {
         tvReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReminderDialog reminderDialog = new ReminderDialog(getContext(), R.layout.reminder_dialog);
+                ReminderDialog reminderDialog = new ReminderDialog(getContext(), reminderTime, deadline);
                 reminderDialog.setCallback(new ReminderDialog.ReminderCallback() {
-
                     @Override
                     public void setReminder(long d) {
                         reminderTime = d;
                         TextView reminderTextView = (TextView) findViewById(R.id.tv_todo_list_reminder);
-                        reminderTextView.setText(Helper.getDate(reminderTime));
+                        reminderTextView.setText(Helper.getDateTime(reminderTime));
                     }
 
                     @Override
