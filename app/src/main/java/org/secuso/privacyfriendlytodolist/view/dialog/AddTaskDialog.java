@@ -26,7 +26,7 @@ public class AddTaskDialog extends FullScreenDialog {
     private int taskProgress = 0;
     private String name, description;
     private long deadline;
-    private int reminderTime;
+    private long reminderTime;
 
     private TodoCallback taskToFragCallback;
 
@@ -118,6 +118,31 @@ public class AddTaskDialog extends FullScreenDialog {
                     }
                 });
                 deadlineDialog.show();
+            }
+        });
+
+        TextView tvReminder = (TextView) findViewById(R.id.tv_todo_list_reminder);
+        tvReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReminderDialog reminderDialog = new ReminderDialog(getContext(), R.layout.reminder_dialog);
+                reminderDialog.setCallback(new ReminderDialog.ReminderCallback() {
+
+                    @Override
+                    public void setReminder(long d) {
+                        reminderTime = d;
+                        TextView reminderTextView = (TextView) findViewById(R.id.tv_todo_list_reminder);
+                        reminderTextView.setText(Helper.getDate(reminderTime));
+                    }
+
+                    @Override
+                    public void removeReminder() {
+                        reminderTime = -1;
+                        TextView reminderTextView = (TextView) findViewById(R.id.tv_todo_list_reminder);
+                        reminderTextView.setText(getContext().getResources().getString(R.string.reminder));
+                    }
+                });
+                reminderDialog.show();
             }
         });
 

@@ -51,7 +51,7 @@ public class TodoTask implements Parcelable, BaseTodo {
     private int progress;
     private long deadline;
     private Priority priority;
-    private int reminderTime;
+    private long reminderTime;
     private int listPosition; // indicates at what position inside the list this task it placed
 
     private long listIdForeignKey;
@@ -60,7 +60,7 @@ public class TodoTask implements Parcelable, BaseTodo {
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 
-    public TodoTask(String title, String description, int progress, Priority priority, long deadline, int reminderTime) {
+    public TodoTask(String title, String description, int progress, Priority priority, long deadline, long reminderTime) {
         this.reminderTime = reminderTime;
         this.title = title;
         this.description = description;
@@ -189,7 +189,7 @@ public class TodoTask implements Parcelable, BaseTodo {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeInt(reminderTime);
+        dest.writeLong(reminderTime);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeByte((byte) (done ? 1 : 0));
@@ -204,7 +204,7 @@ public class TodoTask implements Parcelable, BaseTodo {
         return writeBackToDb;
     }
 
-    public int getReminderTime() {
+    public long getReminderTime() {
         return reminderTime;
     }
 

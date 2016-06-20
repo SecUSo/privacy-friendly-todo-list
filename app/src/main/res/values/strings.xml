@@ -24,8 +24,11 @@
 	<string name="name">Name</string>
 	<string name="todo_list_description_hint">Description</string>
 
+	<string name="date">Date</string>
+	<string name="time">Time</string>
 	<string name="deadline">Deadline</string>
 	<string name="no_deadline">No Deadline</string>
+	<string name="no_reminder">No Reminder</string>
 	<string name="empty_todo_list">No tasks available.</string>
 	<string name="deadline_dd">Deadline:</string>
 	<string name="no_task_description">No task description available</string>
