@@ -21,20 +21,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/bt_deadline_ok"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="48dip"
-            android:layout_weight="1"
-            android:text="@android:string/ok"
-            style="?android:attr/buttonBarButtonStyle" />
-        <Button
             android:id="@+id/bt_deadline_nodeadline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
             android:layout_weight="1"
             android:text="@string/no_deadline"
+            style="?android:attr/buttonBarButtonStyle" />
+        <Button
+            android:id="@+id/bt_deadline_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dip"
+            android:layout_weight="1"
+            android:text="@android:string/ok"
             style="?android:attr/buttonBarButtonStyle" />
     </LinearLayout>
 </LinearLayout>
