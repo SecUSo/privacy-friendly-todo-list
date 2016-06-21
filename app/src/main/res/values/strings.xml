@@ -20,10 +20,8 @@
 	<string name="description">Description</string>
 	<string name="todos">To-Do\'s</string>
 	<string name="other">Other</string>
-
 	<string name="name">Name</string>
 	<string name="todo_list_description_hint">Description</string>
-
 	<string name="date">Date</string>
 	<string name="time">Time</string>
 	<string name="deadline">Deadline</string>
@@ -45,7 +43,7 @@
 	<string name="group_by_priority">Group by priority</string>
 	<string name="sort_by_deadline">Sort by deadline</string>
 	<string name="delete_list">Delete To-Do list</string>
-	<string name="change_todo_list">Change To-Do list</string>
+	<string name="edit_todo_list">Edit To-Do list</string>
 	<string name="select_option">Select option</string>
 	<string name="list_name_must_not_be_empty">List name must not be empty!</string>
 	<string name="list_to_db_error">Error while creating new To-Do list.</string>
@@ -59,8 +57,10 @@
 	<string name="zero_percent">0%</string>
 	<string name="no_task_name">Please enter a task name!</string>
 	<string name="no_task_priority">Please provide a task priority!</string>
-	<string name="modify_task">Modify To-Do Task</string>
+	<string name="edit_task">Edit To-Do Task</string>
 	<string name="delete_task">Delete To-Do Task</string>
 	<string name="unknown_task_id">Cannot delete task. Unknown task id:</string>
 	<string name="task_removed">Task was successfully removed.</string>
+	<string name="todo_name_must_not_be_empty">To-Do name must not be empty!</string>
+	<string name="no_changes_in_db">No changes in database.</string>
 </resources>

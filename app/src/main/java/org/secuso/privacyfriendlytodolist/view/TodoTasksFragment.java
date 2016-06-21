@@ -23,7 +23,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.view.dialog.AddTaskDialog;
+import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
 import java.util.ArrayList;
 
@@ -63,7 +63,7 @@ public class TodoTasksFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            AddTaskDialog addListDialog = new AddTaskDialog(getActivity());
+            ProcessTodoTaskDialog addListDialog = new ProcessTodoTaskDialog(getActivity());
             addListDialog.setDialogResult(new TodoCallback() {
                 @Override
                 public void finish(BaseTodo b) {
@@ -136,26 +136,34 @@ public class TodoTasksFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        switch(item.getItemId()) {
-            case R.id.modify_task:
+        final TodoTask task = taskAdapter.getLongClickedTask();
 
-            /*    AddTaskDialog addListDialog = new AddTaskDialog(getActivity());
-                addListDialog.setDialogResult(new TodoCallback() {
+        switch(item.getItemId()) {
+            case R.id.change_task:
+
+                ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(getActivity(), task);
+                editTaskDialog.setDialogResult(new TodoCallback() {
+
                     @Override
-                    public void finish(BaseTodo b) {
-                        if(b instanceof TodoTask) {
-                            todoTasks.add((TodoTask)b);
-                            taskAdapter.notifyDataSetChanged();
+                    public void finish(BaseTodo alterdList) {
+                    if(alterdList instanceof TodoList) {
+                        for (int i=0; i<todoTasks.size(); i++) {
+                            if (todoTasks.get(i).getId() == task.getId()) {
+                                todoTasks.set(i, task); // replace old todotask
+                                break;
+                            }
                         }
+                        taskAdapter.notifyDataSetChanged();
+                        Log.i(TAG, "list altered");
+                    }
                     }
                 });
-                addListDialog.show();
-*/
+                editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                TodoTask taskToDelete = taskAdapter.getLongClickedTask();
-                DBQueryHandler.deleteTodoTask(dbHelper.getWritableDatabase(), taskToDelete);
-                todoTasks.remove(taskToDelete);
+
+                DBQueryHandler.deleteTodoTask(dbHelper.getWritableDatabase(), task);
+                todoTasks.remove(task);
                 taskAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
                 break;
@@ -179,15 +187,16 @@ public class TodoTasksFragment extends Fragment {
         // write new tasks to the database
         for(int i=0; i<todoTasks.size(); i++) {
             TodoTask currentTask = todoTasks.get(i);
-            if(currentTask.isChanged()) {
-                currentTask.setListId(currentList.getId());
-                currentTask.setPositionInList(i);
-                long id = DBQueryHandler.insertNewTask(dbHelper.getWritableDatabase(), currentTask);
-                if(id == -1)
-                    Log.e(TAG, getString(R.string.list_to_db_error));
-                else
-                    currentTask.setId(id);
-            }
+            currentTask.setListId(currentList.getId());
+            currentTask.setPositionInList(i);
+
+            long id = DBQueryHandler.saveTodoTaskInDb(dbHelper.getWritableDatabase(), currentTask);
+            if(id == -1)
+                Log.e(TAG, getString(R.string.list_to_db_error));
+            else if(id == -2)
+                Log.i(TAG, getString(R.string.no_changes_in_db));
+            else
+                currentTask.setId(id);
         }
     }
 

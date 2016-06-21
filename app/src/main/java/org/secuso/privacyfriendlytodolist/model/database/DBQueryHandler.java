@@ -20,6 +20,8 @@ import java.util.ArrayList;
  */
 public class DBQueryHandler {
 
+    public static final long NO_CHANGES = -2;
+
     public enum ObjectStates {
         INSERT_TO_DB,
         UPDATE_DB,
@@ -66,7 +68,10 @@ public class DBQueryHandler {
                     String listDescription = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_DESCRIPTION));
                     long deadline = cursor.getLong(cursor.getColumnIndex(TTodoList.COLUMN_DEADLINE));
 
-                    TodoList currentList = new TodoList(listName, listDescription, deadline);
+                    TodoList currentList = new TodoList();
+                    currentList.setName(listName);
+                    currentList.setDescription(listDescription);
+                    currentList.setDeadline(deadline);
                     currentList.setId(id);
                     currentList.setTasks(getTasksByList(db, id));
                     todoLists.add(currentList);
@@ -92,18 +97,24 @@ public class DBQueryHandler {
 
                     int id = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_ID));
                     int listPosition = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_LIST_POSITION));
-                    String title = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_TITLE));
-                    String description = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_TITLE));
+                    String title = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_NAME));
+                    String description = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_DESCRIPTION));
                     boolean done = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DONE)) > 0;
                     int progress = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
                     int deadline = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
                     int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
                     int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
 
-                    TodoTask currentTask = new TodoTask(title, description, progress, TodoTask.Priority.fromInt(priority), deadline, reminderTime);
+                    TodoTask currentTask = new TodoTask();
+                    currentTask.setName(title);
+                    currentTask.setDeadline(deadline);
+                    currentTask.setDescription(description);
+                    currentTask.setPriority(TodoTask.Priority.fromInt(priority));
+                    currentTask.setReminderTime(reminderTime);
                     currentTask.setId(id);
                     currentTask.setPositionInList(listPosition);
                     currentTask.setSubTasks(getSubTasksByTask(db, id));
+                    currentTask.setProgress(progress);
                     currentTask.setDone(done);
                     tasks.add(currentTask);
                 } while (cursor.moveToNext());
@@ -142,26 +153,44 @@ public class DBQueryHandler {
         return subTasks;
     }
 
-    public static long insertNewTask(SQLiteDatabase db, TodoTask newTask) {
+    public static long saveTodoTaskInDb(SQLiteDatabase db, TodoTask todoTask) {
+
+        long returnCode;
+
         ContentValues values = new ContentValues();
-        values.put(TTodoTask.COLUMN_TITLE, newTask.getName());
-        values.put(TTodoTask.COLUMN_DESCRIPTION, newTask.getDescription());
-        values.put(TTodoTask.COLUMN_PROGRESS, newTask.getProgress());
-        values.put(TTodoTask.COLUMN_DEADLINE, newTask.getDeadlineTs());
-        values.put(TTodoTask.COLUMN_DEADLINE_WARNING_TIME, newTask.getReminderTime());
-        values.put(TTodoTask.COLUMN_PRIORITY, newTask.getPriority().getValue());
-        values.put(TTodoTask.COLUMN_TODO_LIST_ID, newTask.getListId());
-        values.put(TTodoTask.COLUMN_LIST_POSITION, newTask.getListPosition());
+        values.put(TTodoTask.COLUMN_NAME, todoTask.getName());
+        values.put(TTodoTask.COLUMN_DESCRIPTION, todoTask.getDescription());
+        values.put(TTodoTask.COLUMN_PROGRESS, todoTask.getProgress());
+        values.put(TTodoTask.COLUMN_DEADLINE, todoTask.getDeadline());
+        values.put(TTodoTask.COLUMN_DEADLINE_WARNING_TIME, todoTask.getReminderTime());
+        values.put(TTodoTask.COLUMN_PRIORITY, todoTask.getPriority().getValue());
+        values.put(TTodoTask.COLUMN_TODO_LIST_ID, todoTask.getListId());
+        values.put(TTodoTask.COLUMN_LIST_POSITION, todoTask.getListPosition());
 
-        if(newTask.getSubTasks() != null) {
-            // TODO
-        }
+        if(todoTask.getDBState() == ObjectStates.INSERT_TO_DB) {
 
-        return db.insert(TTodoTask.TABLE_NAME, null, values);
+            if(todoTask.getSubTasks() != null) {
+                // TODO insert new subtask and subtasks (make sure to do this in one transaction)
+            }
+
+            returnCode = db.insert(TTodoTask.TABLE_NAME, null, values);
+        } else if(todoTask.getDBState() == ObjectStates.UPDATE_DB) {
+            String whereClause = TTodoTask.COLUMN_ID + "=?";
+            String[] whereArgs = {String.valueOf(todoTask.getId())};
+            db.update(TTodoTask.TABLE_NAME, values, whereClause, whereArgs);
+            returnCode = todoTask.getId();
+        } else
+            returnCode = NO_CHANGES;
+
+        todoTask.setDbState(ObjectStates.NO_DB_ACTION);
+
+        return returnCode;
     }
 
     // returns the id of the todolist
     public static long saveTodoListInDb(SQLiteDatabase db, TodoList todoList) {
+
+        long returnCode;
 
         ContentValues values = new ContentValues();
         values.put(TTodoList.COLUMN_NAME, todoList.getName());
@@ -173,15 +202,18 @@ public class DBQueryHandler {
             if(todoList.getTasks() != null) {
                 // TODO insert new tasks and subtasks (make sure to do this in one transaction)
             }
-            return db.insert(TTodoList.TABLE_NAME, null, values);
+            returnCode = db.insert(TTodoList.TABLE_NAME, null, values);
         } else if(todoList.getDBState() == ObjectStates.UPDATE_DB) {
             String whereClause = TTodoList.COLUMN_ID + "=?";
             String[] whereArgs = {String.valueOf(todoList.getId())};
             db.update(TTodoList.TABLE_NAME, values, whereClause, whereArgs);
-            return todoList.getId();
-        }
+            returnCode =  todoList.getId();
+        } else
+            returnCode = NO_CHANGES;
 
-        return -1;
+        todoList.setDbState(ObjectStates.NO_DB_ACTION);
+
+        return returnCode;
     }
 
     public static void deleteTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {

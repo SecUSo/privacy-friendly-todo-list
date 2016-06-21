@@ -10,23 +10,22 @@ import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import java.util.ArrayList;
 
 
-public class TodoList implements Parcelable, BaseTodo{
+public class TodoList extends BaseTodo implements Parcelable{
 
     public static final String PARCELABLE_ID = "CURRENT_TODO_LIST";
 
     private long id;
-    private String name;
-    private String description;
     private long deadline;
-    private DBQueryHandler.ObjectStates dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
+    /*
     public TodoList(String name, String description, long deadline) {
         this.name = name;
         this.description = description;
         this.deadline = deadline;
     }
+    */
 
     public TodoList(Parcel parcel) {
         id = parcel.readLong();
@@ -50,36 +49,12 @@ public class TodoList implements Parcelable, BaseTodo{
         return tasks.size();
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
     public void setTasks(ArrayList<TodoTask> tasks) {
         this.tasks = tasks;
     }
 
     public ArrayList<TodoTask> getTasks() {
         return tasks;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDeadlineString() {
-        if (deadline <= 0)
-            return null;
-
-        return Helper.getDate(deadline);
-    }
-
-    public long getDeadline() {
-        return deadline;
     }
 
     public int getColor() {
@@ -142,20 +117,5 @@ public class TodoList implements Parcelable, BaseTodo{
         return TodoTask.DeadlineColors.BLUE;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public DBQueryHandler.ObjectStates getDBState() {
-        return dbState;
-    }
-
-    public void setDbState(DBQueryHandler.ObjectStates dbState) {
-        this.dbState = dbState;
-    }
-
-
-    public void setDeadline(long deadline) {
-        this.deadline = deadline;
-    }
 }

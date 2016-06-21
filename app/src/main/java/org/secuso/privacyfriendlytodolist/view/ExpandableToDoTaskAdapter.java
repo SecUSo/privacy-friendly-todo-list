@@ -164,12 +164,12 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     int comp = p1.compareTo(p2);
 
                     if (comp == 0 && deadlineSorting) {
-                        return compareDeadlines(t1.getDeadlineTs(), t2.getDeadlineTs());
+                        return compareDeadlines(t1.getDeadline(), t2.getDeadline());
                     }
                     return comp;
 
                 } else if (deadlineSorting) {
-                    return compareDeadlines(t1.getDeadlineTs(), t2.getDeadlineTs());
+                    return compareDeadlines(t1.getDeadline(), t2.getDeadline());
                 } else
                     return t1.getListPosition() - t2.getListPosition();
 
@@ -401,11 +401,11 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
                 // fill header with content
                 vh2.name.setText(currentTask.getName());
-                String deadline = currentTask.getDeadline();
-                if (deadline == null)
+                String deadline;
+                if (currentTask.getDeadline() <= 0)
                     deadline = context.getResources().getString(R.string.no_deadline);
                 else
-                    deadline = context.getResources().getString(R.string.deadline_dd) + " " + deadline;
+                    deadline = context.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(currentTask.getDeadline());
 
                 vh2.deadline.setText(deadline);
                 vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor()));

@@ -14,12 +14,15 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.view.TodoCallback;
 
-public class AddTaskDialog extends FullScreenDialog {
+public class ProcessTodoTaskDialog extends FullScreenDialog {
 
-    final private TextView prioritySelector;
-    final private SeekBar progressSelector;
+    private TextView prioritySelector;
+    private TextView deadlineTextView;
+    private TextView reminderTextView;
+    private SeekBar progressSelector;
     private EditText taskName;
     private EditText taskDescription;
     private TodoTask.Priority taskPriority = null;
@@ -32,9 +35,40 @@ public class AddTaskDialog extends FullScreenDialog {
 
     private TodoCallback taskToFragCallback;
 
+    private TodoTask task;
 
-    public AddTaskDialog(final Context context) {
+
+    public ProcessTodoTaskDialog(final Context context) {
         super(context, R.layout.add_task_dialog);
+
+        initGui();
+        task = new TodoTask();
+        task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
+    }
+
+    public ProcessTodoTaskDialog(Context context, TodoTask task) {
+        super(context, R.layout.add_task_dialog);
+
+        initGui();
+        task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+        deadline = task.getDeadline();
+        taskName.setText(task.getName());
+        taskDescription.setText(task.getDescription());
+        prioritySelector.setText(Helper.priority2String(context, task.getPriority()));
+        progressSelector.setProgress(task.getProgress());
+        if(task.getDeadline() <= 0)
+            deadlineTextView.setText(context.getString(R.string.no_deadline));
+        else
+            deadlineTextView.setText(Helper.getDate(deadline));
+        if(task.getReminderTime() <= 0)
+            reminderTextView.setText(context.getString(R.string.reminder));
+        else
+            reminderTextView.setText(Helper.getDateTime(task.getReminderTime()));
+
+        this.task = task;
+    }
+
+    private void initGui() {
 
         // initialize textview that displays the selected priority
         prioritySelector = (TextView) findViewById(R.id.tv_new_task_priority);
@@ -53,8 +87,6 @@ public class AddTaskDialog extends FullScreenDialog {
         final TextView selectedProgress = (TextView) findViewById(R.id.new_task_progress);
         progressSelector = (SeekBar) findViewById(R.id.sb_new_task_progress);
         progressSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            int progress;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -78,14 +110,22 @@ public class AddTaskDialog extends FullScreenDialog {
         okayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = parseAndSaveNewTask();
-                if(msg == null) {
-                    TodoTask newTask = new TodoTask(name, description, taskProgress, taskPriority, deadline, reminderTime);
-                    newTask.setWriteDbFlag();
-                    taskToFragCallback.finish(newTask);
-                    AddTaskDialog.this.dismiss();
+
+                String name = taskName.getText().toString();
+                String description = taskDescription.getText().toString();
+
+                if(name.equals("")) {
+                    Toast.makeText(getContext(), getContext().getString(R.string.todo_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+
+                    task.setName(name);
+                    task.setDescription(description);
+                    task.setDeadline(deadline);
+                    task.setPriority(taskPriority);
+                    task.setProgress(taskProgress);
+                    task.setReminderTime(reminderTime);
+                    taskToFragCallback.finish(task);
+                    ProcessTodoTaskDialog.this.dismiss();
                 }
             }
         });
@@ -95,13 +135,13 @@ public class AddTaskDialog extends FullScreenDialog {
 
             @Override
             public void onClick(View v) {
-                AddTaskDialog.this.dismiss();
+                ProcessTodoTaskDialog.this.dismiss();
             }
         });
 
         // initialize textviews to get deadline and reminder time
-        TextView tvDeadline = (TextView) findViewById(R.id.tv_todo_list_deadline);
-        tvDeadline.setOnClickListener(new View.OnClickListener() {
+        deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
+        deadlineTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), deadline);
@@ -109,14 +149,12 @@ public class AddTaskDialog extends FullScreenDialog {
                     @Override
                     public void setDeadline(long d) {
                         deadline = d;
-                        TextView deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
                         deadlineTextView.setText(Helper.getDate(deadline));
                     }
 
                     @Override
                     public void removeDeadline() {
                         deadline = -1;
-                        TextView deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
                         deadlineTextView.setText(getContext().getResources().getString(R.string.deadline));
                     }
                 });
@@ -124,8 +162,8 @@ public class AddTaskDialog extends FullScreenDialog {
             }
         });
 
-        TextView tvReminder = (TextView) findViewById(R.id.tv_todo_list_reminder);
-        tvReminder.setOnClickListener(new View.OnClickListener() {
+        reminderTextView = (TextView) findViewById(R.id.tv_todo_list_reminder);
+        reminderTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ReminderDialog reminderDialog = new ReminderDialog(getContext(), reminderTime, deadline);
@@ -133,7 +171,6 @@ public class AddTaskDialog extends FullScreenDialog {
                     @Override
                     public void setReminder(long d) {
                         reminderTime = d;
-                        TextView reminderTextView = (TextView) findViewById(R.id.tv_todo_list_reminder);
                         reminderTextView.setText(Helper.getDateTime(reminderTime));
                     }
 
@@ -151,23 +188,6 @@ public class AddTaskDialog extends FullScreenDialog {
         taskName = (EditText) findViewById(R.id.et_new_task_name);
         taskDescription = (EditText) findViewById(R.id.et_new_task_description);
     }
-
-
-    private String parseAndSaveNewTask() {
-
-        name = taskName.getText().toString();
-        description = taskDescription.getText().toString();
-
-        if(name.equals("") || name == null)
-            return getContext().getResources().getString(R.string.no_task_name);
-
-        if(taskPriority == null)
-            return getContext().getResources().getString(R.string.no_task_priority);
-
-
-        return null;
-    }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
