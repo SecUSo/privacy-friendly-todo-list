@@ -39,6 +39,7 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         initGui();
 
         todoList = new TodoList();
+        deadline = -1;
         todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
 
@@ -47,9 +48,9 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
         initGui();
         if(list2Change.getDeadline() == -1)
-            tvDeadline.setText(context.getResources().getString(R.string.deadline));
+            tvDeadline.setText(context.getResources().getString(R.string.no_deadline));
         else
-            tvDeadline.setText(list2Change.getDeadlineString());
+            tvDeadline.setText(Helper.getDate(list2Change.getDeadline()));
         etName.setText(list2Change.getName());
         etDescription.setText(list2Change.getDescription());
         todoList = list2Change;

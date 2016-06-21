@@ -60,12 +60,10 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     public void onBindViewHolder(final ViewHolder holder, int position) {
         TodoList list = data.get(data.size()-1-position);
         holder.title.setText(list.getName());
-        String deadline = list.getDeadlineString();
-        if (deadline == null)
-            deadline = contextActivity.getResources().getString(R.string.no_deadline);
+        if (list.getDeadline() <= 0)
+            holder.deadline.setText(contextActivity.getResources().getString(R.string.no_deadline));
         else
-            deadline = contextActivity.getResources().getString(R.string.deadline_dd) + " " + deadline;
-        holder.deadline.setText(deadline);
+            holder.deadline.setText(contextActivity.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(list.getDeadline()));
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
         holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor()));
 

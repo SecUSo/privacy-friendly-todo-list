@@ -2,16 +2,16 @@ package org.secuso.privacyfriendlytodolist.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+
 import java.util.ArrayList;
 
-/**
- * Created by dominik on 19.05.16.
- */
-public class TodoTask implements Parcelable, BaseTodo {
+public class TodoTask extends BaseTodo implements Parcelable {
 
-    private static final String TAG = TodoTask.class.getSimpleName();
+    public TodoTask() {
 
-
+    }
 
     public enum Priority {
         HIGH(0), MEDIUM(1), LOW(2); // Priority steps must be sorted in the same way like they will be displayed
@@ -45,7 +45,6 @@ public class TodoTask implements Parcelable, BaseTodo {
     public static final int MAX_PRIORITY = 10;
 
     private String title;
-    private String description;
     private boolean done;
     private long id;
     private int progress;
@@ -59,7 +58,7 @@ public class TodoTask implements Parcelable, BaseTodo {
     private boolean writeBackToDb = false; // true if task was changed and must written back to database
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
-
+/*
     public TodoTask(String title, String description, int progress, Priority priority, long deadline, long reminderTime) {
         this.reminderTime = reminderTime;
         this.title = title;
@@ -68,8 +67,10 @@ public class TodoTask implements Parcelable, BaseTodo {
         this.progress = progress;
         this.priority = priority;
         this.deadline = deadline;
-    }
 
+        dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
+    }
+*/
     public TodoTask(Parcel parcel) {
         id = parcel.readLong();
         reminderTime = parcel.readInt();
@@ -99,13 +100,6 @@ public class TodoTask implements Parcelable, BaseTodo {
         return subTasks;
     }
 
-    public String getName() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 
     public boolean getDone() {
         return done;
@@ -145,21 +139,10 @@ public class TodoTask implements Parcelable, BaseTodo {
         this.done = done;
     }
 
-    public String getDeadline() {
-        if (deadline <= 0)
-            return null;
-        return Helper.getDate(deadline);
-    }
-
     public long getId() {
         return id;
     }
 
-    public long getDeadlineTs() {
-        if (deadline < 0)
-            return Long.MAX_VALUE;
-        return deadline;
-    }
 
     public DeadlineColors getDeadlineColor() {
         long currentTimeStamp = Helper.getCurrentTimestamp();
@@ -176,21 +159,25 @@ public class TodoTask implements Parcelable, BaseTodo {
     }
 
     public static final Parcelable.Creator<TodoTask> CREATOR =
-            new Creator<TodoTask>() {
-                @Override
-                public TodoTask createFromParcel(Parcel source) {
-                    return new TodoTask(source);
-                }
+        new Creator<TodoTask>() {
+            @Override
+            public TodoTask createFromParcel(Parcel source) {
+                return new TodoTask(source);
+            }
 
-                @Override
-                public TodoTask[] newArray(int size) {
-                    return new TodoTask[size];
-                }
-            };
+            @Override
+            public TodoTask[] newArray(int size) {
+                return new TodoTask[size];
+            }
+        };
 
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void setPriority(Priority prio) {
+        priority = prio;
     }
 
     @Override
@@ -222,4 +209,13 @@ public class TodoTask implements Parcelable, BaseTodo {
     public long getListId() {
         return this.listIdForeignKey;
     }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public void setReminderTime(long reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
 }

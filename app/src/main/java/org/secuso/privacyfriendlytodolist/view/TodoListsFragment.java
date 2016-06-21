@@ -125,6 +125,8 @@ public class TodoListsFragment extends Fragment {
             long id = DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), currentList);
             if(id == -1)
                 Log.e(TAG, getString(R.string.list_to_db_error));
+            else if(id == DBQueryHandler.NO_CHANGES)
+                Log.i(TAG, getString(R.string.no_changes_in_db));
             else
                 currentList.setId(id);
         }
@@ -136,7 +138,7 @@ public class TodoListsFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.toolbar_title_main);
     }
 
-    private void prepareData() {
+    private void prepareData() { /*
         ArrayList<TodoSubTask> s1 = new ArrayList<TodoSubTask>();
         s1.add(new TodoSubTask(0, "Sub 1", false));
         s1.add(new TodoSubTask(1, "Sub 2", false));
@@ -187,6 +189,7 @@ public class TodoListsFragment extends Fragment {
         todoLists.add(l3);
         todoLists.add(l4);
         todoLists.add(l5);
+        */
     }
 
 }
