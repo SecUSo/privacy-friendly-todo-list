@@ -6,7 +6,7 @@ public abstract class BaseTodo {
 
     protected String name, description;
     protected DBQueryHandler.ObjectStates dbState;
-    protected long deadline;
+
 
     public DBQueryHandler.ObjectStates getDBState() {
         return dbState;
@@ -14,14 +14,6 @@ public abstract class BaseTodo {
 
     public void setDbState(DBQueryHandler.ObjectStates dbState) {
         this.dbState = dbState;
-    }
-
-    public long getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(long deadline) {
-        this.deadline = deadline;
     }
 
     public void setName(String name) {

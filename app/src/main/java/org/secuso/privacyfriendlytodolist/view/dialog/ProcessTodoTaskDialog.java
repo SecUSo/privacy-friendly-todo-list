@@ -149,6 +149,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     @Override
                     public void setDeadline(long d) {
                         deadline = d;
+
                         deadlineTextView.setText(Helper.getDate(deadline));
                     }
 

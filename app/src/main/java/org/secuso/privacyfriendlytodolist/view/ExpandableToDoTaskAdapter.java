@@ -3,6 +3,7 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -383,21 +385,26 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     vh2.progressIndicator.removeViewAt(vh2.progressIndicator.getChildCount() - 1);
                     vh2.done.setTag(currentTask.getId());
                     vh2.done.setChecked(currentTask.getDone());
-                    vh2.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                            if(buttonView.isPressed()) {
-                               // TODO
-                            }
-                        }
-                    });
 
                     convertView.setTag(vh2);
 
                 } else {
                     vh2 = (GroupTaskViewHolder) convertView.getTag();
                 }
+
+                vh2.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if(buttonView.isPressed()) {
+                            currentTask.setDone(buttonView.isChecked());
+                            currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+                            notifyDataSetChanged();
+                            Log.i("pups", currentTask.getId() + " was clicked ("+currentTask.getName()+")");
+                        }
+                    }
+                });
 
                 // fill header with content
                 vh2.name.setText(currentTask.getName());

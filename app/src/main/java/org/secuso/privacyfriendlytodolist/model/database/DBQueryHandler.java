@@ -164,6 +164,7 @@ public class DBQueryHandler {
         values.put(TTodoTask.COLUMN_PRIORITY, todoTask.getPriority().getValue());
         values.put(TTodoTask.COLUMN_TODO_LIST_ID, todoTask.getListId());
         values.put(TTodoTask.COLUMN_LIST_POSITION, todoTask.getListPosition());
+        values.put(TTodoTask.COLUMN_DONE, todoTask.getDone());
 
         if(todoTask.getDBState() == ObjectStates.INSERT_TO_DB) {
 
