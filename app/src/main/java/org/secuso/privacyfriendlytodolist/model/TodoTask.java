@@ -48,7 +48,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private boolean done;
     private long id;
     private int progress;
-    private long deadline;
     private Priority priority;
     private long reminderTime;
     private int listPosition; // indicates at what position inside the list this task it placed
@@ -56,6 +55,10 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private long listIdForeignKey;
 
     private boolean writeBackToDb = false; // true if task was changed and must written back to database
+
+
+    protected long deadline;
+
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 /*
@@ -82,6 +85,13 @@ public class TodoTask extends BaseTodo implements Parcelable {
         listPosition = parcel.readInt();
         priority = Priority.fromInt(parcel.readInt());
         subTasks = parcel.readArrayList(null);
+    }
+
+    public long getDeadline() {
+        return deadline;
+    }
+    public void setDeadline(long deadline) {
+        this.deadline = deadline;
     }
 
     public void setId(long id){

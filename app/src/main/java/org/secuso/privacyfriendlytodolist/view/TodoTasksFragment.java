@@ -145,17 +145,11 @@ public class TodoTasksFragment extends Fragment {
                 editTaskDialog.setDialogResult(new TodoCallback() {
 
                     @Override
-                    public void finish(BaseTodo alterdList) {
-                    if(alterdList instanceof TodoList) {
-                        for (int i=0; i<todoTasks.size(); i++) {
-                            if (todoTasks.get(i).getId() == task.getId()) {
-                                todoTasks.set(i, task); // replace old todotask
-                                break;
-                            }
+                    public void finish(BaseTodo alteredTask) {
+                        if(alteredTask instanceof TodoTask) {
+                            taskAdapter.notifyDataSetChanged();
+                            Log.i(TAG, "task altered");
                         }
-                        taskAdapter.notifyDataSetChanged();
-                        Log.i(TAG, "list altered");
-                    }
                     }
                 });
                 editTaskDialog.show();

@@ -31,6 +31,7 @@ public class TodoList extends BaseTodo implements Parcelable{
 
     }
 
+
     public void setId(long id) {
         this.id = id;
     }
@@ -86,6 +87,20 @@ public class TodoList extends BaseTodo implements Parcelable{
         dest.writeString(name);
         dest.writeString(description);
         dest.writeList(tasks);
+    }
+
+    public long getNextDeadline() {
+        long minDeadLine = -1;
+        if(tasks.size() > 0 ) {
+
+            minDeadLine = tasks.get(0).getDeadline();
+            for(int i=1; i<tasks.size(); i++)
+                if(tasks.get(i).getDeadline() < minDeadLine)
+                    minDeadLine = tasks.get(i).getDeadline();
+
+        }
+
+        return minDeadLine;
     }
 
     public TodoTask.DeadlineColors getDeadlineColor() {

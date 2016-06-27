@@ -98,19 +98,19 @@ public class TodoListsFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
-                addListDialog.setDialogResult(new TodoCallback() {
+            ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
+            addListDialog.setDialogResult(new TodoCallback() {
 
-                    @Override
-                    public void finish(BaseTodo newList) {
-                    if(newList instanceof TodoList) {
-                        todoLists.add((TodoList) newList);
-                        adapter.notifyDataSetChanged();
-                        Log.i(TAG, "list added");
-                    }
-                    }
-                });
-                addListDialog.show();
+                @Override
+                public void finish(BaseTodo newList) {
+                if(newList instanceof TodoList) {
+                    todoLists.add((TodoList) newList);
+                    adapter.notifyDataSetChanged();
+                    Log.i(TAG, "list added");
+                }
+                }
+            });
+            addListDialog.show();
             }
         });
     }
@@ -129,7 +129,6 @@ public class TodoListsFragment extends Fragment {
                     @Override
                     public void finish(BaseTodo alterdList) {
                         if(alterdList instanceof TodoList) {
-                            todoLists.set(pos, todoList);
                             adapter.notifyDataSetChanged();
                             Log.i(TAG, "list altered");
                         }
@@ -170,6 +169,11 @@ public class TodoListsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()); // TODO improve it!
+        adapter.updateList(todoLists);
+        adapter.notifyDataSetChanged();
+
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.toolbar_title_main);
     }
 

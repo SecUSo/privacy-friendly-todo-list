@@ -60,10 +60,10 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     public void onBindViewHolder(final ViewHolder holder, int position) {
         TodoList list = data.get(data.size()-1-position);
         holder.title.setText(list.getName());
-        if (list.getDeadline() <= 0)
+        if (list.getNextDeadline() <= 0)
             holder.deadline.setText(contextActivity.getResources().getString(R.string.no_next_deadline));
         else
-            holder.deadline.setText(contextActivity.getResources().getString(R.string.next_deadline_dd) + " " + Helper.getDate(list.getDeadline()));
+            holder.deadline.setText(contextActivity.getResources().getString(R.string.next_deadline_dd) + " " + Helper.getDate(list.getNextDeadline()));
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
         holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor()));
 
@@ -87,6 +87,10 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         super.onViewRecycled(holder);
     }
 
+    public void updateList(ArrayList<TodoList> todoLists) {
+        this.data = todoLists;
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener{
         public TextView title, deadline, done;
@@ -99,7 +103,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             done = (TextView) v.findViewById(R.id.tv_todo_list_status);
             urgency = v.findViewById(R.id.v_urgency_indicator);
 
-            //v.setOnClickListener(this);
+            v.setOnClickListener(this);
             v.setOnCreateContextMenuListener(this);
         }
 
