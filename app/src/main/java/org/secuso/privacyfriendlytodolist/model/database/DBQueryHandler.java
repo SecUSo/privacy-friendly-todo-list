@@ -66,12 +66,10 @@ public class DBQueryHandler {
                     int id = cursor.getInt(cursor.getColumnIndex(TTodoList.COLUMN_ID));
                     String listName = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_NAME));
                     String listDescription = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_DESCRIPTION));
-                    long deadline = cursor.getLong(cursor.getColumnIndex(TTodoList.COLUMN_DEADLINE));
 
                     TodoList currentList = new TodoList();
                     currentList.setName(listName);
                     currentList.setDescription(listDescription);
-                    currentList.setDeadline(deadline);
                     currentList.setId(id);
                     currentList.setTasks(getTasksByList(db, id));
                     todoLists.add(currentList);
@@ -195,7 +193,6 @@ public class DBQueryHandler {
         ContentValues values = new ContentValues();
         values.put(TTodoList.COLUMN_NAME, todoList.getName());
         values.put(TTodoList.COLUMN_DESCRIPTION, todoList.getDescription());
-        values.put(TTodoList.COLUMN_DEADLINE, todoList.getDeadline());
 
         if(todoList.getDBState() == ObjectStates.INSERT_TO_DB) {
 

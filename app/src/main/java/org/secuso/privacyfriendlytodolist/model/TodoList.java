@@ -15,23 +15,13 @@ public class TodoList extends BaseTodo implements Parcelable{
     public static final String PARCELABLE_ID = "CURRENT_TODO_LIST";
 
     private long id;
-    private long deadline;
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
-
-    /*
-    public TodoList(String name, String description, long deadline) {
-        this.name = name;
-        this.description = description;
-        this.deadline = deadline;
-    }
-    */
 
     public TodoList(Parcel parcel) {
         id = parcel.readLong();
         name = parcel.readString();
         description = parcel.readString();
-        deadline = parcel.readLong();
         tasks = parcel.readArrayList(null);
 
         dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
@@ -95,7 +85,6 @@ public class TodoList extends BaseTodo implements Parcelable{
         dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeLong(deadline);
         dest.writeList(tasks);
     }
 

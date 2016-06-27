@@ -40,14 +40,7 @@
         android:minLines="1"
         android:maxLines="15" />
 
-    <TextView
-        android:id="@+id/tv_todo_list_deadline"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp"
-        android:drawableLeft="@android:drawable/ic_menu_my_calendar"
-        android:text="@string/deadline" />
+
 
     <View
         android:layout_width="match_parent"
