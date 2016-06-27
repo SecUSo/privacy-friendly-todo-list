@@ -62,7 +62,7 @@ public class TodoListsFragment extends Fragment {
         adapter = new TodoListAdapter(getActivity(), todoLists);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setEmptyView(rootView.findViewById(R.id.tv_rv_empty_view));
-        mRecyclerView.setOnTouchListener(new OnTouchListener() {
+        /*mRecyclerView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event)
             {
@@ -89,7 +89,7 @@ public class TodoListsFragment extends Fragment {
                 }
                 return false;
             }
-        });
+        });*/
         registerForContextMenu(mRecyclerView);
 
         // floating action button setup
