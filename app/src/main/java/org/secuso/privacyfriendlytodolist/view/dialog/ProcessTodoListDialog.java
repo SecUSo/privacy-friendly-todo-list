@@ -18,8 +18,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
     private TodoCallback acCallback;
     private ProcessTodoListDialog self = this;
-
-    private TextView tvDeadline;
     private Button buttonOkay;
     private Button buttonCancel;
     private EditText etName, etDescription;
@@ -47,10 +45,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         super(context, R.layout.add_todolist_dialog);
 
         initGui();
-        if(list2Change.getDeadline() == -1)
-            tvDeadline.setText(context.getResources().getString(R.string.no_deadline));
-        else
-            tvDeadline.setText(Helper.getDate(list2Change.getDeadline()));
         etName.setText(list2Change.getName());
         etDescription.setText(list2Change.getDescription());
         todoList = list2Change;
@@ -59,8 +53,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
 
     private void initGui() {
-        tvDeadline = (TextView) findViewById(R.id.tv_todo_list_deadline);
-        tvDeadline.setOnClickListener(new DeadlineButtonListener());
         buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
         buttonOkay.setOnClickListener(new OkayButtonListener());
         buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
@@ -81,10 +73,9 @@ public class ProcessTodoListDialog extends FullScreenDialog {
                 Toast.makeText(getContext(), getContext().getString(R.string.list_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
             } else {
 
-                if (changesMade(listName, listDescription, deadline)) {
+                if (changesMade(listName, listDescription)) {
                     todoList.setName(listName);
                     todoList.setDescription(listDescription);
-                    todoList.setDeadline(deadline);
                     acCallback.finish(todoList);
                 }
                 self.dismiss();
@@ -92,12 +83,11 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         }
     }
 
-    private boolean changesMade(String listName, String listDescription, long deadline) {
+    private boolean changesMade(String listName, String listDescription) {
 
         // check if real changes were made
         if (listName.equals(todoList.getName()) &&
-                listDescription.equals(todoList.getDescription()) &&
-                todoList.getDeadline() == deadline) {
+                listDescription.equals(todoList.getDescription())) {
 
             return false;
         }
@@ -116,27 +106,4 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         }
     }
 
-    private class DeadlineButtonListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-
-            DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), deadline);
-            deadlineDialog.setCallback(new DeadlineDialog.DeadlineCallback() {
-                @Override
-                public void setDeadline(long d) {
-                    deadline = d;
-                    TextView deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
-                    deadlineTextView.setText(Helper.getDate(deadline));
-                }
-
-                @Override
-                public void removeDeadline() {
-                    deadline = -1;
-                    TextView deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
-                    deadlineTextView.setText(getContext().getResources().getString(R.string.deadline));
-                }
-            });
-            deadlineDialog.show();
-        }
-    }
 }
