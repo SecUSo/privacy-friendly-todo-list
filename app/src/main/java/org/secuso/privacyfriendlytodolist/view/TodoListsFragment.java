@@ -8,8 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
@@ -25,6 +28,10 @@ import java.util.ArrayList;
 public class TodoListsFragment extends Fragment {
 
     private final static String TAG = TodoListsFragment.class.getSimpleName();
+
+    float historicX = Float.NaN, historicY = Float.NaN;
+    static final int DELTA = 50;
+    enum Direction {LEFT, RIGHT;}
 
     private ArrayList<TodoList> todoLists = new ArrayList<>();
     private TodoRecyclerView mRecyclerView;
@@ -55,6 +62,34 @@ public class TodoListsFragment extends Fragment {
         adapter = new TodoListAdapter(getActivity(), todoLists);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setEmptyView(rootView.findViewById(R.id.tv_rv_empty_view));
+        mRecyclerView.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                Log.i("TodoListsFragment", event.getAction() + " at "+ event.getX() + "x"+event.getY());
+                switch (event.getAction())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        historicX = event.getX();
+                        historicY = event.getY();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        if (event.getX() - historicX < -DELTA)
+                        {
+                            Log.i("TodoListsFragment", "slide left");
+                            return true;
+                        }
+                        else if (event.getX() - historicX > DELTA)
+                        {
+                            Log.i("TodoListsFragment", "slide right");
+                            return true;
+                        } break;
+                    default: return false;
+                }
+                return false;
+            }
+        });
         registerForContextMenu(mRecyclerView);
 
         // floating action button setup

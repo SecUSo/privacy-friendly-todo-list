@@ -99,7 +99,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             done = (TextView) v.findViewById(R.id.tv_todo_list_status);
             urgency = v.findViewById(R.id.v_urgency_indicator);
 
-            v.setOnClickListener(this);
+            //v.setOnClickListener(this);
             v.setOnCreateContextMenuListener(this);
         }
 
