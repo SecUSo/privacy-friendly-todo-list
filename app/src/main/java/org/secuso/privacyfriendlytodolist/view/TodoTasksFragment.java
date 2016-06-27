@@ -182,7 +182,7 @@ public class TodoTasksFragment extends Fragment {
         for(int i=0; i<todoTasks.size(); i++) {
             TodoTask currentTask = todoTasks.get(i);
             currentTask.setListId(currentList.getId());
-            currentTask.setPositionInList(i);
+            currentTask.setPositionInList(i); // TODO improve it to set a custom position
 
             long id = DBQueryHandler.saveTodoTaskInDb(dbHelper.getWritableDatabase(), currentTask);
             if(id == -1)

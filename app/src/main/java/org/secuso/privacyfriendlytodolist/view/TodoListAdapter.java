@@ -15,9 +15,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 import java.util.ArrayList;
 
-/**
- * Created by dominik on 19.05.16.
- */
 public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewHolder>  {
 
     private static final String TAG = TodoListAdapter.class.getSimpleName();
@@ -30,8 +27,6 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         this.data = data;
         this.contextActivity = (MainActivity) ac;
     }
-
-
 
     public int getPosition() {
         return position;
