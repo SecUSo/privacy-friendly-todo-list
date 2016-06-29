@@ -34,7 +34,7 @@ public class Helper {
     }
 
     public static long getCurrentTimestamp() {
-        return System.currentTimeMillis()/1000;
+        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 
     public static int dp2Px(Context context, int dp) {

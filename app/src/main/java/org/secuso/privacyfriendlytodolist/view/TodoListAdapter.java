@@ -5,9 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,6 +24,8 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     private static final String TAG = TodoListAdapter.class.getSimpleName();
     private MainActivity contextActivity;
     private SharedPreferences prefs;
+
+    enum Direction {LEFT, RIGHT;}
 
     private ArrayList<TodoList> data;
     private int position;
@@ -95,7 +99,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
         public TextView title, deadline, done;
         public View urgency;
 
@@ -108,6 +112,38 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
             v.setOnClickListener(this);
             v.setOnCreateContextMenuListener(this);
+
+            v.setOnTouchListener(new View.OnTouchListener() {
+                float historicX = Float.NaN, historicY = Float.NaN;
+                static final int DELTA = 50;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    Log.i("TodoListAdapter","onTouch: " + event.getAction());
+                    switch (event.getAction())
+                    {
+                        case MotionEvent.ACTION_DOWN:
+                            historicX = event.getX();
+                            historicY = event.getY();
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            if (event.getX() - historicX < -DELTA)
+                            {
+                                Log.i("TodoListAdapter", "slide left ("+ getAdapterPosition() + ")");
+                                return true;
+                            }
+                            else if (event.getX() - historicX > DELTA)
+                            {
+                                Log.i("TodoListAdapter", "slide right ("+ getAdapterPosition() + ")");
+                                return true;
+                            }
+                        default: return false;
+                    }
+                    return false;
+                }
+            });
         }
 
         @Override
@@ -132,6 +168,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            //TODO ask touchlistener for swipe action
             menu.setHeaderTitle(R.string.select_option);
             MenuInflater inflater = contextActivity.getMenuInflater();
             inflater.inflate(R.menu.todo_list_long_click, menu);
