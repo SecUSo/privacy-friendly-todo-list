@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".view.AboutActivity"
             android:label="@string/about" />
+        <activity android:name=".view.Settings"
+            android:label="@string/settings" />
     </application>
 
 </manifest>

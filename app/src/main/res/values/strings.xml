@@ -30,6 +30,7 @@
 	<string name="no_reminder">No Reminder</string>
 	<string name="empty_todo_list">No tasks available.</string>
 	<string name="deadline_dd">Deadline:</string>
+	<string name="show_all_tasks">Show all tasks</string>
 	<string name="no_task_description">No task description available</string>
 	<string name="today">Today</string>
 	<string name="week">Week</string>
@@ -64,4 +65,9 @@
 	<string name="task_removed">Task was successfully removed.</string>
 	<string name="todo_name_must_not_be_empty">To-Do name must not be empty!</string>
 	<string name="no_changes_in_db">No changes in database.</string>
+	<string name="home">Home</string>
+	<string name="password_required">Password required on startup</string>
+	<string name="default_reminder_time">Default reminder time</string>
+	<string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time!</string>
+	<string name="deadline_smaller_reminder">The deadline must not be before the reminder time.</string>
 </resources>

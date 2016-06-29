@@ -1,6 +1,7 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
+import android.provider.SyncStateContract;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +53,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         initGui();
         task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
         deadline = task.getDeadline();
+        reminderTime = task.getReminderTime();
         taskName.setText(task.getName());
         taskDescription.setText(task.getDescription());
         prioritySelector.setText(Helper.priority2String(context, task.getPriority()));
@@ -63,7 +65,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         if(task.getReminderTime() <= 0)
             reminderTextView.setText(context.getString(R.string.reminder));
         else
-            reminderTextView.setText(Helper.getDateTime(task.getReminderTime()));
+            reminderTextView.setText(Helper.getDateTime(reminderTime));
 
         this.task = task;
     }
@@ -170,8 +172,19 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                 ReminderDialog reminderDialog = new ReminderDialog(getContext(), reminderTime, deadline);
                 reminderDialog.setCallback(new ReminderDialog.ReminderCallback() {
                     @Override
-                    public void setReminder(long d) {
-                        reminderTime = d;
+                    public void setReminder(long r) {
+
+                        if(deadline == -1) {
+                            Toast.makeText(getContext(), getContext().getString(R.string.set_deadline_before_reminder), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        if(deadline < r) {
+                            Toast.makeText(getContext(), getContext().getString(R.string.deadline_smaller_reminder), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        reminderTime = r;
                         reminderTextView.setText(Helper.getDateTime(reminderTime));
                     }
 

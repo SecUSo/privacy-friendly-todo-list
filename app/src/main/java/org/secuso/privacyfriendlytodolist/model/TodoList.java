@@ -12,9 +12,11 @@ import java.util.ArrayList;
 
 public class TodoList extends BaseTodo implements Parcelable{
 
-    public static final String PARCELABLE_ID = "CURRENT_TODO_LIST";
+    public static final String UNIQUE_DATABASE_ID = "CURRENT_TODO_LIST_ID";
+    public static final long DUMMY_LIST_ID = -3; // -1 is often used for error codes
 
-    private long id;
+
+    private long id; // -1 indicates a dummy list. A dummy list does not exist in the database
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
@@ -28,7 +30,15 @@ public class TodoList extends BaseTodo implements Parcelable{
     }
 
     public TodoList() {
+        setDbState(DBQueryHandler.ObjectStates.NO_DB_ACTION);
+    }
 
+    public boolean isDummyList() {
+        return id == DUMMY_LIST_ID;
+    }
+
+    public void setDummyList() {
+        id = DUMMY_LIST_ID;
     }
 
 
@@ -103,10 +113,10 @@ public class TodoList extends BaseTodo implements Parcelable{
         return minDeadLine;
     }
 
-    public TodoTask.DeadlineColors getDeadlineColor() {
+    public TodoTask.DeadlineColors getDeadlineColor(long defaultReminderTime) {
         int orangeCounter = 0;
         for(TodoTask currentTask : tasks) {
-            switch (currentTask.getDeadlineColor()) {
+            switch (currentTask.getDeadlineColor(defaultReminderTime)) {
                 case RED:
                     return TodoTask.DeadlineColors.RED;
                 case ORANGE:

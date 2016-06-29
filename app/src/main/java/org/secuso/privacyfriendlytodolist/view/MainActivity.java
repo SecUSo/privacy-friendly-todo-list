@@ -1,7 +1,9 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,22 +13,38 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
+    private ArrayList<TodoList> todoLists = new ArrayList<>();
+
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PreferenceManager.setDefaultValues(this, R.xml.settings, false);
+
+        dbHelper = new DatabaseHelper(this);
+        getTodoLists(true);
 
         // Is the activity restored?
         if (savedInstanceState == null) {
@@ -73,6 +91,47 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_settings) {
+            Intent intent = new Intent(this, Settings.class);
+            startActivity(intent);
+        } else if (id == R.id.menu_show_all_tasks) {
+
+            // create a dummy list containg all tasks
+            ArrayList<TodoTask> allTasks = new ArrayList<>();
+            for(TodoList currentList : todoLists)
+                allTasks.addAll(currentList.getTasks());
+
+            dummyList = new TodoList();
+            dummyList.setDummyList();
+            dummyList.setName(getString(R.string.all_tasks));
+            dummyList.setTasks(allTasks);
+
+            TodoTasksFragment fragment = new TodoTasksFragment();
+            Bundle bundle = new Bundle();
+            bundle.putLong(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
+            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
+            fragment.setArguments(bundle);
+            setFragment(fragment);
+
+        } else if (id == R.id.nav_about) {
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+        } else if(id == R.id.menu_home) {
+            finish();
+            startActivity(getIntent());
+        }
+
+        DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     @Override
@@ -85,30 +144,43 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public ArrayList<TodoList> getTodoLists(boolean reload) {
+        if(reload)
+            todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+
+        return todoLists;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+    public DatabaseHelper getDbHelper() {
+        return dbHelper;
+    }
 
-        if (id == R.id.nav_settings) {
-            Toast.makeText(this, "Settings pressed", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_help) {
-            Toast.makeText(this, "Help pressed", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_about) {
-            Intent aboutIntent = new Intent(this, AboutActivity.class);
-            startActivity(aboutIntent);
+    public TodoList getListByID(long currentListID) {
+
+        if(currentListID == TodoList.DUMMY_LIST_ID)
+            return dummyList;
+
+        for(TodoList currentList : todoLists)
+            if(currentList.getId() == currentListID)
+                return currentList;
+
+        throw new IllegalArgumentException("Id " + String.valueOf(currentListID + " does not belong to any todo list."));
+
+    }
+
+
+    public void syncWithDatabase() {
+
+        // write new data back to the database
+        for(TodoList currentList : todoLists) {
+            long id = DBQueryHandler.saveTodoListInDb(getDbHelper().getWritableDatabase(), currentList);
+            if(id == -1)
+                Log.e(TAG, getString(R.string.list_to_db_error));
+            else if(id == DBQueryHandler.NO_CHANGES)
+                Log.i(TAG, getString(R.string.no_changes_in_db));
+            else
+                currentList.setId(id);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 }

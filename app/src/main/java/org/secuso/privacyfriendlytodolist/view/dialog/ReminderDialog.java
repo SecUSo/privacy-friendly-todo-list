@@ -69,8 +69,8 @@ public class ReminderDialog extends FullScreenDialog {
             }
         });
 
-        Button buttonNoDeadline = (Button) findViewById(R.id.bt_reminder_noreminder);
-        buttonNoDeadline.setOnClickListener(new View.OnClickListener() {
+        Button buttonNoReminder = (Button) findViewById(R.id.bt_reminder_noreminder);
+        buttonNoReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 callback.removeReminder();
@@ -82,7 +82,6 @@ public class ReminderDialog extends FullScreenDialog {
 
     public interface ReminderCallback {
         void setReminder(long deadline);
-
         void removeReminder();
     }
 

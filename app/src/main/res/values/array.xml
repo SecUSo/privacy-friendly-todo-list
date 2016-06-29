@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="default_reminder_times_human">
+        <item>None</item>
+        <item>0.5 days</item>
+        <item>1 day</item>
+        <item>1.5 days</item>
+        <item>2 days</item>
+        <item>2.5 days</item>
+        <item>3 days</item>
+    </string-array>
+
+    <string-array name="default_reminder_times">
+        <item>-1</item>
+        <item>43200</item>
+        <item>86400</item>
+        <item>129600</item>
+        <item>172800</item>
+        <item>216000</item>
+        <item>259200</item>
+    </string-array>
+
+</resources>

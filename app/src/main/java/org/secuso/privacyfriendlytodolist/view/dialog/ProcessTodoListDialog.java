@@ -21,13 +21,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
     private Button buttonOkay;
     private Button buttonCancel;
     private EditText etName, etDescription;
-
-    private long deadline;
-
-    public long getDeadline() {
-        return this.deadline;
-    }
-
     private TodoList todoList;
 
 
@@ -37,7 +30,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         initGui();
 
         todoList = new TodoList();
-        deadline = -1;
         todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
 

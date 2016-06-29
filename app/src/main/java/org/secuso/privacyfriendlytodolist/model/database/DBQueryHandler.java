@@ -71,7 +71,7 @@ public class DBQueryHandler {
                     currentList.setName(listName);
                     currentList.setDescription(listDescription);
                     currentList.setId(id);
-                    currentList.setTasks(getTasksByList(db, id));
+                    currentList.setTasks(getTasksByListId(db, id));
                     todoLists.add(currentList);
                 } while (cursor.moveToNext());
             }
@@ -83,7 +83,7 @@ public class DBQueryHandler {
 
     }
 
-    private static ArrayList<TodoTask> getTasksByList(SQLiteDatabase db, int listId) {
+    private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId) {
 
         ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
         String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId;
@@ -102,6 +102,7 @@ public class DBQueryHandler {
                     int deadline = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
                     int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
                     int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
+                    int listID = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_TODO_LIST_ID));
 
                     TodoTask currentTask = new TodoTask();
                     currentTask.setName(title);
@@ -114,6 +115,7 @@ public class DBQueryHandler {
                     currentTask.setSubTasks(getSubTasksByTask(db, id));
                     currentTask.setProgress(progress);
                     currentTask.setDone(done);
+                    currentTask.setListId(listID);
                     tasks.add(currentTask);
                 } while (cursor.moveToNext());
             }

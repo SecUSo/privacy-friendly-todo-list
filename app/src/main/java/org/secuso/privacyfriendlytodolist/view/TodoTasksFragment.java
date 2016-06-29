@@ -31,25 +31,42 @@ public class TodoTasksFragment extends Fragment {
 
     private static final String TAG = TodoTasksFragment.class.getSimpleName();
 
+    // The fab is used to create new tasks. However, a task can only be created if the user is inside
+    // a certain list. If he chose the "show all task" view, the option to create a new task is not available.
+    public static final String SHOW_FLOATING_BUTTON = "SHOW_FAB";
+
+
     private ExpandableListView expandableListView;
     private ExpandableToDoTaskAdapter taskAdapter;
-    private ArrayList<TodoTask> todoTasks;
+
+    private MainActivity containingActivity;
 
     private TodoList currentList;
-    private DatabaseHelper dbHelper;
+    private ArrayList<TodoTask> todoTasks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        currentList = getArguments().getParcelable(TodoList.PARCELABLE_ID);
+        containingActivity = (MainActivity) getActivity();
+
+
+
+        if(containingActivity == null) {
+            throw new RuntimeException("TodoTasksFragment could not find containing activity.");
+        }
+
+
+        boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
+
+        long currentListID = getArguments().getLong(TodoList.UNIQUE_DATABASE_ID);
+        currentList = containingActivity.getListByID(currentListID);
         todoTasks = currentList.getTasks();
-        dbHelper = new DatabaseHelper(getActivity());
 
         View v = inflater.inflate(R.layout.fragment_todo_tasks, container, false);
 
         initExListViewGUI(v);
-        initFab(v);
+        initFab(v, showFab);
 
         // set toolbar title
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
@@ -57,25 +74,29 @@ public class TodoTasksFragment extends Fragment {
         return v;
     }
 
-    private void initFab(View rootView) {
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_task);
+    private void initFab(View rootView, boolean showFab) {
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            ProcessTodoTaskDialog addListDialog = new ProcessTodoTaskDialog(getActivity());
-            addListDialog.setDialogResult(new TodoCallback() {
+        FloatingActionButton optionFab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_task);
+
+        if(showFab) {
+            optionFab.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void finish(BaseTodo b) {
-                    if(b instanceof TodoTask) {
-                        todoTasks.add((TodoTask)b);
-                        taskAdapter.notifyDataSetChanged();
-                    }
+                public void onClick(View v) {
+                    ProcessTodoTaskDialog addListDialog = new ProcessTodoTaskDialog(getActivity());
+                    addListDialog.setDialogResult(new TodoCallback() {
+                        @Override
+                        public void finish(BaseTodo b) {
+                            if (b instanceof TodoTask) {
+                                todoTasks.add((TodoTask) b);
+                                taskAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    });
+                    addListDialog.show();
                 }
             });
-            addListDialog.show();
-            }
-        });
+        } else
+            optionFab.setVisibility(View.GONE);
     }
 
     private void initExListViewGUI(View v) {
@@ -146,17 +167,17 @@ public class TodoTasksFragment extends Fragment {
 
                     @Override
                     public void finish(BaseTodo alteredTask) {
-                        if(alteredTask instanceof TodoTask) {
-                            taskAdapter.notifyDataSetChanged();
-                            Log.i(TAG, "task altered");
-                        }
+                    if(alteredTask instanceof TodoTask) {
+                        taskAdapter.notifyDataSetChanged();
+                        Log.i(TAG, "task altered");
+                    }
                     }
                 });
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
 
-                DBQueryHandler.deleteTodoTask(dbHelper.getWritableDatabase(), task);
+                DBQueryHandler.deleteTodoTask(containingActivity.getDbHelper().getWritableDatabase(), task);
                 todoTasks.remove(task);
                 taskAdapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
@@ -181,16 +202,19 @@ public class TodoTasksFragment extends Fragment {
         // write new tasks to the database
         for(int i=0; i<todoTasks.size(); i++) {
             TodoTask currentTask = todoTasks.get(i);
-            currentTask.setListId(currentList.getId());
-            currentTask.setPositionInList(i); // TODO improve it to set a custom position
 
-            long id = DBQueryHandler.saveTodoTaskInDb(dbHelper.getWritableDatabase(), currentTask);
+            // If a dummy list is displayed, its id must not be assigned to the task.
+            if(!currentList.isDummyList())
+                currentTask.setListId(currentList.getId());
+                // currentTask.setPositionInList(i); // TODO improve it to set a custom position
+
+            long id = DBQueryHandler.saveTodoTaskInDb(containingActivity.getDbHelper().getWritableDatabase(), currentTask);
             if(id == -1)
                 Log.e(TAG, getString(R.string.list_to_db_error));
             else if(id == -2)
                 Log.i(TAG, getString(R.string.no_changes_in_db));
             else
-                currentTask.setId(id);
+                currentTask.setId(id); // if the task already had had an id, the id is overwritten with the old value
         }
     }
 

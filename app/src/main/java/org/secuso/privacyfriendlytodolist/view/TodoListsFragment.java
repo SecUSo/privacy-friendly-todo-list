@@ -1,10 +1,16 @@
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,6 +19,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
@@ -29,30 +36,32 @@ public class TodoListsFragment extends Fragment {
 
     private final static String TAG = TodoListsFragment.class.getSimpleName();
 
-    float historicX = Float.NaN, historicY = Float.NaN;
-    static final int DELTA = 50;
-    enum Direction {LEFT, RIGHT;}
-
-    private ArrayList<TodoList> todoLists = new ArrayList<>();
+    private ArrayList<TodoList> todoLists;
     private TodoRecyclerView mRecyclerView;
     private TodoRecyclerView.LayoutManager mLayoutManager;
     private TodoListAdapter adapter;
-    private DatabaseHelper dbHelper;
+
+    private MainActivity containerActivity;
+
+    private enum Direction {LEFT, RIGHT;}
+    private float historicX = Float.NaN, historicY = Float.NaN;
+    private static final int DELTA = 50;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        containerActivity = (MainActivity)getActivity();
+        todoLists = containerActivity.getTodoLists(false);
         View v = inflater.inflate(R.layout.fragment_todo_lists, container, false);
-        dbHelper = new DatabaseHelper(getActivity());
 
-        todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        guiSetup(inflater, v);
+        guiSetup(v);
 
         return v;
     }
 
-    private void guiSetup(LayoutInflater inflater, View rootView) {
+    private void guiSetup(View rootView) {
 
         // initialize recycler view
         mRecyclerView = (TodoRecyclerView) rootView.findViewById(R.id.rv_todo_lists);
@@ -113,6 +122,7 @@ public class TodoListsFragment extends Fragment {
             addListDialog.show();
             }
         });
+
     }
 
     @Override
@@ -130,7 +140,6 @@ public class TodoListsFragment extends Fragment {
                     public void finish(BaseTodo alterdList) {
                         if(alterdList instanceof TodoList) {
                             adapter.notifyDataSetChanged();
-                            Log.i(TAG, "list altered");
                         }
                     }
                 });
@@ -138,7 +147,7 @@ public class TodoListsFragment extends Fragment {
                 break;
             case R.id.delete_list:
 
-                DBQueryHandler.deleteTodoList(dbHelper.getWritableDatabase(), todoList);
+                DBQueryHandler.deleteTodoList(containerActivity.getDbHelper().getWritableDatabase(), todoList);
                 todoLists.remove(todoList);
                 adapter.notifyDataSetChanged();
                 break;
@@ -150,31 +159,16 @@ public class TodoListsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // write new data back to the database
-        for(TodoList currentList : todoLists) {
-            long id = DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), currentList);
-            if(id == -1)
-                Log.e(TAG, getString(R.string.list_to_db_error));
-            else if(id == DBQueryHandler.NO_CHANGES)
-                Log.i(TAG, getString(R.string.no_changes_in_db));
-            else
-                currentList.setId(id);
-        }
-    }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()); // TODO improve it!
+        todoLists = containerActivity.getTodoLists(true);
         adapter.updateList(todoLists);
         adapter.notifyDataSetChanged();
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.toolbar_title_main);
+        containerActivity.getSupportActionBar().setTitle(R.string.toolbar_title_main);
     }
 
     private void prepareData() { /*

@@ -2,8 +2,8 @@ package org.secuso.privacyfriendlytodolist.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 
 import java.util.ArrayList;
 
@@ -42,6 +42,10 @@ public class TodoTask extends BaseTodo implements Parcelable {
         RED
     }
 
+    private enum ReminderTimeStatus {
+        NOT_SET
+    }
+
     public static final int MAX_PRIORITY = 10;
 
     private String title;
@@ -49,7 +53,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private long id;
     private int progress;
     private Priority priority;
-    private long reminderTime;
+    private long reminderTime = -1;
     private int listPosition; // indicates at what position inside the list this task it placed
 
     private long listIdForeignKey;
@@ -61,19 +65,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
 
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
-/*
-    public TodoTask(String title, String description, int progress, Priority priority, long deadline, long reminderTime) {
-        this.reminderTime = reminderTime;
-        this.title = title;
-        this.description = description;
-        this.done = false;
-        this.progress = progress;
-        this.priority = priority;
-        this.deadline = deadline;
 
-        dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
-    }
-*/
     public TodoTask(Parcel parcel) {
         id = parcel.readLong();
         reminderTime = parcel.readInt();
@@ -154,14 +146,32 @@ public class TodoTask extends BaseTodo implements Parcelable {
     }
 
 
-    public DeadlineColors getDeadlineColor() {
-        long currentTimeStamp = Helper.getCurrentTimestamp();
+    // This method expects the deadline to be greater than the reminder time.
+    public DeadlineColors getDeadlineColor(long defaultReminderTime) {
 
-        if (!done) {
-            if (deadline > currentTimeStamp - reminderTime && deadline < currentTimeStamp)
+        // The default reminder time is a relative value in seconds (e.g. 86400s == 1 day)
+        // The user specified reminder time is an absolute timestamp
+
+        if (!done && deadline > 0) {
+
+            long currentTimeStamp = Helper.getCurrentTimestamp();
+            long remTimeToCalc = reminderTime > 0 ? deadline-reminderTime : defaultReminderTime;
+
+            String d = Helper.getDateTime(deadline);
+            String r = String.valueOf(remTimeToCalc / 60 / 60 / 24);
+            String t = Helper.getDateTime(currentTimeStamp);
+
+            Log.i("TASK NAME", name);
+            Log.i("TASK USER REMINDER TIME", String.valueOf(reminderTime));
+            Log.i("TASK DEADLINE ", d + " " + deadline);
+            Log.i("TASK REMINDER ", r + " " + remTimeToCalc);
+            Log.i("TASK TIMESTAMP", t + " " + currentTimeStamp);
+            Log.i("DIFF", Helper.getDateTime(deadline - remTimeToCalc));
+
+            if ((currentTimeStamp >= (deadline - remTimeToCalc)) && (deadline > currentTimeStamp))
                 return DeadlineColors.ORANGE;
 
-            if (currentTimeStamp > deadline && deadline > 0)
+            if ((currentTimeStamp > deadline) && (deadline > 0))
                 return DeadlineColors.RED;
         }
 

@@ -1,7 +1,9 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
     private static final String TAG = TodoListAdapter.class.getSimpleName();
     private MainActivity contextActivity;
+    private SharedPreferences prefs;
 
     private ArrayList<TodoList> data;
     private int position;
@@ -26,6 +29,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     public TodoListAdapter(Activity ac, ArrayList<TodoList> data) {
         this.data = data;
         this.contextActivity = (MainActivity) ac;
+        prefs = PreferenceManager.getDefaultSharedPreferences(ac);
     }
 
     public int getPosition() {
@@ -34,6 +38,10 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    private long getDefaultReminderTime()  {
+        return new Long(prefs.getString(Settings.DEFAULT_REMINDER_TIME_KEY, String.valueOf(contextActivity.getResources().getInteger(R.integer.one_day))));
     }
 
 
@@ -60,7 +68,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         else
             holder.deadline.setText(contextActivity.getResources().getString(R.string.next_deadline_dd) + " " + Helper.getDate(list.getNextDeadline()));
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
-        holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor()));
+        holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor(getDefaultReminderTime())));
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -105,11 +113,17 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         @Override
         public void onClick(View v) {
 
-            Bundle bundle = new Bundle();
+            // 1. sync data with database to assign each list an unique id. The id will be used by the
+            // new fragment as an identifier. If the list as a whole was passed to the new fragment as
+            // a parcelable, the reference would be lost and possible changes would not not be visible at once
+            // for all involved members
+            contextActivity.syncWithDatabase();
 
-            int pos = getAdapterPosition();
-            TodoList currentList = data.get(data.size()-1-pos);
-            bundle.putParcelable(TodoList.PARCELABLE_ID, currentList);
+            // 2. call new fragment and pass list id so that the fragment knows what tasks should be displayed
+            Bundle bundle = new Bundle();
+            TodoList currentList = data.get(data.size()-1-getAdapterPosition());
+            bundle.putLong(TodoList.UNIQUE_DATABASE_ID, currentList.getId());
+            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);
 

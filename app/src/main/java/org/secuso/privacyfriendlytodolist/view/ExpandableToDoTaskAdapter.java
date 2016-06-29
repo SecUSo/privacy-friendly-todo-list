@@ -1,6 +1,8 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
 import android.util.Log;
@@ -31,15 +33,9 @@ import java.util.Map;
 
 public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
+    private SharedPreferences prefs;
+
     private TodoTask longClickedTask;
-
-    public void setLongClickedTaskByPos(int position) {
-        longClickedTask = getTaskByPosition(position);
-    }
-
-    public TodoTask getLongClickedTask() {
-        return longClickedTask;
-    }
 
 
     public enum Filter {
@@ -84,11 +80,22 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     public ExpandableToDoTaskAdapter(Context context, ArrayList<TodoTask> tasks) {
         this.context = context;
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         rawData = tasks;
 
         // default values
         setFilter(Filter.ALL_TASKS);
         filterTasks();
+    }
+
+    public void setLongClickedTaskByPos(int position) {
+        longClickedTask = getTaskByPosition(position);
+    }
+
+    public TodoTask getLongClickedTask() {
+        return longClickedTask;
     }
 
     // interface to outer world
@@ -324,6 +331,10 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
         super.notifyDataSetChanged();
     }
 
+    private long getDefaultReminderTime()  {
+        return new Long(prefs.getString(Settings.DEFAULT_REMINDER_TIME_KEY, String.valueOf(context.getResources().getInteger(R.integer.one_day))));
+    }
+
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
@@ -401,7 +412,6 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
-                            Log.i("pups", currentTask.getId() + " was clicked ("+currentTask.getName()+")");
                         }
                     }
                 });
@@ -415,7 +425,8 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     deadline = context.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(currentTask.getDeadline());
 
                 vh2.deadline.setText(deadline);
-                vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor()));
+
+                vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
                 vh2.done.setChecked(currentTask.getDone());
 
                 break;
@@ -450,7 +461,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     vh1.taskDescription.setText(context.getString(R.string.no_task_description));
                 else
                     vh1.taskDescription.setText(description);
-                vh1.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor()));
+                vh1.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
                 break;
 
@@ -471,7 +482,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                         Toast.makeText(context, "Add a new subtask", Toast.LENGTH_SHORT).show();
                     }
                 });
-                vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor()));
+                vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
                 break;
             default:
@@ -486,7 +497,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                 }
 
                 vh3.subtaskName.setText(currentTask.getSubTasks().get(childPosition - 1).getTitle());
-                vh3.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor()));
+                vh3.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
         }
         return convertView;

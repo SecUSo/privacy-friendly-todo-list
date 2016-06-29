@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="pref_default_reminder_time"
+        android:defaultValue="@integer/one_day"
+        android:entries="@array/default_reminder_times_human"
+        android:entryValues="@array/default_reminder_times"
+        android:title="@string/default_reminder_time" />
+
+    <CheckBoxPreference
+        android:key="pref_password_requirement"
+        android:defaultValue="false"
+        android:title="@string/password_required" />
+
+</PreferenceScreen>

@@ -3,18 +3,16 @@
 
     <item android:title="@string/todos">
         <menu>
+
             <item
-                android:id="@+id/nav_todos_today"
+                android:id="@+id/menu_home"
                 android:icon="@mipmap/ic_star_black_24dp"
-                android:title="@string/today" />
+                android:title="@string/home" />
+
             <item
-                android:id="@+id/nav_todos_week"
-                android:icon="@mipmap/ic_date_range_black_24dp"
-                android:title="@string/week" />
-            <item
-                android:id="@+id/nav_todos_overdue"
-                android:icon="@mipmap/ic_thumb_down_black_24dp"
-                android:title="@string/overdue" />
+                android:id="@+id/menu_show_all_tasks"
+                android:icon="@mipmap/ic_star_black_24dp"
+                android:title="@string/show_all_tasks" />
         </menu>
     </item>
 
@@ -28,10 +26,6 @@
 
     <item android:title="@string/other">
         <menu>
-            <item
-                android:id="@+id/nav_help"
-                android:icon="@android:drawable/ic_menu_help"
-                android:title="@string/help" />
             <item
                 android:id="@+id/nav_about"
                 android:icon="@android:drawable/ic_menu_info_details"
