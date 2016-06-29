@@ -31,8 +31,6 @@ public class Settings extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-       // prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
-
         getFragmentManager().beginTransaction().replace(R.id.fragment_container, new MyPreferenceFragment()).commit();
     }
 

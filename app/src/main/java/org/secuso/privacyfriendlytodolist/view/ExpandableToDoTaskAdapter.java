@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -373,27 +374,9 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     vh2.name = (TextView) convertView.findViewById(R.id.tv_exlv_task_name);
                     vh2.done = (CheckBox) convertView.findViewById(R.id.cb_task_done);
                     vh2.deadline = (TextView) convertView.findViewById(R.id.tv_exlv_task_deadline);
-                    vh2.progressIndicator = (LinearLayout) convertView.findViewById(R.id.ll_task_progress);
+                    vh2.progressBar = (ProgressBar) convertView.findViewById(R.id.pb_task_progress);
                     vh2.seperator = convertView.findViewById(R.id.v_exlv_header_separator);
                     vh2.deadlineColorBar = convertView.findViewById(R.id.v_urgency_task);
-
-                    // add color boxest that indicate the progress of each task
-                    int boxWidth = Helper.dp2Px(context, 5);
-                    int progress = currentTask.getProgress();
-                    for (int i = 0; i < TodoTask.MAX_PRIORITY; i++) {
-                        ImageView img = new ImageView(parent.getContext());
-                        img.setLayoutParams(new LinearLayout.LayoutParams(boxWidth, boxWidth));
-
-                        if (progress > i)
-                            img.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-                        else
-                            img.setBackground(ContextCompat.getDrawable(context, R.drawable.border_img_view));
-                        Space space = new Space(context);
-                        space.setLayoutParams(new LinearLayout.LayoutParams(0, Helper.dp2Px(context, 1), 1f));
-                        vh2.progressIndicator.addView(img);
-                        vh2.progressIndicator.addView(space);
-                    }
-                    vh2.progressIndicator.removeViewAt(vh2.progressIndicator.getChildCount() - 1);
                     vh2.done.setTag(currentTask.getId());
                     vh2.done.setChecked(currentTask.getDone());
 
@@ -418,6 +401,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
                 // fill header with content
                 vh2.name.setText(currentTask.getName());
+                vh2.progressBar.setProgress(currentTask.getProgress());
                 String deadline;
                 if (currentTask.getDeadline() <= 0)
                     deadline = context.getResources().getString(R.string.no_deadline);
@@ -515,8 +499,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
         public CheckBox done;
         public View deadlineColorBar;
         public View seperator;
-        public LinearLayout progressIndicator;
-
+        public ProgressBar progressBar;
     }
 
     public class GroupPrioViewHolder {

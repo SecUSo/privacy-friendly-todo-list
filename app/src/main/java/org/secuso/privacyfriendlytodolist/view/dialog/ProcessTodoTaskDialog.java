@@ -93,7 +93,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 taskProgress = progress;
-                selectedProgress.setText(String.valueOf(progress) + "0%");
+                selectedProgress.setText(String.valueOf(progress) + "%");
             }
 
             @Override

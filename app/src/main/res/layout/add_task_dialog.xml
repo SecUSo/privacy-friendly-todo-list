@@ -102,7 +102,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/tv_task_progress"
             android:layout_alignParentRight="true"
-            android:max="10"/>
+            android:max="100"/>
 
         <TextView
             android:id="@+id/new_task_progress"

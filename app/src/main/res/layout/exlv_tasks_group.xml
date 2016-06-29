@@ -63,26 +63,24 @@
         android:layout_alignLeft="@+id/tv_exlv_task_name"
         android:text="Task Deadline" />
 
-    <LinearLayout
-        android:id="@+id/ll_task_progress"
+    <ProgressBar
+        android:id="@+id/pb_task_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progress="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tv_exlv_task_deadline"
         android:layout_below="@+id/tv_exlv_task_deadline"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp">
-
-
-        <!-- filled programmatically in the ExpandableToDoTaskAdapter -->
-    </LinearLayout>
+        android:max="100"
+        android:indeterminate="false"
+        android:layout_marginTop="10dp" />
 
     <View
         android:id="@+id/v_exlv_header_separator"
         android:layout_width="match_parent"
         android:layout_height="2px"
-        android:layout_below="@+id/ll_task_progress"
+        android:layout_below="@+id/pb_task_progress"
         android:layout_toRightOf="@+id/v_urgency_task"
         android:background="@color/grey" />
 
