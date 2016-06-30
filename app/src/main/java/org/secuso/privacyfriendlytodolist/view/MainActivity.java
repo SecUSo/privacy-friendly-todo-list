@@ -1,5 +1,7 @@
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,17 +21,23 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.NotifyService;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String FRAGMENT_CHOICE = "fragment_choice" ;
 
     private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
     private ArrayList<TodoList> todoLists = new ArrayList<>();
@@ -46,8 +54,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = new DatabaseHelper(this);
         getTodoLists(true);
 
-        // Is the activity restored?
-        if (savedInstanceState == null) {
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null && TodoTasksFragment.KEY.equals(extras.getString(FRAGMENT_CHOICE))) {
+            TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
+            Bundle bundle = new Bundle();
+            bundle.putLong(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
+            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
+            TodoTasksFragment fragment = new TodoTasksFragment();
+            fragment.setArguments(bundle);
+            setFragment(fragment);
+        } else {
             TodoListsFragment todoListOverviewFragment = new TodoListsFragment();
             setFragment(todoListOverviewFragment);
         }
@@ -151,6 +168,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return todoLists;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        for(TodoList currentList : todoLists) {
+            for(TodoTask currentTask : currentList.getTasks()) {
+                setReminderAlarmNotifications(currentTask);
+            }
+        }
+    }
+
     public DatabaseHelper getDbHelper() {
         return dbHelper;
     }
@@ -180,6 +207,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i(TAG, getString(R.string.no_changes_in_db));
             else
                 currentList.setId(id);
+        }
+    }
+
+
+    private void setReminderAlarmNotifications(TodoTask task) {
+
+        long reminderTimeStamp = task.getReminderTime();
+
+        if(!task.getDone() && task.getDeadline()*1000 > Helper.getCurrentTimestamp() && reminderTimeStamp > 0) {
+
+            Intent alarmIntent = new Intent(this, NotifyService.class);
+            alarmIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, alarmIntent, 0);
+
+            Calendar calendar = Calendar.getInstance();
+            Date date = new Date(reminderTimeStamp*1000);
+            calendar.setTime(date);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis()/1000));
+
+        } else {
+            Log.i(TAG, "No alarm set for " + task.getName());
         }
 
     }

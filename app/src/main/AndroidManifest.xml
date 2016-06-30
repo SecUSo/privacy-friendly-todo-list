@@ -22,6 +22,8 @@
             android:label="@string/about" />
         <activity android:name=".view.Settings"
             android:label="@string/settings" />
+        <receiver android:name=".model.ReminderAlarmReceiver" />
+        <service android:name=".model.NotifyService" />
     </application>
 
 </manifest>

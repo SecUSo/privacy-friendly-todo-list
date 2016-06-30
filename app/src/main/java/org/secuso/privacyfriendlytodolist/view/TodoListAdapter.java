@@ -169,7 +169,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             //TODO ask touchlistener for swipe action
-            menu.setHeaderView(Helper.getMenuHeader(contextActivity));
+            menu.setHeaderView(Helper.getMenuHeader(contextActivity, contextActivity.getString(R.string.select_option)));
             MenuInflater inflater = contextActivity.getMenuInflater();
             inflater.inflate(R.menu.todo_list_long_click, menu);
         }

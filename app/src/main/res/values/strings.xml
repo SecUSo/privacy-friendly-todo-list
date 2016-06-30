@@ -76,4 +76,6 @@
 	<string name="subtask_removed">Subtask successfully removed!</string>
 	<string name="error_removing_subtask">Subtask could not be removed from the database.</string>
 	<string name="error_removing_task">Could not remove todo task from the database.</string>
+	<string name="is_due">is due.</string>
+	<string name="task_deadline">Task deadline:</string>
 </resources>

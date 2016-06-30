@@ -41,7 +41,7 @@ public class TodoTasksFragment extends Fragment {
     // The fab is used to create new tasks. However, a task can only be created if the user is inside
     // a certain list. If he chose the "show all task" view, the option to create a new task is not available.
     public static final String SHOW_FLOATING_BUTTON = "SHOW_FAB";
-
+    public static final String KEY = "fragment_selector_key";
 
     private ExpandableListView expandableListView;
     private ExpandableTodoTaskAdapter taskAdapter;
@@ -65,7 +65,6 @@ public class TodoTasksFragment extends Fragment {
 
 
         boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
-
         long currentListID = getArguments().getLong(TodoList.UNIQUE_DATABASE_ID);
         currentList = containingActivity.getListByID(currentListID);
         todoTasks = currentList.getTasks();
@@ -170,12 +169,10 @@ public class TodoTasksFragment extends Fragment {
 
         int type = ExpandableListView.getPackedPositionType(info.packedPosition);
         MenuInflater inflater = getActivity().getMenuInflater();
-        menu.setHeaderView(Helper.getMenuHeader(getContext()));
+        menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_option)));
+
         // context menu for child items
         if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-
-            int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-            int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
             inflater.inflate(R.menu.todo_subtask_long_click, menu);
         } else { // context menu for group items
             inflater.inflate(R.menu.todo_task_long_click, menu);

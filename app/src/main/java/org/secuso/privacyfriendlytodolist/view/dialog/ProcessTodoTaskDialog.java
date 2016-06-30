@@ -149,7 +149,6 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     @Override
                     public void setDeadline(long d) {
                         deadline = d;
-
                         deadlineTextView.setText(Helper.getDate(deadline));
                     }
 
@@ -204,7 +203,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
-        menu.setHeaderTitle(getContext().getString(R.string.select_priority));
+        menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_priority)));
         for (TodoTask.Priority prio : TodoTask.Priority.values()) {
             menu.add(Menu.NONE, prio.getValue(), Menu.NONE, Helper.priority2String(getContext(), prio));
         }

@@ -75,13 +75,13 @@ public class Helper {
         }
     }
 
-    public static TextView getMenuHeader(Context context) {
+    public static TextView getMenuHeader(Context context, String title) {
         TextView blueBackground = new TextView(context);
         blueBackground.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        blueBackground.setText(context.getResources().getString(R.string.select_option));
+        blueBackground.setText(title);
         blueBackground.setTextColor(ContextCompat.getColor(context, R.color.white));
         blueBackground.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
         blueBackground.setGravity(Gravity.CENTER);

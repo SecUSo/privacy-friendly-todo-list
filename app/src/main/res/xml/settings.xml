@@ -13,4 +13,6 @@
         android:defaultValue="false"
         android:title="@string/password_required" />
 
+    <!--TODO NumberPicker for reapting interval of alarm notifications -->
+
 </PreferenceScreen>

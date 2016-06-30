@@ -3,7 +3,6 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+//TODO Wird ein Task ausgeklappt und dann nach der Priorität sortiert, dann stürzt die App ab. Der Grund ist, dass die groupPosition nicht stimmt. Sie ist 0, aber intern wird schon mit einer PrioBar, also einem Element mehr, gerechnet.
 
 
 public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
@@ -243,26 +244,25 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         }
 
         int pos = groupPosition - seenPrioBars;
+
         if (pos < filteredTasks.size())
             return filteredTasks.get(pos);
 
         return null; // should never be the case
     }
 
-    private TodoTask getTaskById(int id) {
-        for(TodoTask t : rawData)
-            if(t.getId() == id)
-                return t;
-        return null;
-    }
-
-
     @Override
     public int getGroupCount() {
+        // TODO
         if (isPriorityGroupingEnabled())
             return filteredTasks.size() + prioBarPositions.size();
         else
             return filteredTasks.size();
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return getTaskByPosition(groupPosition).getSubTasks().size() + 2;
     }
 
     @Override
@@ -276,11 +276,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     @Override
     public int getGroupTypeCount() {
         return 2;
-    }
-
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        return getTaskByPosition(groupPosition).getSubTasks().size() + 2;
     }
 
     @Override
@@ -426,6 +421,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         int type = getChildType(groupPosition, childPosition);
+        if(isPriorityGroupingEnabled())
+            groupPosition+=prioBarPositions.size();
         final TodoTask currentTask = getTaskByPosition(groupPosition);
 
         switch (type) {
@@ -475,7 +472,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                                 currentTask.getSubTasks().add(newSubTask);
 
                                 notifyDataSetChanged();
-                                Log.i("SUBTASK CREATION", currentTask.getName());
                             }
                         }
                     });
