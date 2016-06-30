@@ -1,8 +1,5 @@
 package org.secuso.privacyfriendlytodolist.model.database.tables;
 
-/**
- * Created by dominik on 19.05.16.
- */
 public final class TTodoSubTask {
 
     // TAG
@@ -17,7 +14,7 @@ public final class TTodoSubTask {
 
     // sql table creation
     public static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-            " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TASK_ID + " TEXT NOT NULL, " + COLUMN_TITLE + " TEXT NOT NULL, " +
+            " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TASK_ID + " INTEGER NOT NULL, " + COLUMN_TITLE + " TEXT NOT NULL, " +
             COLUMN_DONE + " INTEGER, FOREIGN KEY (" + COLUMN_TASK_ID + ") REFERENCES " + TTodoTask.TABLE_NAME + "(" + TTodoTask.COLUMN_ID + "));";
 
 }

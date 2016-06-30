@@ -5,13 +5,11 @@ import android.os.Parcelable;
 import android.util.Log;
 
 
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+
 import java.util.ArrayList;
 
 public class TodoTask extends BaseTodo implements Parcelable {
-
-    public TodoTask() {
-
-    }
 
     public enum Priority {
         HIGH(0), MEDIUM(1), LOW(2); // Priority steps must be sorted in the same way like they will be displayed
@@ -42,12 +40,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
         RED
     }
 
-    private enum ReminderTimeStatus {
-        NOT_SET
-    }
-
-    public static final int MAX_PRIORITY = 10;
-
     private String title;
     private boolean done;
     private long id;
@@ -55,16 +47,17 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private Priority priority;
     private long reminderTime = -1;
     private int listPosition; // indicates at what position inside the list this task it placed
-
     private long listIdForeignKey;
-
     private boolean writeBackToDb = false; // true if task was changed and must written back to database
-
-
     protected long deadline;
 
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
+
+    public TodoTask() {
+        super();
+        done = false;
+    }
 
     public TodoTask(Parcel parcel) {
         id = parcel.readLong();
@@ -108,30 +101,12 @@ public class TodoTask extends BaseTodo implements Parcelable {
     }
 
     public int getProgress() {
-        if(subTasks.size() == 0)
-            return progress;
-
-        int numDoneSubTasks = 0;
-        for(TodoSubTask subTask : subTasks) {
-            numDoneSubTasks += subTask.getDone() ? 1 : 0;
-        }
-        return (numDoneSubTasks * MAX_PRIORITY) / subTasks.size();
+        return progress;
     }
 
     public Priority getPriority() {
         return priority;
     }
-
-    public void setWriteDbFlag() {
-        writeBackToDb = true;
-    }
-
-    public int getNumSubtasks() {
-        if (subTasks != null)
-            return subTasks.size();
-        return 0;
-    }
-
 
     public int getListPosition() {
         return listPosition;
@@ -156,17 +131,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
 
             long currentTimeStamp = Helper.getCurrentTimestamp();
             long remTimeToCalc = reminderTime > 0 ? deadline-reminderTime : defaultReminderTime;
-
-            String d = Helper.getDateTime(deadline);
-            String r = String.valueOf(remTimeToCalc / 60 / 60 / 24);
-            String t = Helper.getDateTime(currentTimeStamp);
-
-            Log.i("TASK NAME", name);
-            Log.i("TASK USER REMINDER TIME", String.valueOf(reminderTime));
-            Log.i("TASK DEADLINE ", d + " " + deadline);
-            Log.i("TASK REMINDER ", r + " " + remTimeToCalc);
-            Log.i("TASK TIMESTAMP", t + " " + currentTimeStamp);
-            Log.i("DIFF", Helper.getDateTime(deadline - remTimeToCalc));
 
             if ((currentTimeStamp >= (deadline - remTimeToCalc)) && (deadline > currentTimeStamp))
                 return DeadlineColors.ORANGE;
@@ -237,5 +201,31 @@ public class TodoTask extends BaseTodo implements Parcelable {
     public void setReminderTime(long reminderTime) {
         this.reminderTime = reminderTime;
     }
+
+    public void setAllSubTasksDone(boolean doneSubTask) {
+        for(TodoSubTask subTask : subTasks)
+            subTask.setDone(doneSubTask);
+    }
+
+    // A task is done if the user manually sets it done or when all subtaks are done.
+    // If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
+    public void doneStatusChanged() {
+        boolean doneSubTasks = true;
+
+        int i = 0;
+        while(doneSubTasks && i<subTasks.size()) {
+            doneSubTasks &= subTasks.get(i).getDone();
+            i++;
+        }
+
+
+        if(doneSubTasks != done) {
+            dbState = DBQueryHandler.ObjectStates.UPDATE_DB;
+
+        }
+
+        done = doneSubTasks;
+    }
+
 
 }

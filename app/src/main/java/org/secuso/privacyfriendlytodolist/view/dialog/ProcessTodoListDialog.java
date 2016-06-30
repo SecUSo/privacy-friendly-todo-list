@@ -16,7 +16,6 @@ import org.secuso.privacyfriendlytodolist.view.TodoCallback;
 
 public class ProcessTodoListDialog extends FullScreenDialog {
 
-    private TodoCallback acCallback;
     private ProcessTodoListDialog self = this;
     private Button buttonOkay;
     private Button buttonCancel;
@@ -48,7 +47,12 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
         buttonOkay.setOnClickListener(new OkayButtonListener());
         buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
-        buttonCancel.setOnClickListener(new CancelButtonListener());
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         etName = (EditText) findViewById(R.id.et_todo_list_name);
         etDescription = (EditText) findViewById(R.id.et_todo_list_description);
     }
@@ -68,7 +72,7 @@ public class ProcessTodoListDialog extends FullScreenDialog {
                 if (changesMade(listName, listDescription)) {
                     todoList.setName(listName);
                     todoList.setDescription(listDescription);
-                    acCallback.finish(todoList);
+                    callback.finish(todoList);
                 }
                 self.dismiss();
             }
@@ -87,15 +91,5 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         return true;
     }
 
-    public void setDialogResult(TodoCallback resultCallback) {
-        acCallback = resultCallback;
-    }
-
-    private class CancelButtonListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            self.hide();
-        }
-    }
 
 }

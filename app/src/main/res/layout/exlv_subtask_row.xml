@@ -7,16 +7,42 @@
         android:id="@+id/v_subtask_deadline_color_bar"
         android:layout_width="5dp"
         android:layout_height="0px"
-        android:layout_alignBottom="@+id/tv_subtask_name"
+        android:layout_alignBottom="@+id/v_exlv_subtask_align_anchor"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary" />
+
+    <LinearLayout
+        android:id="@+id/ll_cb_subtask_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="45dp">
+
+        <CheckBox
+            android:id="@+id/cb_subtask_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="0.80"
+            android:scaleY="0.80"
+            android:focusable="false"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_subtask_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/ll_cb_subtask_done"
+        android:paddingTop="7dp"
         android:textStyle="bold" />
+
+    <View
+        android:id="@+id/v_exlv_subtask_align_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_below="@+id/ll_cb_subtask_done"
+        android:layout_toRightOf="@+id/v_urgency_task" />
 
 </RelativeLayout>

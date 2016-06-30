@@ -7,6 +7,9 @@ public abstract class BaseTodo {
     protected String name, description;
     protected DBQueryHandler.ObjectStates dbState;
 
+    public BaseTodo() {
+        dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
+    }
 
     public DBQueryHandler.ObjectStates getDBState() {
         return dbState;
@@ -31,4 +34,5 @@ public abstract class BaseTodo {
     public String getDescription() {
         return description;
     }
+
 }

@@ -21,16 +21,15 @@ public class TodoList extends BaseTodo implements Parcelable{
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
     public TodoList(Parcel parcel) {
+
         id = parcel.readLong();
         name = parcel.readString();
         description = parcel.readString();
         tasks = parcel.readArrayList(null);
-
-        dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
     }
 
     public TodoList() {
-        setDbState(DBQueryHandler.ObjectStates.NO_DB_ACTION);
+        super();
     }
 
     public boolean isDummyList() {

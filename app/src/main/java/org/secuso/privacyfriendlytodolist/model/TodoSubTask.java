@@ -3,30 +3,30 @@ package org.secuso.privacyfriendlytodolist.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by dominik on 19.05.16.
- */
 public class TodoSubTask extends BaseTodo implements Parcelable {
 
-    private int id;
-    private String title;
+    private long id;
+    private long taskIdForeignKey;
+    private String name;
     private boolean done;
 
-    private boolean changed = false; // if true, subtask is written back to database
-
-    public TodoSubTask(int id, String title, boolean done) {
-        this.title = title;
-        this.done = done;
+    public TodoSubTask() {
+        super();
+        done = false;
     }
 
     public TodoSubTask(Parcel parcel) {
-        id = parcel.readInt();
-        title = parcel.readString();
+        id = parcel.readLong();
+        name = parcel.readString();
         done = parcel.readByte() != 0;
     }
 
-    public String getTitle(){
-        return title;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public boolean getDone() {
@@ -35,7 +35,6 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
 
     public void setDone(boolean d) {
         done = d;
-        changed = true;
     }
 
     public static final Parcelable.Creator<TodoSubTask> CREATOR =
@@ -58,12 +57,24 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(title);
+        dest.writeLong(id);
+        dest.writeString(name);
         dest.writeByte((byte) (done ? 1 : 0));
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setTaskId(long taskIdForeignKey) {
+        this.taskIdForeignKey = taskIdForeignKey;
+    }
+
+    public long getTaskId() {
+        return taskIdForeignKey;
     }
 }

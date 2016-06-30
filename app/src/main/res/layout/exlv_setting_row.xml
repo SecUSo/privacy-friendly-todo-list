@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
-        android:background="@mipmap/plus" />
+        android:background="@mipmap/plus_blue" />
 
     <View
         android:id="@+id/v_exlv_setting_separator"

@@ -3,8 +3,6 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.Space;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +11,17 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,11 +31,11 @@ import java.util.HashSet;
 import java.util.Map;
 
 
-public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
+public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     private SharedPreferences prefs;
 
-    private TodoTask longClickedTask;
+    private Tuple<TodoTask, TodoSubTask> longClickedTodo;
 
 
     public enum Filter {
@@ -79,7 +78,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     private Context context;
     private HashMap<TodoTask.Priority, Integer> prioBarPositions = new HashMap<>();
 
-    public ExpandableToDoTaskAdapter(Context context, ArrayList<TodoTask> tasks) {
+    public ExpandableTodoTaskAdapter(Context context, ArrayList<TodoTask> tasks) {
         this.context = context;
 
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -92,11 +91,17 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     public void setLongClickedTaskByPos(int position) {
-        longClickedTask = getTaskByPosition(position);
+        longClickedTodo = Tuple.makePair(getTaskByPosition(position), null);
     }
 
-    public TodoTask getLongClickedTask() {
-        return longClickedTask;
+    public void setLongClickedSubTaskByPos(int groupPosition, int childPosition) {
+        TodoTask task = getTaskByPosition(groupPosition);
+        TodoSubTask subTask = task.getSubTasks().get(childPosition-1);
+        longClickedTodo = Tuple.makePair(task, subTask);
+    }
+
+    public Tuple<TodoTask, TodoSubTask> getLongClickedTodo() {
+        return longClickedTodo;
     }
 
     // interface to outer world
@@ -105,8 +110,8 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     /**
-     * Sets the n-th bit of {@link ExpandableToDoTaskAdapter#sortType} whereas n is the value of {@param type}
-     * After having changed the sorting conditions, you must call {@link ExpandableToDoTaskAdapter#sortTasks}
+     * Sets the n-th bit of {@link ExpandableTodoTaskAdapter#sortType} whereas n is the value of {@param type}
+     * After having changed the sorting conditions, you must call {@link ExpandableTodoTaskAdapter#sortTasks}
      *
      * @param type condition by what tasks will be sorted (one-hot encoding)
      */
@@ -115,8 +120,8 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     /**
-     * Sets the n-th bit of {@link ExpandableToDoTaskAdapter#sortType} whereas n is the value of {@param type}
-     * After having changed the sorting conditions, you must call {@link ExpandableToDoTaskAdapter#sortTasks}
+     * Sets the n-th bit of {@link ExpandableTodoTaskAdapter#sortType} whereas n is the value of {@param type}
+     * After having changed the sorting conditions, you must call {@link ExpandableTodoTaskAdapter#sortTasks}
      *
      * @param type condition by what tasks will be sorted (one-hot encoding)
      */
@@ -149,8 +154,8 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     /**
      * Sort tasks by selected criteria (priority and/or deadline)
-     * This method works on {@link ExpandableToDoTaskAdapter#filteredTasks}. For that reason it is
-     * important to keep {@link ExpandableToDoTaskAdapter#filteredTasks} up-to-date.
+     * This method works on {@link ExpandableTodoTaskAdapter#filteredTasks}. For that reason it is
+     * important to keep {@link ExpandableTodoTaskAdapter#filteredTasks} up-to-date.
      **/
     public void sortTasks() {
 
@@ -194,7 +199,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     // count how many tasks belong to each priority group (tasks are now sorted by priority)
 
     /**
-     * If {@link ExpandableToDoTaskAdapter#sortTasks()} sorted by the priority, this mehod must be
+     * If {@link ExpandableTodoTaskAdapter#sortTasks()} sorted by the priority, this mehod must be
      * called. It computes the position of the dividing bars between the priority ranges. These
      * positions are necessary to distinguish of what group type the current row is.
      */
@@ -309,7 +314,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return 0;
+        return childPosition;
     }
 
     @Override
@@ -380,26 +385,12 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     vh2.done.setTag(currentTask.getId());
                     vh2.done.setChecked(currentTask.getDone());
 
-
                     convertView.setTag(vh2);
 
                 } else {
                     vh2 = (GroupTaskViewHolder) convertView.getTag();
                 }
 
-                vh2.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                        if(buttonView.isPressed()) {
-                            currentTask.setDone(buttonView.isChecked());
-                            currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
-                            notifyDataSetChanged();
-                        }
-                    }
-                });
-
-                // fill header with content
                 vh2.name.setText(currentTask.getName());
                 vh2.progressBar.setProgress(currentTask.getProgress());
                 String deadline;
@@ -407,11 +398,21 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                     deadline = context.getResources().getString(R.string.no_deadline);
                 else
                     deadline = context.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(currentTask.getDeadline());
-
                 vh2.deadline.setText(deadline);
-
                 vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
                 vh2.done.setChecked(currentTask.getDone());
+                vh2.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if(buttonView.isPressed()) {
+                            currentTask.setDone(buttonView.isChecked());
+                            currentTask.setAllSubTasksDone(buttonView.isChecked());
+                            currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+                            notifyDataSetChanged();
+                        }
+                    }
+                });
 
                 break;
             default:
@@ -425,7 +426,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         int type = getChildType(groupPosition, childPosition);
-        TodoTask currentTask = getTaskByPosition(groupPosition);
+        final TodoTask currentTask = getTaskByPosition(groupPosition);
 
         switch (type) {
             case CH_TASK_DESCRIPTION_ROW:
@@ -441,10 +442,11 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                 }
 
                 String description = currentTask.getDescription();
-                if (description == null || description.equals(""))
-                    vh1.taskDescription.setText(context.getString(R.string.no_task_description));
-                else
+                if (description != null && !description.equals(""))
                     vh1.taskDescription.setText(description);
+                else
+                    vh1.taskDescription.setVisibility(View.GONE);
+                    //vh1.taskDescription.setText(context.getString(R.string.no_task_description));
                 vh1.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
                 break;
@@ -463,24 +465,53 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
                 vh2.addSubTaskButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(context, "Add a new subtask", Toast.LENGTH_SHORT).show();
+                    ProcessTodoSubTaskDialog dialog = new ProcessTodoSubTaskDialog(context);
+                    dialog.setDialogResult(new TodoCallback() {
+                        @Override
+                        public void finish(BaseTodo b) {
+                            if(b instanceof TodoSubTask) {
+                                TodoSubTask newSubTask = (TodoSubTask) b;
+                                newSubTask.setTaskId(currentTask.getId());
+                                currentTask.getSubTasks().add(newSubTask);
+
+                                notifyDataSetChanged();
+                                Log.i("SUBTASK CREATION", currentTask.getName());
+                            }
+                        }
+                    });
+                    dialog.show();
                     }
                 });
                 vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
                 break;
             default:
+                final TodoSubTask currentSubTask = currentTask.getSubTasks().get(childPosition - 1);
                 SubTaskViewHolder vh3 = new SubTaskViewHolder();
                 if (convertView == null) {
                     convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_subtask_row, parent, false);
                     vh3.subtaskName = (TextView) convertView.findViewById(R.id.tv_subtask_name);
                     vh3.deadlineColorBar = convertView.findViewById(R.id.v_subtask_deadline_color_bar);
+                    vh3.done = (CheckBox) convertView.findViewById(R.id.cb_subtask_done);
                     convertView.setTag(vh3);
                 } else {
                     vh3 = (SubTaskViewHolder) convertView.getTag();
                 }
 
-                vh3.subtaskName.setText(currentTask.getSubTasks().get(childPosition - 1).getTitle());
+                vh3.done.setChecked(currentSubTask.getDone());
+                vh3.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        if(buttonView.isPressed()) {
+                            currentSubTask.setDone(buttonView.isChecked());
+                            currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
+                            currentSubTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+                            notifyDataSetChanged();
+                        }
+                    }
+                });
+                vh3.subtaskName.setText(currentSubTask.getName());
                 vh3.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
         }
@@ -489,7 +520,8 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+
+        return childPosition > 0 && childPosition < filteredTasks.get(groupPosition).getSubTasks().size() + 1;
     }
 
 
@@ -508,6 +540,7 @@ public class ExpandableToDoTaskAdapter extends BaseExpandableListAdapter {
 
     private class SubTaskViewHolder {
         public TextView subtaskName;
+        public CheckBox done;
         public View deadlineColorBar;
     }
 

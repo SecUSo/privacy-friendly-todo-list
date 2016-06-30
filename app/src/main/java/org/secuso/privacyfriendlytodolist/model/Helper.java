@@ -3,6 +3,11 @@ package org.secuso.privacyfriendlytodolist.model;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -57,7 +62,7 @@ public class Helper {
 
     public static String priority2String(Context context, Priority prio) {
 
-        switch(prio) {
+        switch (prio) {
             case HIGH:
                 return context.getResources().getString(R.string.high_priority);
             case MEDIUM:
@@ -69,4 +74,19 @@ public class Helper {
 
         }
     }
+
+    public static TextView getMenuHeader(Context context) {
+        TextView blueBackground = new TextView(context);
+        blueBackground.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        blueBackground.setText(context.getResources().getString(R.string.select_option));
+        blueBackground.setTextColor(ContextCompat.getColor(context, R.color.white));
+        blueBackground.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        blueBackground.setGravity(Gravity.CENTER);
+
+        return blueBackground;
+    }
 }
+

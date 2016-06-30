@@ -5,10 +5,11 @@ import android.content.Context;
 import android.view.Window;
 import android.view.WindowManager;
 
-/**
- * Created by dominik on 09.06.16.
- */
+import org.secuso.privacyfriendlytodolist.view.TodoCallback;
+
 abstract public class FullScreenDialog extends Dialog {
+
+    protected TodoCallback callback;
 
     public FullScreenDialog(Context context, int layoutId) {
         super(context);
@@ -22,6 +23,10 @@ abstract public class FullScreenDialog extends Dialog {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.horizontalMargin = 40;
         window.setAttributes(lp);
+    }
+
+    public void setDialogResult(TodoCallback resultCallback) {
+        callback = resultCallback;
     }
 
 }

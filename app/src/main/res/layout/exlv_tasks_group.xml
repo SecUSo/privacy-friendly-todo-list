@@ -1,7 +1,3 @@
-
-
-
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_exlv_task_group_root"
     android:layout_width="match_parent"
@@ -18,7 +14,7 @@
         android:background="@color/colorPrimary" />
 
     <LinearLayout
-        android:id="@+id/ll_cb_done"
+        android:id="@+id/ll_cb_task_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -30,8 +26,6 @@
             android:id="@+id/cb_task_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleX="0.80"
-            android:scaleY="0.80"
             android:focusable="false" />
 
     </LinearLayout>
@@ -47,7 +41,7 @@
         android:id="@+id/tv_exlv_task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ll_cb_done"
+        android:layout_alignLeft="@+id/ll_cb_task_done"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="10dp"
         android:text="Task Name"
@@ -74,7 +68,7 @@
         android:layout_marginRight="10dp"
         android:max="100"
         android:indeterminate="false"
-        android:layout_marginTop="10dp" />
+         />
 
     <View
         android:id="@+id/v_exlv_header_separator"

@@ -34,8 +34,6 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     private TodoTask.Priority defaultPriority = TodoTask.Priority.MEDIUM;
 
-    private TodoCallback taskToFragCallback;
-
     private TodoTask task;
 
 
@@ -126,7 +124,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     task.setPriority(taskPriority);
                     task.setProgress(taskProgress);
                     task.setReminderTime(reminderTime);
-                    taskToFragCallback.finish(task);
+                    callback.finish(task);
                     ProcessTodoTaskDialog.this.dismiss();
                 }
             }
@@ -225,10 +223,4 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
         return super.onMenuItemSelected(featureId, item);
     }
-
-    public void setDialogResult(TodoCallback resultCallback) {
-        taskToFragCallback = resultCallback;
-    }
-
-
 }
