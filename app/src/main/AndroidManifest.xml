@@ -24,6 +24,7 @@
             android:label="@string/settings" />
         <receiver android:name=".model.ReminderAlarmReceiver" />
         <service android:name=".model.NotifyService" />
+        <activity android:name=".view.calendar.CalendarActivity" />
     </application>
 
 </manifest>

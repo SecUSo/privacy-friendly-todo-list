@@ -10,6 +10,11 @@
                 android:title="@string/home" />
 
             <item
+                android:id="@+id/menu_calendar_view"
+                android:icon="@android:drawable/ic_menu_my_calendar"
+                android:title="@string/calendar_view" />
+
+            <item
                 android:id="@+id/menu_show_all_tasks"
                 android:icon="@mipmap/ic_star_black_24dp"
                 android:title="@string/show_all_tasks" />
