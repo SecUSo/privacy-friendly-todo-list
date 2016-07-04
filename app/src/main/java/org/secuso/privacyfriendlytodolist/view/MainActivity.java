@@ -27,6 +27,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,12 +52,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false))
+        {
+            PinDialog dialog = new PinDialog(this);
+            dialog.setCallback(new PinDialog.PinCallback() {
+                @Override
+                public void accepted() {
+                    initActivity();
+                }
+
+                @Override
+                public void declined() {
+                    finish();
+                }
+            });
+            dialog.show();
+        }
+        else {
+            initActivity();
+        }
+    }
+
+    void initActivity() {
         dbHelper = new DatabaseHelper(this);
         getTodoLists(true);
 
         Bundle extras = getIntent().getExtras();
 
-        if(extras != null && TodoTasksFragment.KEY.equals(extras.getString(FRAGMENT_CHOICE))) {
+        if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(FRAGMENT_CHOICE))) {
             TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
             Bundle bundle = new Bundle();
             bundle.putLong(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());

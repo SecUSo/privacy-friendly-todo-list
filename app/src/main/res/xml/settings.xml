@@ -9,9 +9,20 @@
         android:title="@string/default_reminder_time" />
 
     <CheckBoxPreference
-        android:key="pref_password_requirement"
+        android:key="pref_pin_enabled"
         android:defaultValue="false"
-        android:title="@string/password_required" />
+        android:title="@string/pin_enabled" />
+
+    <EditTextPreference
+        android:defaultValue=""
+        android:dependency="pref_pin_enabled"
+        android:dialogMessage="Add a numeric PIN to provide access to enter the app. The PIN must be 4 digits."
+        android:dialogTitle="Set PIN"
+        android:inputType="numberPassword"
+        android:key="pref_pin"
+        android:maxLength="4"
+        android:password="true"
+        android:title="@string/set_pin" />
 
     <!--TODO NumberPicker for reapting interval of alarm notifications -->
 

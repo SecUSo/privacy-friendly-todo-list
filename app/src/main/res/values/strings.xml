@@ -66,7 +66,10 @@
 	<string name="todo_name_must_not_be_empty">To-Do name must not be empty!</string>
 	<string name="no_changes_in_db">No changes in database.</string>
 	<string name="home">Home</string>
-	<string name="password_required">Password required on startup</string>
+	<string name="pin_enabled">PIN required on startup</string>
+	<string name="set_pin">Set PIN</string>
+	<string name="enter_pin">Enter PIN</string>
+	<string name="wrong_pin">Wrong PIN</string>
 	<string name="default_reminder_time">Default reminder time</string>
 	<string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time!</string>
 	<string name="deadline_smaller_reminder">The deadline must not be before the reminder time.</string>
