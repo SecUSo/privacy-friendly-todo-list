@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class TodoList extends BaseTodo implements Parcelable{
 
+    public static final String PARCELABLE_KEY = "PARCELABLE_KEY_FOR_TODO_LIST";
     public static final String UNIQUE_DATABASE_ID = "CURRENT_TODO_LIST_ID";
     public static final long DUMMY_LIST_ID = -3; // -1 is often used for error codes
 
@@ -129,6 +130,7 @@ public class TodoList extends BaseTodo implements Parcelable{
             return TodoTask.DeadlineColors.ORANGE;
         return TodoTask.DeadlineColors.BLUE;
     }
+
 
 
 }

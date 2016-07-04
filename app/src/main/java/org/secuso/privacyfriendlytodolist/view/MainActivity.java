@@ -27,6 +27,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -118,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
+            startActivity(intent);
+        } else if (id == R.id.menu_calendar_view) {
+            Intent intent = new Intent(this, CalendarActivity.class);
+            intent.putExtra(TodoList.PARCELABLE_KEY, todoLists);
             startActivity(intent);
         } else if (id == R.id.menu_show_all_tasks) {
 
