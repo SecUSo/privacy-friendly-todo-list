@@ -92,10 +92,10 @@ public class TodoTasksFragment extends Fragment {
                 addListDialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
-                        if (b instanceof TodoTask) {
-                            todoTasks.add((TodoTask) b);
-                            taskAdapter.notifyDataSetChanged();
-                        }
+                    if (b instanceof TodoTask) {
+                        todoTasks.add((TodoTask) b);
+                        taskAdapter.notifyDataSetChanged();
+                    }
                     }
                 });
                 addListDialog.show();
@@ -115,15 +115,15 @@ public class TodoTasksFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-                    int childPosition = ExpandableListView.getPackedPositionChild(id);
-                    taskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
-                } else {
-                    taskAdapter.setLongClickedTaskByPos(position);
-                }
+            if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+                int childPosition = ExpandableListView.getPackedPositionChild(id);
+                taskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+            } else {
+                taskAdapter.setLongClickedTaskByPos(position);
+            }
 
-                return false;
+            return false;
             }
 
         });
@@ -192,10 +192,10 @@ public class TodoTasksFragment extends Fragment {
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
-                        if(b instanceof TodoTask) {
-                            taskAdapter.notifyDataSetChanged();
-                            Log.i(TAG, "subtask altered");
-                        }
+                    if(b instanceof TodoTask) {
+                        taskAdapter.notifyDataSetChanged();
+                        Log.i(TAG, "subtask altered");
+                    }
                     }
                 });
                 dialog.show();
@@ -217,10 +217,10 @@ public class TodoTasksFragment extends Fragment {
 
                     @Override
                     public void finish(BaseTodo alteredTask) {
-                        if(alteredTask instanceof TodoTask) {
-                            taskAdapter.notifyDataSetChanged();
-                            Log.i(TAG, "task altered");
-                        }
+                    if(alteredTask instanceof TodoTask) {
+                        taskAdapter.notifyDataSetChanged();
+                        Log.i(TAG, "task altered");
+                    }
                     }
                 });
                 editTaskDialog.show();

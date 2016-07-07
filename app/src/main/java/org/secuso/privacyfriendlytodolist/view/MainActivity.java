@@ -3,7 +3,6 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -16,9 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
@@ -27,13 +24,12 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
-import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -144,9 +140,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, Settings.class);
             startActivity(intent);
         } else if (id == R.id.menu_calendar_view) {
-            Intent intent = new Intent(this, CalendarActivity.class);
-            intent.putExtra(TodoList.PARCELABLE_KEY, todoLists);
-            startActivity(intent);
+            CalendarFragment fragment = new CalendarFragment();
+            setFragment(fragment);
         } else if (id == R.id.menu_show_all_tasks) {
 
             // create a dummy list containg all tasks
@@ -261,5 +256,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "No alarm set for " + task.getName());
         }
 
+    }
+
+    public void setDummyList(TodoList dummyList) {
+        this.dummyList = dummyList;
     }
 }

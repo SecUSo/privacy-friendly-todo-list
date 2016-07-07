@@ -1,7 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view.calendar;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.TodoTask;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,13 +21,10 @@ public class CalendarView extends LinearLayout {
     private static final int MAX_DAY_COUNT = 42;
     private static final String DATE_FORMAT = "MMM yyyy";
 
-    private ArrayList todoTasks;
-
     private Calendar currentDate;
 
     private CalendarGridAdapter gridAdapter;
 
-    private LinearLayout dayLine;
     private ImageView buttonPrevMonth, buttonNextMonth;
     private TextView tvCurrentMonth;
     private GridView calendarGrid;
@@ -40,33 +32,38 @@ public class CalendarView extends LinearLayout {
 
     public CalendarView(Context context) {
         super(context);
-
-        currentDate = Calendar.getInstance();
-
         initGui(context);
-        initValues();
-        updateCalendar();
     }
 
 
     public CalendarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         initGui(context);
-        initValues();
-        updateCalendar();
     }
 
     public CalendarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         initGui(context);
-        initValues();
-        updateCalendar();
     }
 
-    private void initValues() {
-        currentDate = Calendar.getInstance();
+    public void setGridAdapter(CalendarGridAdapter adapter) {
+        this.gridAdapter = adapter;
+        calendarGrid.setAdapter(gridAdapter);
+        refresh();
+    }
+
+    public void setDayOnClickListener(AdapterView.OnItemClickListener listener) {
+        calendarGrid.setOnItemClickListener(listener);
+    }
+
+    public void setNextMonthOnClickListener(OnClickListener listener) {
+        buttonNextMonth.setOnClickListener(listener);
+    }
+
+
+
+    public void setPrevMontOnClickListener(OnClickListener listener) {
+        buttonPrevMonth.setOnClickListener(listener);
 
     }
 
@@ -77,46 +74,18 @@ public class CalendarView extends LinearLayout {
 
         inflater.inflate(R.layout.calendar, this);
 
-        dayLine = (LinearLayout) findViewById(R.id.ll_day_line);
+        currentDate = Calendar.getInstance();
+
+
         buttonPrevMonth = (ImageView) findViewById(R.id.iv_prev_month);
         buttonNextMonth = (ImageView) findViewById(R.id.iv_next_month);
         tvCurrentMonth = (TextView) findViewById(R.id.tv_current_month);
         calendarGrid = (GridView)findViewById(R.id.gv_calendargrid);
-
-
-        buttonPrevMonth.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                currentDate.add(Calendar.MONTH, -1);
-                updateCalendar();
-
-            }
-        });
-
-        buttonNextMonth.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                currentDate.add(Calendar.MONTH, 1);
-                updateCalendar();
-            }
-        });
-
-        calendarGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Date selectedDate = gridAdapter.getItem(position);
-                Toast.makeText(getContext(), selectedDate.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        gridAdapter = new CalendarGridAdapter(getContext(), R.layout.calendar_day);
-        calendarGrid.setAdapter(gridAdapter);
     }
 
 
-    private void updateCalendar() {
+
+    public void refresh() {
         Calendar calendar = (Calendar) currentDate.clone();
 
         int selectedMonth = calendar.get(Calendar.MONTH);
@@ -142,10 +111,6 @@ public class CalendarView extends LinearLayout {
         // update title
         tvCurrentMonth.setText(getMonth(currentDate.get(Calendar.MONTH)) + " " + currentDate.get(Calendar.YEAR));
 
-    }
-
-    public void setTodoTasks(ArrayList<TodoTask> todoTasks) {
-        gridAdapter.setTodos(todoTasks);
     }
 
     private String getMonth(int month) {
@@ -178,5 +143,9 @@ public class CalendarView extends LinearLayout {
             default:
                 return "UNKNOWN MONTH";
         }
+    }
+
+    public void incMonth(int i) {
+        currentDate.add(Calendar.MONTH, i);
     }
 }

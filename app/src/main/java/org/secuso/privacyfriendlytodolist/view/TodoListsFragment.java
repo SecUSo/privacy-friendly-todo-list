@@ -36,16 +36,11 @@ public class TodoListsFragment extends Fragment {
 
     private final static String TAG = TodoListsFragment.class.getSimpleName();
 
-    private ArrayList<TodoList> todoLists;
     private TodoRecyclerView mRecyclerView;
     private TodoRecyclerView.LayoutManager mLayoutManager;
     private TodoListAdapter adapter;
-
     private MainActivity containerActivity;
-
-    private enum Direction {LEFT, RIGHT;}
-    private float historicX = Float.NaN, historicY = Float.NaN;
-    private static final int DELTA = 50;
+    private ArrayList<TodoList> todoLists;
 
 
     @Override
@@ -71,34 +66,6 @@ public class TodoListsFragment extends Fragment {
         adapter = new TodoListAdapter(getActivity(), todoLists);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setEmptyView(rootView.findViewById(R.id.tv_rv_empty_view));
-        /*mRecyclerView.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                Log.i("TodoListsFragment", event.getAction() + " at "+ event.getX() + "x"+event.getY());
-                switch (event.getAction())
-                {
-                    case MotionEvent.ACTION_DOWN:
-                        historicX = event.getX();
-                        historicY = event.getY();
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        if (event.getX() - historicX < -DELTA)
-                        {
-                            Log.i("TodoListsFragment", "slide left");
-                            return true;
-                        }
-                        else if (event.getX() - historicX > DELTA)
-                        {
-                            Log.i("TodoListsFragment", "slide right");
-                            return true;
-                        } break;
-                    default: return false;
-                }
-                return false;
-            }
-        });*/
         registerForContextMenu(mRecyclerView);
 
         // floating action button setup
@@ -157,7 +124,6 @@ public class TodoListsFragment extends Fragment {
 
         return super.onContextItemSelected(item);
     }
-
 
 
     @Override

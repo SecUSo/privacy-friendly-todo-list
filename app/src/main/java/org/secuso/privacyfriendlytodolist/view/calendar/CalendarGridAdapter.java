@@ -3,7 +3,7 @@ package org.secuso.privacyfriendlytodolist.view.calendar;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.v4.content.ContextCompat;
-import android.text.Layout;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +14,26 @@ import android.widget.TextView;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 
-import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 
+/*
+ * This calender marks a day if there is a deadline of a task which is not yet finished.
+ */
 public class CalendarGridAdapter extends ArrayAdapter<Date>{
 
     private ArrayList<TodoTask> todoTasks;
-    private int currentMonth;
     private LayoutInflater inflater;
-    private DateFormat dateFormat = new SimpleDateFormat("d");
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("d");
     private ColorStateList oldColors;
+    private int currentMonth;
+    private HashMap<String, ArrayList<TodoTask>> tasksPerDay = new HashMap<>();
 
     public CalendarGridAdapter(Context context, int resource) {
         super(context, resource, new ArrayList<Date>());
@@ -51,7 +58,6 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
             dayViewHolder = new CalendarDayViewHolder();
 
             view = inflater.inflate(R.layout.calendar_day, parent, false);
-            dayViewHolder.dayStatus = view.findViewById(R.id.v_calendar_todo_status);
             dayViewHolder.dayText = (TextView) view.findViewById(R.id.tv_calendar_day_content);
             oldColors = dayViewHolder.dayText.getTextColors();
 
@@ -62,7 +68,6 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
         }
 
         // grey day out if it is outside the current month
-
         if(posCal.get(Calendar.MONTH) != currentMonth) {
             dayViewHolder.dayText.setTextColor(ContextCompat.getColor(getContext(), R.color.grey));
         } else if(sameDay(posCal, todayCal)){
@@ -71,12 +76,16 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
             dayViewHolder.dayText.setTextColor(oldColors);
         }
 
+        // add color bar if a task has its deadline on this day
+        String day = DateFormat.format("dd-MM-yyyy", dateAtPos).toString();
+        if(tasksPerDay.get(day) != null) {
+            dayViewHolder.dayText.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.border));
+        } else {
+            dayViewHolder.dayText.setBackgroundResource(0);
+        }
+
         dayViewHolder.dayText.setText(dateToStr(posCal));
-        dayViewHolder.dayStatus.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-
-
         return view;
-
     }
 
     private boolean sameDay(Calendar c1, Calendar c2) {
@@ -93,12 +102,11 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
         this.currentMonth = month;
     }
 
-    public void setTodos(ArrayList<TodoTask> todos) {
-        this.todoTasks = todos;
+    public void setTodoTasks(HashMap<String, ArrayList<TodoTask>> tasksPerDay) {
+        this.tasksPerDay = tasksPerDay;
     }
 
     private class CalendarDayViewHolder {
-        public View dayStatus;
         public TextView dayText;
     }
 }
