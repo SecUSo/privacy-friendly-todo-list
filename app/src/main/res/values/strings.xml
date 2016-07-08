@@ -80,7 +80,7 @@
 	<string name="error_removing_subtask">Subtask could not be removed from the database.</string>
 	<string name="error_removing_task">Could not remove todo task from the database.</string>
 	<string name="is_due">is due.</string>
-	<string name="task_deadline">Task deadline:</string>
+	<string name="task_deadline">Task deadline</string>
 	<string name="calendar_view">Calendar View</string>
 	<string name="monday">Monday</string>
 	<string name="sunday_abbr">SUN</string>
@@ -104,4 +104,8 @@
 	<string name="november">November</string>
 	<string name="december">December</string>
 	<string name="no_deadline_today">There are no deadlines at this day.</string>
+	<string name="deadline_approaching">Deadline is approaching:</string>
+	<string name="multiple_deadlines_approaching">Multiple deadlines are approaching.</string>
+	<string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
+	<string name="task_to_db_error">Error while inserting new task into the database.</string>
 </resources>

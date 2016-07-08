@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 public class TodoSubTask extends BaseTodo implements Parcelable {
 
-    private long id;
     private String name;
     private boolean done;
     private long taskIdForeignKey;
@@ -16,7 +15,7 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
     }
 
     public TodoSubTask(Parcel parcel) {
-        id = parcel.readLong();
+        id = parcel.readInt();
         name = parcel.readString();
         done = parcel.readByte() != 0;
         taskIdForeignKey = parcel.readLong();
@@ -58,18 +57,10 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeByte((byte) (done ? 1 : 0));
         dest.writeLong(taskIdForeignKey);
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void setTaskId(long taskIdForeignKey) {

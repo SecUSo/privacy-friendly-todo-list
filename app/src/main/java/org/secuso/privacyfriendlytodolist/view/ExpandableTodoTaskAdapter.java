@@ -36,6 +36,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     private SharedPreferences prefs;
 
+    // left item: task that was long clicked
+    // right item: subtask that was long clicked
     private Tuple<TodoTask, TodoSubTask> longClickedTodo;
 
 
@@ -468,9 +470,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                         public void finish(BaseTodo b) {
                             if(b instanceof TodoSubTask) {
                                 TodoSubTask newSubTask = (TodoSubTask) b;
-                                newSubTask.setTaskId(currentTask.getId());
                                 currentTask.getSubTasks().add(newSubTask);
-
                                 notifyDataSetChanged();
                             }
                         }

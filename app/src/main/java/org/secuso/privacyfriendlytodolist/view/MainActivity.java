@@ -1,9 +1,10 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,29 +19,39 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.NotifyService;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.model.ReminderService;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+
+
+/*
+    TODO Maintain a list which modified objects to avoid checking all objects if they need to be rewritten to the database.
+ */
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String FRAGMENT_CHOICE = "fragment_choice" ;
+    public static final String FRAGMENT_CHOICE = "fragment_choice";
 
     private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
     private ArrayList<TodoList> todoLists = new ArrayList<>();
 
     private DatabaseHelper dbHelper;
+    private ReminderService reminderService;
+
+    // reference to clicked list set by TodoListsFragment.
+    private TodoList clickedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +60,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false))
-        {
+        securityCheck();
+    }
+
+    private void securityCheck() {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false)) {
             PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
@@ -64,14 +78,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
             dialog.show();
-        }
-        else {
+        } else {
             initActivity();
         }
     }
 
     void initActivity() {
-        dbHelper = new DatabaseHelper(this);
+
+        dbHelper = DatabaseHelper.getInstance(this);
         getTodoLists(true);
 
         Bundle extras = getIntent().getExtras();
@@ -79,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(FRAGMENT_CHOICE))) {
             TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
             Bundle bundle = new Bundle();
-            bundle.putLong(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
+            bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
             bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);
@@ -144,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setFragment(fragment);
         } else if (id == R.id.menu_show_all_tasks) {
 
-            // create a dummy list containg all tasks
+            // create a dummy list containing all tasks
             ArrayList<TodoTask> allTasks = new ArrayList<>();
-            for(TodoList currentList : todoLists)
+            for (TodoList currentList : todoLists)
                 allTasks.addAll(currentList.getTasks());
 
             dummyList = new TodoList();
@@ -164,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
-        } else if(id == R.id.menu_home) {
+        } else if (id == R.id.menu_home) {
             finish();
             startActivity(getIntent());
         }
@@ -172,6 +186,65 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void deleteMe(int index) {
+        TodoList list1 = new TodoList();
+        list1.setName("Testliste " + index);
+        list1.setDescription("Beschreibung von Testliste " + index);
+        sendToDatabase(list1);
+        TodoTask task1 = new TodoTask();
+        task1.setName("Task 1 in Liste " + index);
+        task1.setDescription("Ein Beschreibungstext");
+        task1.setListId(list1.getId());
+        TodoTask task2 = new TodoTask();
+        task2.setName("Task 2 in Liste " + index);
+        task2.setListId(list1.getId());
+        sendToDatabase(task1);
+        sendToDatabase(task2);
+        TodoSubTask subTask1 = new TodoSubTask();
+        subTask1.setName("Subtask 1 von Task 1 in Liste " + index);
+        subTask1.setTaskId(task1.getId());
+        sendToDatabase(subTask1);
+        TodoSubTask subTask2 = new TodoSubTask();
+        subTask2.setName("Subtask 2 von Task 1 in Liste " + index);
+        subTask2.setTaskId(task1.getId());
+        sendToDatabase(subTask2);
+        TodoSubTask subTask3 = new TodoSubTask();
+        subTask3.setName("Subtask 1 von Task 2 in Liste " + index);
+        subTask3.setTaskId(task2.getId());
+        sendToDatabase(subTask3);
+    }
+
+    @Override
+    protected void onResume() {
+
+        if (reminderService == null) {
+            bindToReminderService();
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if (reminderService != null) {
+            unbindService(reminderServiceConnection);
+            reminderService = null;
+            Log.i(TAG, "service is now null");
+        }
+
+        super.onDestroy();
+    }
+
+    private void bindToReminderService() {
+
+        Log.i(TAG, "bindToReminderService()");
+
+        Intent intent = new Intent(this, ReminderService.class);
+        bindService(intent, reminderServiceConnection, 0); // no Context.BIND_AUTO_CREATE, because service will be started by startService and thus live longer than this activity
+        startService(intent);
+
     }
 
     @Override
@@ -185,80 +258,100 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public ArrayList<TodoList> getTodoLists(boolean reload) {
-        if(reload)
+        if (reload)
             todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
 
         return todoLists;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        for(TodoList currentList : todoLists) {
-            for(TodoTask currentTask : currentList.getTasks()) {
-                setReminderAlarmNotifications(currentTask);
-            }
-        }
-    }
 
     public DatabaseHelper getDbHelper() {
         return dbHelper;
     }
 
-    public TodoList getListByID(long currentListID) {
-
-        if(currentListID == TodoList.DUMMY_LIST_ID)
-            return dummyList;
-
-        for(TodoList currentList : todoLists)
-            if(currentList.getId() == currentListID)
-                return currentList;
-
-        throw new IllegalArgumentException("Id " + String.valueOf(currentListID + " does not belong to any todo list."));
-
-    }
-
-
-    public void syncWithDatabase() {
-
-        // write new data back to the database
-        for(TodoList currentList : todoLists) {
-            long id = DBQueryHandler.saveTodoListInDb(getDbHelper().getWritableDatabase(), currentList);
-            if(id == -1)
-                Log.e(TAG, getString(R.string.list_to_db_error));
-            else if(id == DBQueryHandler.NO_CHANGES)
-                Log.i(TAG, getString(R.string.no_changes_in_db));
-            else
-                currentList.setId(id);
-        }
-    }
-
-
-    private void setReminderAlarmNotifications(TodoTask task) {
-
-        long reminderTimeStamp = task.getReminderTime();
-
-        if(!task.getDone() && task.getDeadline()*1000 > Helper.getCurrentTimestamp() && reminderTimeStamp > 0) {
-
-            Intent alarmIntent = new Intent(this, NotifyService.class);
-            alarmIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, alarmIntent, 0);
-
-            Calendar calendar = Calendar.getInstance();
-            Date date = new Date(reminderTimeStamp*1000);
-            calendar.setTime(date);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-
-            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis()/1000));
-
-        } else {
-            Log.i(TAG, "No alarm set for " + task.getName());
-        }
-
-    }
-
     public void setDummyList(TodoList dummyList) {
         this.dummyList = dummyList;
+    }
+
+    private ServiceConnection reminderServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            Log.d("ServiceConnection","connected");
+            reminderService = ((ReminderService.ReminderServiceBinder) binder).getService();
+        }
+        //binder comes from server to communicate with method's of
+
+        public void onServiceDisconnected(ComponentName className) {
+            Log.d("ServiceConnection","disconnected");
+            reminderService = null;
+        }
+    };
+
+    public TodoList getClickedList() {
+        return clickedList;
+    }
+
+    public void setClickedList(TodoList clickedList) {
+        this.clickedList = clickedList;
+    }
+
+    public void notifyReminderService(TodoTask currentTask) {
+
+        // TODO This method is called from other fragments as well (e.g. after opening MainActivity by reminder). In such cases the service is null and alarms cannot be updated. Fix this!
+
+        if(reminderService != null) {
+
+            // The first two conditions should be always true as it is not possible to set a reminder time which violates theses conditions.
+            if(currentTask.getDeadline() > 0 && currentTask.getReminderTime() < currentTask.getDeadline() && currentTask.getReminderTime() >= Helper.getCurrentTimestamp()) {
+                reminderService.processTask(currentTask);
+            } else {
+                Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
+            }
+
+        } else {
+            Log.i(TAG, "Service is null. Cannot update alarms");
+        }
+    }
+
+    // returns true if object was created in the database
+    public boolean sendToDatabase(BaseTodo todo) {
+
+        int databaseID = -5;
+        String errorMessage = "";
+
+        // call appropriate method depending on type
+        if(todo instanceof TodoList) {
+            databaseID = DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), (TodoList) todo);
+            errorMessage = getString(R.string.list_to_db_error);
+        } else if (todo instanceof TodoTask) {
+            databaseID = DBQueryHandler.saveTodoTaskInDb(dbHelper.getWritableDatabase(), (TodoTask) todo);
+            errorMessage = getString(R.string.task_to_db_error);
+        } else if (todo instanceof TodoSubTask) {
+            databaseID = DBQueryHandler.saveTodoSubTaskInDb(dbHelper.getWritableDatabase(), (TodoSubTask) todo);
+            errorMessage = getString(R.string.subtask_to_db_error);
+        } else {
+            throw new IllegalArgumentException("Cannot save unknown descendant of BaseTodo in the database.");
+        }
+
+
+        // set unique database id (primary key) to the current object
+        if(databaseID == -1) {
+            Log.e(TAG, errorMessage);
+            return false;
+        }
+        else if(databaseID != DBQueryHandler.NO_CHANGES){
+            todo.setId(databaseID);
+            return true;
+        }
+
+        return false;
+    }
+
+    public TodoList getListByID(int id) {
+        for(TodoList currentList : todoLists) {
+            if(currentList.getId() == id)
+                return currentList;
+        }
+
+        return null;
     }
 }

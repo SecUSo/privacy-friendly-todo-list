@@ -96,14 +96,12 @@ public class CalendarFragment extends Fragment {
         tasksPerDay.clear();
         for(TodoList list : todoLists) {
             for(TodoTask task : list.getTasks()) {
-                if(!task.getDone()) {
-                    long deadline = task.getDeadline();
-                    String key = absSecondsToDate(deadline);
-                    if(!tasksPerDay.containsKey(key)) {
-                        tasksPerDay.put(key, new ArrayList<TodoTask>());
-                    }
-                    tasksPerDay.get(key).add(task);
+                long deadline = task.getDeadline();
+                String key = absSecondsToDate(deadline);
+                if(!tasksPerDay.containsKey(key)) {
+                    tasksPerDay.put(key, new ArrayList<TodoTask>());
                 }
+                tasksPerDay.get(key).add(task);
             }
         }
 

@@ -89,7 +89,16 @@ public class TodoListsFragment extends Fragment {
             addListDialog.show();
             }
         });
+    }
 
+    @Override
+    public void onPause() {
+
+        for (TodoList currentList : todoLists) {
+            containerActivity.sendToDatabase(currentList);
+        }
+
+        super.onPause();
     }
 
     @Override
@@ -105,15 +114,14 @@ public class TodoListsFragment extends Fragment {
 
                     @Override
                     public void finish(BaseTodo alterdList) {
-                        if(alterdList instanceof TodoList) {
-                            adapter.notifyDataSetChanged();
-                        }
+                    if(alterdList instanceof TodoList) {
+                        adapter.notifyDataSetChanged();
+                    }
                     }
                 });
                 addListDialog.show();
                 break;
             case R.id.delete_list:
-
                 DBQueryHandler.deleteTodoList(containerActivity.getDbHelper().getWritableDatabase(), todoList);
                 todoLists.remove(todoList);
                 adapter.notifyDataSetChanged();

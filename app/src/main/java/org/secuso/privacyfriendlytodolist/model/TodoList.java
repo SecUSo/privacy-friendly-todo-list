@@ -14,16 +14,13 @@ public class TodoList extends BaseTodo implements Parcelable{
 
     public static final String PARCELABLE_KEY = "PARCELABLE_KEY_FOR_TODO_LIST";
     public static final String UNIQUE_DATABASE_ID = "CURRENT_TODO_LIST_ID";
-    public static final long DUMMY_LIST_ID = -3; // -1 is often used for error codes
-
-
-    private long id; // -1 indicates a dummy list. A dummy list does not exist in the database
+    public static final int DUMMY_LIST_ID = -3; // -1 is often used for error codes
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
     public TodoList(Parcel parcel) {
 
-        id = parcel.readLong();
+        id = parcel.readInt();
         name = parcel.readString();
         description = parcel.readString();
         parcel.readList(tasks, TodoTask.class.getClassLoader());
@@ -41,11 +38,6 @@ public class TodoList extends BaseTodo implements Parcelable{
         id = DUMMY_LIST_ID;
     }
 
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public int getSize() {
         return tasks.size();
     }
@@ -60,10 +52,6 @@ public class TodoList extends BaseTodo implements Parcelable{
 
     public int getColor() {
         return Color.BLACK;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public int getDoneTodos() {
@@ -93,7 +81,7 @@ public class TodoList extends BaseTodo implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(description);
         dest.writeList(tasks);
@@ -104,9 +92,11 @@ public class TodoList extends BaseTodo implements Parcelable{
         if(tasks.size() > 0 ) {
 
             minDeadLine = tasks.get(0).getDeadline();
-            for(int i=1; i<tasks.size(); i++)
-                if(tasks.get(i).getDeadline() < minDeadLine)
-                    minDeadLine = tasks.get(i).getDeadline();
+            for(int i=1; i<tasks.size(); i++) {
+                long possNewDeadline = tasks.get(i).getDeadline();
+                if (possNewDeadline > 0 && possNewDeadline < minDeadLine)
+                    minDeadLine = possNewDeadline;
+            }
 
         }
 

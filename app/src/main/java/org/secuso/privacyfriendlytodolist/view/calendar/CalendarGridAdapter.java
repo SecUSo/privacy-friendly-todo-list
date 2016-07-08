@@ -2,9 +2,9 @@ package org.secuso.privacyfriendlytodolist.view.calendar;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /*
  * This calender marks a day if there is a deadline of a task which is not yet finished.
@@ -78,8 +77,14 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
 
         // add color bar if a task has its deadline on this day
         String day = DateFormat.format("dd-MM-yyyy", dateAtPos).toString();
-        if(tasksPerDay.get(day) != null) {
-            dayViewHolder.dayText.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.border));
+        ArrayList<TodoTask> tasksToday = tasksPerDay.get(day);
+        if(tasksToday != null) {
+            Drawable border = ContextCompat.getDrawable(getContext(), R.drawable.border_green);
+            for(TodoTask t : tasksToday) {
+                if(!t.getDone())
+                    border = ContextCompat.getDrawable(getContext(), R.drawable.border_blue);
+            }
+            dayViewHolder.dayText.setBackground(border);
         } else {
             dayViewHolder.dayText.setBackgroundResource(0);
         }

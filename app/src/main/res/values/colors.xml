@@ -11,6 +11,7 @@
     <color name="white">#ffffff</color>
     <color name="grey">#d0d0d0</color>
     <color name="black">#000000</color>
+    <color name="green">#68e504</color>
 
     <color name="deadline_red">#ef0606</color>
     <color name="deadline_blue">#024265</color>

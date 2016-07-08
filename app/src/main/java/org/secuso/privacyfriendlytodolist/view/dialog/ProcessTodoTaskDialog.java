@@ -2,6 +2,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
 import android.provider.SyncStateContract;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;

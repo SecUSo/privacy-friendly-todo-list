@@ -44,13 +44,15 @@ public class TodoTask extends BaseTodo implements Parcelable {
     }
 
     private boolean done;
-    private long id;
     private int progress;
     private Priority priority;
     private long reminderTime = -1; // absolute timestamp
     private int listPosition; // indicates at what position inside the list this task it placed
-    private long listIdForeignKey;
+    private int listIdForeignKey;
     protected long deadline; // absolute timestamp
+
+    private boolean reminderTimeChanged = false; // important for the reminder service
+    private boolean reminderTimeWasInitialized = false;
 
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
@@ -61,8 +63,8 @@ public class TodoTask extends BaseTodo implements Parcelable {
     }
 
     public TodoTask(Parcel parcel) {
-        id = parcel.readLong();
-        listIdForeignKey = parcel.readLong();
+        id = parcel.readInt();
+        listIdForeignKey = parcel.readInt();
         name = parcel.readString();
         description = parcel.readString();
         done = parcel.readByte() != 0;
@@ -83,10 +85,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
         if(deadline < reminderTime) {
             Log.i(TAG, "Reminder time resetted, because new deadline is greater.");
         }
-    }
-
-    public void setId(long id){
-        this.id = id;
     }
 
     public void setPositionInList(int pos) {
@@ -121,11 +119,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
     public void setDone(boolean done) {
         this.done = done;
     }
-
-    public long getId() {
-        return id;
-    }
-
 
     // This method expects the deadline to be greater than the reminder time.
     public DeadlineColors getDeadlineColor(long defaultReminderTime) {
@@ -172,8 +165,8 @@ public class TodoTask extends BaseTodo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeLong(listIdForeignKey);
+        dest.writeInt(id);
+        dest.writeInt(listIdForeignKey);
         dest.writeString(name);
         dest.writeString(description);
         dest.writeByte((byte) (done ? 1 : 0));
@@ -189,11 +182,11 @@ public class TodoTask extends BaseTodo implements Parcelable {
         return reminderTime;
     }
 
-    public void setListId(long listId) {
+    public void setListId(int listId) {
         this.listIdForeignKey = listId;
     }
 
-    public long getListId() {
+    public int getListId() {
         return this.listIdForeignKey;
     }
 
@@ -203,10 +196,27 @@ public class TodoTask extends BaseTodo implements Parcelable {
 
     public void setReminderTime(long reminderTime) {
 
-        if(reminderTime > deadline && deadline > 0)
+        if(reminderTime > deadline && deadline > 0) {
             Log.i(TAG, "Reminder time must not be greater than the deadline.");
-        else
+        }
+        else {
             this.reminderTime = reminderTime;
+        }
+
+        // check if reminder time was already set and now changed -> important for reminder service
+
+        if(reminderTimeWasInitialized)
+            reminderTimeChanged = true;
+
+        reminderTimeWasInitialized = true;
+    }
+
+    public boolean reminderTimeChanged() {
+        return reminderTimeChanged;
+    }
+
+    public void resetReminderTimeChangedStatus() {
+        reminderTimeChanged = false;
     }
 
     public void setAllSubTasksDone(boolean doneSubTask) {

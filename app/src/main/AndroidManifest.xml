@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.secuso.privacyfriendlytodolist" >
+    package="org.secuso.privacyfriendlytodolist">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -22,9 +24,14 @@
             android:label="@string/about" />
         <activity android:name=".view.Settings"
             android:label="@string/settings" />
-        <receiver android:name=".model.ReminderAlarmReceiver" />
-        <service android:name=".model.NotifyService" />
-        <activity android:name=".view.calendar.CalendarActivity" />
+        <service android:name=".model.ReminderService" />
+
+        <receiver android:name=".model.AutoStartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

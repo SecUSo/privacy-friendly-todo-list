@@ -25,8 +25,6 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     private MainActivity contextActivity;
     private SharedPreferences prefs;
 
-    enum Direction {LEFT, RIGHT;}
-
     private ArrayList<TodoList> data;
     private int position;
 
@@ -56,8 +54,6 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.todo_list_entry, parent, false);
-
-        // TODO set the view's size, margins, paddings and layout parameters
 
         return new ViewHolder(v);
     }
@@ -112,53 +108,13 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
             v.setOnClickListener(this);
             v.setOnCreateContextMenuListener(this);
-
-            v.setOnTouchListener(new View.OnTouchListener() {
-                float historicX = Float.NaN, historicY = Float.NaN;
-                static final int DELTA = 50;
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    Log.i("TodoListAdapter","onTouch: " + event.getAction());
-                    switch (event.getAction())
-                    {
-                        case MotionEvent.ACTION_DOWN:
-                            historicX = event.getX();
-                            historicY = event.getY();
-                            break;
-
-                        case MotionEvent.ACTION_UP:
-                            if (event.getX() - historicX < -DELTA)
-                            {
-                                Log.i("TodoListAdapter", "slide left ("+ getAdapterPosition() + ")");
-                                return true;
-                            }
-                            else if (event.getX() - historicX > DELTA)
-                            {
-                                Log.i("TodoListAdapter", "slide right ("+ getAdapterPosition() + ")");
-                                return true;
-                            }
-                        default: return false;
-                    }
-                    return false;
-                }
-            });
         }
 
         @Override
         public void onClick(View v) {
 
-            // 1. sync data with database to assign each list an unique id. The id will be used by the
-            // new fragment as an identifier. If the list as a whole was passed to the new fragment as
-            // a parcelable, the reference would be lost and possible changes would not not be visible at once
-            // for all involved members
-            contextActivity.syncWithDatabase();
-
-            // 2. call new fragment and pass list id so that the fragment knows what tasks should be displayed
             Bundle bundle = new Bundle();
-            TodoList currentList = data.get(data.size()-1-getAdapterPosition());
-            bundle.putLong(TodoList.UNIQUE_DATABASE_ID, currentList.getId());
+            contextActivity.setClickedList(data.get(data.size()-1-getAdapterPosition()));
             bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);

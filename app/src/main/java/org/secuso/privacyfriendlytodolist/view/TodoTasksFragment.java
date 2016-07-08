@@ -49,7 +49,7 @@ public class TodoTasksFragment extends Fragment {
     private MainActivity containingActivity;
 
     private TodoList currentList;
-    private ArrayList<TodoTask> todoTasks;
+    private ArrayList<TodoTask> todoTasks = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,25 +57,34 @@ public class TodoTasksFragment extends Fragment {
 
         containingActivity = (MainActivity) getActivity();
 
-
-
         if(containingActivity == null) {
             throw new RuntimeException("TodoTasksFragment could not find containing activity.");
         }
 
 
         boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
-        long currentListID = getArguments().getLong(TodoList.UNIQUE_DATABASE_ID);
-        currentList = containingActivity.getListByID(currentListID);
-        todoTasks = currentList.getTasks();
+        int selectedListID = getArguments().getInt(TodoList.UNIQUE_DATABASE_ID, -1);
+
+        if(selectedListID > 0) {
+            currentList = containingActivity.getListByID(selectedListID); // MainActivity was started after a notification click
+        } else {
+            currentList = containingActivity.getClickedList(); // get clicked list
+        }
+
 
         View v = inflater.inflate(R.layout.fragment_todo_tasks, container, false);
 
-        initExListViewGUI(v);
-        initFab(v, showFab);
+        if(currentList != null) {
+            todoTasks = currentList.getTasks();
 
-        // set toolbar title
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
+            initExListViewGUI(v);
+            initFab(v, showFab);
+
+            // set toolbar title
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
+        } else {
+            Log.d(TAG, "Cannot identify selected list.");
+        }
 
         return v;
     }
@@ -203,13 +212,12 @@ public class TodoTasksFragment extends Fragment {
 
             case R.id.delete_subtask:
                 affectedRows = DBQueryHandler.deleteTodoSubTask(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
-                if(affectedRows == 1) {
-                    longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
-                    taskAdapter.notifyDataSetChanged();
+                longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
+                if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.error_removing_subtask), Toast.LENGTH_SHORT).show();
-                }
+                else
+                    Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                taskAdapter.notifyDataSetChanged();
                 break;
             case R.id.change_task:
                 ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
@@ -219,7 +227,6 @@ public class TodoTasksFragment extends Fragment {
                     public void finish(BaseTodo alteredTask) {
                     if(alteredTask instanceof TodoTask) {
                         taskAdapter.notifyDataSetChanged();
-                        Log.i(TAG, "task altered");
                     }
                     }
                 });
@@ -227,13 +234,12 @@ public class TodoTasksFragment extends Fragment {
                 break;
             case R.id.delete_task:
                 affectedRows = DBQueryHandler.deleteTodoTask(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
-                if(affectedRows == 1) {
-                    todoTasks.remove(longClickedTodo.getLeft());
-                    taskAdapter.notifyDataSetChanged();
+                todoTasks.remove(longClickedTodo.getLeft());
+                if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.error_removing_task), Toast.LENGTH_SHORT).show();
-                }
+                else
+                    Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                taskAdapter.notifyDataSetChanged();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");
@@ -250,31 +256,27 @@ public class TodoTasksFragment extends Fragment {
 
     @Override
     public void onPause() {
-        super.onPause();
 
         // write new tasks to the database
         for(int i=0; i<todoTasks.size(); i++) {
             TodoTask currentTask = todoTasks.get(i);
 
-            // write subtasks to the database
-            for(TodoSubTask subTask : currentTask.getSubTasks()) {
-                long subTaskID = DBQueryHandler.saveTodoSubTaskInDb(containingActivity.getDbHelper().getWritableDatabase(), subTask);
-                subTask.setId(subTaskID);
-            }
-
             // If a dummy list is displayed, its id must not be assigned to the task.
             if(!currentList.isDummyList())
-                currentTask.setListId(currentList.getId());
-                // currentTask.setPositionInList(i); // TODO improve it to set a custom position
+                currentTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
 
-            long id = DBQueryHandler.saveTodoTaskInDb(containingActivity.getDbHelper().getWritableDatabase(), currentTask);
-            if(id == -1)
-                Log.e(TAG, getString(R.string.list_to_db_error));
-            else if(id == -2)
-                Log.i(TAG, getString(R.string.no_changes_in_db));
-            else
-                currentTask.setId(id); // if the task already had had an id, the id is overwritten with the old value
+            boolean dbChanged = containingActivity.sendToDatabase(currentTask);
+            if(dbChanged)
+                containingActivity.notifyReminderService(currentTask);
+
+            // write subtasks to the database
+            for(TodoSubTask subTask : currentTask.getSubTasks()) {
+                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
+                containingActivity.sendToDatabase(subTask);
+            }
         }
+
+        super.onPause();
     }
 
     @Override

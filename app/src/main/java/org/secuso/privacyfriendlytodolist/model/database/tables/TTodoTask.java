@@ -16,10 +16,10 @@ public class TTodoTask {
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_DEADLINE = "deadline";
     public static final String COLUMN_DONE = "done";
-    public static final String COLUMN_PRIORITY = "priotity";
+    public static final String COLUMN_PRIORITY = "priority";
     public static final String COLUMN_PROGRESS = "progress";
     public static final String COLUMN_NUM_SUBTAKS = "num_subtasks";
-    public static final String COLUMN_DEADLINE_WARNING_TIME = "deadline_warning_time";
+    public static final String COLUMN_DEADLINE_WARNING_TIME = "deadline_warning_time"; // absolut value in seconds
     public static final String COLUMN_LIST_POSITION = "position_in_todo_list";
 
 
