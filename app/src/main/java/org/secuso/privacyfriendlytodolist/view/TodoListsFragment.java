@@ -80,6 +80,7 @@ public class TodoListsFragment extends Fragment {
                 @Override
                 public void finish(BaseTodo newList) {
                 if(newList instanceof TodoList) {
+                    Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
                     todoLists.add((TodoList) newList);
                     adapter.notifyDataSetChanged();
                     Log.i(TAG, "list added");
@@ -122,6 +123,7 @@ public class TodoListsFragment extends Fragment {
                 addListDialog.show();
                 break;
             case R.id.delete_list:
+                Toast.makeText(getContext(), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Toast.LENGTH_SHORT).show();
                 DBQueryHandler.deleteTodoList(containerActivity.getDbHelper().getWritableDatabase(), todoList);
                 todoLists.remove(todoList);
                 adapter.notifyDataSetChanged();

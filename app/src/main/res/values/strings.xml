@@ -1,89 +1,112 @@
 <resources>
+    <!-- Application Specific -->
 	<string name="app_name">To-Do</string>
-	<string name="nav_header_app_name">Privacy Friendly To-Do</string>
-	<string name="toolbar_title_main">Privacy Friendly To-Do</string>
+    <string name="app_name_long">Privacy Friendly To-Do List</string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">Privacy Friendly To-Do</string>
+    <string name="toolbar_title_main">Privacy Friendly To-Do</string>
+    <string name="todos">To-Do\'s</string>
+    <string name="home">Home</string>
+    <string name="calendar_view">Calendar View</string>
+    <string name="show_all_tasks">Show all tasks</string>
+    <string name="settings">Settings</string>
+    <string name="other">Other</string>
 	<string name="help">Help</string>
-	<string name="about">About</string>
-	<string name="navigation_drawer_open">Open menu</string>
-	<string name="navigation_drawer_close">Close menu</string>
 	<string name="menu_about">About</string>
-	<string name="app_name_long">Privacy Friendly To-Do List</string>
-	<string name="version_number">v1.0</string>
-	<string name="about_author">Authors:</string>
-	<string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
-	<string name="about_affiliation">In affiliation with</string>
-	<string name="privacy_friendly">This application belongs to the Privacy Friendly Apps</string>
-	<string name="more_info">More information can be found on:</string>
-	<string name="url">https://www.secuso.org</string>
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="navigation_drawer_close">Close menu</string>
+    <string name="name">Name</string>
+    <string name="todo_list_description_hint">Description</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">Select option</string>
+    <string name="high_priority">High</string>
+    <string name="medium_priority">Medium</string>
+    <string name="low_priority">Low</string>
+    <string name="unknown_priority">Unknown Priority</string>
+
+    <!-- About -->
+    <string name="about">About</string>
+    <string name="version_number">v1.0</string>
+    <string name="about_author">Authors:</string>
+    <string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
+    <string name="about_affiliation">In affiliation with</string>
+    <string name="privacy_friendly">This application belongs to the Privacy Friendly Apps</string>
+    <string name="more_info">More information can be found on:</string>
+    <string name="url">https://www.secuso.org</string>
+
+    <!-- To-Do list overview -->
 	<string name="done">done</string>
 	<string name="no_todo_lists_available">No To-Do lists available.</string>
-	<string name="next_deadline_dd">Next Deadline:</string>
-	<string name="description">Description</string>
-	<string name="todos">To-Do\'s</string>
-	<string name="other">Other</string>
-	<string name="name">Name</string>
-	<string name="todo_list_description_hint">Description</string>
+	<string name="next_deadline_dd">Next Deadline: %1$s</string>
+    <string name="no_next_deadline">No upcoming deadline</string>
+    <string name="add_list_feedback">%1$s added</string>
+    <string name="edit_todo_list">Edit To-Do list</string>
+    <string name="delete_list">Delete To-Do list</string>
+    <string name="delete_list_feedback">%1$s deleted</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">New To-Do list</string>
+    <string name="list_name_must_not_be_empty">List name must not be empty!</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">No tasks available.</string>
+    <string name="all_tasks">All tasks</string>
+    <string name="open_tasks">Open tasks</string>
+    <string name="completed_tasks">Completed tasks</string>
+    <string name="group_by_priority">Group by priority</string>
+    <string name="sort_by_deadline">Sort by deadline</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">New To-Do task</string>
+    <string name="deadline_dd">Deadline:</string>
+    <string name="no_deadline">No Deadline</string>
+    <string name="edit_task">Edit To-Do Task</string>
+    <string name="delete_task">Delete To-Do Task</string>
+    <string name="task_removed">Task was successfully removed.</string>
+    <string name="deadline">Deadline</string>
+    <string name="reminder">Reminder</string>
+    <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time!</string>
+    <string name="progress_colon">Progress:</string>
+    <string name="priority_colon">Priority:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">Select a priority for this task!</string>
+    <string name="new_todo_subtask">New subtask</string>
+    <string name="todo_name_must_not_be_empty">To-Do name must not be empty!</string>
+    <string name="edit_subtask">Edit subtask</string>
+    <string name="delete_subtask">Delete subtask</string>
+
+    <!-- Select reminder dialog -->
 	<string name="date">Date</string>
 	<string name="time">Time</string>
-	<string name="deadline">Deadline</string>
-	<string name="no_deadline">No Deadline</string>
-	<string name="no_next_deadline">No upcoming deadline</string>
 	<string name="no_reminder">No Reminder</string>
-	<string name="empty_todo_list">No tasks available.</string>
-	<string name="deadline_dd">Deadline:</string>
-	<string name="show_all_tasks">Show all tasks</string>
-	<string name="no_task_description">No task description available</string>
-	<string name="today">Today</string>
-	<string name="week">Week</string>
-	<string name="overdue">Overdue</string>
-	<string name="high_priority">High</string>
-	<string name="medium_priority">Medium</string>
-	<string name="low_priority">Low</string>
-	<string name="all_tasks">All tasks</string>
-	<string name="open_tasks">Open tasks</string>
-	<string name="completed_tasks">Completed tasks</string>
-	<string name="settings">Settings</string>
-	<string name="group_by_priority">Group by priority</string>
-	<string name="sort_by_deadline">Sort by deadline</string>
-	<string name="delete_list">Delete To-Do list</string>
-	<string name="edit_todo_list">Edit To-Do list</string>
-	<string name="select_option">Select option</string>
-	<string name="list_name_must_not_be_empty">List name must not be empty!</string>
-	<string name="list_to_db_error">Error while creating new To-Do list.</string>
-	<string name="new_todo_list">New To-Do list</string>
-	<string name="new_todo_task">New To-Do task</string>
-	<string name="reminder">Reminder</string>
-	<string name="progress_colon">Progress:</string>
-	<string name="priority_colon">Priority:</string>
-	<string name="select_priority">Select a priority for this task!</string>
-	<string name="unknown_priority">Unknown Priority</string>
-	<string name="zero_percent">0%</string>
-	<string name="no_task_name">Please enter a task name!</string>
-	<string name="no_task_priority">Please provide a task priority!</string>
-	<string name="edit_task">Edit To-Do Task</string>
-	<string name="delete_task">Delete To-Do Task</string>
-	<string name="unknown_task_id">Cannot delete task. Unknown task id:</string>
-	<string name="task_removed">Task was successfully removed.</string>
-	<string name="todo_name_must_not_be_empty">To-Do name must not be empty!</string>
-	<string name="no_changes_in_db">No changes in database.</string>
-	<string name="home">Home</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">Calendar</string>
+    <string name="no_deadline_today">There are no deadlines at this day.</string>
+
+    <!-- PIN -->
 	<string name="pin_enabled">PIN required on startup</string>
 	<string name="set_pin">Set PIN</string>
 	<string name="enter_pin">Enter PIN</string>
 	<string name="wrong_pin">Wrong PIN</string>
+
+    <!-- Settings -->
 	<string name="default_reminder_time">Default reminder time</string>
-	<string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time!</string>
 	<string name="deadline_smaller_reminder">The deadline must not be before the reminder time.</string>
-	<string name="new_todo_subtask">New subtask</string>
-	<string name="edit_subtask">Edit subtask</string>
-	<string name="delete_subtask">Delete subtask</string>
 	<string name="subtask_removed">Subtask successfully removed!</string>
 	<string name="error_removing_subtask">Subtask could not be removed from the database.</string>
 	<string name="error_removing_task">Could not remove todo task from the database.</string>
 	<string name="is_due">is due.</string>
 	<string name="task_deadline">Task deadline</string>
-	<string name="calendar_view">Calendar View</string>
-	<string name="monday">Monday</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">Deadline is approaching: %1$s</string>
+
+    <!-- Date and Time -->
 	<string name="sunday_abbr">SUN</string>
 	<string name="monday_abbr">MON</string>
 	<string name="tuesday_abbr">TUE</string>
@@ -91,9 +114,8 @@
 	<string name="thursday_abbr">THU</string>
 	<string name="friday_abbr">FRI</string>
 	<string name="saturday_abbr">SAT</string>
-	<string name="calendar">Calendar</string>
 	<string name="january">January</string>
-	<string name="februrary">Februrary</string>
+	<string name="february">February</string>
 	<string name="march">March</string>
 	<string name="april">April</string>
 	<string name="mai">Mai</string>
@@ -104,9 +126,22 @@
 	<string name="october">October</string>
 	<string name="november">November</string>
 	<string name="december">December</string>
-	<string name="no_deadline_today">There are no deadlines at this day.</string>
-	<string name="deadline_approaching">Deadline is approaching:</string>
-	<string name="multiple_deadlines_approaching">Multiple deadlines are approaching.</string>
-	<string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
-	<string name="task_to_db_error">Error while inserting new task into the database.</string>
+
+    <!-- Error messages -->
+    <string name="list_to_db_error">Error while creating new To-Do list.</string>
+    <string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
+    <string name="task_to_db_error">Error while inserting new task into the database.</string>
+
+    <!-- unused? -->
+    <!--<string name="description">Description</string>-->
+    <!--<string name="no_task_description">No task description available</string>-->
+    <!--<string name="today">Today</string>-->
+    <!--<string name="week">Week</string>-->
+    <!--<string name="overdue">Overdue</string>-->
+    <!--<string name="no_task_name">Please enter a task name!</string>-->
+    <!--<string name="no_task_priority">Please provide a task priority!</string>-->
+    <!--<string name="unknown_task_id">Cannot delete task. Unknown task id:</string>-->
+    <!--<string name="no_changes_in_db">No changes in database.</string>-->
+    <!--<string name="multiple_deadlines_approaching">Multiple deadlines are approaching.</string>-->
+    <!--<string name="monday">Monday</string>-->
 </resources>

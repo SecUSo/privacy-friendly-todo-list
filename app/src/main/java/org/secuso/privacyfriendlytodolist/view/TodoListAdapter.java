@@ -66,7 +66,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         if (list.getNextDeadline() <= 0)
             holder.deadline.setText(contextActivity.getResources().getString(R.string.no_next_deadline));
         else
-            holder.deadline.setText(contextActivity.getResources().getString(R.string.next_deadline_dd) + " " + Helper.getDate(list.getNextDeadline()));
+            holder.deadline.setText(contextActivity.getResources().getString(R.string.next_deadline_dd, Helper.getDate(list.getNextDeadline())));
         holder.done.setText(String.format("%d/%d", list.getDoneTodos(), list.getSize()));
         holder.urgency.setBackgroundColor(Helper.getDeadlineColor(contextActivity, list.getDeadlineColor(getDefaultReminderTime())));
 

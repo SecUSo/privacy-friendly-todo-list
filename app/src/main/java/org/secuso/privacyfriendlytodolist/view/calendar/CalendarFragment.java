@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class CalendarFragment extends Fragment {
 
@@ -84,7 +85,7 @@ public class CalendarFragment extends Fragment {
 
     private String absSecondsToDate(long seconds) {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(seconds * 1000);
+        cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(seconds));
         return DateFormat.format("dd-MM-yyyy", cal).toString();
     }
 

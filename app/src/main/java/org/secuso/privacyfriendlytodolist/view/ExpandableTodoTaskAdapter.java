@@ -99,8 +99,10 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     public void setLongClickedSubTaskByPos(int groupPosition, int childPosition) {
         TodoTask task = getTaskByPosition(groupPosition);
-        TodoSubTask subTask = task.getSubTasks().get(childPosition-1);
-        longClickedTodo = Tuple.makePair(task, subTask);
+        if(task!=null) {
+            TodoSubTask subTask = task.getSubTasks().get(childPosition - 1);
+            longClickedTodo = Tuple.makePair(task, subTask);
+        }
     }
 
     public Tuple<TodoTask, TodoSubTask> getLongClickedTodo() {

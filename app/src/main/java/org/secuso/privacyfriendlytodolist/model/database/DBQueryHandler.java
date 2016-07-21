@@ -59,7 +59,7 @@ public class DBQueryHandler {
 
         ArrayList<TodoTask> tasks = new ArrayList<>();
 
-        // do not request tasks for which the user was just notified (these tasks are locked)
+        /*// do not request tasks for which the user was just notified (these tasks are locked)
         StringBuilder excludedIDs = new StringBuilder();
         String and = " AND ";
         if(lockedIds != null && lockedIds.size() > 0) {
@@ -72,7 +72,7 @@ public class DBQueryHandler {
         }
         excludedIDs.append(";");
 
-        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + ">0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + "<=? AND " + TTodoTask.COLUMN_DEADLINE + ">?" + excludedIDs.toString() ;
+        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? AND " + TTodoTask.COLUMN_DEADLINE + " > ? " + excludedIDs.toString() ;
         String selectionArgs[] = {String.valueOf(today), String.valueOf(today)};
         Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
 
@@ -90,7 +90,7 @@ public class DBQueryHandler {
 
         TodoTask nextDueTask = getNextDueTask(db, today);
         if(nextDueTask != null)
-            tasks.add(nextDueTask);
+            tasks.add(nextDueTask);*/
 
         return tasks;
     }

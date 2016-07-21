@@ -23,6 +23,7 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -113,7 +114,7 @@ public class ReminderService extends Service {
     private void handleAlarm(TodoTask task) {
 
         String title = task.getName();
-        String contentText = getResources().getString(R.string.deadline_approaching) + " " + Helper.getDateTime(task.getDeadline());
+        String contentText = getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline()));
 
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(MainActivity.FRAGMENT_CHOICE, TodoTasksFragment.KEY);
@@ -160,7 +161,7 @@ public class ReminderService extends Service {
         PendingIntent pendingAlarmIntent = PendingIntent.getService(this, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
         long reminderTime = task.getReminderTime(); // all tasks have the same reminder time
-        Date date = new Date(reminderTime * 1000); // convert to milliseconds
+        Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
         calendar.setTime(date);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
 

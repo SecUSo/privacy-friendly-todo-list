@@ -119,7 +119,7 @@ public class CalendarView extends LinearLayout {
             case 0:
                 return getResources().getString(R.string.january);
             case 1:
-                return getResources().getString(R.string.februrary);
+                return getResources().getString(R.string.february);
             case 2:
                 return getResources().getString(R.string.march);
             case 3:
