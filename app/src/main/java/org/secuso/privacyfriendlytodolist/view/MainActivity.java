@@ -188,34 +188,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void deleteMe(int index) {
-        TodoList list1 = new TodoList();
-        list1.setName("Testliste " + index);
-        list1.setDescription("Beschreibung von Testliste " + index);
-        sendToDatabase(list1);
-        TodoTask task1 = new TodoTask();
-        task1.setName("Task 1 in Liste " + index);
-        task1.setDescription("Ein Beschreibungstext");
-        task1.setListId(list1.getId());
-        TodoTask task2 = new TodoTask();
-        task2.setName("Task 2 in Liste " + index);
-        task2.setListId(list1.getId());
-        sendToDatabase(task1);
-        sendToDatabase(task2);
-        TodoSubTask subTask1 = new TodoSubTask();
-        subTask1.setName("Subtask 1 von Task 1 in Liste " + index);
-        subTask1.setTaskId(task1.getId());
-        sendToDatabase(subTask1);
-        TodoSubTask subTask2 = new TodoSubTask();
-        subTask2.setName("Subtask 2 von Task 1 in Liste " + index);
-        subTask2.setTaskId(task1.getId());
-        sendToDatabase(subTask2);
-        TodoSubTask subTask3 = new TodoSubTask();
-        subTask3.setName("Subtask 1 von Task 2 in Liste " + index);
-        subTask3.setTaskId(task2.getId());
-        sendToDatabase(subTask3);
-    }
-
     @Override
     protected void onResume() {
 

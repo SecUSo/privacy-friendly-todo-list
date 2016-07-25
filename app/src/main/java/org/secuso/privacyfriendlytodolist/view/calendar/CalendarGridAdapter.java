@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 
 
@@ -76,7 +77,7 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
         }
 
         // add color bar if a task has its deadline on this day
-        String day = DateFormat.format("dd-MM-yyyy", dateAtPos).toString();
+        String day = DateFormat.format(Helper.DATE_FORMAT, dateAtPos).toString();
         ArrayList<TodoTask> tasksToday = tasksPerDay.get(day);
         if(tasksToday != null) {
             Drawable border = ContextCompat.getDrawable(getContext(), R.drawable.border_green);

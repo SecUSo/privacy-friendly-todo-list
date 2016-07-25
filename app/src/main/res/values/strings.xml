@@ -20,6 +20,8 @@
     <string name="navigation_drawer_close">Close menu</string>
     <string name="name">Name</string>
     <string name="todo_list_description_hint">Description</string>
+    <string name="ok">OK</string>
+
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
@@ -51,6 +53,8 @@
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">New To-Do list</string>
     <string name="list_name_must_not_be_empty">List name must not be empty.</string>
+    <string name="show_description">Show description</string>
+    <string name="no_description_available">No description available.</string>
 
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">No tasks available.</string>

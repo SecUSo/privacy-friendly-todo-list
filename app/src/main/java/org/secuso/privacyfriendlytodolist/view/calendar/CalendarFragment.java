@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
@@ -85,7 +86,7 @@ public class CalendarFragment extends Fragment {
     private String absSecondsToDate(long seconds) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(seconds));
-        return DateFormat.format("dd.MM.yyyy", cal).toString();
+        return DateFormat.format(Helper.DATE_FORMAT, cal).toString();
     }
 
     @Override

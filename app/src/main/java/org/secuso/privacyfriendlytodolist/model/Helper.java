@@ -21,10 +21,9 @@ import java.util.concurrent.TimeUnit;
 import static org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors.*;
 import static org.secuso.privacyfriendlytodolist.model.TodoTask.Priority.*;
 
-/**
- * Created by dominik on 19.05.16.
- */
 public class Helper {
+
+    public static final CharSequence DATE_FORMAT = "dd.MM.yyyy";
 
     public static String getDate(long time) {
         Calendar calendar = Calendar.getInstance();

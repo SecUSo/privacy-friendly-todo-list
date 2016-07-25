@@ -20,6 +20,7 @@
     <string name="navigation_drawer_close">Menü schließen</string>
     <string name="name">Name</string>
     <string name="todo_list_description_hint">Beschreibung</string>
+    <string name="ok">OK</string>
 
     <!-- Common model strings -->
     <string name="select_option">Auswählen</string>
@@ -51,6 +52,8 @@
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Neue To-Do Liste</string>
     <string name="list_name_must_not_be_empty">Der Listenname darf nicht leer sein.</string>
+    <string name="show_description">Beschreibung anzeigen</string>
+    <string name="no_description_available">Keine Beschreibung vorhanden.</string>
 
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Keine Aufgaben verfügbar.</string>
@@ -138,4 +141,6 @@
     <string name="list_to_db_error">To-Do Liste konnte nicht in die Datenbank geschrieben werden.</string>
     <string name="task_to_db_error">Aufgabe konnte nicht in die Datenbank geschrieben werden.</string>
     <string name="subtask_to_db_error">Unteraufgabe konnte nicht in die Datenbank geschrieben werden.</string>
+
+
 </resources>
