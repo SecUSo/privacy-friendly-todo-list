@@ -250,7 +250,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
         int pos = groupPosition - seenPrioBars;
 
-        if (pos < filteredTasks.size())
+        if (pos < filteredTasks.size() && pos >= 0)
             return filteredTasks.get(pos);
 
         return null; // should never be the case
@@ -258,7 +258,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        // TODO
         if (isPriorityGroupingEnabled())
             return filteredTasks.size() + prioBarPositions.size();
         else
@@ -267,7 +266,10 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return getTaskByPosition(groupPosition).getSubTasks().size() + 2;
+        TodoTask task = getTaskByPosition(groupPosition);
+        if(task == null)
+            return 0;
+        return task.getSubTasks().size() + 2;
     }
 
     @Override
@@ -517,8 +519,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-
-        return childPosition > 0 && childPosition < filteredTasks.get(groupPosition).getSubTasks().size() + 1;
+        return childPosition > 0 && childPosition < getTaskByPosition(groupPosition).getSubTasks().size() + 1;
     }
 
 
