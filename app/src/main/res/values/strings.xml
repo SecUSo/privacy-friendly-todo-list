@@ -50,7 +50,7 @@
 
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">New To-Do list</string>
-    <string name="list_name_must_not_be_empty">List name must not be empty!</string>
+    <string name="list_name_must_not_be_empty">List name must not be empty.</string>
 
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">No tasks available.</string>
@@ -69,15 +69,17 @@
     <string name="task_removed">Task was successfully removed.</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Reminder</string>
-    <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time!</string>
+    <string name="deadline_smaller_reminder">The deadline must not be before the reminder time.</string>
+    <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0%</string>
     <string name="select_priority">Select a priority for this task!</string>
     <string name="new_todo_subtask">New subtask</string>
-    <string name="todo_name_must_not_be_empty">To-Do name must not be empty!</string>
+    <string name="todo_name_must_not_be_empty">To-Do Task name must not be empty.</string>
     <string name="edit_subtask">Edit subtask</string>
     <string name="delete_subtask">Delete subtask</string>
+    <string name="subtask_removed">Subtask successfully removed.</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Date</string>
@@ -89,19 +91,13 @@
     <string name="no_deadline_today">There are no deadlines at this day.</string>
 
     <!-- PIN -->
-	<string name="pin_enabled">PIN required on startup</string>
-	<string name="set_pin">Set PIN</string>
 	<string name="enter_pin">Enter PIN</string>
 	<string name="wrong_pin">Wrong PIN</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Default reminder time</string>
-	<string name="deadline_smaller_reminder">The deadline must not be before the reminder time.</string>
-	<string name="subtask_removed">Subtask successfully removed!</string>
-	<string name="error_removing_subtask">Subtask could not be removed from the database.</string>
-	<string name="error_removing_task">Could not remove todo task from the database.</string>
-	<string name="is_due">is due.</string>
-	<string name="task_deadline">Task deadline</string>
+    <string name="pin_enabled">PIN required on startup</string>
+    <string name="set_pin">Set PIN</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
@@ -118,7 +114,7 @@
 	<string name="february">February</string>
 	<string name="march">March</string>
 	<string name="april">April</string>
-	<string name="mai">Mai</string>
+	<string name="may">May</string>
 	<string name="june">June</string>
 	<string name="july">July</string>
 	<string name="august">August</string>
@@ -128,9 +124,11 @@
 	<string name="december">December</string>
 
     <!-- Error messages -->
+    <string name="error_removing_subtask">Subtask could not be removed from the database.</string>
+    <string name="error_removing_task">Could not remove todo task from the database.</string>
     <string name="list_to_db_error">Error while creating new To-Do list.</string>
-    <string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
     <string name="task_to_db_error">Error while inserting new task into the database.</string>
+    <string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
 
     <!-- unused? -->
     <!--<string name="description">Description</string>-->
@@ -144,4 +142,6 @@
     <!--<string name="no_changes_in_db">No changes in database.</string>-->
     <!--<string name="multiple_deadlines_approaching">Multiple deadlines are approaching.</string>-->
     <!--<string name="monday">Monday</string>-->
+    <!--<string name="is_due">is due.</string>-->
+    <!--<string name="task_deadline">Task deadline</string>-->
 </resources>
