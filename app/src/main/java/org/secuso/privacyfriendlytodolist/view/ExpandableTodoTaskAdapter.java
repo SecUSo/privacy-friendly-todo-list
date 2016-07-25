@@ -3,6 +3,7 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -204,7 +205,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     // count how many tasks belong to each priority group (tasks are now sorted by priority)
 
     /**
-     * If {@link ExpandableTodoTaskAdapter#sortTasks()} sorted by the priority, this mehod must be
+     * If {@link ExpandableTodoTaskAdapter#sortTasks()} sorted by the priority, this method must be
      * called. It computes the position of the dividing bars between the priority ranges. These
      * positions are necessary to distinguish of what group type the current row is.
      */
@@ -221,7 +222,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 if (!prioAlreadySeen.contains(currentPrio)) {
                     prioAlreadySeen.add(currentPrio);
                     prioBarPositions.put(currentPrio, pos);
-                    pos++;
+                    pos++; // skip the current prio-line
                 }
                 pos++;
             }
@@ -425,8 +426,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         int type = getChildType(groupPosition, childPosition);
-        if(isPriorityGroupingEnabled())
-            groupPosition+=prioBarPositions.size();
         final TodoTask currentTask = getTaskByPosition(groupPosition);
 
         switch (type) {

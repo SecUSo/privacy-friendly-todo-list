@@ -96,6 +96,15 @@
 
     <!-- Settings -->
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>
+    <string-array name="default_reminder_times_human">
+        <item>Pünktlich zur Deadline</item>
+        <item>0.5 Tage vorher</item>
+        <item>1 Tag vorher</item>
+        <item>1.5 Tage vorher</item>
+        <item>2 Tage vorher</item>
+        <item>2.5 Tage vorher</item>
+        <item>3 Tage vorher</item>
+    </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
 
@@ -129,19 +138,4 @@
     <string name="list_to_db_error">To-Do Liste konnte nicht in die Datenbank geschrieben werden.</string>
     <string name="task_to_db_error">Aufgabe konnte nicht in die Datenbank geschrieben werden.</string>
     <string name="subtask_to_db_error">Unteraufgabe konnte nicht in die Datenbank geschrieben werden.</string>
-
-    <!-- unused? -->
-    <!--<string name="description">Description</string>-->
-    <!--<string name="no_task_description">No task description available</string>-->
-    <!--<string name="today">Today</string>-->
-    <!--<string name="week">Week</string>-->
-    <!--<string name="overdue">Overdue</string>-->
-    <!--<string name="no_task_name">Please enter a task name!</string>-->
-    <!--<string name="no_task_priority">Please provide a task priority!</string>-->
-    <!--<string name="unknown_task_id">Cannot delete task. Unknown task id:</string>-->
-    <!--<string name="no_changes_in_db">No changes in database.</string>-->
-    <!--<string name="multiple_deadlines_approaching">Multiple deadlines are approaching.</string>-->
-    <!--<string name="monday">Monday</string>-->
-    <!--<string name="is_due">is due.</string>-->
-    <!--<string name="task_deadline">Task deadline</string>-->
 </resources>

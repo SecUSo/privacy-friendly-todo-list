@@ -6,7 +6,7 @@
 
             <item
                 android:id="@+id/menu_home"
-                android:icon="@mipmap/ic_star_black_24dp"
+                android:icon="@android:drawable/btn_star"
                 android:title="@string/home" />
 
             <item
@@ -16,7 +16,7 @@
 
             <item
                 android:id="@+id/menu_show_all_tasks"
-                android:icon="@mipmap/ic_star_black_24dp"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="@string/show_all_tasks" />
         </menu>
     </item>
