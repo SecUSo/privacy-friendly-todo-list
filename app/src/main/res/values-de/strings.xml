@@ -1,0 +1,147 @@
+<resources>
+    <!-- Application Specific -->
+	<string name="app_name">To-Do</string>
+    <string name="app_name_long">Privacy Friendly To-Do List</string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">Privacy Friendly To-Do</string>
+    <string name="toolbar_title_main">Privacy Friendly To-Do</string>
+    <string name="todos">To-Do\'s</string>
+    <string name="home">Startseite</string>
+    <string name="calendar_view">Kalenderansicht</string>
+    <string name="show_all_tasks">Alle Aufgaben</string>
+    <string name="settings">Einstellungen</string>
+    <string name="other">Andere</string>
+	<string name="help">Hilfe</string>
+	<string name="menu_about">Über</string>
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">Menü öffnen</string>
+    <string name="navigation_drawer_close">Menü schließen</string>
+    <string name="name">Name</string>
+    <string name="todo_list_description_hint">Beschreibung</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">Auswählen</string>
+    <string name="high_priority">Hoch</string>
+    <string name="medium_priority">Normal</string>
+    <string name="low_priority">Niedrig</string>
+    <string name="unknown_priority">Unbekannte Priorität</string>
+
+    <!-- About -->
+    <string name="about">Über</string>
+    <string name="version_number">v1.0</string>
+    <string name="about_author">Autoren:</string>
+    <string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
+    <string name="about_affiliation">In Zusammenschluss mit</string>
+    <string name="privacy_friendly">Diese App gehört zu den Privacy Friendly Apps</string>
+    <string name="more_info">Mehr Informationen auf:</string>
+    <string name="url">https://www.secuso.org</string>
+
+    <!-- To-Do list overview -->
+	<string name="done">erledigt</string>
+	<string name="no_todo_lists_available">Keine To-Do Listen verfügbar.</string>
+	<string name="next_deadline_dd">Nächste Deadline: %1$s</string>
+    <string name="no_next_deadline">Keine bevorstehenden Deadlines</string>
+    <string name="add_list_feedback">%1$s hinzugefügt</string>
+    <string name="edit_todo_list">To-Do Liste bearbeiten</string>
+    <string name="delete_list">To-Do Liste löschen</string>
+    <string name="delete_list_feedback">%1$s gelöscht</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">Neue To-Do Liste</string>
+    <string name="list_name_must_not_be_empty">Der Listenname darf nicht leer sein.</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">Keine Aufgaben verfügbar.</string>
+    <string name="all_tasks">Alle Aufgaben</string>
+    <string name="open_tasks">Ausstehende Aufgaben</string>
+    <string name="completed_tasks">Erledigte Aufgaben</string>
+    <string name="group_by_priority">Nach Priorität gruppieren</string>
+    <string name="sort_by_deadline">Nach Deadline sortieren</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">Neue Aufgabe</string>
+    <string name="deadline_dd">Deadline:</string>
+    <string name="no_deadline">Keine Deadline</string>
+    <string name="edit_task">Aufgabe bearbeiten</string>
+    <string name="delete_task">Aufgabe löschen</string>
+    <string name="task_removed">Aufgabe wurde gelöscht.</string>
+    <string name="deadline">Deadline</string>
+    <string name="reminder">Erinnerung</string>
+    <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
+    <string name="set_deadline_before_reminder">Bitte geben sie zuerst eine Deadline an.</string>
+    <string name="progress_colon">Fortschritt:</string>
+    <string name="priority_colon">Priorität:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">Priorität:</string>
+    <string name="new_todo_subtask">Neue Unteraufgabe</string>
+    <string name="todo_name_must_not_be_empty">Der Name darf nicht leer sein.</string>
+    <string name="edit_subtask">Unteraufgabe bearbeiten</string>
+    <string name="delete_subtask">Unteraufgabe löschen</string>
+    <string name="subtask_removed">Unteraufgabe wurde gelöscht</string>
+
+    <!-- Select reminder dialog -->
+	<string name="date">Datum</string>
+	<string name="time">Zeit</string>
+	<string name="no_reminder">Keine Erinnerung</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">Kalender</string>
+    <string name="no_deadline_today">Keine Deadlines an diesem Tag.</string>
+
+    <!-- PIN -->
+	<string name="enter_pin">PIN eingeben</string>
+	<string name="wrong_pin">Falsche PIN</string>
+
+    <!-- Settings -->
+	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>
+    <string name="pin_enabled">PIN bei Programmstart anfordern</string>
+    <string name="set_pin">PIN festlegen</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
+
+    <!-- Date and Time -->
+	<string name="sunday_abbr">SO</string>
+	<string name="monday_abbr">MO</string>
+	<string name="tuesday_abbr">DI</string>
+	<string name="wednesday_abbr">MI</string>
+	<string name="thursday_abbr">DO</string>
+	<string name="friday_abbr">FR</string>
+	<string name="saturday_abbr">SA</string>
+	<string name="january">Januar</string>
+	<string name="february">Februar</string>
+	<string name="march">März</string>
+	<string name="april">April</string>
+	<string name="may">May</string>
+	<string name="june">Juni</string>
+	<string name="july">Juli</string>
+	<string name="august">August</string>
+	<string name="september">September</string>
+	<string name="october">Oktober</string>
+	<string name="november">November</string>
+	<string name="december">Dezember</string>
+
+    <!-- Error messages -->
+    <string name="error_removing_subtask">Unteraufgabe konnte nicht gelöscht werden.</string>
+    <string name="error_removing_task">Aufgabe konnte nicht gelöscht werden.</string>
+    <string name="list_to_db_error">To-Do Liste konnte nicht in die Datenbank geschrieben werden.</string>
+    <string name="task_to_db_error">Aufgabe konnte nicht in die Datenbank geschrieben werden.</string>
+    <string name="subtask_to_db_error">Unteraufgabe konnte nicht in die Datenbank geschrieben werden.</string>
+
+    <!-- unused? -->
+    <!--<string name="description">Description</string>-->
+    <!--<string name="no_task_description">No task description available</string>-->
+    <!--<string name="today">Today</string>-->
+    <!--<string name="week">Week</string>-->
+    <!--<string name="overdue">Overdue</string>-->
+    <!--<string name="no_task_name">Please enter a task name!</string>-->
+    <!--<string name="no_task_priority">Please provide a task priority!</string>-->
+    <!--<string name="unknown_task_id">Cannot delete task. Unknown task id:</string>-->
+    <!--<string name="no_changes_in_db">No changes in database.</string>-->
+    <!--<string name="multiple_deadlines_approaching">Multiple deadlines are approaching.</string>-->
+    <!--<string name="monday">Monday</string>-->
+    <!--<string name="is_due">is due.</string>-->
+    <!--<string name="task_deadline">Task deadline</string>-->
+</resources>

@@ -124,7 +124,7 @@ public class CalendarView extends LinearLayout {
             case 3:
                 return getResources().getString(R.string.april);
             case 4:
-                return getResources().getString(R.string.mai);
+                return getResources().getString(R.string.may);
             case 5:
                 return getResources().getString(R.string.june);
             case 6:
