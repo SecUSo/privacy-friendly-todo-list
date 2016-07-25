@@ -88,6 +88,27 @@ public class TodoList extends BaseTodo implements Parcelable{
     }
 
     public long getNextDeadline() {
+
+        long minDeadLine = -1;
+        for(int i=0; i<tasks.size(); i++) {
+
+            TodoTask currentTask = tasks.get(i);
+
+            if(!currentTask.getDone()) {
+                if (minDeadLine == -1 && currentTask.getDeadline() > 0)
+                    minDeadLine = currentTask.getDeadline();
+                else {
+                    long possNewDeadline = currentTask.getDeadline();
+                    if (possNewDeadline > 0 && possNewDeadline < minDeadLine) {
+                        minDeadLine = possNewDeadline;
+                    }
+                }
+            }
+        }
+
+
+/*
+
         long minDeadLine = -1;
         if(tasks.size() > 0 ) {
 
@@ -98,7 +119,7 @@ public class TodoList extends BaseTodo implements Parcelable{
                     minDeadLine = possNewDeadline;
             }
 
-        }
+        } */
 
         return minDeadLine;
     }

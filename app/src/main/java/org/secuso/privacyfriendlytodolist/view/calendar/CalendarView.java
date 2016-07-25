@@ -19,7 +19,6 @@ import java.util.Date;
 public class CalendarView extends LinearLayout {
 
     private static final int MAX_DAY_COUNT = 42;
-    private static final String DATE_FORMAT = "MMM yyyy";
 
     private Calendar currentDate;
 

@@ -65,13 +65,12 @@ public class CalendarFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.no_deadline_today), Toast.LENGTH_SHORT).show();
                 } else {
                     TodoList dummyList = new TodoList();
-                    dummyList = new TodoList();
                     dummyList.setDummyList();
                     dummyList.setName(key);
                     dummyList.setTasks(todaysTasks);
                     containerActivity.setDummyList(dummyList);
                     Bundle bundle = new Bundle();
-                    bundle.putLong(TodoList.UNIQUE_DATABASE_ID, TodoList.DUMMY_LIST_ID);
+                    bundle.putInt(TodoList.UNIQUE_DATABASE_ID, TodoList.DUMMY_LIST_ID);
                     bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
                     TodoTasksFragment fragment = new TodoTasksFragment();
                     fragment.setArguments(bundle);
@@ -86,7 +85,7 @@ public class CalendarFragment extends Fragment {
     private String absSecondsToDate(long seconds) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(seconds));
-        return DateFormat.format("dd-MM-yyyy", cal).toString();
+        return DateFormat.format("dd.MM.yyyy", cal).toString();
     }
 
     @Override

@@ -114,6 +114,8 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         public void onClick(View v) {
 
             Bundle bundle = new Bundle();
+
+            // It is important to save the clicked list, because it is possible that it was not yet written to the database and thus cannot be identified by its id.
             contextActivity.setClickedList(data.get(data.size()-1-getAdapterPosition()));
             bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
             TodoTasksFragment fragment = new TodoTasksFragment();

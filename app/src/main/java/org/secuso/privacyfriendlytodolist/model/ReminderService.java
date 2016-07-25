@@ -183,11 +183,11 @@ public class ReminderService extends Service {
 
             // 1. cancel old alarm
             alarmManager.cancel(alarmIntent);
-            Log.i(TAG, "Alarm of task " + changedTask.getName() + " cancelled. (id=)"+changedTask.getId()+")");
+            Log.i(TAG, "Alarm of task " + changedTask.getName() + " cancelled. (id="+changedTask.getId()+")");
 
             // 2. delete old notification if it exists
             mNotificationManager.cancel(changedTask.getId());
-            Log.i(TAG, "Notification of task " + changedTask.getName() + " deleted (if existed). (id=)\"+changedTask.getId()+\")");
+            Log.i(TAG, "Notification of task " + changedTask.getName() + " deleted (if existed). (id="+changedTask.getId()+")");
         } else {
             Log.i(TAG, "No alarm found for " + changedTask.getName() + " (alarm id: " + changedTask.getId() + ")");
         }

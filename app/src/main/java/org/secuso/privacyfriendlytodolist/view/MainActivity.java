@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             TodoTasksFragment fragment = new TodoTasksFragment();
             Bundle bundle = new Bundle();
-            bundle.putLong(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
+            bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
             bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
             fragment.setArguments(bundle);
             setFragment(fragment);
@@ -286,6 +286,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
+    public TodoList getDummyList() {
+        return dummyList;
+    }
+
     public TodoList getClickedList() {
         return clickedList;
     }
@@ -331,7 +335,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             throw new IllegalArgumentException("Cannot save unknown descendant of BaseTodo in the database.");
         }
-
 
         // set unique database id (primary key) to the current object
         if(databaseID == -1) {

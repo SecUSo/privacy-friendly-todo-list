@@ -59,7 +59,7 @@ public class DBQueryHandler {
 
         ArrayList<TodoTask> tasks = new ArrayList<>();
 
-        /*// do not request tasks for which the user was just notified (these tasks are locked)
+        // do not request tasks for which the user was just notified (these tasks are locked)
         StringBuilder excludedIDs = new StringBuilder();
         String and = " AND ";
         if(lockedIds != null && lockedIds.size() > 0) {
@@ -90,7 +90,7 @@ public class DBQueryHandler {
 
         TodoTask nextDueTask = getNextDueTask(db, today);
         if(nextDueTask != null)
-            tasks.add(nextDueTask);*/
+            tasks.add(nextDueTask);
 
         return tasks;
     }

@@ -67,8 +67,13 @@ public class TodoTasksFragment extends Fragment {
 
         if(selectedListID > 0) {
             currentList = containingActivity.getListByID(selectedListID); // MainActivity was started after a notification click
+            Log.i(TAG, "List from database was loaded.");
+        } else if(selectedListID == TodoList.DUMMY_LIST_ID) {
+            currentList = containingActivity.getDummyList();
+            Log.i(TAG, "Dummy list was loaded.");
         } else {
             currentList = containingActivity.getClickedList(); // get clicked list
+            Log.i(TAG, "List that does not yet exist in the database was loaded.");
         }
 
 
