@@ -56,6 +56,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         taskName.setText(task.getName());
         taskDescription.setText(task.getDescription());
         prioritySelector.setText(Helper.priority2String(context, task.getPriority()));
+        taskPriority = task.getPriority();
         progressSelector.setProgress(task.getProgress());
         if(task.getDeadline() <= 0)
             deadlineTextView.setText(context.getString(R.string.no_deadline));
