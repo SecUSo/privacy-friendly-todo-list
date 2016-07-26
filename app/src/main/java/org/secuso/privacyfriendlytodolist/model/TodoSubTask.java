@@ -70,4 +70,17 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
     public long getTaskId() {
         return taskIdForeignKey;
     }
+
+
+    public boolean checkQueryMatch(String query)
+    {
+        // no query? always match!
+        if(query == null || query.isEmpty())
+            return true;
+
+        String queryLowerCase = query.toLowerCase();
+        if(this.name.toLowerCase().contains(query))
+            return true;
+        return false;
+    }
 }

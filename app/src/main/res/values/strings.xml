@@ -14,6 +14,7 @@
     <string name="other">Other</string>
 	<string name="help">Help</string>
 	<string name="menu_about">About</string>
+    <string name="search">Search</string>
 
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Open menu</string>
@@ -21,7 +22,6 @@
     <string name="name">Name</string>
     <string name="todo_list_description_hint">Description</string>
     <string name="ok">OK</string>
-
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>

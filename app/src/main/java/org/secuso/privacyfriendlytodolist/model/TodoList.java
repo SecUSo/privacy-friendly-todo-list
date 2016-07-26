@@ -143,5 +143,22 @@ public class TodoList extends BaseTodo implements Parcelable{
     }
 
 
+    public boolean checkQueryMatch(String query)
+    {
+        // no query? always match!
+        if(query == null || query.isEmpty())
+            return true;
+
+        String queryLowerCase = query.toLowerCase();
+        if(this.name.toLowerCase().contains(query))
+            return true;
+        if(this.description.toLowerCase().contains(query))
+            return true;
+        for(int i = 0; i < this.tasks.size(); i++)
+            if(this.tasks.get(i).checkQueryMatch(queryLowerCase))
+                return true;
+        return false;
+    }
+
 
 }

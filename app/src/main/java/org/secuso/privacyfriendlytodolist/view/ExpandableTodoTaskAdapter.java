@@ -65,6 +65,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     // FILTER AND SORTING OPTIONS MADE BY THE USER
     private Filter filterMeasure;
+    private String queryString;
     private int sortType = 0; // encodes sorting (1. bit high -> sort by priority, 2. bit high --> sort by deadline)
 
     // ROW TYPES FOR USED TO CREATE DIFFERENT VIEWS DEPENDING ON ITEM TO SHOW
@@ -91,6 +92,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
         // default values
         setFilter(Filter.ALL_TASKS);
+        setQueryString(null);
         filterTasks();
     }
 
@@ -113,6 +115,10 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     // interface to outer world
     public void setFilter(Filter filter) {
         this.filterMeasure = filter;
+    }
+
+    public void setQueryString(String query) {
+        this.queryString = query;
     }
 
     /**
@@ -147,7 +153,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
         for (TodoTask task : rawData)
             if ((notOpen && task.getDone()) || (notCompleted && !task.getDone()))
-                filteredTasks.add(task);
+                if(task.checkQueryMatch(this.queryString))
+                    filteredTasks.add(task);
 
         // Call this method even if sorting is disabled. In the case of enabled sorting, all
         // sorting patterns are automatically employed after having changed the filter on tasks.

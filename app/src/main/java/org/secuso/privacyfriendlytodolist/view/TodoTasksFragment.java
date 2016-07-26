@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +36,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
 import java.util.ArrayList;
 
-public class TodoTasksFragment extends Fragment {
+public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private static final String TAG = TodoTasksFragment.class.getSimpleName();
 
@@ -288,6 +290,25 @@ public class TodoTasksFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu,inflater);
         inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.ac_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        taskAdapter.setQueryString(query);
+        taskAdapter.notifyDataSetChanged();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        taskAdapter.setQueryString(query);
+        taskAdapter.notifyDataSetChanged();
+        return false;
     }
 
     @Override
@@ -295,6 +316,13 @@ public class TodoTasksFragment extends Fragment {
 
         boolean checked;
         ExpandableTodoTaskAdapter.SortTypes sortType;
+
+        // collapse all elements on view change.
+        // the expandable list view keeps the expanded indices, so other items
+        // get expanded, when they get the old expanded index
+        int groupCount = taskAdapter.getGroupCount();
+        for(int i = 0; i < groupCount; i++)
+            expandableListView.collapseGroup(i);
 
         switch (item.getItemId()) {
             case R.id.ac_show_all_tasks:
