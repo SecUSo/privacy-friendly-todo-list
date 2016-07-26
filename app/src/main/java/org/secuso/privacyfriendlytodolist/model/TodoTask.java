@@ -245,21 +245,25 @@ public class TodoTask extends BaseTodo implements Parcelable {
     }
 
 
-    public boolean checkQueryMatch(String query)
-    {
+    public boolean checkQueryMatch(String query, boolean recursive) {
         // no query? always match!
-        if(query == null || query.isEmpty())
+        if (query == null || query.isEmpty())
             return true;
 
         String queryLowerCase = query.toLowerCase();
-        if(this.name.toLowerCase().contains(query))
+        if (this.name.toLowerCase().contains(query))
             return true;
-        if(this.description.toLowerCase().contains(query))
+        if (this.description.toLowerCase().contains(query))
             return true;
-        for(int i = 0; i < this.subTasks.size(); i++)
-            if(this.subTasks.get(i).checkQueryMatch(queryLowerCase))
-                return true;
+        if (recursive)
+            for (int i = 0; i < this.subTasks.size(); i++)
+                if (this.subTasks.get(i).checkQueryMatch(queryLowerCase))
+                    return true;
         return false;
+    }
+
+    public boolean checkQueryMatch(String query) {
+        return checkQueryMatch(query, true);
     }
 
 }

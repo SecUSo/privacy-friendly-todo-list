@@ -25,11 +25,14 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     private MainActivity contextActivity;
     private SharedPreferences prefs;
 
-    private ArrayList<TodoList> data;
+    private ArrayList<TodoList> allLists;
+    private String queryString;
+    private ArrayList<TodoList> filteredLists;
     private int position;
 
     public TodoListAdapter(Activity ac, ArrayList<TodoList> data) {
-        this.data = data;
+        this.queryString = null;
+        updateList(data);
         this.contextActivity = (MainActivity) ac;
         prefs = PreferenceManager.getDefaultSharedPreferences(ac);
     }
@@ -61,7 +64,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     // replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        TodoList list = data.get(data.size()-1-position);
+        TodoList list = this.filteredLists.get(this.filteredLists.size()-1-position);
         holder.title.setText(list.getName());
         if (list.getNextDeadline() <= 0)
             holder.deadline.setText(contextActivity.getResources().getString(R.string.no_next_deadline));
@@ -81,7 +84,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return this.filteredLists.size();
     }
 
     @Override
@@ -91,7 +94,29 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     }
 
     public void updateList(ArrayList<TodoList> todoLists) {
-        this.data = todoLists;
+        this.allLists = todoLists;
+        applyFilter();
+    }
+
+
+    public void setQueryString(String query) {
+        this.queryString = query;
+        applyFilter();
+    }
+
+    private void applyFilter() {
+        this.filteredLists = new ArrayList<TodoList>(this.allLists.size());
+        for (int i = 0; i < this.allLists.size(); i++) {
+            if (this.allLists.get(i).checkQueryMatch(this.queryString)) {
+                this.filteredLists.add(this.allLists.get(i));
+            }
+        }
+    }
+
+    public TodoList getToDoListFromPosition(int index) {
+        if (index < 0 || index >= this.filteredLists.size())
+            return null;
+        return this.filteredLists.get(this.filteredLists.size()-index-1);
     }
 
 
@@ -116,7 +141,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             Bundle bundle = new Bundle();
 
             // It is important to save the clicked list, because it is possible that it was not yet written to the database and thus cannot be identified by its id.
-            contextActivity.setClickedList(data.get(data.size()-1-getAdapterPosition()));
+            contextActivity.setClickedList(filteredLists.get(filteredLists.size()-1-getAdapterPosition()));
             bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);

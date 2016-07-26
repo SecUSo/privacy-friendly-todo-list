@@ -7,14 +7,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,7 +38,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 
 import java.util.ArrayList;
 
-public class TodoListsFragment extends Fragment {
+public class TodoListsFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private final static String TAG = TodoListsFragment.class.getSimpleName();
 
@@ -56,6 +60,12 @@ public class TodoListsFragment extends Fragment {
         guiSetup(v);
 
         return v;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     private void guiSetup(View rootView) {
@@ -84,6 +94,7 @@ public class TodoListsFragment extends Fragment {
                 if(newList instanceof TodoList) {
                     Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
                     todoLists.add((TodoList) newList);
+                    adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
                     Log.i(TAG, "list added");
                 }
@@ -105,10 +116,34 @@ public class TodoListsFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.i(TAG, "onCreateOptionsMenu");
+        super.onCreateOptionsMenu(menu,inflater);
+        inflater.inflate(R.menu.search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.ac_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        this.adapter.setQueryString(query);
+        this.adapter.notifyDataSetChanged();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        this.adapter.setQueryString(query);
+        this.adapter.notifyDataSetChanged();
+        return false;
+    }
+
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        final int pos = adapter.getPosition();
-        final TodoList todoList = todoLists.get(todoLists.size()-1-pos);
+        final TodoList todoList = adapter.getToDoListFromPosition(adapter.getPosition());
 
         switch(item.getItemId()) {
             case R.id.change_list:
@@ -128,6 +163,7 @@ public class TodoListsFragment extends Fragment {
                 Toast.makeText(getContext(), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Toast.LENGTH_SHORT).show();
                 DBQueryHandler.deleteTodoList(containerActivity.getDbHelper().getWritableDatabase(), todoList);
                 todoLists.remove(todoList);
+                adapter.updateList(todoLists);
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.show_description_list:

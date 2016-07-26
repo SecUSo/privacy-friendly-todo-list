@@ -297,8 +297,19 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         searchView.setOnQueryTextListener(this);
     }
 
+    private void collapseAll()
+    {
+        // collapse all elements on view change.
+        // the expandable list view keeps the expanded indices, so other items
+        // get expanded, when they get the old expanded index
+        int groupCount = taskAdapter.getGroupCount();
+        for(int i = 0; i < groupCount; i++)
+            expandableListView.collapseGroup(i);
+    }
+
     @Override
     public boolean onQueryTextSubmit(String query) {
+        collapseAll();
         taskAdapter.setQueryString(query);
         taskAdapter.notifyDataSetChanged();
         return false;
@@ -306,6 +317,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
     @Override
     public boolean onQueryTextChange(String query) {
+        collapseAll();
         taskAdapter.setQueryString(query);
         taskAdapter.notifyDataSetChanged();
         return false;
@@ -317,12 +329,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         boolean checked;
         ExpandableTodoTaskAdapter.SortTypes sortType;
 
-        // collapse all elements on view change.
-        // the expandable list view keeps the expanded indices, so other items
-        // get expanded, when they get the old expanded index
-        int groupCount = taskAdapter.getGroupCount();
-        for(int i = 0; i < groupCount; i++)
-            expandableListView.collapseGroup(i);
+        collapseAll();
 
         switch (item.getItemId()) {
             case R.id.ac_show_all_tasks:
