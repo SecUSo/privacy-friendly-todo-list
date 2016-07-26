@@ -3,7 +3,7 @@
 
     <ListPreference
         android:key="pref_default_reminder_time"
-        android:defaultValue="@integer/one_day"
+        android:defaultValue="86400"
         android:entries="@array/default_reminder_times_human"
         android:entryValues="@array/default_reminder_times"
         android:title="@string/default_reminder_time" />

@@ -1,8 +1,8 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-import android.graphics.Color;
+
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -19,8 +19,6 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_about);
 
         if (toolbar != null) {
@@ -36,7 +34,7 @@ public class AboutActivity extends AppCompatActivity {
             final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        }
+			}
     }
 
     @Override
