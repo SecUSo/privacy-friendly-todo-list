@@ -149,9 +149,9 @@ public class TodoList extends BaseTodo implements Parcelable{
             return true;
 
         String queryLowerCase = query.toLowerCase();
-        if (this.name.toLowerCase().contains(query))
+        if (this.name.toLowerCase().contains(queryLowerCase))
             return true;
-        if (this.description.toLowerCase().contains(query))
+        if (this.description.toLowerCase().contains(queryLowerCase))
             return true;
         if (recursive)
             for (int i = 0; i < this.tasks.size(); i++)

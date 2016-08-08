@@ -79,7 +79,7 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
             return true;
 
         String queryLowerCase = query.toLowerCase();
-        if(this.name.toLowerCase().contains(query))
+        if(this.name.toLowerCase().contains(queryLowerCase))
             return true;
         return false;
     }
