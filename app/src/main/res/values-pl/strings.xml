@@ -1,0 +1,147 @@
+﻿<resources>
+    <!-- Application Specific -->
+	<string name="app_name">Zadania</string>
+    <string name="app_name_long">Privacy Friendly Lista zadań</string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">Privacy Friendly Zadanie</string>
+    <string name="toolbar_title_main">Privacy Friendly Zadania</string>
+    <string name="todos">Zadania</string>
+    <string name="home">Strona startowa</string>
+    <string name="calendar_view">Kalendarz</string>
+    <string name="show_all_tasks">Wszystkie zadania</string>
+    <string name="settings">Ustawienia</string>
+    <string name="other">Inne</string>
+	<string name="help">Pomoc</string>
+	<string name="menu_about">O nas</string>
+    <string name="search">Szukaj</string>
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">Otwórz menu</string>
+    <string name="navigation_drawer_close">Zamknij menu</string>
+    <string name="name">Name</string>
+    <string name="todo_list_description_hint">Opis</string>
+    <string name="ok">OK</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">Wybierz</string>
+    <string name="high_priority">Bardzo ważne</string>
+    <string name="medium_priority">Średnio ważne</string>
+    <string name="low_priority">Mało ważne</string>
+    <string name="unknown_priority">Nieokreślone</string>
+
+    <!-- About -->
+    <string name="about">O nas</string>
+    <string name="version_number">v1.0</string>
+    <string name="about_author">Autorzy:</string>
+    <string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
+    <string name="about_affiliation">W współpracy z</string>
+    <string name="privacy_friendly">Ta aplikacja należy do Privacy Friendly Apps</string>
+    <string name="more_info">Więcej informacji na:</string>
+    <string name="url">https://www.secuso.org</string>
+
+    <!-- To-Do list overview -->
+	<string name="done">zrobione</string>
+	<string name="no_todo_lists_available">lista zadań niedostępna</string>
+	<string name="next_deadline_dd">Następny termin: %1$s</string>
+    <string name="no_next_deadline">Brak terminów</string>
+    <string name="add_list_feedback">%1$s dodane</string>
+    <string name="edit_todo_list">Edytuj listę zadań</string>
+    <string name="delete_list">Usuń listę zadań</string>
+    <string name="delete_list_feedback">%1$s usunięte</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">Nowa lista zadań</string>
+    <string name="list_name_must_not_be_empty">Lista zadań nie może być pusta</string>
+    <string name="show_description">Pokaż opis</string>
+    <string name="no_description_available">Opis niedostępny</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">Lista zadań jest pusta.</string>
+    <string name="all_tasks">Wszystkie zadania</string>
+    <string name="open_tasks">Nieskończone zadania</string>
+    <string name="completed_tasks">Skończone zadania</string>
+    <string name="group_by_priority">Grupuj pod względem ważności</string>
+    <string name="sort_by_deadline">Sortuj terminami</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">Nowe zadanie</string>
+    <string name="deadline_dd">Termin:</string>
+    <string name="no_deadline">Brak terminu</string>
+    <string name="edit_task">Edytuj zadanie</string>
+    <string name="delete_task">Usuń zadanie</string>
+    <string name="task_removed">Zadanie zostało usunięte.</string>
+    <string name="deadline">Termin</string>
+    <string name="reminder">Alarm</string>
+    <string name="deadline_smaller_reminder">Termin zadania nie może wypadać przed alarmem.</string>
+    <string name="set_deadline_before_reminder">Wprowadź najpierw termin zadania.</string>
+    <string name="progress_colon">Postępy:</string>
+    <string name="priority_colon">Poziom ważności:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">Poziom ważności:</string>
+    <string name="new_todo_subtask">Nowe podzadanie</string>
+    <string name="todo_name_must_not_be_empty">Wymagana nazwa</string>
+    <string name="edit_subtask">Edytuj podzadanie</string>
+    <string name="delete_subtask">Usuń podzadanie</string>
+    <string name="subtask_removed">Podzadanie zostało usunięte.</string>
+
+    <!-- Select reminder dialog -->
+	<string name="date">Data</string>
+	<string name="time">Godzina</string>
+	<string name="no_reminder">Brak alarmu</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">Kalendarz</string>
+    <string name="no_deadline_today">Brak terminów w tym dniu.</string>
+
+    <!-- PIN -->
+	<string name="enter_pin">Wprowadź hasło</string>
+	<string name="wrong_pin">Nieprawidłowe hasło</string>
+
+    <!-- Settings -->
+	<string name="default_reminder_time">Domyślny alarm</string>
+    <string-array name="default_reminder_times_human">
+        <item>Razem z terminem</item>
+        <item>0.5 dnia wcześniej</item>
+        <item>1 dzeń wcześniej</item>
+        <item>1.5 dnia wcześniej</item>
+        <item>2 dni wcześniej</item>
+        <item>2.5 dnia wcześniej</item>
+        <item>3 dni wcześniej</item>
+    </string-array>
+    <string name="pin_enabled">Aktywne hasło</string>
+    <string name="set_pin">Ustaw hasło</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">Zbliżający się termin: %1$s</string>
+
+    <!-- Date and Time -->
+	<string name="sunday_abbr">NIE</string>
+	<string name="monday_abbr">PON</string>
+	<string name="tuesday_abbr">WT</string>
+	<string name="wednesday_abbr">ŚR</string>
+	<string name="thursday_abbr">CZW</string>
+	<string name="friday_abbr">PT</string>
+	<string name="saturday_abbr">SOB</string>
+	<string name="january">Styczeń</string>
+	<string name="february">Luty</string>
+	<string name="march">Marzec</string>
+	<string name="april">Kwiecień</string>
+	<string name="may">Maj</string>
+	<string name="june">Czerwiec</string>
+	<string name="july">Lipiec</string>
+	<string name="august">Sierpień</string>
+	<string name="september">Wrzesień</string>
+	<string name="october">Październik</string>
+	<string name="november">Listopad</string>
+	<string name="december">Grudzień</string>
+
+    <!-- Error messages -->
+    <string name="error_removing_subtask">Podzadanie nie zostało usunięte.</string>
+    <string name="error_removing_task">Zadanie nie zostało usunięte.</string>
+    <string name="list_to_db_error">Lista zadań nie została zapisana w bazie danych.</string>
+    <string name="task_to_db_error">Zadanie nie zostało zapisane w bazie danych.</string>
+    <string name="subtask_to_db_error">Podzadanie nie zostało zapisane w bazie danych.</string>
+
+
+</resources>
