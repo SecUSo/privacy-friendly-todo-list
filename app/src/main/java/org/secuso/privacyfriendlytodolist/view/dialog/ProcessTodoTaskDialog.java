@@ -144,9 +144,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
         // initialize textviews to get deadline and reminder time
         deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
-        //deadlineTextView.setTextColor(android.R.drawable.btn_default);
-        //deadlineTextView.setTextColor(getContext().getColor(android.R.drawable.btn_default));
-        deadlineTextView.setTextColor(ContextCompat.getColor(this.getContext(), android.R.drawable.btn_default));
+        deadlineTextView.setTextColor(okayButton.getCurrentTextColor());
         deadlineTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +167,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         });
 
         reminderTextView = (TextView) findViewById(R.id.tv_todo_list_reminder);
+        reminderTextView.setTextColor(okayButton.getCurrentTextColor());
         reminderTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

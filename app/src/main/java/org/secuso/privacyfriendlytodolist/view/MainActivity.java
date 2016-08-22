@@ -1,6 +1,8 @@
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -108,17 +110,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setFragment(Fragment fragment) {
 
+        if(fragment == null)
+            return;
         // Check that the activity is using the layout version with the fragment_container FrameLayout
 
         if (findViewById(R.id.fragment_container) != null) {
-
-
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             if (fragmentManager.getFragments() == null) {
                 fragmentTransaction.add(R.id.fragment_container, fragment);
             } else {
-                fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_slide_out);
+                if (fragmentManager.getFragments().size() > 0) {
+                    Fragment currentFragment = fragmentManager.getFragments().get(fragmentManager.getFragments().size() - 1);
+                    // current fragment has the same type as new fragment? nothing to do
+                    if (currentFragment != null && currentFragment.isVisible() && currentFragment.getClass().equals(fragment.getClass()))
+                        return;
+                }
+                // find another fragment of the same type
+                Fragment oldFragment = null;
+                for (Fragment f : fragmentManager.getFragments()) {
+                    if (f != null && f.getClass().equals((fragment.getClass()))) {
+                        oldFragment = f;
+                        break;
+                    }
+                }
+                if (oldFragment != null) {
+                    // another fragment of this type found? just switch to this one
+                    fragment = oldFragment;
+                }
+                //fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_slide_out);
                 fragmentTransaction.replace(R.id.fragment_container, fragment);
                 fragmentTransaction.addToBackStack(null);
             }
@@ -179,8 +199,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
         } else if (id == R.id.menu_home) {
-            finish();
-            startActivity(getIntent());
+            TodoListsFragment fragment = new TodoListsFragment();
+            setFragment(fragment);
         }
 
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
