@@ -2,6 +2,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
 import android.provider.SyncStateContract;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -143,6 +144,9 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
         // initialize textviews to get deadline and reminder time
         deadlineTextView = (TextView) findViewById(R.id.tv_todo_list_deadline);
+        //deadlineTextView.setTextColor(android.R.drawable.btn_default);
+        //deadlineTextView.setTextColor(getContext().getColor(android.R.drawable.btn_default));
+        deadlineTextView.setTextColor(ContextCompat.getColor(this.getContext(), android.R.drawable.btn_default));
         deadlineTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

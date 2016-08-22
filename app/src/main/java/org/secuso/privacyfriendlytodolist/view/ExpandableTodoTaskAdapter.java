@@ -11,6 +11,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,9 +30,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
-//TODO Wird ein Task ausgeklappt und dann nach der Priorität sortiert, dann stürzt die App ab. Der Grund ist, dass die groupPosition nicht stimmt. Sie ist 0, aber intern wird schon mit einer PrioBar, also einem Element mehr, gerechnet.
-
 
 public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
@@ -464,7 +462,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 SettingViewHolder vh2 = new SettingViewHolder();
                 if (convertView == null) {
                     convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_setting_row, parent, false);
-                    vh2.addSubTaskButton = (ImageView) convertView.findViewById(R.id.iv_add_subtask);
+                    //vh2.addSubTaskButton = (ImageView) convertView.findViewById(R.id.iv_add_subtask);
+                    vh2.addSubTaskButton = (LinearLayout) convertView.findViewById(R.id.ll_add_subtask);
                     vh2.deadlineColorBar = convertView.findViewById(R.id.v_setting_deadline_color_bar);
                     convertView.setTag(vh2);
                 } else {
@@ -555,7 +554,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     private class SettingViewHolder {
-        public ImageView addSubTaskButton;
+        public LinearLayout addSubTaskButton;
         public View deadlineColorBar;
     }
 }

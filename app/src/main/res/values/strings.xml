@@ -4,8 +4,8 @@
     <string name="app_name_long">Privacy Friendly To-Do List</string>
 
     <!-- Menu -->
-    <string name="nav_header_app_name">Privacy Friendly To-Do</string>
-    <string name="toolbar_title_main">Privacy Friendly To-Do</string>
+    <string name="nav_header_app_name">To-Do</string>
+    <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
     <string name="home">Home</string>
     <string name="calendar_view">Calendar View</string>
@@ -21,7 +21,7 @@
     <string name="navigation_drawer_close">Close menu</string>
     <string name="name">Name</string>
     <string name="todo_list_description_hint">Description</string>
-    <string name="ok">OK</string>
+    <string name="ok">Okay</string>
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
@@ -52,7 +52,7 @@
 
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">New To-Do list</string>
-    <string name="list_name_must_not_be_empty">List name must not be empty.</string>
+    <string name="list_name_must_not_be_empty">Please enter a list name.</string>
     <string name="show_description">Show description</string>
     <string name="no_description_available">No description available.</string>
 
@@ -63,6 +63,7 @@
     <string name="completed_tasks">Completed tasks</string>
     <string name="group_by_priority">Group by priority</string>
     <string name="sort_by_deadline">Sort by deadline</string>
+    <string name="add_subtask">Add Subtask</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">New To-Do task</string>
@@ -73,14 +74,14 @@
     <string name="task_removed">Task was successfully removed.</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Reminder</string>
-    <string name="deadline_smaller_reminder">The deadline must not be before the reminder time.</string>
+    <string name="deadline_smaller_reminder">The deadline can not be earlier than the reminder time.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0%</string>
-    <string name="select_priority">Select a priority for this task!</string>
+    <string name="select_priority">Please select a priority!</string>
     <string name="new_todo_subtask">New subtask</string>
-    <string name="todo_name_must_not_be_empty">To-Do Task name must not be empty.</string>
+    <string name="todo_name_must_not_be_empty">Please enter a task name.</string>
     <string name="edit_subtask">Edit subtask</string>
     <string name="delete_subtask">Delete subtask</string>
     <string name="subtask_removed">Subtask successfully removed.</string>

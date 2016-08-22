@@ -4,8 +4,8 @@
     <string name="app_name_long">Privacy Friendly Liste de tâches</string>
 
     <!-- Menu -->
-    <string name="nav_header_app_name">Privacy Friendly A faire</string>
-    <string name="toolbar_title_main">Privacy Friendly A faire</string>
+    <string name="nav_header_app_name">A faire</string>
+    <string name="toolbar_title_main">A faire</string>
     <string name="todos">Tâches</string>
     <string name="home">Site de départ</string>
     <string name="calendar_view">Voir le calandier</string>
@@ -21,7 +21,7 @@
     <string name="navigation_drawer_close">Fermer le menu</string>
     <string name="name">Nom</string>
     <string name="todo_list_description_hint">Description</string>
-    <string name="ok">OK</string>
+    <string name="ok">Okay</string>
 
     <!-- Common model strings -->
     <string name="select_option">Choisir une option</string>

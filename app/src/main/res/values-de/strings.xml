@@ -4,8 +4,8 @@
     <string name="app_name_long">Privacy Friendly To-Do List</string>
 
     <!-- Menu -->
-    <string name="nav_header_app_name">Privacy Friendly To-Do</string>
-    <string name="toolbar_title_main">Privacy Friendly To-Do</string>
+    <string name="nav_header_app_name">To-Do</string>
+    <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
     <string name="home">Startseite</string>
     <string name="calendar_view">Kalenderansicht</string>
@@ -21,7 +21,7 @@
     <string name="navigation_drawer_close">Menü schließen</string>
     <string name="name">Name</string>
     <string name="todo_list_description_hint">Beschreibung</string>
-    <string name="ok">OK</string>
+    <string name="ok">Okay</string>
 
     <!-- Common model strings -->
     <string name="select_option">Auswählen</string>
@@ -52,7 +52,7 @@
 
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Neue To-Do Liste</string>
-    <string name="list_name_must_not_be_empty">Der Listenname darf nicht leer sein.</string>
+    <string name="list_name_must_not_be_empty">Bitte geben Sie einen Listennamen ein.</string>
     <string name="show_description">Beschreibung anzeigen</string>
     <string name="no_description_available">Keine Beschreibung vorhanden.</string>
 
@@ -63,6 +63,7 @@
     <string name="completed_tasks">Erledigte Aufgaben</string>
     <string name="group_by_priority">Nach Priorität gruppieren</string>
     <string name="sort_by_deadline">Nach Deadline sortieren</string>
+    <string name="add_subtask">Unteraufgabe hinzufügen</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Neue Aufgabe</string>
@@ -80,7 +81,7 @@
     <string name="zero_percent">0%</string>
     <string name="select_priority">Priorität:</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
-    <string name="todo_name_must_not_be_empty">Der Name darf nicht leer sein.</string>
+    <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
     <string name="delete_subtask">Unteraufgabe löschen</string>
     <string name="subtask_removed">Unteraufgabe wurde gelöscht</string>

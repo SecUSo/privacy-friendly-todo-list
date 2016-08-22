@@ -8,7 +8,7 @@
         android:entryValues="@array/default_reminder_times"
         android:title="@string/default_reminder_time" />
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:key="pref_pin_enabled"
         android:defaultValue="false"
         android:title="@string/pin_enabled" />

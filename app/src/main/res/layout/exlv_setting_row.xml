@@ -12,14 +12,29 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary" />
 
-    <ImageView
-        android:id="@+id/iv_add_subtask"
+    <LinearLayout
+        android:id="@+id/ll_add_subtask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="5dp"
-        android:background="@mipmap/plus_blue" />
+        android:orientation="horizontal"
+        android:layout_margin="1dp"
+        android:clickable="true" >
 
+        <ImageView
+            android:id="@+id/iv_add_subtask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/tv_add_subtask"
+            android:layout_margin="5dp"
+            android:background="@mipmap/plus_blue" />
+
+        <TextView
+            android:id="@+id/tv_add_subtask"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/add_subtask" />
+    </LinearLayout>
     <View
         android:id="@+id/v_exlv_setting_separator"
         android:layout_below="@+id/iv_add_subtask"
