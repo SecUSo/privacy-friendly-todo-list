@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String FRAGMENT_CHOICE = "fragment_choice";
 
+    private static final long UnlockPeriod = 15000; // keep the app unlocked for 15 seconds after switching to another activity (settings/help/about)
+
     private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
     private ArrayList<TodoList> todoLists = new ArrayList<>();
 
@@ -55,6 +57,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // reference to clicked list set by TodoListsFragment.
     private TodoList clickedList;
 
+    boolean isInitialized = false;
+    boolean isUnlocked = false;
+    long unlockUntil = -1;
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("isUnlocked", this.isUnlocked);
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,11 +75,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
+        dbHelper = DatabaseHelper.getInstance(this);
+
+        this.isUnlocked = (savedInstanceState != null && savedInstanceState.getBoolean("isUnlocked", false));
         securityCheck();
     }
 
     private void securityCheck() {
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false)) {
+        if (!this.isUnlocked && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false)) {
             PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
@@ -85,9 +101,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void setUnlockedState(boolean isUnlocked) {
+        this.isUnlocked = isUnlocked;
+    }
+
     void initActivity() {
 
-        dbHelper = DatabaseHelper.getInstance(this);
+        this.isUnlocked = true;
         getTodoLists(true);
 
         Bundle extras = getIntent().getExtras();
@@ -106,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         guiSetup();
+        this.isInitialized = true;
     }
 
     public void setFragment(Fragment fragment) {
@@ -172,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_calendar_view) {
             CalendarFragment fragment = new CalendarFragment();
@@ -197,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_home) {
             TodoListsFragment fragment = new TodoListsFragment();
@@ -208,8 +231,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+    @Override
+    protected void onStop() {
+        this.isUnlocked = false;
+        super.onStop();
+    }
+
     @Override
     protected void onResume() {
+        if(this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
+            super.onResume();
+            return;
+        }
+        this.unlockUntil = -1;
 
         if (reminderService == null) {
             bindToReminderService();
@@ -219,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-
         if (reminderService != null) {
             unbindService(reminderServiceConnection);
             reminderService = null;
@@ -250,8 +287,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public ArrayList<TodoList> getTodoLists(boolean reload) {
-        if (reload)
-            todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        if (reload) {
+            if (dbHelper != null)
+                todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        }
 
         return todoLists;
     }

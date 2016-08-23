@@ -176,12 +176,12 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     @Override
                     public void setReminder(long r) {
 
-                        if(deadline == -1) {
+                        /*if(deadline == -1) {
                             Toast.makeText(getContext(), getContext().getString(R.string.set_deadline_before_reminder), Toast.LENGTH_SHORT).show();
                             return;
-                        }
+                        }*/
 
-                        if(deadline < r) {
+                        if(deadline != -1 && deadline < r) {
                             Toast.makeText(getContext(), getContext().getString(R.string.deadline_smaller_reminder), Toast.LENGTH_SHORT).show();
                             return;
                         }

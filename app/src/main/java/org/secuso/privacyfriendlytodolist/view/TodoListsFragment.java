@@ -198,6 +198,7 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
         adapter.updateList(todoLists);
         adapter.notifyDataSetChanged();
 
-        containerActivity.getSupportActionBar().setTitle(R.string.toolbar_title_main);
+        if (containerActivity.getSupportActionBar() != null)
+            containerActivity.getSupportActionBar().setTitle(R.string.toolbar_title_main);
     }
 }
