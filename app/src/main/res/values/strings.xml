@@ -30,6 +30,14 @@
     <string name="low_priority">Low</string>
     <string name="unknown_priority">Unknown Priority</string>
 
+    <!-- Welcome Dialog -->
+    <string name="welcome_title">Welcome to the Privacy Friendly To-Do List. This application requires no permissions. You can:</string>
+    <string name="welcome_hint_lists">Manage Tasks in labeled To-Do Lists.</string>
+    <string name="welcome_hint_deadlines">Create deadlines and reminders for tasks.</string>
+    <string name="welcome_hint_subtasks">Create subtasks by expanding the task.</string>
+    <string name="welcome_hint_pin">Add a PIN-protection in the settings.</string>
+    <string name="welcome_button">Begin</string>
+
     <!-- About -->
     <string name="about">About</string>
     <string name="version_number">v1.0</string>

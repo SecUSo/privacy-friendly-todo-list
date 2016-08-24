@@ -1,28 +1,29 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-
 import android.graphics.PorterDuff;
-
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import org.secuso.privacyfriendlytodolist.R;
 
-public class AboutActivity extends AppCompatActivity {
+public class HelpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_about);
+        setContentView(R.layout.activity_help);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_help);
 
         if (toolbar != null) {
-            toolbar.setTitle(R.string.menu_about);
+            toolbar.setTitle(R.string.help);
             toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
             setSupportActionBar(toolbar);
 
@@ -35,6 +36,8 @@ public class AboutActivity extends AppCompatActivity {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+
+        overridePendingTransition(0, 0);
     }
 
     @Override
@@ -46,6 +49,17 @@ public class AboutActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public static class HelpFragment extends PreferenceFragment {
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            //addPreferencesFromResource(R.xml.help);
+        }
     }
 
 }

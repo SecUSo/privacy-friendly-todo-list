@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -127,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         guiSetup();
         this.isInitialized = true;
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        if (preferences.getBoolean("firstStart", true)) {
+            setFragment(new WelcomeFragment());
+        }
     }
 
     public void setFragment(Fragment fragment) {
@@ -219,6 +225,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+            startActivity(intent);
+        } else if (id == R.id.nav_help) {
+            Intent intent = new Intent(this, HelpActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_home) {
