@@ -27,8 +27,19 @@ public class ReminderDialog extends FullScreenDialog {
         if(reminderTime != -1) calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(reminderTime));
         else if(deadline != -1) calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline)); //TODO subtract predefined reminder interval
         else calendar.setTime(Calendar.getInstance().getTime());
+
         DatePicker datePicker = (DatePicker) findViewById(R.id.dp_reminder);
-        datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        //datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                LinearLayout layoutDate = (LinearLayout)findViewById(R.id.ll_reminder_date);
+                layoutDate.setVisibility(View.GONE);
+                LinearLayout layoutTime = (LinearLayout)findViewById(R.id.ll_reminder_time);
+                layoutTime.setVisibility(View.VISIBLE);
+            }
+        });
+
         TimePicker timePicker = (TimePicker) findViewById(R.id.tp_reminder);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));

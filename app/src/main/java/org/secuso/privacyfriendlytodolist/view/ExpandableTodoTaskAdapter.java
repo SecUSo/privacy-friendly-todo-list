@@ -176,6 +176,11 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         Collections.sort(filteredTasks, new Comparator<TodoTask>() {
 
             private int compareDeadlines(long d1, long d2) {
+                // tasks with deadlines always first
+                if (d1 == -1 && d2 == -1) return 0;
+                if (d1 == -1) return 1;
+                if (d2 == -1) return -1;
+
                 if (d1 < d2) return -1;
                 if (d1 == d2) return 0;
                 return 1;
