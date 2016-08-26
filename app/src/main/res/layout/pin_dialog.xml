@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
@@ -41,4 +42,17 @@
             android:minHeight="48dip"
             android:text="@string/ok" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_reset_application"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="#014164"
+        android:visibility="gone"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/reset_application_button"
+        android:textColor="@android:color/white" />
+
 </LinearLayout>

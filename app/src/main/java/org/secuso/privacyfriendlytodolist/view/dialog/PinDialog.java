@@ -1,5 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
+import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.PreferenceManager;
@@ -21,6 +22,8 @@ public class PinDialog extends FullScreenDialog {
 
     PinCallback callback = null;
 
+    int wrongCounter = 0;
+
     public PinDialog(Context context) {
         super(context, R.layout.pin_dialog);
 
@@ -36,10 +39,38 @@ public class PinDialog extends FullScreenDialog {
                     dismiss();
                 }
                 else {
+                    wrongCounter++;
                     Toast.makeText(PinDialog.this.getContext(), PinDialog.this.getContext().getResources().getString(R.string.wrong_pin), Toast.LENGTH_SHORT).show();
                     textEditPin.setText("");
                     textEditPin.setActivated(true);
+
+                    if (wrongCounter >= 3) {
+                        Button buttonResetApp = (Button)findViewById(R.id.bt_reset_application);
+                        buttonResetApp.setVisibility(View.VISIBLE);
+                    }
                 }
+            }
+        });
+
+        Button buttonResetApp = (Button)findViewById(R.id.bt_reset_application);
+        buttonResetApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OnClickListener resetDialogListener = new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == DialogInterface.BUTTON_POSITIVE) {
+                            //TODO delete
+                            Toast.makeText(PinDialog.this.getContext(), "delete!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(PinDialog.this.getContext());
+                builder.setMessage(PinDialog.this.getContext().getResources().getString(R.string.reset_application_msg));
+                builder.setPositiveButton(PinDialog.this.getContext().getResources().getString(R.string.yes), resetDialogListener);
+                builder.setNegativeButton(PinDialog.this.getContext().getResources().getString(R.string.no), resetDialogListener);
+                builder.show();
             }
         });
 

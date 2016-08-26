@@ -29,6 +29,8 @@
     <string name="medium_priority">Normal</string>
     <string name="low_priority">Niedrig</string>
     <string name="unknown_priority">Unbekannte Priorität</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
 
     <!-- Welcome Dialog -->
     <string name="welcome_title">Willkommen in der Privacy Friendly To-Do Liste. Diese App kommt ohne Berechtigungen aus. Sie können:</string>
@@ -118,6 +120,8 @@
     <!-- PIN -->
 	<string name="enter_pin">PIN eingeben</string>
 	<string name="wrong_pin">Falsche PIN</string>
+    <string name="reset_application_button">App zurücksetzen</string>
+    <string name="reset_application_msg">Wollen Sie die Anwendung wirklich zurücksetzen? Dies entfernt zwar den PIN-Schutz, löscht jedoch auch alle To-Do Listen.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>

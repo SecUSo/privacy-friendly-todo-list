@@ -29,6 +29,8 @@
     <string name="medium_priority">Medium</string>
     <string name="low_priority">Low</string>
     <string name="unknown_priority">Unknown Priority</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- Welcome Dialog -->
     <string name="welcome_title">Welcome to the Privacy Friendly To-Do List. This application requires no permissions. You can:</string>
@@ -118,6 +120,8 @@
     <!-- PIN -->
 	<string name="enter_pin">Enter PIN</string>
 	<string name="wrong_pin">Wrong PIN</string>
+    <string name="reset_application_button">Reset application</string>
+    <string name="reset_application_msg">Do you really want to reset the application? This will remove the PIN-protection and delete all To-Do lists.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Default reminder time</string>
