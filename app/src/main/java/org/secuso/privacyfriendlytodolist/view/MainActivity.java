@@ -112,6 +112,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 public void declined() {
                     finish();
                 }
+
+                @Override
+                public void resetApp() {
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().clear().commit();
+                    dbHelper.deleteAll();
+                    dbHelper.createAll();
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    finish();
+                    startActivity(intent);
+                }
             });
             dialog.show();
         } else {

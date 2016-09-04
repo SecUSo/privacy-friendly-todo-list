@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper mInstance = null;
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "TodoDatabase.db";
 
     public static DatabaseHelper getInstance(Context context) {
@@ -30,21 +30,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void deleteAll(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE " + TTodoList.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TTodoTask.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TTodoSubTask.TABLE_NAME);
+    }
+
+    public void deleteAll() {
+        deleteAll(this.getWritableDatabase());
+    }
+
+
+    public void createAll(SQLiteDatabase db) {
         db.execSQL(TTodoList.TABLE_CREATE);
         db.execSQL(TTodoTask.TABLE_CREATE);
         db.execSQL(TTodoSubTask.TABLE_CREATE);
+    }
+
+    public void createAll() {
+        createAll(this.getWritableDatabase());
+    }
+
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        createAll(db);
 
         Log.i(TAG, "onCreate() finished");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE " + TTodoList.TABLE_NAME);
-        db.execSQL("DROP TABLE " + TTodoTask.TABLE_NAME);
-        db.execSQL("DROP TABLE " + TTodoSubTask.TABLE_NAME);
-
+        deleteAll(db);
         onCreate(db);
         Log.i(TAG, "onUpgrade() finished");
     }

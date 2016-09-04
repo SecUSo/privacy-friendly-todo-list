@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,10 +26,8 @@ public class PinDialog extends FullScreenDialog {
 
     int wrongCounter = 0;
 
-    public PinDialog(Context context) {
+    public PinDialog(final Context context) {
         super(context, R.layout.pin_dialog);
-
-
 
         Button buttonOkay = (Button) findViewById(R.id.bt_pin_ok);
         buttonOkay.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +62,7 @@ public class PinDialog extends FullScreenDialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == DialogInterface.BUTTON_POSITIVE) {
-                            //TODO delete
-                            Toast.makeText(PinDialog.this.getContext(), "delete!", Toast.LENGTH_SHORT).show();
+                            callback.resetApp();
                         }
                     }
                 };
@@ -100,6 +98,7 @@ public class PinDialog extends FullScreenDialog {
     public interface PinCallback {
         void accepted();
         void declined();
+        void resetApp();
     }
 
     public void setCallback(PinCallback callback) {

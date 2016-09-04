@@ -31,16 +31,20 @@ public class DBQueryHandler {
 
         String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + "-? > 0 ORDER BY ABS(" + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " -?) LIMIT 1;";
         String selectionArgs[] = {String.valueOf(today)};
-        Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
 
         TodoTask nextDueTask = null;
 
         try {
-            if (cursor.moveToFirst()) {
-                nextDueTask = extractTodoTask(cursor);
+            Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
+
+            try {
+                if (cursor.moveToFirst()) {
+                    nextDueTask = extractTodoTask(cursor);
+                }
+            } finally {
+                cursor.close();
             }
-        } finally {
-            cursor.close();
+        } catch (Exception ex) {
         }
 
         return nextDueTask;
@@ -60,9 +64,9 @@ public class DBQueryHandler {
         // do not request tasks for which the user was just notified (these tasks are locked)
         StringBuilder excludedIDs = new StringBuilder();
         String and = " AND ";
-        if(lockedIds != null && lockedIds.size() > 0) {
+        if (lockedIds != null && lockedIds.size() > 0) {
             excludedIDs.append(" AND ");
-            for(Integer lockedTaskID : lockedIds) {
+            for (Integer lockedTaskID : lockedIds) {
                 excludedIDs.append(TTodoTask.COLUMN_ID + " <> " + String.valueOf(lockedTaskID));
                 excludedIDs.append(" AND ");
             }
@@ -70,25 +74,28 @@ public class DBQueryHandler {
         }
         excludedIDs.append(";");
 
-        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? " + excludedIDs.toString() ;
+        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? " + excludedIDs.toString();
         String selectionArgs[] = {String.valueOf(today)};
-        Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
-
         try {
-            if(cursor.moveToFirst()) {
-                do {
-                    TodoTask taskForNotification = extractTodoTask(cursor);
-                    tasks.add(taskForNotification);
+            Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
 
-                } while (cursor.moveToNext());
+            try {
+                if (cursor.moveToFirst()) {
+                    do {
+                        TodoTask taskForNotification = extractTodoTask(cursor);
+                        tasks.add(taskForNotification);
+
+                    } while (cursor.moveToNext());
+                }
+            } finally {
+                cursor.close();
             }
-        } finally {
-            cursor.close();
+        } catch (Exception e) {
         }
 
         // get task that is next due
         TodoTask nextDueTask = getNextDueTask(db, today);
-        if(nextDueTask != null)
+        if (nextDueTask != null)
             tasks.add(nextDueTask);
 
         return tasks;
@@ -162,30 +169,33 @@ public class DBQueryHandler {
     public static ArrayList<TodoList> getAllToDoLists (SQLiteDatabase db) {
 
         ArrayList<TodoList> todoLists = new ArrayList<>();
-        Cursor cursor = db.query(TTodoList.TABLE_NAME, null, null, null, null, null, null);
-
 
         try {
-            if(cursor.moveToFirst()) {
-                do {
-                    int id = cursor.getInt(cursor.getColumnIndex(TTodoList.COLUMN_ID));
-                    String listName = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_NAME));
-                    String listDescription = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_DESCRIPTION));
+            Cursor cursor = db.query(TTodoList.TABLE_NAME, null, null, null, null, null, null);
 
-                    TodoList currentList = new TodoList();
-                    currentList.setName(listName);
-                    currentList.setDescription(listDescription);
-                    currentList.setId(id);
-                    currentList.setTasks(getTasksByListId(db, id, listName));
-                    todoLists.add(currentList);
-                } while (cursor.moveToNext());
+
+            try {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(TTodoList.COLUMN_ID));
+                        String listName = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_NAME));
+                        String listDescription = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_DESCRIPTION));
+
+                        TodoList currentList = new TodoList();
+                        currentList.setName(listName);
+                        currentList.setDescription(listDescription);
+                        currentList.setId(id);
+                        currentList.setTasks(getTasksByListId(db, id, listName));
+                        todoLists.add(currentList);
+                    } while (cursor.moveToNext());
+                }
+            } finally {
+                cursor.close();
             }
-        } finally {
-            cursor.close();
+        } catch (Exception ex) {
         }
-        
-        return todoLists;
 
+        return todoLists;
     }
 
     private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId, String listName) {
