@@ -41,11 +41,6 @@ public class Helper {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 
-    public static int dp2Px(Context context, int dp) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * density + 0.5f);
-    }
-
     public static int getDeadlineColor(Context context, DeadlineColors color) {
         switch (color) {
             case RED:
@@ -87,5 +82,6 @@ public class Helper {
 
         return blueBackground;
     }
+
 }
 

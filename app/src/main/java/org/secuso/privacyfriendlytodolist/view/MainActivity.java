@@ -1,8 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -34,6 +32,7 @@ import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /*
@@ -43,52 +42,70 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String FRAGMENT_CHOICE = "fragment_choice";
 
-    private static final long UnlockPeriod = 15000; // keep the app unlocked for 15 seconds after switching to another activity (settings/help/about)
+    // Keys
+    private static final String KEY_TODO_LISTS = "restore_todo_list_key_with_savedinstancestate";
+    private static final String KEY_CLICKED_LIST = "restore_clicked_list_with_savedinstancestate";
+    private static final java.lang.String KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate";
+    public static final String KEY_SELECTED_FRAGMENT_BY_NOTIFICATION = "fragment_choice";
+    private static final String KEY_FRAGMENT_CONFIG_CHANGE_SAVE = "current_fragment";
 
-    private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
-    private ArrayList<TodoList> todoLists = new ArrayList<>();
 
+    // Fragment administration
+    private Fragment currentFragment;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+    // Database administration
     private DatabaseHelper dbHelper;
+
+    // TodoList administration
+    private ArrayList<TodoList> todoLists = new ArrayList<>();
+    private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
+    private TodoList clickedList; // reference of last clicked list for fragment
+
+    // Service that triggers notifications for upcoming tasks
     private ReminderService reminderService;
 
-    // reference to clicked list set by TodoListsFragment.
-    private TodoList clickedList;
-
+    // Others
     boolean isInitialized = false;
     boolean isUnlocked = false;
     long unlockUntil = -1;
+    private static final long UnlockPeriod = 15000; // keep the app unlocked for 15 seconds after switching to another activity (settings/help/about)
 
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean("isUnlocked", this.isUnlocked);
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHelper = DatabaseHelper.getInstance(this);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
-        dbHelper = DatabaseHelper.getInstance(this);
+       // initActivity(savedInstanceState);
 
-        this.isUnlocked = (savedInstanceState != null && savedInstanceState.getBoolean("isUnlocked", false));
-        securityCheck();
+        authAndGuiInit(savedInstanceState);
+
     }
 
-    private void securityCheck() {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(KEY_TODO_LISTS, todoLists);
+        outState.putParcelable(KEY_CLICKED_LIST, clickedList);
+        outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    private void authAndGuiInit(final Bundle savedInstanceState) {
+
         if (!this.isUnlocked && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false)) {
             PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
                 public void accepted() {
-                    initActivity();
+                    initActivity(savedInstanceState);
                 }
 
                 @Override
@@ -98,44 +115,86 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
             dialog.show();
         } else {
-            initActivity();
+            initActivity(savedInstanceState);
         }
+
     }
 
-    public void setUnlockedState(boolean isUnlocked) {
-        this.isUnlocked = isUnlocked;
-    }
-
-    void initActivity() {
+    public void initActivity(Bundle savedInstanceState) {
 
         this.isUnlocked = true;
         getTodoLists(true);
 
         Bundle extras = getIntent().getExtras();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
 
-        if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(FRAGMENT_CHOICE))) {
-            TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
-            Bundle bundle = new Bundle();
-            bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
-            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
-            TodoTasksFragment fragment = new TodoTasksFragment();
-            fragment.setArguments(bundle);
-            setFragment(fragment);
+        boolean firstStart = preferences.getBoolean("firstStart", true);
+        if (firstStart) {
+            currentFragment = new WelcomeFragment();
         } else {
-            TodoListsFragment todoListOverviewFragment = new TodoListsFragment();
-            setFragment(todoListOverviewFragment);
+
+            // check if app was started by clicking on a reminding notification
+            if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION))) {
+                TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
+                Bundle bundle = new Bundle();
+                bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
+                bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
+                currentFragment = new TodoTasksFragment();
+                currentFragment.setArguments(bundle);
+            } else {
+
+
+                if(currentFragment == null) {
+                    currentFragment = new TodoListsFragment();
+                    Log.i(TAG, "Activity was not retained.");
+
+                } else {
+
+                    // restore state before configuration change
+                    if(savedInstanceState != null) {
+                        todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
+                        clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
+                        isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
+                    } else {
+                        Log.i(TAG, "Could not restore old state because savedInstanceState is null.");
+                    }
+
+
+                    Log.i(TAG, "Activity was retained.");
+                }
+            }
         }
 
+        setFragment(currentFragment);
         guiSetup();
         this.isInitialized = true;
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        if (preferences.getBoolean("firstStart", true)) {
-            setFragment(new WelcomeFragment());
-        }
     }
 
+
+
     public void setFragment(Fragment fragment) {
+
+        if(fragment == null)
+            return;
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // If a fragment is currently displayed, replace it by the new one.
+        List<Fragment> addedFragments = fragmentManager.getFragments();
+        if(addedFragments != null && addedFragments.size() > 0 ) {
+            transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+        } else { // no fragment is currently displayed
+            transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+        }
+
+        transaction.addToBackStack(null);
+        transaction.commit();
+        fragmentManager.executePendingTransactions();
+
+
+/*
+
 
         if(fragment == null)
             return;
@@ -172,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             fragmentTransaction.commit();
         }
+*/
 
     }
 
@@ -345,8 +405,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(reminderService != null) {
 
-            // The first two conditions should be always true as it is not possible to set a reminder time which violates theses conditions.
-            if(currentTask.getDeadline() > 0 && currentTask.getReminderTime() < currentTask.getDeadline() && currentTask.getReminderTime() >= Helper.getCurrentTimestamp()) {
+            // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
+            if((currentTask.getReminderTime() < currentTask.getDeadline() || currentTask.getDeadline() < 0) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
                 reminderService.processTask(currentTask);
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());

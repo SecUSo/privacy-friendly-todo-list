@@ -16,11 +16,11 @@
     <EditTextPreference
         android:defaultValue=""
         android:dependency="pref_pin_enabled"
-        android:dialogMessage="Add a numeric PIN to provide access to enter the app. The PIN must be 4 digits."
-        android:dialogTitle="Set PIN"
+        android:dialogMessage="@string/add_pin"
+        android:dialogTitle="@string/set_pin"
         android:inputType="numberPassword"
         android:key="pref_pin"
-        android:maxLength="4"
+        android:maxLength="10"
         android:password="true"
         android:title="@string/set_pin" />
 

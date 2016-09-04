@@ -2,16 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin">
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/pin_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="@string/enter_pin"
-        android:textSize="22sp"
-        android:textColor="@color/white"
-        android:background="@color/colorPrimary"/>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_pin_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:src="@drawable/pin"
+            android:scaleX="0.7"
+            android:scaleY="0.7"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_pin"
+            android:layout_toRightOf="@+id/iv_pin_icon"
+            android:paddingLeft="5dp"
+            android:layout_centerVertical="true"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+             />
+
+    </RelativeLayout>
+
+
 
     <EditText
         android:id="@+id/et_pin_pin"
@@ -20,39 +41,39 @@
         android:maxLength="4"
         android:inputType="numberPassword" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/bt_pin_cancel"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentRight="true"
             android:minHeight="48dip"
             android:text="@android:string/cancel" />
 
         <Button
             android:id="@+id/bt_pin_ok"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_toLeftOf="@+id/bt_pin_cancel"
             android:minHeight="48dip"
             android:text="@string/ok" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/bt_reset_application"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="#014164"
+        style="?android:attr/buttonBarButtonStyle"
         android:visibility="gone"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="right"
         android:text="@string/reset_application_button"
-        android:textColor="@android:color/white" />
+ />
+
+        -->
 
 </LinearLayout>

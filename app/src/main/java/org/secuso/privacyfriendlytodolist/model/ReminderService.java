@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * This services implements the following policies:
+ * This service implements the following alarm policies:
  *
  * - On startup it sets alarms for all tasks fulfilling all of the subsequent conditions:
  *          1. The reminding time is in the past.
@@ -117,7 +117,7 @@ public class ReminderService extends Service {
         String contentText = getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline()));
 
         Intent resultIntent = new Intent(this, MainActivity.class);
-        resultIntent.putExtra(MainActivity.FRAGMENT_CHOICE, TodoTasksFragment.KEY);
+        resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
         resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
@@ -136,9 +136,8 @@ public class ReminderService extends Service {
     }
 
     public void reloadAlarmsFromDB() {
-        mNotificationManager.cancelAll();
+        mNotificationManager.cancelAll(); // cancel all alarms
 
-        // cancel all alarms
         ArrayList<TodoTask> tasksToRemind = DBQueryHandler.getTasksToRemind(dbHelper.getReadableDatabase(), Helper.getCurrentTimestamp(), null);
 
         // set alarms
@@ -157,10 +156,10 @@ public class ReminderService extends Service {
         alarmIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
         alarmIntent.putExtra(ALARM_TRIGGERED, true);
 
-        int alarmID = task.getId();
+        int alarmID = task.getId(); // use database id as unique alarm id
         PendingIntent pendingAlarmIntent = PendingIntent.getService(this, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
-        long reminderTime = task.getReminderTime(); // all tasks have the same reminder time
+        long reminderTime = task.getReminderTime();
         Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
         calendar.setTime(date);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
@@ -192,8 +191,7 @@ public class ReminderService extends Service {
             Log.i(TAG, "No alarm found for " + changedTask.getName() + " (alarm id: " + changedTask.getId() + ")");
         }
 
-        if(!changedTask.getDone())
-            setAlarmForTask(changedTask);
+        setAlarmForTask(changedTask);
     }
 
 

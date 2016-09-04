@@ -66,6 +66,8 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        setRetainInstance(true);
     }
 
     private void guiSetup(View rootView) {

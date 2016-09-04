@@ -65,17 +65,21 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
 
         boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
+
+        // This argument is only set if a dummy list is displayed (a mixture of tasks of different lists) or if
+        // a list was selected by clicking on a notification. If the the user selects a list explicitly by clicking on it
+        // the list object is instantly available and can be obtained using the method "getClickedList()"
         int selectedListID = getArguments().getInt(TodoList.UNIQUE_DATABASE_ID, -1);
 
-        if(selectedListID > 0) {
+        if(selectedListID >= 0) {
             currentList = containingActivity.getListByID(selectedListID); // MainActivity was started after a notification click
-            Log.i(TAG, "List from database was loaded.");
+            Log.i(TAG, "List was loaded that was requested by a click on a notification.");
         } else if(selectedListID == TodoList.DUMMY_LIST_ID) {
             currentList = containingActivity.getDummyList();
             Log.i(TAG, "Dummy list was loaded.");
         } else {
             currentList = containingActivity.getClickedList(); // get clicked list
-            Log.i(TAG, "List that does not yet exist in the database was loaded.");
+            Log.i(TAG, "Clicked list was loaded.");
         }
 
 
@@ -259,6 +263,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        setRetainInstance(true);
     }
 
     @Override

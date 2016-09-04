@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,11 @@ import android.widget.Button;
 
 import org.secuso.privacyfriendlytodolist.R;
 
-/**
- * Created by Simon on 24.08.2016.
- */
+
 public class WelcomeFragment extends Fragment {
+
+    private final static String TAG = WelcomeFragment.class.getSimpleName();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,6 +33,14 @@ public class WelcomeFragment extends Fragment {
                 ((MainActivity)getActivity()).setFragment(new TodoListsFragment());
             }
         });
+
         return baseView;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
     }
 }

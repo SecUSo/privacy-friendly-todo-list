@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -454,11 +455,14 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 }
 
                 String description = currentTask.getDescription();
-                if (description != null && !description.equals(""))
+                if (description != null && !description.equals("")) {
+                    vh1.taskDescription.setVisibility(View.VISIBLE);
                     vh1.taskDescription.setText(description);
-                else
+                }
+                else {
                     vh1.taskDescription.setVisibility(View.GONE);
-                    //vh1.taskDescription.setText(context.getString(R.string.no_task_description));
+                    // vh1.taskDescription.setText("KEINE BESCHREIBUNG"); //context.getString(R.string.no_task_description));
+                }
                 vh1.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
 
                 break;
@@ -468,7 +472,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 if (convertView == null) {
                     convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exlv_setting_row, parent, false);
                     //vh2.addSubTaskButton = (ImageView) convertView.findViewById(R.id.iv_add_subtask);
-                    vh2.addSubTaskButton = (LinearLayout) convertView.findViewById(R.id.ll_add_subtask);
+                    vh2.addSubTaskButton = (RelativeLayout) convertView.findViewById(R.id.rl_add_subtask);
                     vh2.deadlineColorBar = convertView.findViewById(R.id.v_setting_deadline_color_bar);
                     convertView.setTag(vh2);
                 } else {
@@ -559,7 +563,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     private class SettingViewHolder {
-        public LinearLayout addSubTaskButton;
+        public RelativeLayout addSubTaskButton;
         public View deadlineColorBar;
     }
 }

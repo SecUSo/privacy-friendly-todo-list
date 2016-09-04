@@ -101,7 +101,7 @@
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
     <string name="zero_percent">0%</string>
-    <string name="select_priority">Priorität:</string>
+    <string name="select_priority">Priorität</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
@@ -122,6 +122,7 @@
 	<string name="wrong_pin">Falsche PIN</string>
     <string name="reset_application_button">App zurücksetzen</string>
     <string name="reset_application_msg">Wollen Sie die Anwendung wirklich zurücksetzen? Dies entfernt zwar den PIN-Schutz, löscht jedoch auch alle To-Do Listen.</string>
+    <string name="add_pin">Fügen Sie eine numerische PIN, der aus mindestens vier Ziffern besteht, hinzu, der abgefragt wird, wenn die App startet.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>

@@ -1,0 +1,174 @@
+﻿<resources>
+    <!-- Application Specific -->
+	<string name="app_name">Tareas</string>
+    <string name="app_name_long">Privacy Friendly Lista de tareas</string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">Privacy Friendly Tarea</string>
+    <string name="toolbar_title_main">Privacy Friendly Tareas</string>
+    <string name="todos">Tareas</string>
+    <string name="home">Página de salida</string>
+    <string name="calendar_view">Calendario</string>
+    <string name="show_all_tasks">Todas las tareas</string>
+    <string name="settings">Ajustes</string>
+    <string name="other">Otros</string>
+	<string name="help">Ayuda</string>
+	<string name="menu_about">Sobre nosotros</string>
+    <string name="search">Buscar</string>
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">Abrir el menú Inicio</string>
+    <string name="navigation_drawer_close">Cerrar el menú Inicio</string>
+    <string name="name">Nombre</string>
+    <string name="todo_list_description_hint">Descripción</string>
+    <string name="ok">OK</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">Elegir</string>
+    <string name="high_priority">Muy importante</string>
+    <string name="medium_priority">Importante</string>
+    <string name="low_priority">Poco importante</string>
+    <string name="unknown_priority">Indefinido</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+
+    <!-- Welcome Dialog -->
+    <string name="welcome_title"> Bienvenido en la Lista de tareas de Privacy Friendly. Esta aplicación no requiere ningún permiso. Puedes:</string>
+    <string name="welcome_hint_lists">Administrar las tareas dentro de las listas de tareas</string>
+    <string name="welcome_hint_deadlines">Crear las fechas límite y las alarmas</string>
+    <string name="welcome_hint_subtasks">Crear las subtareas</string>
+    <string name="welcome_hint_pin">Introducir la contraseña en los ajustes</string>
+    <string name="welcome_button">Comenzar</string>
+
+    <!-- Help -->
+    <string name="help_todo_lists_title">Listas de tareas</string>
+    <string name="help_todo_lists">Una lista de tareas es un grupo de tareas y se la puede crear usando el botón + en el menu Inicio. Las tareas dentro de una lista de tareas se las puede marcar para diferenciar las tareas cumplidas de las no cumplidas.</string>
+    <string name="help_subtasks_title">Subtareas</string>
+    <string name="help_subtasks">Las subtareas representan las etapas por las que hay que pasar para cumplir una tarea. Se las puede crear haciendo clic en una tarea dentro de una lista de tareas.</string>
+    <string name="help_deadline_reminder_title">Fechas límites y alarmas</string>
+    <string name="help_deadline_reminder">Las fechas límites y las alarmas se las puede crear solo para las tareas. Puedes introducirlas creando una tarea o editándola. Haz clic en la tarea y espera para poder editarla.</string>
+    <string name="help_pin_title">Contraseña</string>
+    <string name="help_pin">Abrir los ajustes  para instalar la contraseña. La contraseña tiene que contener 4 cifras. Hay que introducir la contraseña cada vez al abrir la aplicación.</string>
+    <string name="help_permissions_title">Permisiones</string>
+    <string name="help_permissions">La Lista de tareas de Privacy Friendly no requiere ningún permiso.</string>
+
+    <!-- About -->
+    <string name="about">Sobre nosotros</string>
+    <string name="version_number">v1.0</string>
+    <string name="about_author">Autores:</string>
+    <string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
+    <string name="about_affiliation">En colaboración con:</string>
+    <string name="privacy_friendly">Esta aplicación pertenece a Privacy Friendly Apps</string>
+    <string name="more_info">Más informaciones sobre:</string>
+    <string name="url">https://www.secuso.org</string>
+
+    <!-- To-Do list overview -->
+	<string name="done">hecho</string>
+	<string name="no_todo_lists_available">Lista de tareas indisponible</string>
+	<string name="next_deadline_dd">Próxima fecha límite: %1$s</string>
+    <string name="no_next_deadline">No hay fechas límite</string>
+    <string name="add_list_feedback">%1$s agregado</string>
+    <string name="edit_todo_list">Editar la lista de tareas</string>
+    <string name="delete_list">Eliminar la lista de tareas</string>
+    <string name="delete_list_feedback">%1$s eliminado</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">Nueva lista de tareas</string>
+    <string name="list_name_must_not_be_empty">La lista de tareas no puede estar vacía</string>
+    <string name="show_description">Mostrar la descripción</string>
+    <string name="no_description_available">Descripción indisponible</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">La lista de tareas está vacía.</string>
+    <string name="all_tasks">Todas las tareas</string>
+    <string name="open_tasks">Tareas no cumplidas</string>
+    <string name="completed_tasks">Tareas cumplidas</string>
+    <string name="group_by_priority">Clasificar por importancia</string>
+    <string name="sort_by_deadline">Clasificar por fechas</string>
+    <string name="add_subtask">ENGL: Unteraufgabe hinzufügen</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">Nueva tarea</string>
+    <string name="deadline_dd">Fecha límite:</string>
+    <string name="no_deadline">No hay ninguna fecha límite</string>
+    <string name="edit_task">Editar la tarea</string>
+    <string name="delete_task">Eliminar la tarea</string>
+    <string name="task_removed">Tarea eliminada</string>
+    <string name="deadline">Facha límite</string>
+    <string name="reminder">Alarma</string>
+    <string name="deadline_smaller_reminder">La fecha límite no puede preceder la alarma.</string>
+    <string name="set_deadline_before_reminder">Introduce la fecha límite antes de introducir la alarma.</string>
+    <string name="progress_colon">Progreso:</string>
+    <string name="priority_colon">Importancia:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">Indicar la importancia</string>
+    <string name="new_todo_subtask">Nueva subtarea</string>
+    <string name="todo_name_must_not_be_empty">Hay que indicar el nombre de la tarea.</string>
+    <string name="edit_subtask">Editar la subtarea</string>
+    <string name="delete_subtask">Eliminar la subtarea</string>
+    <string name="subtask_removed">Subtarea eliminada</string>
+
+    <!-- Select reminder dialog -->
+	<string name="date">Fecha</string>
+	<string name="time">Hora</string>
+	<string name="no_reminder">No hay alarma</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">Calendario</string>
+    <string name="no_deadline_today">No hay ningunas fechas límite en estos días.</string>
+
+    <!-- PIN -->
+	<string name="enter_pin">Intruduce la contraseña</string>
+	<string name="wrong_pin">Contraseña incorrecta</string>
+    <string name="reset_application_button">Resetear la aplicación</string>
+    <string name="reset_application_msg">¿De verdad quieres resetear la aplicación? Se perderá la contraseña y todas las listas de tareas.</string>
+    <string name="add_pin">ENGL: Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
+
+    <!-- Settings -->
+	<string name="default_reminder_time">Alarma estándar</string>
+    <string-array name="default_reminder_times_human">
+        <item>Justo con la fecha límite</item>
+        <item>0.5 día antes</item>
+        <item>1 día antes</item>
+        <item>1.5 día antes</item>
+        <item>2 días antes</item>
+        <item>2.5 días antes</item>
+        <item>3 días antes</item>
+    </string-array>
+    <string name="pin_enabled">Contraseña activa</string>
+    <string name="set_pin">Introducir una contraseña</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">Próxima fecha límite: %1$s</string>
+
+    <!-- Date and Time -->
+	<string name="sunday_abbr">DO</string>
+	<string name="monday_abbr">LU</string>
+	<string name="tuesday_abbr">MA</string>
+	<string name="wednesday_abbr">MI</string>
+	<string name="thursday_abbr">JU</string>
+	<string name="friday_abbr">VI</string>
+	<string name="saturday_abbr">SA</string>
+	<string name="january">Enero</string>
+	<string name="february">Febrero</string>
+	<string name="march">Marzo</string>
+	<string name="april">Abril</string>
+	<string name="may">Mayo</string>
+	<string name="june">Junio</string>
+	<string name="july">Julio</string>
+	<string name="august">Agosto</string>
+	<string name="september">Septiembre</string>
+	<string name="october">Octubre</string>
+	<string name="november">Noviembre</string>
+	<string name="december">Diciembre</string>
+
+    <!-- Error messages -->
+    <string name="error_removing_subtask">La subtarea no ha sido eliminada.</string>
+    <string name="error_removing_task">La tarea no ha sido eliminada.</string>
+    <string name="list_to_db_error">La lista de tareas no ha sido guardada en la base de datos.</string>
+    <string name="task_to_db_error">La tarea no ha sido guardada en la base de datos.</string>
+    <string name="subtask_to_db_error">La subtarea no ha sido guardada en la base de datos.</string>
+
+
+
+</resources>

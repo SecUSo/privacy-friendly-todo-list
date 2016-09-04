@@ -10,7 +10,6 @@
     <string name="home">Strona startowa</string>
     <string name="calendar_view">Kalendarz</string>
     <string name="show_all_tasks">Wszystkie zadania</string>
-    <string name="settings">Ustawienia</string>
     <string name="other">Inne</string>
 	<string name="help">Pomoc</string>
 	<string name="menu_about">O nas</string>
@@ -19,7 +18,7 @@
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Otwórz menu</string>
     <string name="navigation_drawer_close">Zamknij menu</string>
-    <string name="name">Name</string>
+    <string name="name">Nazwa</string>
     <string name="todo_list_description_hint">Opis</string>
     <string name="ok">Okay</string>
 
@@ -29,28 +28,30 @@
     <string name="medium_priority">Średnio ważne</string>
     <string name="low_priority">Mało ważne</string>
     <string name="unknown_priority">Nieokreślone</string>
-    <string name="yes">ENGL: Yes</string>
-    <string name="no">ENGL: No</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">ENGL: Welcome to the Privacy Friendly To-Do List. This application requires no permissions. You can:</string>
-    <string name="welcome_hint_lists">ENGL: Manage Tasks in labeled To-Do Lists.</string>
-    <string name="welcome_hint_deadlines">ENGL: Create deadlines and reminders for tasks.</string>
-    <string name="welcome_hint_subtasks">ENGL: Create subtasks by expanding the task.</string>
-    <string name="welcome_hint_pin">ENGL: Add a PIN-protection in the settings.</string>
-    <string name="welcome_button">ENGL: Begin</string>
+    <string name="welcome_title">Witamy w Liście zadań Privacy Friendly. Ta aplikacja nie wymaga żadnych uprawnień. Możesz:</string>
+    <string name="welcome_hint_lists">Zarządzać listą zadań.</string>
+    <string name="welcome_hint_deadlines">Zarządzać terminami i alarmami.</string>
+    <string name="welcome_hint_subtasks">Wprowadzać podzadania rozszerzając zadania.</string>
+    <string name="welcome_hint_pin">Wprowadzać hasło do ustawień.</string>
+    <string name="welcome_button">Start</string>
 
     <!-- Help -->
-    <string name="help_todo_lists_title">ENGL: To-Do lists</string>
-    <string name="help_todo_lists">ENGL: A To-Do list is a group of tasks and can be created using the + Button in the main menu. Tasks inside a To-Do can be checked and unchecked to track the progress of the whole list.</string>
-    <string name="help_subtasks_title">ENGL: Subtasks</string>
-    <string name="help_subtasks">ENGL: Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
-    <string name="help_deadline_reminder_title">ENGL: Deadlines and reminders</string>
-    <string name="help_deadline_reminder">ENGL: Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it. Hold on a task for a while to edit it.</string>
-    <string name="help_pin_title">ENGL: PIN protection</string>
-    <string name="help_pin">ENGL: Open the settings menu to setup a PIN protection for your application. The PIN must be a number with 4 digits. You are asked for it every time you start the application.</string>
-    <string name="help_permissions_title">ENGL: Permissions</string>
-    <string name="help_permissions">ENGL: Privacy Friendly To-Do List does not require any permissions.</string>
+    <string name="help_todo_lists_title">Listy zadań</string>
+    <string name="help_todo_lists">Lista zadań jest zbiorem zadań i można je stworzyć, używając klawisza + w głównym menu. Zadania wewnątrz listy mogą być zaznaczane i odznaczane jako wykonane.</string>
+    <string name="help_subtasks_title">Podzadania</string>
+    <string name="help_subtasks">Podzadania to kolejne kroki, które składają się na całe zadanie. Można je wprowadzić, klikając na zadanie w otwartej liście zadań.</string>
+    <string name="help_deadline_reminder_title">Terminy i alarmy</string>
+    <string name="help_deadline_reminder">Terminy i alarmy można utworzyć tylko dla poszczególnych zadań. Możesz je wprowadzić przy tworzeniu zadania lub przy jego edycji. Naciśnij na zadanie i przytrzymaj przycisk, aby rozpocząć edycję.</string>
+    <string name="help_pin_title">Hasło</string>
+    <string name="help_pin">Wejdź w ustawienia, aby utworzyć hasło. Hasło musi się składać z 4 cyfr. Będziesz musiał je wprowadzić przy uruchamianiu aplikacji.</string>
+    <string name="help_permissions_title">Uprawnienia</string>
+    <string name="help_permissions">Aplikacja Lista zadañ Privacy Friendly nie wymaga żadnych uprawnień.</string>
+
+
 
     <!-- About -->
     <string name="about">O nas</string>
@@ -85,7 +86,7 @@
     <string name="completed_tasks">Skończone zadania</string>
     <string name="group_by_priority">Grupuj pod względem ważności</string>
     <string name="sort_by_deadline">Sortuj terminami</string>
-    <string name="add_subtask">ENGL: Add Subtask</string>
+    <string name="add_subtask">Dodaj podzadanie</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nowe zadanie</string>
@@ -101,7 +102,7 @@
     <string name="progress_colon">Postępy:</string>
     <string name="priority_colon">Poziom ważności:</string>
     <string name="zero_percent">0%</string>
-    <string name="select_priority">Poziom ważności:</string>
+    <string name="select_priority">Poziom ważności</string>
     <string name="new_todo_subtask">Nowe podzadanie</string>
     <string name="todo_name_must_not_be_empty">Wymagana nazwa</string>
     <string name="edit_subtask">Edytuj podzadanie</string>
@@ -120,8 +121,10 @@
     <!-- PIN -->
 	<string name="enter_pin">Wprowadź hasło</string>
 	<string name="wrong_pin">Nieprawidłowe hasło</string>
-    <string name="reset_application_button">ENGL: Reset application</string>
-    <string name="reset_application_msg">ENGL: Do you really want to reset the application? This will remove the PIN-protection and delete all To-Do lists.</string>
+    <string name="reset_application_button">Resetuj aplikację</string>
+    <string name="reset_application_msg">Naprawdę chcesz zresetować tę aplikację? Zabezpieczenie hasłem zostanie wycofane, a wszystkie listy zadań usunięte.</string>
+    <string name="add_pin">ENGL: Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
+
 
     <!-- Settings -->
 	<string name="default_reminder_time">Domyślny alarm</string>

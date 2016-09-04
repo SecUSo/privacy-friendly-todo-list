@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_add_subtask"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,32 +13,19 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimary" />
 
-    <LinearLayout
-        android:id="@+id/ll_add_subtask"
+
+    <TextView
+        android:id="@+id/tv_add_subtask"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="1dp"
-        android:clickable="true" >
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:drawableLeft="@mipmap/plus_blue"
+        android:text="@string/add_subtask" />
 
-        <ImageView
-            android:id="@+id/iv_add_subtask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/tv_add_subtask"
-            android:layout_margin="5dp"
-            android:background="@mipmap/plus_blue" />
-
-        <TextView
-            android:id="@+id/tv_add_subtask"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/add_subtask" />
-    </LinearLayout>
     <View
         android:id="@+id/v_exlv_setting_separator"
-        android:layout_below="@+id/iv_add_subtask"
+        android:layout_below="@+id/tv_add_subtask"
         android:layout_width="match_parent"
         android:layout_height="2px"
         android:background="@color/grey" />

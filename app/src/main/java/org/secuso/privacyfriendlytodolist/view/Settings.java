@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -109,33 +110,19 @@ public class Settings extends AppCompatActivity {
 
             if(key.equals("pref_pin")) {
                 String pin = sharedPreferences.getString(key, "");
-                Log.i(TAG, "new pin: " + pin);
-                if(sharedPreferences.getBoolean("pref_pin_enabled", false) && pin.length() < 4) {
-                    Log.i(TAG, "change!");
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("pref_pin_enabled", false);
-                    editor.putString("pref_pin", "");
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if(sharedPreferences.getBoolean("pref_pin_enabled", false) && pin.length() >= 4) {
+                    editor.putBoolean("pref_pin_enabled", true);
+                    editor.putString("pref_pin", pin);
                     editor.commit();
+                    Log.i(TAG, "pin now: " + sharedPreferences.getString(key, ""));
+                    updatePrefSummary(findPreference(key));
+                } else {
+                    editor.putBoolean("pref_pin_enabled", false);
+                    Log.i(TAG, "Invalid new pin: \"" + pin + "\"");
+                    Toast.makeText(getActivity(), getString(R.string.invalid_pin), Toast.LENGTH_LONG).show();
                 }
-                Log.i(TAG, "pin now: " + sharedPreferences.getString(key, ""));
             }
-
-            updatePrefSummary(findPreference(key));
-
-            /*
-
-            // default reminder time was changed
-            if(key.equals(DEFAULT_REMINDER_TIME_KEY)) {
-                Preference preference = findPreference(key);
-                if (preference instanceof EditTextPreference){
-                    EditTextPreference editTextPreference =  (EditTextPreference)preference;
-                    if (editTextPreference.getText().trim().length() > 0){
-                        editTextPreference.setSummary("Reminder Time is  " + editTextPreference.getText());
-                    }else{
-                        editTextPreference.setSummary("Enter the new default reminder time");
-                    }
-                }
-            }*/
         }
 
     }

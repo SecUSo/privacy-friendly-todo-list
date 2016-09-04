@@ -121,7 +121,9 @@
 	<string name="enter_pin">Enter PIN</string>
 	<string name="wrong_pin">Wrong PIN</string>
     <string name="reset_application_button">Reset application</string>
+    <string name="invalid_pin">Your PIN must contain at least four digits.</string>
     <string name="reset_application_msg">Do you really want to reset the application? This will remove the PIN-protection and delete all To-Do lists.</string>
+    <string name="add_pin">Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Default reminder time</string>
@@ -167,4 +169,5 @@
     <string name="list_to_db_error">Error while creating new To-Do list.</string>
     <string name="task_to_db_error">Error while inserting new task into the database.</string>
     <string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
+
 </resources>

@@ -29,28 +29,28 @@
     <string name="medium_priority">Important</string>
     <string name="low_priority">Peu important</string>
     <string name="unknown_priority">Importance inconnue</string>
-    <string name="yes">ENGL: Yes</string>
-    <string name="no">ENGL: No</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">ENGL: Welcome to the Privacy Friendly To-Do List. This application requires no permissions. You can:</string>
-    <string name="welcome_hint_lists">ENGL: Manage Tasks in labeled To-Do Lists.</string>
-    <string name="welcome_hint_deadlines">ENGL: Create deadlines and reminders for tasks.</string>
-    <string name="welcome_hint_subtasks">ENGL: Create subtasks by expanding the task.</string>
-    <string name="welcome_hint_pin">ENGL: Add a PIN-protection in the settings.</string>
-    <string name="welcome_button">ENGL: Begin</string>
+    <string name="welcome_title">Bienvenue chez la Liste de tâches de Privacy Friendly. Cette application ne demande aucune permission. Vous pouvez:</string>
+    <string name="welcome_hint_lists">Gérer des tâches dans les listes de tâches</string>
+    <string name="welcome_hint_deadlines">Créer des dates limites et les alarmes</string>
+    <string name="welcome_hint_subtasks">Créer des sous-tâches en élargissant les tâches</string>
+    <string name="welcome_hint_pin">Introduire un mot de passe</string>
+    <string name="welcome_button">Commencer</string>
 
     <!-- Help -->
-    <string name="help_todo_lists_title">ENGL: To-Do lists</string>
-    <string name="help_todo_lists">ENGL: A To-Do list is a group of tasks and can be created using the + Button in the main menu. Tasks inside a To-Do can be checked and unchecked to track the progress of the whole list.</string>
-    <string name="help_subtasks_title">ENGL: Subtasks</string>
-    <string name="help_subtasks">ENGL: Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
-    <string name="help_deadline_reminder_title">ENGL: Deadlines and reminders</string>
-    <string name="help_deadline_reminder">ENGL: Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it. Hold on a task for a while to edit it.</string>
-    <string name="help_pin_title">ENGL: PIN protection</string>
-    <string name="help_pin">ENGL: Open the settings menu to setup a PIN protection for your application. The PIN must be a number with 4 digits. You are asked for it every time you start the application.</string>
-    <string name="help_permissions_title">ENGL: Permissions</string>
-    <string name="help_permissions">ENGL: Privacy Friendly To-Do List does not require any permissions.</string>
+    <string name="help_todo_lists_title">Listes de tâches</string>
+    <string name="help_todo_lists">Une liste de tâches est un groupe de tâches et peut être créée en choissant le bouton dans le menu. Les tâches dedans une liste de tâches peuvent ?tre marquées comme faites.</string>
+    <string name="help_subtasks_title">Sous-tâches</string>
+    <string name="help_subtasks">Les sous-tâches sont les pas qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
+    <string name="help_deadline_reminder_title">Dates limites et alarmes</string>
+    <string name="help_deadline_reminder">Les dates limites et les alarmes ne peuvent ?tre créées que pour les tâches. Vous pouvez les introduire en créant une tâche ou en en éditant. Cliquez sur la tâche et attendez un moment pour l\'éditer.</string>
+    <string name="help_pin_title">Mot de passe</string>
+    <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
+    <string name="help_permissions_title"> Permissions</string>
+    <string name="help_permissions">L\'application Liste de tâches de Privacy Friendly ne demande aucune permission.</string>
 
     <!-- About -->
     <string name="about">Auteurs</string>
@@ -85,7 +85,7 @@
     <string name="completed_tasks">Tâches accomplies</string>
     <string name="group_by_priority">Classer par le niveau d\'importance</string>
     <string name="sort_by_deadline">Classer par la date limite</string>
-    <string name="add_subtask">ENGL: Add Subtask</string>
+    <string name="add_subtask">Créer une sous-tâche</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nouvelle tâche</string>
@@ -101,7 +101,7 @@
     <string name="progress_colon">Progrès:</string>
     <string name="priority_colon">Importance:</string>
     <string name="zero_percent">0%</string>
-    <string name="select_priority">Importance:</string>
+    <string name="select_priority">Importance</string>
     <string name="new_todo_subtask">Nouvelle sous-tâche</string>
     <string name="todo_name_must_not_be_empty">Le nom ne peut pas être vide.</string>
     <string name="edit_subtask">Editer la sous-tâche</string>
@@ -120,8 +120,10 @@
     <!-- PIN -->
 	<string name="enter_pin">Introduire le mot de passe</string>
 	<string name="wrong_pin">Mot de passe incorrect</string>
-    <string name="reset_application_button">ENGL: Reset application</string>
-    <string name="reset_application_msg">ENGL: Do you really want to reset the application? This will remove the PIN-protection and delete all To-Do lists.</string>
+    <string name="reset_application_button">Restarter l\'application</string>
+    <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
+    <string name="add_pin">ENGL: Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
+
 
     <!-- Settings -->
 	<string name="default_reminder_time">Alarme standard</string>
@@ -167,4 +169,5 @@
     <string name="list_to_db_error">La liste de tâches n\'a pas été enregistée dans la base de données.</string>
     <string name="task_to_db_error">La tâche n\'a pas été enregistrée dans la base de données.</string>
     <string name="subtask_to_db_error">La sous-tâche n\'a pas été enregistrée dans la base de données.</string>
+
 </resources>

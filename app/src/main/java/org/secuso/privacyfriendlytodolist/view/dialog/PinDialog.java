@@ -1,5 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +27,8 @@ public class PinDialog extends FullScreenDialog {
 
     public PinDialog(Context context) {
         super(context, R.layout.pin_dialog);
+
+
 
         Button buttonOkay = (Button) findViewById(R.id.bt_pin_ok);
         buttonOkay.setOnClickListener(new View.OnClickListener() {

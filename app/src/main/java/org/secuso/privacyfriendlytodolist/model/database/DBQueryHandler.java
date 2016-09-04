@@ -52,7 +52,7 @@ public class DBQueryHandler {
      *
      *  - which are not done
      *  - whose reminder time is today or earlier
-     *  - whose deadline is still in the future
+     *  - whose deadline is still in the future or unset // TODO
      *  - containing the task whose deadline is the nearest in future.
      */
     public static ArrayList<TodoTask> getTasksToRemind(SQLiteDatabase db, long today, HashSet<Integer> lockedIds) {
