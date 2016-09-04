@@ -92,7 +92,10 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
             initFab(v, showFab);
 
             // set toolbar title
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
+            if(((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(currentList.getName());
+            }
+
         } else {
             Log.d(TAG, "Cannot identify selected list.");
         }

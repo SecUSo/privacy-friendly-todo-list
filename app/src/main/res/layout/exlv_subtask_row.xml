@@ -42,6 +42,7 @@
         android:id="@+id/v_exlv_subtask_align_anchor"
         android:layout_width="match_parent"
         android:layout_height="0px"
+        android:layout_marginTop="7dp"
         android:layout_below="@+id/tv_subtask_name"
         android:layout_toRightOf="@+id/v_urgency_task" />
 
