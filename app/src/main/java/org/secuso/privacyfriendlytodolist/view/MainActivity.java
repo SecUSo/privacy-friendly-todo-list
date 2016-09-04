@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void authAndGuiInit(final Bundle savedInstanceState) {
 
-        if (!this.isUnlocked && PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false)) {
+        if (!this.isUnlocked && hasPin()) {
             PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
@@ -117,7 +117,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             initActivity(savedInstanceState);
         }
+    }
 
+    private boolean hasPin() {
+        // pin activated?
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false))
+            return false;
+        // pin valid?
+        if (PreferenceManager.getDefaultSharedPreferences(this).getString("pref_pin", null) == null || PreferenceManager.getDefaultSharedPreferences(this).getString("pref_pin", "").length() < 4)
+            return false;
+        return true;
     }
 
     public void initActivity(Bundle savedInstanceState) {

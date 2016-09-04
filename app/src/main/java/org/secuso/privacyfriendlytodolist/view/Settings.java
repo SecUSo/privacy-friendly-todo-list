@@ -10,6 +10,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,7 @@ public class Settings extends AppCompatActivity {
     private static final String TAG = Settings.class.getSimpleName();
 
     public static final String DEFAULT_REMINDER_TIME_KEY = "pref_default_reminder_time";
-   // private static SharedPreferences.Editor prefs;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,9 @@ public class Settings extends AppCompatActivity {
 
     public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+        boolean ignoreChanges = false;
+
+
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -84,7 +88,6 @@ public class Settings extends AppCompatActivity {
         }
 
         private void updatePrefSummary(Preference p) {
-
             if (p instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) p;
                 p.setSummary(listPref.getEntry());
@@ -96,33 +99,53 @@ public class Settings extends AppCompatActivity {
         public void onResume() {
             super.onResume();
             getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
         }
 
         @Override
         public void onPause() {
+            // uncheck pin if pin is invalid
+            SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
+            boolean pinEnabled = sharedPreferences.getBoolean("pref_pin_enabled", false);
+            if(pinEnabled) {
+                String pin = sharedPreferences.getString("pref_pin", null);
+                if(pin == null || pin.length() < 4) {
+                    // pin invalid: uncheck
+                    ignoreChanges = true;
+                    ((SwitchPreference) findPreference("pref_pin_enabled")).setChecked(false);
+                    ignoreChanges = false;
+                }
+            }
+
             getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
             super.onPause();
         }
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if(!ignoreChanges) {
+                if (key.equals("pref_pin")) {
+                    String pin = sharedPreferences.getString(key, null);
 
-            if(key.equals("pref_pin")) {
-                String pin = sharedPreferences.getString(key, "");
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                if(sharedPreferences.getBoolean("pref_pin_enabled", false) && pin.length() >= 4) {
-                    editor.putBoolean("pref_pin_enabled", true);
-                    editor.putString("pref_pin", pin);
-                    editor.commit();
-                    Log.i(TAG, "pin now: " + sharedPreferences.getString(key, ""));
-                    updatePrefSummary(findPreference(key));
-                } else {
-                    editor.putBoolean("pref_pin_enabled", false);
-                    Log.i(TAG, "Invalid new pin: \"" + pin + "\"");
-                    Toast.makeText(getActivity(), getString(R.string.invalid_pin), Toast.LENGTH_LONG).show();
+                    if (pin != null) {
+                        if (pin.length() < 4) {
+                            ignoreChanges = true;
+                            ((EditTextPreference) findPreference("pref_pin")).setText("");
+                            ignoreChanges = false;
+                            Toast.makeText(getActivity(), getString(R.string.invalid_pin), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } else if (key.equals("pref_pin_enabled")) {
+                    boolean pinEnabled = sharedPreferences.getBoolean("pref_pin_enabled", false);
+
+                    if (pinEnabled) {
+                        ignoreChanges = true;
+                        ((EditTextPreference) findPreference("pref_pin")).setText("");
+                        ignoreChanges = false;
+                    }
                 }
             }
+
+            updatePrefSummary(findPreference(key));
         }
 
     }
