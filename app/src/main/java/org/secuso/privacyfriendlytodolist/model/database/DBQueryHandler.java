@@ -50,10 +50,8 @@ public class DBQueryHandler {
     /**
      * returns a list of tasks
      *
-     *  - which are not done
-     *  - whose reminder time is today or earlier
-     *  - whose deadline is still in the future or unset // TODO
-     *  - containing the task whose deadline is the nearest in future.
+     *  -   which are not fulfilled and whose reminder time is prior to the current time
+     *  -   the task which is next due
      */
     public static ArrayList<TodoTask> getTasksToRemind(SQLiteDatabase db, long today, HashSet<Integer> lockedIds) {
 
@@ -72,8 +70,8 @@ public class DBQueryHandler {
         }
         excludedIDs.append(";");
 
-        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? AND " + TTodoTask.COLUMN_DEADLINE + " > ? " + excludedIDs.toString() ;
-        String selectionArgs[] = {String.valueOf(today), String.valueOf(today)};
+        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? " + excludedIDs.toString() ;
+        String selectionArgs[] = {String.valueOf(today)};
         Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
 
         try {
@@ -88,6 +86,7 @@ public class DBQueryHandler {
             cursor.close();
         }
 
+        // get task that is next due
         TodoTask nextDueTask = getNextDueTask(db, today);
         if(nextDueTask != null)
             tasks.add(nextDueTask);
@@ -177,7 +176,7 @@ public class DBQueryHandler {
                     currentList.setName(listName);
                     currentList.setDescription(listDescription);
                     currentList.setId(id);
-                    currentList.setTasks(getTasksByListId(db, id));
+                    currentList.setTasks(getTasksByListId(db, id, listName));
                     todoLists.add(currentList);
                 } while (cursor.moveToNext());
             }
@@ -189,7 +188,7 @@ public class DBQueryHandler {
 
     }
 
-    private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId) {
+    private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId, String listName) {
 
         ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
         String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId;
@@ -200,6 +199,7 @@ public class DBQueryHandler {
                 do {
 
                     TodoTask currentTask = extractTodoTask(cursor);
+                    currentTask.setListName(listName);
                     currentTask.setSubTasks(getSubTasksByTaskId(db, currentTask.getId()));
                     tasks.add(currentTask);
                 } while (cursor.moveToNext());

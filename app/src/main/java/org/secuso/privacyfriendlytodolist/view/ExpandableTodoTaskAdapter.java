@@ -82,6 +82,9 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     private Context context;
     private HashMap<TodoTask.Priority, Integer> prioBarPositions = new HashMap<>();
 
+    // Normally the toolbar title contains the list name. However, it all tasks are displayed in a dummy list it is not obvious to what list a tasks belongs. This missing information is then added to each task in an additional text view.
+    private boolean showListName = false;
+
     public ExpandableTodoTaskAdapter(Context context, ArrayList<TodoTask> tasks) {
         this.context = context;
 
@@ -97,6 +100,10 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     public void setLongClickedTaskByPos(int position) {
         longClickedTodo = Tuple.makePair(getTaskByPosition(position), null);
+    }
+
+    public void setListNames(boolean flag) {
+        showListName = flag;
     }
 
     public void setLongClickedSubTaskByPos(int groupPosition, int childPosition) {
@@ -392,6 +399,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                     vh2.name = (TextView) convertView.findViewById(R.id.tv_exlv_task_name);
                     vh2.done = (CheckBox) convertView.findViewById(R.id.cb_task_done);
                     vh2.deadline = (TextView) convertView.findViewById(R.id.tv_exlv_task_deadline);
+                    vh2.listName = (TextView) convertView.findViewById(R.id.tv_exlv_task_list_name);
                     vh2.progressBar = (ProgressBar) convertView.findViewById(R.id.pb_task_progress);
                     vh2.seperator = convertView.findViewById(R.id.v_exlv_header_separator);
                     vh2.deadlineColorBar = convertView.findViewById(R.id.v_urgency_task);
@@ -411,6 +419,14 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                     deadline = context.getResources().getString(R.string.no_deadline);
                 else
                     deadline = context.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(currentTask.getDeadline());
+
+                if(showListName) {
+                    vh2.listName.setVisibility(View.VISIBLE);
+                    vh2.listName.setText(currentTask.getListName());
+                } else {
+                    vh2.listName.setVisibility(View.GONE);
+                }
+
                 vh2.deadline.setText(deadline);
                 vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));
                 vh2.done.setChecked(currentTask.getDone());
@@ -541,6 +557,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     public class GroupTaskViewHolder {
         public TextView name;
         public TextView deadline;
+        public TextView listName;
         public CheckBox done;
         public View deadlineColorBar;
         public View seperator;

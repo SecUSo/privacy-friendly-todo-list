@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper mInstance = null;
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "TodoDatabase.db";
 
     public static DatabaseHelper getInstance(Context context) {
@@ -41,9 +41,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DELETE FROM " + TTodoList.TABLE_NAME);
-        db.execSQL("DELETE FROM " + TTodoTask.TABLE_NAME);
-        db.execSQL("DELETE FROM " + TTodoSubTask.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TTodoList.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TTodoTask.TABLE_NAME);
+        db.execSQL("DROP TABLE " + TTodoSubTask.TABLE_NAME);
 
         onCreate(db);
         Log.i(TAG, "onUpgrade() finished");

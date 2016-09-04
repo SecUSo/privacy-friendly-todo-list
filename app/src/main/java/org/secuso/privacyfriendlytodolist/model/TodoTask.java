@@ -14,6 +14,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private static final String TAG = TodoTask.class.getSimpleName();
     public static final String PARCELABLE_KEY = "key_for_parcels";
 
+
     public enum Priority {
         HIGH(0), MEDIUM(1), LOW(2); // Priority steps must be sorted in the same way like they will be displayed
 
@@ -54,12 +55,25 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private boolean reminderTimeChanged = false; // important for the reminder service
     private boolean reminderTimeWasInitialized = false;
 
+    private String listName;
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 
     public TodoTask() {
         super();
         done = false;
+    }
+
+    public String getListName() {
+        return listName;
+    }
+
+    public void setListName(String listName) {
+        this.listName = listName;
+    }
+
+    public boolean hasDeadline() {
+        return deadline > 0;
     }
 
     public TodoTask(Parcel parcel) {
@@ -79,12 +93,9 @@ public class TodoTask extends BaseTodo implements Parcelable {
     public long getDeadline() {
         return deadline;
     }
-    public void setDeadline(long deadline) {
 
+    public void setDeadline(long deadline) {
         this.deadline = deadline;
-        if(deadline < reminderTime) {
-            Log.i(TAG, "Reminder time resetted, because new deadline is greater.");
-        }
     }
 
     public void setPositionInList(int pos) {

@@ -114,7 +114,7 @@ public class ReminderService extends Service {
     private void handleAlarm(TodoTask task) {
 
         String title = task.getName();
-        String contentText = getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline()));
+
 
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
@@ -123,7 +123,8 @@ public class ReminderService extends Service {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
         mBuilder.setContentTitle(title);
-        mBuilder.setContentText(contentText);
+        if(task.hasDeadline())
+            mBuilder.setContentText(getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())));
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);

@@ -175,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        setFragment(currentFragment);
         guiSetup();
+        setFragment(currentFragment);
         this.isInitialized = true;
     }
 
@@ -415,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(reminderService != null) {
 
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
-            if((currentTask.getReminderTime() < currentTask.getDeadline() || currentTask.getDeadline() < 0) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
+            if((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
                 reminderService.processTask(currentTask);
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
