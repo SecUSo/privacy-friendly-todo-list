@@ -70,12 +70,13 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         // a list was selected by clicking on a notification. If the the user selects a list explicitly by clicking on it
         // the list object is instantly available and can be obtained using the method "getClickedList()"
         int selectedListID = getArguments().getInt(TodoList.UNIQUE_DATABASE_ID, -1);
-
+        boolean showListNamesOfTasks = false;
         if(selectedListID >= 0) {
             currentList = containingActivity.getListByID(selectedListID); // MainActivity was started after a notification click
             Log.i(TAG, "List was loaded that was requested by a click on a notification.");
         } else if(selectedListID == TodoList.DUMMY_LIST_ID) {
             currentList = containingActivity.getDummyList();
+            showListNamesOfTasks = true;
             Log.i(TAG, "Dummy list was loaded.");
         } else {
             currentList = containingActivity.getClickedList(); // get clicked list
@@ -90,6 +91,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
             initExListViewGUI(v);
             initFab(v, showFab);
+
+            taskAdapter.setListNames(showListNamesOfTasks);
 
             // set toolbar title
             if(((AppCompatActivity) getActivity()).getSupportActionBar() != null) {

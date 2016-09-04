@@ -55,12 +55,21 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private boolean reminderTimeChanged = false; // important for the reminder service
     private boolean reminderTimeWasInitialized = false;
 
+    private String listName;
 
     private ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
 
     public TodoTask() {
         super();
         done = false;
+    }
+
+    public String getListName() {
+        return listName;
+    }
+
+    public void setListName(String listName) {
+        this.listName = listName;
     }
 
     public boolean hasDeadline() {

@@ -176,7 +176,7 @@ public class DBQueryHandler {
                     currentList.setName(listName);
                     currentList.setDescription(listDescription);
                     currentList.setId(id);
-                    currentList.setTasks(getTasksByListId(db, id));
+                    currentList.setTasks(getTasksByListId(db, id, listName));
                     todoLists.add(currentList);
                 } while (cursor.moveToNext());
             }
@@ -188,7 +188,7 @@ public class DBQueryHandler {
 
     }
 
-    private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId) {
+    private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId, String listName) {
 
         ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
         String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId;
@@ -199,6 +199,7 @@ public class DBQueryHandler {
                 do {
 
                     TodoTask currentTask = extractTodoTask(cursor);
+                    currentTask.setListName(listName);
                     currentTask.setSubTasks(getSubTasksByTaskId(db, currentTask.getId()));
                     tasks.add(currentTask);
                 } while (cursor.moveToNext());
