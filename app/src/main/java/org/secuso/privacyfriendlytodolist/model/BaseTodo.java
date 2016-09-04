@@ -17,8 +17,17 @@ public abstract class BaseTodo {
         return dbState;
     }
 
-    public void setDbState(DBQueryHandler.ObjectStates dbState) {
-        this.dbState = dbState;
+    public void setCreated() {
+        this.dbState = DBQueryHandler.ObjectStates.INSERT_TO_DB;
+    }
+
+    public void setChanged() {
+        if(this.dbState == DBQueryHandler.ObjectStates.NO_DB_ACTION)
+            this.dbState = DBQueryHandler.ObjectStates.UPDATE_DB;
+    }
+
+    public void setUnchanged() {
+        this.dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
     }
 
     public void setName(String name) {

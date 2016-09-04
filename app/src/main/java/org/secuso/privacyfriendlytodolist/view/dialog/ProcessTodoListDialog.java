@@ -29,7 +29,8 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         initGui();
 
         todoList = new TodoList();
-        todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
+        todoList.setCreated();
+        //todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
 
     public ProcessTodoListDialog(Context context, TodoList list2Change) {
@@ -39,7 +40,8 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         etName.setText(list2Change.getName());
         etDescription.setText(list2Change.getDescription());
         todoList = list2Change;
-        todoList.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+        todoList.setChanged();
+        //todoList.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
     }
 
 

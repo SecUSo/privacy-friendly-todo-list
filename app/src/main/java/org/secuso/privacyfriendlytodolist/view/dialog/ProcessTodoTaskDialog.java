@@ -44,14 +44,16 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
         initGui();
         task = new TodoTask();
-        task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
+        task.setCreated();
+        //task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
 
     public ProcessTodoTaskDialog(Context context, TodoTask task) {
         super(context, R.layout.add_task_dialog);
 
         initGui();
-        task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+        task.setChanged();
+        //task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
         deadline = task.getDeadline();
         reminderTime = task.getReminderTime();
         taskName.setText(task.getName());

@@ -22,7 +22,8 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
 
         initGui();
         this.subtask = new TodoSubTask();
-        this.subtask.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
+        this.subtask.setCreated();
+        //this.subtask.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
 
     public ProcessTodoSubTaskDialog(Context context, TodoSubTask subTask) {
@@ -30,7 +31,8 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
 
         initGui();
         this.subtask = subTask;
-        this.subtask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+        this.subtask.setChanged();
+        //this.subtask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
 
         etSubtaskName.setText(subTask.getName());
     }

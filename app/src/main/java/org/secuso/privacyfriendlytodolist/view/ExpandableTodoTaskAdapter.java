@@ -437,7 +437,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                         if(buttonView.isPressed()) {
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
-                            currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+                            currentTask.setChanged();
+                            //currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
                         }
                     }
@@ -536,7 +537,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                         if(buttonView.isPressed()) {
                             currentSubTask.setDone(buttonView.isChecked());
                             currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
-                            currentSubTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+                            currentSubTask.setChanged();
+                            //currentSubTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
                         }
                     }

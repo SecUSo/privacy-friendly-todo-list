@@ -274,7 +274,8 @@ public class DBQueryHandler {
             } else
                 returnCode = NO_CHANGES;
 
-            subTask.setDbState(ObjectStates.NO_DB_ACTION);
+            subTask.setUnchanged();
+            //subTask.setDbState(ObjectStates.NO_DB_ACTION);
         } else {
             returnCode = NO_CHANGES;
         }
@@ -311,8 +312,8 @@ public class DBQueryHandler {
             } else
                 returnCode = NO_CHANGES;
 
-
-            todoTask.setDbState(ObjectStates.NO_DB_ACTION);
+            todoTask.setUnchanged();
+            //todoTask.setDbState(ObjectStates.NO_DB_ACTION);
 
         } else
           returnCode = NO_CHANGES;
@@ -344,7 +345,8 @@ public class DBQueryHandler {
             } else
                 returnCode = NO_CHANGES;
 
-            todoList.setDbState(ObjectStates.NO_DB_ACTION);
+            todoList.setUnchanged();
+            //todoList.setDbState(ObjectStates.NO_DB_ACTION);
         } else {
             returnCode = NO_CHANGES;
         }
