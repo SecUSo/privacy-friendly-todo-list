@@ -85,7 +85,7 @@
     <string name="completed_tasks">Tareas cumplidas</string>
     <string name="group_by_priority">Clasificar por importancia</string>
     <string name="sort_by_deadline">Clasificar por fechas</string>
-    <string name="add_subtask">ENGL: Unteraufgabe hinzufügen</string>
+    <string name="add_subtask">Añadir una subtarea</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nueva tarea</string>
@@ -121,9 +121,9 @@
 	<string name="enter_pin">Intruduce la contraseña</string>
 	<string name="wrong_pin">Contraseña incorrecta</string>
     <string name="reset_application_button">Resetear la aplicación</string>
-    <string name="invalid_pin">ENGL: Please enter a PIN with 4 digits.</string>
+    <string name="invalid_pin">Por favor, introduzca su contraseña de 4 dígitos.</string>
     <string name="reset_application_msg">¿De verdad quieres resetear la aplicación? Se perderá la contraseña y todas las listas de tareas.</string>
-    <string name="add_pin">ENGL: Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
+    <string name="add_pin">Introduce la contraseña para poder abrir la aplicación. La contraseña tiene que contener por lo menos 4 cifras.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Alarma estándar</string>

@@ -10,7 +10,7 @@
     <string name="home">Strona startowa</string>
     <string name="calendar_view">Kalendarz</string>
     <string name="show_all_tasks">Wszystkie zadania</string>
-    <string name="settings">ENGL: Settings</string>
+    <string name="settings">Ustawienia</string>
     <string name="other">Inne</string>
 	<string name="help">Pomoc</string>
 	<string name="menu_about">O nas</string>
@@ -121,9 +121,9 @@
 	<string name="enter_pin">Wprowadź hasło</string>
 	<string name="wrong_pin">Nieprawidłowe hasło</string>
     <string name="reset_application_button">Resetuj aplikację</string>
-    <string name="invalid_pin">ENGL: Please enter a PIN with 4 digits.</string>
+    <string name="invalid_pin">Proszę wprowadzić hasło z 4 cyframi!.</string>
     <string name="reset_application_msg">Naprawdę chcesz zresetować tę aplikację? Zabezpieczenie hasłem zostanie wycofane, a wszystkie listy zadań usunięte.</string>
-    <string name="add_pin">ENGL: Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
+    <string name="add_pin">Wprowadź hasło, aby umożliwić dostęp do aplikacji. Hasło musi zawierać przynajmniej 4 cyfry.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Domyślny alarm</string>
