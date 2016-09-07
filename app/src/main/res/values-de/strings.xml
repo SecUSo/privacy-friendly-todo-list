@@ -121,6 +121,7 @@
 	<string name="enter_pin">PIN eingeben</string>
 	<string name="wrong_pin">Falsche PIN</string>
     <string name="reset_application_button">App zurücksetzen</string>
+    <string name="invalid_pin">Bitte geben Sie eine PIN mit 4 Zahlen ein.</string>
     <string name="reset_application_msg">Wollen Sie die Anwendung wirklich zurücksetzen? Dies entfernt zwar den PIN-Schutz, löscht jedoch auch alle To-Do Listen.</string>
     <string name="add_pin">Fügen Sie eine numerische PIN, der aus mindestens vier Ziffern besteht, hinzu, der abgefragt wird, wenn die App startet.</string>
 

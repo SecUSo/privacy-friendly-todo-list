@@ -121,9 +121,9 @@
 	<string name="enter_pin">Introduire le mot de passe</string>
 	<string name="wrong_pin">Mot de passe incorrect</string>
     <string name="reset_application_button">Restarter l\'application</string>
+    <string name="invalid_pin">ENGL: Please enter a PIN with 4 digits.</string>
     <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
     <string name="add_pin">ENGL: Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
-
 
     <!-- Settings -->
 	<string name="default_reminder_time">Alarme standard</string>
@@ -169,5 +169,4 @@
     <string name="list_to_db_error">La liste de tâches n\'a pas été enregistée dans la base de données.</string>
     <string name="task_to_db_error">La tâche n\'a pas été enregistrée dans la base de données.</string>
     <string name="subtask_to_db_error">La sous-tâche n\'a pas été enregistrée dans la base de données.</string>
-
 </resources>
