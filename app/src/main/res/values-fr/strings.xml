@@ -123,7 +123,7 @@
     <string name="reset_application_button">Restarter l\'application</string>
     <string name="invalid_pin">Entrez votre mot de pass à 4 chiffres.</string>
     <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
-    <string name="add_pin">Mettez votre mot de passe pour pouvoir ouvrir l'application. Le mot de passe doit contenir au moins 4 chiffres.</string>
+    <string name="add_pin">Mettez votre mot de passe pour pouvoir ouvrir l\'application. Le mot de passe doit contenir au moins 4 chiffres.</string>
 
     <!-- Settings -->
 	<string name="default_reminder_time">Alarme standard</string>
