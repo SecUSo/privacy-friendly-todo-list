@@ -140,16 +140,17 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-            if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
                 int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-                int childPosition = ExpandableListView.getPackedPositionChild(id);
-                taskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
-            } else {
-                taskAdapter.setLongClickedTaskByPos(position);
-            }
 
-            return false;
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+
+                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+                    taskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+                } else {
+                    taskAdapter.setLongClickedTaskByPos(groupPosition);
+                }
+
+                return false;
             }
 
         });
