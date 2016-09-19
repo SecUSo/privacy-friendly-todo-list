@@ -54,13 +54,12 @@
 
     <!-- About -->
     <string name="about">Sobre nosotros</string>
-    <string name="version_number">v1.0</string>
+    <string name="version_number">Versiṕn 1.0</string>
     <string name="about_author">Autores:</string>
     <string name="about_author_names">Dominik Püllen\nSimon Breitfelder</string>
     <string name="about_affiliation">En colaboración con:</string>
     <string name="privacy_friendly">Esta aplicación pertenece a Privacy Friendly Apps</string>
     <string name="more_info">Más informaciones sobre:</string>
-    <string name="url">https://www.secuso.org</string>
 
     <!-- To-Do list overview -->
 	<string name="done">hecho</string>

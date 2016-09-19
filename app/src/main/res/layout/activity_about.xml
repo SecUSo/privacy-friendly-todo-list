@@ -22,7 +22,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_weight="0.36"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
@@ -42,7 +42,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
         android:text="@string/app_name_long" />
 
     <TextView
@@ -50,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:text="@string/version_number" />
 
     <TextView
@@ -58,13 +57,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:text="@string/about_author" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center">
 
@@ -73,9 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:text="@string/about_author_names"
-            android:layout_toEndOf="@+id/textFieldAuthorNames"
-            android:layout_toRightOf="@+id/textFieldAuthorNames"/>
+            android:text="@string/about_author_names" />
 
     </RelativeLayout>
 
@@ -85,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="@string/about_affiliation"
         android:textStyle="bold" />
 
@@ -99,7 +96,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center_horizontal"
         android:text="@string/privacy_friendly"
         android:gravity="center_horizontal" />
@@ -115,9 +112,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/url"
-        android:textStyle="bold"
         android:layout_gravity="center_horizontal"
-        android:autoLink="web"/>
+        android:text="@string/url"
+        android:autoLink="web"
+        android:textStyle="bold"
+       />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/github"
+        android:autoLink="web"
+        android:textStyle="bold" />
 
 </LinearLayout>
