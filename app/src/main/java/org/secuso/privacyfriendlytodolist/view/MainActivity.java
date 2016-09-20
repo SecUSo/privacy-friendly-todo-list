@@ -30,6 +30,7 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.model.ReminderService;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
+import org.secuso.privacyfriendlytodolist.view.dialog.WelcomeDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,41 +149,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
 
-        boolean firstStart = preferences.getBoolean("firstStart", true);
-        if (firstStart) {
-            currentFragment = new WelcomeFragment();
+        // check if app was started by clicking on a reminding notification
+        if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION))) {
+            TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
+            Bundle bundle = new Bundle();
+            bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
+            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
+            currentFragment = new TodoTasksFragment();
+            currentFragment.setArguments(bundle);
         } else {
 
-            // check if app was started by clicking on a reminding notification
-            if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION))) {
-                TodoTask dueTask = extras.getParcelable(TodoTask.PARCELABLE_KEY);
-                Bundle bundle = new Bundle();
-                bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dueTask.getListId());
-                bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
-                currentFragment = new TodoTasksFragment();
-                currentFragment.setArguments(bundle);
+
+            if(currentFragment == null) {
+                currentFragment = new TodoListsFragment();
+                Log.i(TAG, "Activity was not retained.");
+
             } else {
 
-
-                if(currentFragment == null) {
-                    currentFragment = new TodoListsFragment();
-                    Log.i(TAG, "Activity was not retained.");
-
+                // restore state before configuration change
+                if(savedInstanceState != null) {
+                    todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
+                    clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
+                    isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
                 } else {
-
-                    // restore state before configuration change
-                    if(savedInstanceState != null) {
-                        todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
-                        clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
-                        isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
-                    } else {
-                        Log.i(TAG, "Could not restore old state because savedInstanceState is null.");
-                    }
-
-
-                    Log.i(TAG, "Activity was retained.");
+                    Log.i(TAG, "Could not restore old state because savedInstanceState is null.");
                 }
+
+                Log.i(TAG, "Activity was retained.");
             }
+        }
+
+        boolean firstStart = preferences.getBoolean("firstStart", true);
+        if (firstStart) {
+            preferences.edit().putBoolean("firstStart", false).commit();
+            WelcomeDialog dialog = new WelcomeDialog();
+            dialog.show(getFragmentManager(), "WelcomeDialog");
         }
 
         guiSetup();

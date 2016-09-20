@@ -33,7 +33,9 @@
     <string name="no">Non</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">Bienvenue chez la Liste de tâches de Privacy Friendly. Cette application ne demande aucune permission. Vous pouvez:</string>
+    <string name="welcome_title">ENGL: Welcome</string>
+    <string name="welcome_viewhelp">ENGL: View Help</string>
+    <string name="welcome_text">Bienvenue chez la Liste de tâches de Privacy Friendly. Cette application ne demande aucune permission. Vous pouvez:</string>
     <string name="welcome_hint_lists">Gérer des tâches dans les listes de tâches</string>
     <string name="welcome_hint_deadlines">Créer des dates limites et les alarmes</string>
     <string name="welcome_hint_subtasks">Créer des sous-tâches en élargissant les tâches</string>

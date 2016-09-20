@@ -33,7 +33,9 @@
     <string name="no">Nein</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">Willkommen in der Privacy Friendly To-Do Liste. Diese App kommt ohne Berechtigungen aus. Sie können:</string>
+    <string name="welcome_title">Willkommen</string>
+    <string name="welcome_viewhelp">Hilfe</string>
+    <string name="welcome_text">Willkommen in der Privacy Friendly To-Do Liste. Diese App kommt ohne Berechtigungen aus. Sie können:</string>
     <string name="welcome_hint_lists">Aufgaben in To-Do Listen verwalten.</string>
     <string name="welcome_hint_deadlines">Fälligkeitsdatum und Erinnerungen für Aufgaben erstellen.</string>
     <string name="welcome_hint_subtasks">Unteraufgaben erstellen, indem die Aufgabe in der Ansicht aufgeklappt wird.</string>

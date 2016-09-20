@@ -33,7 +33,9 @@
     <string name="no">No</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">Welcome to the Privacy Friendly To-Do List. This application requires no permissions. You can:</string>
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_viewhelp">View Help</string>
+    <string name="welcome_text">Welcome to the Privacy Friendly To-Do List. This application requires no permissions. You can:</string>
     <string name="welcome_hint_lists">Manage Tasks in labeled To-Do Lists.</string>
     <string name="welcome_hint_deadlines">Create deadlines and reminders for tasks.</string>
     <string name="welcome_hint_subtasks">Create subtasks by expanding the task.</string>
@@ -62,7 +64,6 @@
     <string name="more_info">More information can be found on:</string>
     <string name="github" translatable="false"><a href="https://github.com/SecUSo/privacy-friendly-todo-list">Github-Repo</a></string>
     <string name="url" translatable="false"><a href="https://www.secuso.org/pfa">SECUSO-Website</a></string>
-
 
     <!-- To-Do list overview -->
 	<string name="done">done</string>
