@@ -37,7 +37,7 @@ public class HelpActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
 
-        overridePendingTransition(0, 0);
+        getFragmentManager().beginTransaction().replace(R.id.help_fragment_container, new HelpFragment()).commit();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class HelpActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            //addPreferencesFromResource(R.xml.help);
+            addPreferencesFromResource(R.xml.help);
         }
     }
 

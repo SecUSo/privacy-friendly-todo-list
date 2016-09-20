@@ -43,14 +43,19 @@
     <string name="welcome_button">Beginnen</string>
 
     <!-- Help -->
+    <string name="help_overview_heading">Übersicht</string>
+    <string name="help_intro">Die Privacy Friendly To-Do Liste kann zur Organisation und persönlichen Zeitplanung verwendet werden.</string>
+    <string name="help_group_lists">Listenverwaltung</string>
     <string name="help_todo_lists_title">To-Do Listen</string>
     <string name="help_todo_lists">Eine To-Do Liste kann durch den + Button im Hauptmenü erstellt werden und bildet eine Gruppe von Aufgaben. Aufgaben innerhalb einer To-Do Liste können abgehakt werden um den Fortschritt der Liste aufzuzeigen.</string>
     <string name="help_subtasks_title">Unteraufgaben</string>
     <string name="help_subtasks">Unteraufgaben können an Aufgaben angehängt werden, um kleinere Einzelschritte zu protokollieren. Sie können nach Antippen einer Aufgabe in der aufgeklappten Ansicht erstellt werden.</string>
     <string name="help_deadline_reminder_title">Fälligkeitsdatum und Erinnerungen</string>
     <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden. Das Bearbeiten einer Aufgabe ist möglich, indem diese länger angetippt wird.</string>
+    <string name="help_group_app">Anwendung</string>
     <string name="help_pin_title">PIN-Schutz</string>
     <string name="help_pin">Im Einstellungsmenü kann eine vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem start der App eingegeben werden.</string>
+    <string name="help_group_privacy">Privatsphäre</string>
     <string name="help_permissions_title">Berechtigungen</string>
     <string name="help_permissions">Privacy Friendly To-Do List benötigt keine Berechtigungen.</string>
 

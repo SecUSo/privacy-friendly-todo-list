@@ -43,14 +43,19 @@
     <string name="welcome_button">Start</string>
 
     <!-- Help -->
+    <string name="help_overview_heading">ENGL: Overview</string>
+    <string name="help_intro">ENGL: The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
+    <string name="help_group_lists">ENGL: List management</string>
     <string name="help_todo_lists_title">Listy zadań</string>
     <string name="help_todo_lists">Lista zadań jest zbiorem zadań i można je stworzyć, używając klawisza + w głównym menu. Zadania wewnątrz listy mogą być zaznaczane i odznaczane jako wykonane.</string>
     <string name="help_subtasks_title">Podzadania</string>
     <string name="help_subtasks">Podzadania to kolejne kroki, które składają się na całe zadanie. Można je wprowadzić, klikając na zadanie w otwartej liście zadań.</string>
     <string name="help_deadline_reminder_title">Terminy i alarmy</string>
     <string name="help_deadline_reminder">Terminy i alarmy można utworzyć tylko dla poszczególnych zadań. Możesz je wprowadzić przy tworzeniu zadania lub przy jego edycji. Naciśnij na zadanie i przytrzymaj przycisk, aby rozpocząć edycję.</string>
+    <string name="help_group_app">ENGL: Application</string>
     <string name="help_pin_title">Hasło</string>
     <string name="help_pin">Wejdź w ustawienia, aby utworzyć hasło. Hasło musi się składać z 4 cyfr. Będziesz musiał je wprowadzić przy uruchamianiu aplikacji.</string>
+    <string name="help_group_privacy">ENGL: Privacy Info</string>
     <string name="help_permissions_title">Uprawnienia</string>
     <string name="help_permissions">Aplikacja Lista zadañ Privacy Friendly nie wymaga żadnych uprawnień.</string>
 
