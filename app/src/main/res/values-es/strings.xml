@@ -33,8 +33,8 @@
     <string name="no">No</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">ENGL: Welcome</string>
-    <string name="welcome_viewhelp">ENGL: View Help</string>
+    <string name="welcome_title">Bienvenidos</string>
+    <string name="welcome_viewhelp">Ayuda</string>
     <string name="welcome_text">Bienvenido en la Lista de tareas de Privacy Friendly. Esta aplicación no requiere ningún permiso. Puedes:</string>
     <string name="welcome_hint_lists">Administrar las tareas dentro de las listas de tareas</string>
     <string name="welcome_hint_deadlines">Crear las fechas límite y las alarmas</string>
@@ -43,19 +43,19 @@
     <string name="welcome_button">Comenzar</string>
 
     <!-- Help -->
-    <string name="help_overview_heading">ENGL: Overview</string>
-    <string name="help_intro">ENGL: The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
-    <string name="help_group_lists">ENGL: List management</string>
+    <string name="help_overview_heading">Informatión general</string>
+    <string name="help_intro">Esta aplicación se puede utilizar para mantener las tareas y organizar una agenda personal.</string>
+    <string name="help_group_lists">Administración</string>
     <string name="help_todo_lists_title">Listas de tareas</string>
     <string name="help_todo_lists">Una lista de tareas es un grupo de tareas y se la puede crear usando el botón + en el menu Inicio. Las tareas dentro de una lista de tareas se las puede marcar para diferenciar las tareas cumplidas de las no cumplidas.</string>
     <string name="help_subtasks_title">Subtareas</string>
     <string name="help_subtasks">Las subtareas representan las etapas por las que hay que pasar para cumplir una tarea. Se las puede crear haciendo clic en una tarea dentro de una lista de tareas.</string>
     <string name="help_deadline_reminder_title">Fechas límites y alarmas</string>
     <string name="help_deadline_reminder">Las fechas límites y las alarmas se las puede crear solo para las tareas. Puedes introducirlas creando una tarea o editándola. Haz clic en la tarea y espera para poder editarla.</string>
-    <string name="help_group_app">ENGL: Application</string>
+    <string name="help_group_app">Aplicación</string>
     <string name="help_pin_title">Contraseña</string>
     <string name="help_pin">Abrir los ajustes  para instalar la contraseña. La contraseña tiene que contener 4 cifras. Hay que introducir la contraseña cada vez al abrir la aplicación.</string>
-    <string name="help_group_privacy">ENGL: Privacy Info</string>
+    <string name="help_group_privacy">Información sobre la privacidad</string>
     <string name="help_permissions_title">Permisiones</string>
     <string name="help_permissions">La Lista de tareas de Privacy Friendly no requiere ningún permiso.</string>
 

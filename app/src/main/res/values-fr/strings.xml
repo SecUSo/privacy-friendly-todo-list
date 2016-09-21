@@ -33,8 +33,8 @@
     <string name="no">Non</string>
 
     <!-- Welcome Dialog -->
-    <string name="welcome_title">ENGL: Welcome</string>
-    <string name="welcome_viewhelp">ENGL: View Help</string>
+    <string name="welcome_title">Bievenue</string>
+    <string name="welcome_viewhelp">Aide</string>
     <string name="welcome_text">Bienvenue chez la Liste de tâches de Privacy Friendly. Cette application ne demande aucune permission. Vous pouvez:</string>
     <string name="welcome_hint_lists">Gérer des tâches dans les listes de tâches</string>
     <string name="welcome_hint_deadlines">Créer des dates limites et les alarmes</string>
@@ -43,19 +43,19 @@
     <string name="welcome_button">Commencer</string>
 
     <!-- Help -->
-    <string name="help_overview_heading">ENGL: Overview</string>
-    <string name="help_intro">ENGL: The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
-    <string name="help_group_lists">ENGL: List management</string>
+    <string name="help_overview_heading">Vue d\'ensemble</string>
+    <string name="help_intro">L\'application peut être utilisé pour organiser des tâches et pour obtenir des notifications.</string>
+    <string name="help_group_lists">Administration des listes de tâches</string>
     <string name="help_todo_lists_title">Listes de tâches</string>
     <string name="help_todo_lists">Une liste de tâches est un groupe de tâches et peut être créée en choissant le bouton dans le menu. Les tâches dedans une liste de tâches peuvent ?tre marquées comme faites.</string>
     <string name="help_subtasks_title">Sous-tâches</string>
     <string name="help_subtasks">Les sous-tâches sont les pas qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
     <string name="help_deadline_reminder_title">Dates limites et alarmes</string>
     <string name="help_deadline_reminder">Les dates limites et les alarmes ne peuvent ?tre créées que pour les tâches. Vous pouvez les introduire en créant une tâche ou en en éditant. Cliquez sur la tâche et attendez un moment pour l\'éditer.</string>
-    <string name="help_group_app">ENGL: Application</string>
+    <string name="help_group_app">Application</string>
     <string name="help_pin_title">Mot de passe</string>
     <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
-    <string name="help_group_privacy">ENGL: Privacy Info</string>
+    <string name="help_group_privacy">Information sur la vie privée</string>
     <string name="help_permissions_title"> Permissions</string>
     <string name="help_permissions">L\'application Liste de tâches de Privacy Friendly ne demande aucune permission.</string>
 

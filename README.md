@@ -12,7 +12,7 @@ This application has been developed to be used as a basis for a Privacy Friendly
 
 ## Download and more Information
 
-Further development requires Android Studio, we recommend to use at least version 2.1.3
+Further development requires Android Studio, we recommend to use at least version 2.2
  
 ### API Reference
 
@@ -21,7 +21,7 @@ Target SDK: 23
 
 ## License
 
-Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  All  images (the logo of Privacy Friendly Apps, the SECUSO logo and the header in the navigation drawer) copyright Technische Universtität Darmstadt (2016).
+Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo and the header in the navigation drawer) copyright Technische Universtität Darmstadt (2016).
 
 ## Contributors
 
