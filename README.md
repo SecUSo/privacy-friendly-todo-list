@@ -25,10 +25,9 @@ Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The
 
 ## Contributors
 
+App-Icons:
+Markus Hau
+
 Github-Users: <br />
 Dominik Puellen <br />
 Simon Breitfelder
-
-
-
-
