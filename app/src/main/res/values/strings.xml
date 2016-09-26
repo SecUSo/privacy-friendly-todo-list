@@ -57,7 +57,7 @@
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with 4 digits. You are asked for it every time you start the application.</string>
     <string name="help_group_privacy">Privacy Info</string>
     <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">This application requires the permission RECEIVE_BOOT_COMPLETED. It allows the app to check right after booting the device if the user wants to get informed about an upcoming deadline.</string>
+    <string name="help_permissions">This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline.</string>
 
     <!-- About -->
     <string name="about">About</string>
