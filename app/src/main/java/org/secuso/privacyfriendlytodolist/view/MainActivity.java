@@ -35,12 +35,6 @@ import org.secuso.privacyfriendlytodolist.view.dialog.WelcomeDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/*
-    TODO Maintain a list which modified objects to avoid checking all objects if they need to be rewritten to the database.
- */
-
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -49,7 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String KEY_TODO_LISTS = "restore_todo_list_key_with_savedinstancestate";
     private static final String KEY_CLICKED_LIST = "restore_clicked_list_with_savedinstancestate";
     private static final String KEY_DUMMY_LIST = "restore_dummy_list_with_savedinstancestate";
-    private static final java.lang.String KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate";
+    private static final String KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate";
+    private static final String KEY_UNLOCK_UNTIL = "restore_unlock_until_key_with_savedinstancestate";
     public static final String KEY_SELECTED_FRAGMENT_BY_NOTIFICATION = "fragment_choice";
     private static final String KEY_FRAGMENT_CONFIG_CHANGE_SAVE = "current_fragment";
 
@@ -89,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = DatabaseHelper.getInstance(this);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
-       // initActivity(savedInstanceState);
-
         authAndGuiInit(savedInstanceState);
 
     }
@@ -101,11 +94,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         outState.putParcelable(KEY_CLICKED_LIST, clickedList);
         outState.putParcelable(KEY_DUMMY_LIST, dummyList);
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked);
+        outState.putLong(KEY_UNLOCK_UNTIL, unlockUntil);
 
         super.onSaveInstanceState(outState);
     }
 
     private void authAndGuiInit(final Bundle savedInstanceState) {
+
+        if(savedInstanceState != null) {
+            isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
+            unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL);
+        }
 
         if (!this.isUnlocked && hasPin()) {
             PinDialog dialog = new PinDialog(this);
@@ -177,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if(savedInstanceState != null) {
                     todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
                     clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
-                    isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
                     dummyList = (TodoList) savedInstanceState.get(KEY_DUMMY_LIST);
                 } else {
                     Log.i(TAG, "Could not restore old state because savedInstanceState is null.");
@@ -245,11 +243,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void uncheckNavigationEntries() {
         // uncheck all navigtion entries
-        int size = navigationView.getMenu().size();
-        for (int i = 0; i < size; i++) {
-            navigationView.getMenu().getItem(i).setChecked(false);
+        if(navigationView != null) {
+            int size = navigationView.getMenu().size();
+            for (int i = 0; i < size; i++) {
+                navigationView.getMenu().getItem(i).setChecked(false);
+            }
+
+            Log.i(TAG, "Navigation entries unchecked.");
         }
-        Log.i(TAG, "Navigation entries unchecked.");
     }
 
     @Override
