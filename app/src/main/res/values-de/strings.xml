@@ -57,7 +57,7 @@
     <string name="help_pin">Im Einstellungsmenü kann eine vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem start der App eingegeben werden.</string>
     <string name="help_group_privacy">Privatsphäre</string>
     <string name="help_permissions_title">Berechtigung RECEIVE_BOOT_COMPLETED</string>
-    d<string name="help_permissions">Diese App fordert die Berechtigung RECEIVE_BOOT_COMPLETED. Sie wird benötigt, dass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte.</string>
+    d<string name="help_permissions">Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte.</string>
 
     <!-- About -->
     <string name="about">Über</string>
