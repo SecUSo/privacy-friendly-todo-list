@@ -29,8 +29,8 @@
 
     <PreferenceCategory android:title="@string/help_group_privacy">
         <Preference
-            android:summary="@string/help_permissions_title"
-            android:title="@string/help_permissions" />
+            android:summary="@string/help_permissions"
+            android:title="@string/help_permissions_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

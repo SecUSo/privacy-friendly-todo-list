@@ -83,6 +83,13 @@ public class CalendarFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setRetainInstance(true);
+    }
+
     private String absSecondsToDate(long seconds) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(seconds));

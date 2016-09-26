@@ -57,7 +57,7 @@
     <string name="help_pin">Wejdź w ustawienia, aby utworzyć hasło. Hasło musi się składać z 4 cyfr. Będziesz musiał je wprowadzić przy uruchamianiu aplikacji.</string>
     <string name="help_group_privacy">Informacja o prywatności</string>
     <string name="help_permissions_title">Uprawnienia</string>
-    <string name="help_permissions">Aplikacja Lista zadañ Privacy Friendly nie wymaga żadnych uprawnień.</string>
+    <string name="help_permissions">Ta aplikacja wymaga zezwolenia RECEIVE_BOOT_COMPLETED. Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
 
     <!-- About -->
     <string name="about">O nas</string>

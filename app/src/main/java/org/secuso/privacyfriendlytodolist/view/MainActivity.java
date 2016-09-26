@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Keys
     private static final String KEY_TODO_LISTS = "restore_todo_list_key_with_savedinstancestate";
     private static final String KEY_CLICKED_LIST = "restore_clicked_list_with_savedinstancestate";
+    private static final String KEY_DUMMY_LIST = "restore_dummy_list_with_savedinstancestate";
     private static final java.lang.String KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate";
     public static final String KEY_SELECTED_FRAGMENT_BY_NOTIFICATION = "fragment_choice";
     private static final String KEY_FRAGMENT_CONFIG_CHANGE_SAVE = "current_fragment";
@@ -69,11 +70,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Service that triggers notifications for upcoming tasks
     private ReminderService reminderService;
 
+    // GUI
+    private NavigationView navigationView;
+
     // Others
     boolean isInitialized = false;
     boolean isUnlocked = false;
     long unlockUntil = -1;
     private static final long UnlockPeriod = 15000; // keep the app unlocked for 15 seconds after switching to another activity (settings/help/about)
+
 
 
     @Override
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(KEY_TODO_LISTS, todoLists);
         outState.putParcelable(KEY_CLICKED_LIST, clickedList);
+        outState.putParcelable(KEY_DUMMY_LIST, dummyList);
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked);
 
         super.onSaveInstanceState(outState);
@@ -142,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void initActivity(Bundle savedInstanceState) {
 
+
         this.isUnlocked = true;
         getTodoLists(true);
 
@@ -171,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
                     clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
                     isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
+                    dummyList = (TodoList) savedInstanceState.get(KEY_DUMMY_LIST);
                 } else {
                     Log.i(TAG, "Could not restore old state because savedInstanceState is null.");
                 }
@@ -192,6 +200,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    public void onStart() {
+        super.onStart();
+        uncheckNavigationEntries();
+    }
+
 
     public void setFragment(Fragment fragment) {
 
@@ -212,47 +225,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
         fragmentManager.executePendingTransactions();
 
-
-/*
-
-
-        if(fragment == null)
-            return;
-        // Check that the activity is using the layout version with the fragment_container FrameLayout
-
-        if (findViewById(R.id.fragment_container) != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if (fragmentManager.getFragments() == null) {
-                fragmentTransaction.add(R.id.fragment_container, fragment);
-            } else {
-                if (fragmentManager.getFragments().size() > 0) {
-                    Fragment currentFragment = fragmentManager.getFragments().get(fragmentManager.getFragments().size() - 1);
-                    // current fragment has the same type as new fragment? nothing to do
-                    if (currentFragment != null && currentFragment.isVisible() && currentFragment.getClass().equals(fragment.getClass()))
-                        return;
-                }
-                // find another fragment of the same type
-                Fragment oldFragment = null;
-                for (Fragment f : fragmentManager.getFragments()) {
-                    if (f != null && f.getClass().equals((fragment.getClass()))) {
-                        oldFragment = f;
-                        break;
-                    }
-                }
-                if (oldFragment != null) {
-                    // another fragment of this type found? just switch to this one
-                    fragment = oldFragment;
-                }
-                //fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_in, R.anim.fragment_slide_out);
-                fragmentTransaction.replace(R.id.fragment_container, fragment);
-                fragmentTransaction.addToBackStack(null);
-            }
-
-            fragmentTransaction.commit();
-        }
-*/
-
     }
 
     private void guiSetup() {
@@ -267,9 +239,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
 
+    public void uncheckNavigationEntries() {
+        // uncheck all navigtion entries
+        int size = navigationView.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+        Log.i(TAG, "Navigation entries unchecked.");
     }
 
     @Override
