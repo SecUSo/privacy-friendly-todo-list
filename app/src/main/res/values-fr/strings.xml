@@ -56,7 +56,7 @@
     <string name="help_pin_title">Mot de passe</string>
     <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
     <string name="help_group_privacy">Information sur la vie privée</string>
-    <string name="help_permissions_title"> Permissions</string>
+    <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
     <string name="help_permissions">Cette application exige la permission RECEIVE_BOOT_COMPLETED. Cela permet de verifier si l\'utiliseteur souhaite être informé sur les prochaines dates limites juste après avoir mis en marche le périphérique.</string>
 
     <!-- About -->
