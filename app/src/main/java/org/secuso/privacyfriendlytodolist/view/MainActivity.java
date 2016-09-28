@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean isInitialized = false;
     boolean isUnlocked = false;
     long unlockUntil = -1;
-    private static final long UnlockPeriod = 15000; // keep the app unlocked for 15 seconds after switching to another activity (settings/help/about)
+    private static final long UnlockPeriod = 30000; // keep the app unlocked for 30 seconds after switching to another activity (settings/help/about)
 
 
 
@@ -303,25 +303,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    // TODO onStop() is called whenever the activity becomes invisible (e.g. when the settings are opened)
-
-    /*@Override
+    @Override
     protected void onStop() {
         this.isUnlocked = false;
         super.onStop();
-
-        Log.i(TAG, "onStop()");
-    }*/
+    }
 
     @Override
     protected void onResume() {
-        if(this.isInitialized && !this.isUnlocked) { //&& (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+        if(this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+            // restart activity to show pin dialog again
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
             super.onResume();
             return;
         }
+        // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:
+        this.isUnlocked = (this.isUnlocked || (this.unlockUntil != -1 && this.unlockUntil <= System.currentTimeMillis()));
         this.unlockUntil = -1;
 
         if (reminderService == null) {
