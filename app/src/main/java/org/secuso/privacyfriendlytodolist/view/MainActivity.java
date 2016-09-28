@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (!this.isUnlocked && hasPin()) {
-            PinDialog dialog = new PinDialog(this);
+            final PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
                 public void accepted() {
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void declined() {
-                    finish();
+                    finishAffinity();
                 }
 
                 @Override
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     dbHelper.deleteAll();
                     dbHelper.createAll();
                     Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                    finish();
+                    dialog.dismiss();
                     startActivity(intent);
                 }
             });
@@ -303,15 +303,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
+    // TODO onStop() is called whenever the activity becomes invisible (e.g. when the settings are opened)
+
+    /*@Override
     protected void onStop() {
         this.isUnlocked = false;
         super.onStop();
-    }
+
+        Log.i(TAG, "onStop()");
+    }*/
 
     @Override
     protected void onResume() {
-        if(this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+        if(this.isInitialized && !this.isUnlocked) { //&& (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
@@ -324,10 +328,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bindToReminderService();
         }
         super.onResume();
+
+        Log.i(TAG, "onResume()");
     }
 
     @Override
     protected void onDestroy() {
+
         if (reminderService != null) {
             unbindService(reminderServiceConnection);
             reminderService = null;
