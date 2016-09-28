@@ -79,6 +79,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
+            unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL);
+        }
+        else {
+            isUnlocked = false;
+            unlockUntil = -1;
+        }
+
         setContentView(R.layout.activity_main);
 
         dbHelper = DatabaseHelper.getInstance(this);
@@ -90,23 +100,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(KEY_TODO_LISTS, todoLists);
         outState.putParcelable(KEY_CLICKED_LIST, clickedList);
         outState.putParcelable(KEY_DUMMY_LIST, dummyList);
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked);
         outState.putLong(KEY_UNLOCK_UNTIL, unlockUntil);
-
-        super.onSaveInstanceState(outState);
     }
 
     private void authAndGuiInit(final Bundle savedInstanceState) {
 
-        if(savedInstanceState != null) {
-            isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
-            unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL);
-        }
-
-        if (!this.isUnlocked && hasPin()) {
+        if (hasPin() && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             final PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
@@ -320,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
         // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:
-        this.isUnlocked = (this.isUnlocked || (this.unlockUntil != -1 && this.unlockUntil <= System.currentTimeMillis()));
+        this.isUnlocked = (this.isUnlocked || (this.unlockUntil != -1 && System.currentTimeMillis() <= this.unlockUntil));
         this.unlockUntil = -1;
 
         if (reminderService == null) {
@@ -341,6 +345,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         super.onDestroy();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        // prevents unlocking the app by rotating while the app is inactive and then returning
+        this.isUnlocked = false;
     }
 
     private void bindToReminderService() {
