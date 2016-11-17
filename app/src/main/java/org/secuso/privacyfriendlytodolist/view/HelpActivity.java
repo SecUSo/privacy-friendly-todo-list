@@ -32,9 +32,7 @@ public class HelpActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
-            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
         }
 
         getFragmentManager().beginTransaction().replace(R.id.help_fragment_container, new HelpFragment()).commit();
