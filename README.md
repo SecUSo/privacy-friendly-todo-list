@@ -8,20 +8,20 @@ This app belongs to the group of Privacy Friendly Apps developed by the Technisc
 
 ## Motivation
 
-This application has been developed to be used as a basis for a Privacy Friendly App. Privacy Friendly Apps are group of Android applications which are optimized regarding privacy. Further information can be found on secuso.org/pfa
+This application has been developed to be used as a basis for a Privacy Friendly App. Privacy Friendly Apps are group of Android applications which are optimized regarding privacy. Further information can be found on here[secuso.org/pfa]
 
 ## Download and more Information
 
-Further development requires Android Studio, we recommend to use at least version 2.2
+Further development requires Android Studio, we recommend to use at least version 2.2.2
  
 ### API Reference
 
 Mininum SDK: 16
-Target SDK: 23 
+Target SDK: 25 
 
 ## License
 
-Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo and the header in the navigation drawer) copyright Technische Universtität Darmstadt (2016).
+Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo and the splash screen) copyright Technische Universtität Darmstadt (2016).
 
 ## Contributors
 
@@ -30,4 +30,5 @@ Markus Hau
 
 Github-Users: <br />
 Dominik Puellen <br />
-Simon Breitfelder
+Simon Breitfelder <br />
+Karola Marky (yonjuni)
