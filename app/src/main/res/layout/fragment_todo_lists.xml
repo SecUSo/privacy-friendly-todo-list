@@ -16,19 +16,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:scrollbars="vertical"></org.secuso.privacyfriendlytodolist.view.TodoRecyclerView>
+            android:scrollbars="vertical" />
 
-
-        <TextView
-            android:id="@+id/tv_rv_empty_view"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:text="@string/no_todo_lists_available"
-            android:textSize="18dp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/placeholder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="100dp"
+                    android:src="@mipmap/splash_screen" />
+
+                <TextView
+                    android:id="@+id/tv_rv_empty_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/placeholder"
+                    android:text="@string/no_todo_lists_available"
+                    android:gravity="center"
+                    android:textSize="18sp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

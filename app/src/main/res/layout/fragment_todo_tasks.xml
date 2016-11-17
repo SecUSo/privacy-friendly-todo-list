@@ -14,7 +14,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
-            android:groupIndicator="@null"></ExpandableListView>
+            android:groupIndicator="@null"/>
+
+        <ImageView
+            android:id="@+id/placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:src="@mipmap/splash_screen" />
 
         <TextView
             android:id="@+id/tv_empty_view_no_tasks"
@@ -22,8 +30,9 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/empty_todo_list"
-            android:textSize="18sp"
-            android:visibility="gone" />
+            android:textSize="18sp" />
+
+
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

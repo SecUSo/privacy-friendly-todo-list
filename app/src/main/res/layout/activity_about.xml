@@ -65,22 +65,21 @@
             android:layout_marginTop="5dp"
             android:text="@string/about_author" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/textFieldAuthorNames"
             android:layout_width="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:text="@string/about_author_names" />
+
+        <TextView
+            android:id="@+id/textFieldContributors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/textFieldContributors"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:text="@string/about_author_names" />
-
-        </RelativeLayout>
-
+            android:layout_gravity="center_horizontal"
+            android:text="@string/about_author_contributors" />
 
         <TextView
             android:id="@+id/textFieldAffiliation"
