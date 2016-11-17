@@ -1,6 +1,6 @@
 ﻿<resources>
     <!-- Application Specific -->
-	<string name="app_name">Tareas</string>
+	<string name="app_name">Lista de tareas</string>
     <string name="app_name_long">Privacy Friendly Lista de tareas</string>
 
     <!-- Menu -->

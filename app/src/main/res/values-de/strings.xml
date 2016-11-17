@@ -1,7 +1,7 @@
 <resources>
     <!-- Application Specific -->
-	<string name="app_name">To-Do</string>
-    <string name="app_name_long">Privacy Friendly To-Do List</string>
+	<string name="app_name">To-Do Liste</string>
+    <string name="app_name_long">Privacy Friendly To-Do Liste</string>
 
     <!-- Menu -->
     <string name="nav_header_app_name">To-Do</string>
