@@ -1,4 +1,4 @@
-## Privacy Friendly App Todo
+## Privacy Friendly To-Do List
 
 This application allows to create lists of tasks which can be individually managed. Each list contains a set of tasks. Each task can have a deadline, a reminder time and a list of subtasks. By setting a reminder time the user will be informed by a notification. It is possible to display all tasks in a calendar, to protect the app with a secret pin and to sort and prioritze tasks within a list. Colors indicate the urgency of a task (taking the deadline into account). 
 
@@ -11,6 +11,11 @@ This app belongs to the group of Privacy Friendly Apps developed by the Technisc
 This application has been developed to be used as a basis for a Privacy Friendly App. Privacy Friendly Apps are group of Android applications which are optimized regarding privacy. Further information can be found on here[secuso.org/pfa]
 
 ## Download and more Information
+
+
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/repository/browse/?fdid=org.secuso.privacyfriendlytodolist)
+
+### Building
 
 Further development requires Android Studio, we recommend to use at least version 2.2.2
  
