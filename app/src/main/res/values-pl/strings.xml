@@ -61,7 +61,7 @@
 
     <!-- About -->
     <string name="about">O nas</string>
-    <string name="version_number">Wersja 1.0</string>
+    <string name="version_number">Wersja 1.0.1</string>
     <string name="about_author">Autorzy:</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">W współpracy z</string>

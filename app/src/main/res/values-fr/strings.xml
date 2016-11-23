@@ -61,7 +61,7 @@
 
     <!-- About -->
     <string name="about">Auteurs</string>
-    <string name="version_number">Version 1.0</string>
+    <string name="version_number">Version 1.0.1</string>
     <string name="about_author">Auteurs:</string>
     <string name="about_author_contributors">et des collaborateurs.</string>
     <string name="about_affiliation">En collaboration avec</string>
