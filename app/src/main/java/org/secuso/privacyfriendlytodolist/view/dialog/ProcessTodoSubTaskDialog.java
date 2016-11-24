@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 
 
 public class ProcessTodoSubTaskDialog extends FullScreenDialog {

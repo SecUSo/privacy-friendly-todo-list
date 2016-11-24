@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.Window;
 import android.view.WindowManager;
 
-import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.view.TodoCallback;
 
 abstract public class FullScreenDialog extends Dialog {

@@ -3,9 +3,6 @@ package org.secuso.privacyfriendlytodolist.model;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 
 import java.util.ArrayList;
 

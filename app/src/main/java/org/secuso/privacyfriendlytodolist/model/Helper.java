@@ -9,17 +9,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors;
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority;
 
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
-import static org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors.*;
-import static org.secuso.privacyfriendlytodolist.model.TodoTask.Priority.*;
 
 public class Helper {
 

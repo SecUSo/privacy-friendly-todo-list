@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.view.HelpActivity;
-import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 public class WelcomeDialog extends DialogFragment {
     @Override

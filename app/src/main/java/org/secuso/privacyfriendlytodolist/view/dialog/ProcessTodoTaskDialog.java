@@ -1,9 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
-import android.provider.SyncStateContract;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,8 +14,6 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.view.TodoCallback;
 
 public class ProcessTodoTaskDialog extends FullScreenDialog {
 

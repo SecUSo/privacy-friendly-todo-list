@@ -3,17 +3,15 @@ package org.secuso.privacyfriendlytodolist.view.calendar;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class CalendarView extends LinearLayout {

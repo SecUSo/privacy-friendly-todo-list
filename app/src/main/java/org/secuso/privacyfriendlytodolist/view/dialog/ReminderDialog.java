@@ -1,7 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -11,7 +10,6 @@ import android.widget.TimePicker;
 import org.secuso.privacyfriendlytodolist.R;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 

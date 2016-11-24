@@ -1,30 +1,22 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 
 
 public class PinDialog extends FullScreenDialog {
 
-    PinCallback callback = null;
+    private PinCallback callback = null;
 
-    int wrongCounter = 0;
+    private int wrongCounter = 0;
 
     public PinDialog(final Context context) {
         super(context, R.layout.pin_dialog);
