@@ -72,7 +72,7 @@
 	<string name="done">erledigt</string>
 	<string name="no_todo_lists_available">Keine To-Do Listen verfügbar.</string>
 	<string name="next_deadline_dd">Nächste Deadline: %1$s</string>
-    <string name="no_next_deadline">Keine bevorstehenden Deadlines</string>
+    <string name="no_next_deadline">Keine Deadlines</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
     <string name="delete_list">To-Do Liste löschen</string>
