@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/enter_pin"
             android:layout_toRightOf="@+id/iv_pin_icon"
+            android:layout_toEndOf="@+id/iv_pin_icon"
             android:paddingLeft="5dp"
             android:layout_centerVertical="true"
             android:textSize="20sp"
@@ -60,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:minHeight="48dip"
             android:text="@string/ok" />
     </RelativeLayout>
@@ -70,7 +72,7 @@
         android:layout_height="wrap_content"
         style="?android:attr/buttonBarButtonStyle"
         android:visibility="gone"
-        android:gravity="right"
+        android:gravity="end"
         android:text="@string/reset_application_button"
  />
 
