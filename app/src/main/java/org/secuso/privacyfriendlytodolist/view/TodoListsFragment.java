@@ -171,7 +171,7 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 break;
             case R.id.undone_list:
                 todoList.allUndone();
-                ArrayList<TodoTask> tasks = todoList.getTasks() ;
+                ArrayList<TodoTask> tasks = todoList.getTasks();
 
                 for (TodoTask task: tasks) {
                     DBQueryHandler.updateTodoTask(containerActivity.getDbHelper().getWritableDatabase(), task);
@@ -186,6 +186,7 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                     }
                 };
                 adapter.updateList(todoLists);
+                Toast.makeText(getContext(), getString(R.string.toast_uncheck_todo_list), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");

@@ -76,6 +76,7 @@
     <string name="add_list_feedback">%1$s agregado</string>
     <string name="edit_todo_list">Editar la lista de tareas</string>
     <string name="uncheck_todo_list">Restablecer todas las tareas</string>
+    <string name="toast_uncheck_todo_list">Reseteado todas las tareas</string>
     <string name="delete_list">Eliminar la lista de tareas</string>
     <string name="delete_list_feedback">%1$s eliminado</string>
 

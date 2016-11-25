@@ -79,6 +79,7 @@
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
     <string name="uncheck_todo_list">Reset all tasks</string>
+    <string name="toast_uncheck_todo_list">All tasks reseted</string>
     <string name="delete_list">Delete To-Do list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
 

@@ -76,6 +76,7 @@
     <string name="add_list_feedback">%1$s ajouté</string>
     <string name="edit_todo_list">Editer la liste de tâches</string>
     <string name="uncheck_todo_list">Réinitialiser toutes les tâches</string>
+    <string name="toast_uncheck_todo_list">Réinitialisé toutes les tâches</string>
     <string name="delete_list">Supprimer une liste de tâches</string>
     <string name="delete_list_feedback">%1$s supprimé</string>
 
