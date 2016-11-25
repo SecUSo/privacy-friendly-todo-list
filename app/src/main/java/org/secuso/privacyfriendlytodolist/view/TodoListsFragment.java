@@ -139,7 +139,6 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
     public boolean onContextItemSelected(MenuItem item) {
 
         final TodoList todoList = adapter.getToDoListFromPosition(adapter.getPosition());
-        int position = adapter.getPosition();
 
         switch (item.getItemId()) {
             case R.id.change_list:
@@ -155,34 +154,39 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 addListDialog.show();
                 break;
             case R.id.delete_list:
-                final TodoList toDeleteTodoListFinal = todoList;
-                //Toast.makeText(getContext(), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Toast.LENGTH_SHORT).show();
+//                final TodoList toDeleteTodoListFinal = todoList;
+                Toast.makeText(getContext(), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Toast.LENGTH_SHORT).show();
                 DBQueryHandler.deleteTodoList(containerActivity.getDbHelper().getWritableDatabase(), todoList);
                 todoLists.remove(todoList);
                 adapter.updateList(todoLists);
                 adapter.notifyDataSetChanged();
 
-                Snackbar.make(activity.findViewById(android.R.id.content), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Snackbar.LENGTH_LONG)
-                        .setAction(getString(R.string.undo), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                DBQueryHandler.saveTodoListInDb(containerActivity.getDbHelper().getWritableDatabase(), toDeleteTodoListFinal);
-                                ArrayList<TodoTask> todotasks = toDeleteTodoListFinal.getTasks();
-
-                                for (TodoTask task: todotasks) {
-                                    DBQueryHandler.saveTodoTaskInDb(containerActivity.getDbHelper().getWritableDatabase(), task);
-                                    ArrayList<TodoSubTask> subtasks = task.getSubTasks();
-
-                                    for (TodoSubTask subtask: subtasks) {
-                                        DBQueryHandler.saveTodoSubTaskInDb(containerActivity.getDbHelper().getWritableDatabase(), subtask);
-                                    }
-                                }
-
-                                todoLists.add(toDeleteTodoListFinal);
-                                adapter.updateList(todoLists);
-                                adapter.notifyDataSetChanged();
-                            }
-                        }).show();
+//                Snackbar.make(activity.findViewById(android.R.id.content), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Snackbar.LENGTH_LONG)
+//                        .setAction(getString(R.string.undo), new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//
+//                                DBQueryHandler.saveTodoListInDb(containerActivity.getDbHelper().getWritableDatabase(), toDeleteTodoListFinal);
+//                                ArrayList<TodoTask> todotasks = toDeleteTodoListFinal.getTasks();
+//
+//                                for (TodoTask task : todotasks) {
+//                                    DBQueryHandler.saveTodoTaskInDb(containerActivity.getDbHelper().getWritableDatabase(), task);
+//                                    ArrayList<TodoSubTask> subtasks = task.getSubTasks();
+//
+//                                    for (TodoSubTask subtask : subtasks) {
+//                                        DBQueryHandler.saveTodoSubTaskInDb(containerActivity.getDbHelper().getWritableDatabase(), subtask);
+//                                    }
+//                                }
+//
+//                                todoLists.add(toDeleteTodoListFinal);
+//                                adapter.updateList(todoLists);
+//                                adapter.notifyDataSetChanged();
+//                            }
+//
+//                        }).show();
+//
+//                adapter.updateList(todoLists);
+//                adapter.notifyDataSetChanged();
 
                 break;
             case R.id.show_description_list:
@@ -204,22 +208,27 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 todoList.allUndone();
                 ArrayList<TodoTask> tasks = todoList.getTasks();
 
-                //final ArrayList<TodoTask> tasksFinal = todoList.getTasks();
-
                 for (TodoTask task : tasks) {
                     DBQueryHandler.updateTodoTask(containerActivity.getDbHelper().getWritableDatabase(), task);
+                    for (TodoSubTask subTask: task.getSubTasks()) {
+                        DBQueryHandler.updateTodoSubTask(containerActivity.getDbHelper().getWritableDatabase(), subTask);
+                    }
                 }
 
                 new TodoCallback() {
                     @Override
                     public void finish(BaseTodo alterdList) {
                         if (alterdList instanceof TodoList) {
+                            adapter.notifyDataSetChanged();
+                            adapter.updateList(todoLists);
                         }
                     }
                 };
-                adapter.notifyDataSetChanged();
-                adapter.updateList(todoLists);
+//                adapter.notifyDataSetChanged();
+//                adapter.updateList(todoLists);
                 Toast.makeText(getContext(), getString(R.string.toast_uncheck_todo_list), Toast.LENGTH_SHORT).show();
+
+
                 break;
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");

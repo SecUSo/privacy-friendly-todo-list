@@ -49,7 +49,6 @@ public class DBQueryHandler {
         return nextDueTask;
     }
 
-
     /**
      * returns a list of tasks
      * <p>
@@ -182,6 +181,19 @@ public class DBQueryHandler {
         String whereArgs[] = {String.valueOf(todoTask.getId())};
 
         db.update(TTodoTask.TABLE_NAME, values, where, whereArgs);
+    }
+
+    public static void updateTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {
+
+        ContentValues values = new ContentValues();
+        values.put(TTodoSubTask.COLUMN_TITLE, subTask.getName());
+        values.put(TTodoSubTask.COLUMN_DONE, subTask.getDone());
+        values.put(TTodoSubTask.COLUMN_TASK_ID, subTask.getTaskId());
+
+        String where = TTodoSubTask.COLUMN_ID + " = ?";
+        String whereArgs[] = {String.valueOf(subTask.getId())};
+
+        db.update(TTodoSubTask.TABLE_NAME, values, where, whereArgs);
     }
 
     public static ArrayList<TodoList> getAllToDoLists(SQLiteDatabase db) {
