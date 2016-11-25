@@ -13,7 +13,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
     private static final String TAG = TodoTask.class.getSimpleName();
     public static final String PARCELABLE_KEY = "key_for_parcels";
 
-
     public enum Priority {
         HIGH(0), MEDIUM(1), LOW(2); // Priority steps must be sorted in the same way like they will be displayed
 
@@ -108,7 +107,6 @@ public class TodoTask extends BaseTodo implements Parcelable {
     public ArrayList<TodoSubTask> getSubTasks() {
         return subTasks;
     }
-
 
     public boolean getDone() {
         return done;

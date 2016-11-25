@@ -25,7 +25,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private EditText taskDescription;
     private TodoTask.Priority taskPriority = null;
     private int taskProgress = 0;
-    private String name, description;
+    //private String name, description;
     private long deadline = -1;
     private long reminderTime = -1;
 

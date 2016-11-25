@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void initActivity(Bundle savedInstanceState) {
 
-
         this.isUnlocked = true;
         getTodoLists(true);
 

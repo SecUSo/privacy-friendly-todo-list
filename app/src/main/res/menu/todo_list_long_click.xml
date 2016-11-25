@@ -3,4 +3,5 @@
     <item android:id="@+id/change_list" android:title="@string/edit_todo_list"/>
     <item android:id="@+id/delete_list" android:title="@string/delete_list"/>
     <item android:id="@+id/show_description_list" android:title="@string/show_description"/>
+    <item android:id="@+id/undone_list" android:title="@string/uncheck_todo_list"/>
 </menu>

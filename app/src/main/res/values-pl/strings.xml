@@ -75,6 +75,7 @@
     <string name="no_next_deadline">Brak terminów</string>
     <string name="add_list_feedback">%1$s dodane</string>
     <string name="edit_todo_list">Edytuj listę zadań</string>
+    <string name="uncheck_todo_list">Przywrócić wszystkie zadania</string>
     <string name="delete_list">Usuń listę zadań</string>
     <string name="delete_list_feedback">%1$s usunięte</string>
 

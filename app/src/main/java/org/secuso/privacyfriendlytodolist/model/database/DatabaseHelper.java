@@ -40,7 +40,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         deleteAll(this.getWritableDatabase());
     }
 
-
     public void createAll(SQLiteDatabase db) {
         db.execSQL(TTodoList.TABLE_CREATE);
         db.execSQL(TTodoTask.TABLE_CREATE);
@@ -50,7 +49,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void createAll() {
         createAll(this.getWritableDatabase());
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {

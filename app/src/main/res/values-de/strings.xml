@@ -76,6 +76,7 @@
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
     <string name="delete_list">To-Do Liste löschen</string>
+    <string name="uncheck_todo_list">Alle Tasks zurücksetzen</string>
     <string name="delete_list_feedback">%1$s gelöscht</string>
 
     <!-- Create/Edit To-Do list dialog -->

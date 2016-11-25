@@ -15,7 +15,7 @@ public class TodoList extends BaseTodo implements Parcelable{
 
     private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
 
-    public TodoList(Parcel parcel) {
+    private TodoList(Parcel parcel) {
 
         id = parcel.readInt();
         name = parcel.readString();
@@ -37,6 +37,17 @@ public class TodoList extends BaseTodo implements Parcelable{
 
     public int getSize() {
         return tasks.size();
+    }
+
+    public void allUndone() {
+        for (TodoTask task: tasks) {
+            task.setDone(false);
+            task.setProgress(0);
+
+            ArrayList<TodoSubTask> subtasks = task.getSubTasks();
+            for (TodoSubTask subTask: subtasks) {
+                subTask.setDone(false);}
+        }
     }
 
     public void setTasks(ArrayList<TodoTask> tasks) {

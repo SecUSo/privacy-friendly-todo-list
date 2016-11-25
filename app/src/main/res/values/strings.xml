@@ -44,7 +44,7 @@
 
     <!-- Help -->
     <string name="help_overview_heading">Overview</string>
-    <string name="help_intro">The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
+    <string name="help_intro">The Privacy Friendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
     <string name="help_group_lists">List management</string>
     <string name="help_todo_lists_title">To-Do lists</string>
     <string name="help_todo_lists">A To-Do list is a group of tasks and can be created using the + Button in the main menu. Tasks inside a To-Do can be checked and unchecked to track the progress of the whole list.</string>
@@ -78,6 +78,7 @@
     <string name="no_next_deadline">No upcoming deadline</string>
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
+    <string name="uncheck_todo_list">Reset all tasks</string>
     <string name="delete_list">Delete To-Do list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
 

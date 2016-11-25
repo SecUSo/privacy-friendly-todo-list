@@ -20,6 +20,7 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 
@@ -40,7 +41,7 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        containerActivity = (MainActivity)getActivity();
+        containerActivity = (MainActivity) getActivity();
         todoLists = containerActivity.getTodoLists(false);
         View v = inflater.inflate(R.layout.fragment_todo_lists, container, false);
 
@@ -75,21 +76,21 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
-            addListDialog.setDialogResult(new TodoCallback() {
+                ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
+                addListDialog.setDialogResult(new TodoCallback() {
 
-                @Override
-                public void finish(BaseTodo newList) {
-                if(newList instanceof TodoList) {
-                    Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
-                    todoLists.add((TodoList) newList);
-                    adapter.updateList(todoLists); // run filter again
-                    adapter.notifyDataSetChanged();
-                    Log.i(TAG, "list added");
-                }
-                }
-            });
-            addListDialog.show();
+                    @Override
+                    public void finish(BaseTodo newList) {
+                        if (newList instanceof TodoList) {
+                            Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
+                            todoLists.add((TodoList) newList);
+                            adapter.updateList(todoLists); // run filter again
+                            adapter.notifyDataSetChanged();
+                            Log.i(TAG, "list added");
+                        }
+                    }
+                });
+                addListDialog.show();
             }
         });
     }
@@ -107,7 +108,7 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.i(TAG, "onCreateOptionsMenu");
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search, menu);
 
         MenuItem searchItem = menu.findItem(R.id.ac_search);
@@ -134,16 +135,15 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
 
         final TodoList todoList = adapter.getToDoListFromPosition(adapter.getPosition());
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.change_list:
                 ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity(), todoList);
                 addListDialog.setDialogResult(new TodoCallback() {
-
                     @Override
                     public void finish(BaseTodo alterdList) {
-                    if(alterdList instanceof TodoList) {
-                        adapter.notifyDataSetChanged();
-                    }
+                        if (alterdList instanceof TodoList) {
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 });
                 addListDialog.show();
@@ -156,9 +156,8 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.show_description_list:
-
                 String listDescription = todoList.getDescription();
-                if(listDescription == null || "".equals(listDescription)) {
+                if (listDescription == null || "".equals(listDescription)) {
                     Toast.makeText(getContext(), getString(R.string.no_description_available), Toast.LENGTH_SHORT).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -169,7 +168,24 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                     });
                     builder.show();
                 }
+                break;
+            case R.id.undone_list:
+                todoList.allUndone();
+                ArrayList<TodoTask> tasks = todoList.getTasks() ;
 
+                for (TodoTask task: tasks) {
+                    DBQueryHandler.updateTodoTask(containerActivity.getDbHelper().getWritableDatabase(), task);
+                }
+
+                new TodoCallback() {
+                    @Override
+                    public void finish(BaseTodo alterdList) {
+                        if (alterdList instanceof TodoList) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                };
+                adapter.updateList(todoLists);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");
