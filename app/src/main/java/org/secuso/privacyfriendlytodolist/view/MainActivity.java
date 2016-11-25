@@ -75,16 +75,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final long UnlockPeriod = 30000; // keep the app unlocked for 30 seconds after switching to another activity (settings/help/about)
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
             unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL);
-        }
-        else {
+        } else {
             isUnlocked = false;
             unlockUntil = -1;
         }
@@ -169,14 +167,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
 
 
-            if(currentFragment == null) {
+            if (currentFragment == null) {
                 currentFragment = new TodoListsFragment();
                 Log.i(TAG, "Activity was not retained.");
 
             } else {
 
                 // restore state before configuration change
-                if(savedInstanceState != null) {
+                if (savedInstanceState != null) {
                     todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
                     clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
                     dummyList = (TodoList) savedInstanceState.get(KEY_DUMMY_LIST);
@@ -209,14 +207,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setFragment(Fragment fragment) {
 
-        if(fragment == null)
+        if (fragment == null)
             return;
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // If a fragment is currently displayed, replace it by the new one.
         List<Fragment> addedFragments = fragmentManager.getFragments();
-        if(addedFragments != null && addedFragments.size() > 0 ) {
+        if (addedFragments != null && addedFragments.size() > 0) {
             transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
         } else { // no fragment is currently displayed
             transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
@@ -246,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void uncheckNavigationEntries() {
         // uncheck all navigtion entries
-        if(navigationView != null) {
+        if (navigationView != null) {
             int size = navigationView.getMenu().size();
             for (int i = 0; i < size; i++) {
                 navigationView.getMenu().getItem(i).setChecked(false);
@@ -314,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        if(this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+        if (this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             // restart activity to show pin dialog again
             Intent intent = new Intent(this, MainActivity.class);
             finish();
@@ -368,18 +366,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (getFragmentManager().getBackStackEntryCount() == 1) {
+                finish();
+            }
+
+            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                getFragmentManager().popBackStack();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
-    public ArrayList<TodoList> getTodoLists(boolean reload) {
-        if (reload) {
-            if (dbHelper != null)
-                todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        }
+        public ArrayList<TodoList> getTodoLists ( boolean reload){
+            if (reload) {
+                if (dbHelper != null)
+                    todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+            }
 
-        return todoLists;
-    }
+            return todoLists;
+        }
 
 
     public DatabaseHelper getDbHelper() {
@@ -392,13 +398,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ServiceConnection reminderServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
-            Log.d("ServiceConnection","connected");
+            Log.d("ServiceConnection", "connected");
             reminderService = ((ReminderService.ReminderServiceBinder) binder).getService();
         }
         //binder comes from server to communicate with method's of
 
         public void onServiceDisconnected(ComponentName className) {
-            Log.d("ServiceConnection","disconnected");
+            Log.d("ServiceConnection", "disconnected");
             reminderService = null;
         }
     };
@@ -419,10 +425,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // TODO This method is called from other fragments as well (e.g. after opening MainActivity by reminder). In such cases the service is null and alarms cannot be updated. Fix this!
 
-        if(reminderService != null) {
+        if (reminderService != null) {
 
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
-            if((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
+            if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
                 reminderService.processTask(currentTask);
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
@@ -440,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String errorMessage = "";
 
         // call appropriate method depending on type
-        if(todo instanceof TodoList) {
+        if (todo instanceof TodoList) {
             databaseID = DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), (TodoList) todo);
             errorMessage = getString(R.string.list_to_db_error);
         } else if (todo instanceof TodoTask) {
@@ -454,11 +460,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // set unique database id (primary key) to the current object
-        if(databaseID == -1) {
+        if (databaseID == -1) {
             Log.e(TAG, errorMessage);
             return false;
-        }
-        else if(databaseID != DBQueryHandler.NO_CHANGES){
+        } else if (databaseID != DBQueryHandler.NO_CHANGES) {
             todo.setId(databaseID);
             return true;
         }
@@ -467,11 +472,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public TodoList getListByID(int id) {
-        for(TodoList currentList : todoLists) {
-            if(currentList.getId() == id)
+        for (TodoList currentList : todoLists) {
+            if (currentList.getId() == id)
                 return currentList;
         }
 
         return null;
     }
+
+
 }

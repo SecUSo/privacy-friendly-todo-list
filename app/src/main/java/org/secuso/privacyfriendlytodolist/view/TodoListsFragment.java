@@ -22,6 +22,7 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
@@ -154,13 +155,34 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 addListDialog.show();
                 break;
             case R.id.delete_list:
-                Toast.makeText(getContext(), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Toast.LENGTH_SHORT).show();
+                final TodoList toDeleteTodoListFinal = todoList;
+                //Toast.makeText(getContext(), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Toast.LENGTH_SHORT).show();
                 DBQueryHandler.deleteTodoList(containerActivity.getDbHelper().getWritableDatabase(), todoList);
                 todoLists.remove(todoList);
                 adapter.updateList(todoLists);
                 adapter.notifyDataSetChanged();
 
+                Snackbar.make(activity.findViewById(android.R.id.content), getContext().getString(R.string.delete_list_feedback, todoList.getName()), Snackbar.LENGTH_LONG)
+                        .setAction(getString(R.string.undo), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                DBQueryHandler.saveTodoListInDb(containerActivity.getDbHelper().getWritableDatabase(), toDeleteTodoListFinal);
+                                ArrayList<TodoTask> todotasks = toDeleteTodoListFinal.getTasks();
 
+                                for (TodoTask task: todotasks) {
+                                    DBQueryHandler.saveTodoTaskInDb(containerActivity.getDbHelper().getWritableDatabase(), task);
+                                    ArrayList<TodoSubTask> subtasks = task.getSubTasks();
+
+                                    for (TodoSubTask subtask: subtasks) {
+                                        DBQueryHandler.saveTodoSubTaskInDb(containerActivity.getDbHelper().getWritableDatabase(), subtask);
+                                    }
+                                }
+
+                                todoLists.add(toDeleteTodoListFinal);
+                                adapter.updateList(todoLists);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }).show();
 
                 break;
             case R.id.show_description_list:

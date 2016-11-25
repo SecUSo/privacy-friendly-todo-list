@@ -82,6 +82,7 @@
     <string name="toast_uncheck_todo_list">All tasks reseted</string>
     <string name="delete_list">Delete To-Do list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
+    <string name="undo">Undo</string>
 
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">New To-Do list</string>
