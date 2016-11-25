@@ -1,8 +1,10 @@
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -35,6 +37,8 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
     private TodoListAdapter adapter;
     private MainActivity containerActivity;
     private ArrayList<TodoList> todoLists;
+
+    Activity activity;
 
 
     @Override
@@ -134,6 +138,7 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
     public boolean onContextItemSelected(MenuItem item) {
 
         final TodoList todoList = adapter.getToDoListFromPosition(adapter.getPosition());
+        int position = adapter.getPosition();
 
         switch (item.getItemId()) {
             case R.id.change_list:
@@ -154,6 +159,9 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 todoLists.remove(todoList);
                 adapter.updateList(todoLists);
                 adapter.notifyDataSetChanged();
+
+
+
                 break;
             case R.id.show_description_list:
                 String listDescription = todoList.getDescription();
@@ -170,10 +178,13 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                 }
                 break;
             case R.id.undone_list:
+
                 todoList.allUndone();
                 ArrayList<TodoTask> tasks = todoList.getTasks();
 
-                for (TodoTask task: tasks) {
+                //final ArrayList<TodoTask> tasksFinal = todoList.getTasks();
+
+                for (TodoTask task : tasks) {
                     DBQueryHandler.updateTodoTask(containerActivity.getDbHelper().getWritableDatabase(), task);
                 }
 
@@ -181,10 +192,10 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
                     @Override
                     public void finish(BaseTodo alterdList) {
                         if (alterdList instanceof TodoList) {
-                            adapter.notifyDataSetChanged();
                         }
                     }
                 };
+                adapter.notifyDataSetChanged();
                 adapter.updateList(todoLists);
                 Toast.makeText(getContext(), getString(R.string.toast_uncheck_todo_list), Toast.LENGTH_SHORT).show();
                 break;
@@ -206,5 +217,11 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
 
         if (containerActivity.getSupportActionBar() != null)
             containerActivity.getSupportActionBar().setTitle(R.string.toolbar_title_main);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = activity;
     }
 }
