@@ -1,180 +1,180 @@
 ﻿<resources>
     <!-- Application Specific -->
-	<string name="app_name">Liste de tâches</string>
+    <string name="app_name">Liste de tâches</string>
     <string name="app_name_long">Privacy Friendly Liste de tâches</string>
 
     <!-- Menu -->
-    <string name="nav_header_app_name">A faire</string>
-    <string name="toolbar_title_main">A faire</string>
+    <string name="nav_header_app_name">À faire</string>
+    <string name="toolbar_title_main">À faire</string>
     <string name="todos">Tâches</string>
-    <string name="home">Site de départ</string>
-    <string name="calendar_view">Voir le calandier</string>
+    <string name="home">Accueil</string>
+    <string name="calendar_view">Calendrier</string>
     <string name="show_all_tasks">Toutes les tâches</string>
-    <string name="settings">Réglages</string>
+    <string name="settings">Paramètres</string>
     <string name="other">Autres</string>
-	<string name="help">Aide</string>
-	<string name="menu_about">Auteurs</string>
-    <string name="search">Chercher</string>
+    <string name="help">Aide</string>
+    <string name="menu_about">À propos</string>
+    <string name="search">Rechercher</string>
 
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Ouvrir le menu</string>
     <string name="navigation_drawer_close">Fermer le menu</string>
     <string name="name">Nom</string>
     <string name="todo_list_description_hint">Description</string>
-    <string name="ok">Okay</string>
+    <string name="ok">OK</string>
 
     <!-- Common model strings -->
     <string name="select_option">Choisir une option</string>
-    <string name="high_priority">Très important</string>
-    <string name="medium_priority">Important</string>
-    <string name="low_priority">Peu important</string>
-    <string name="unknown_priority">Importance inconnue</string>
+    <string name="high_priority">Haute</string>
+    <string name="medium_priority">Normale</string>
+    <string name="low_priority">Basse</string>
+    <string name="unknown_priority">Inconnue</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
 
     <!-- Welcome Dialog -->
     <string name="welcome_title">Bievenue</string>
     <string name="welcome_viewhelp">Aide</string>
-    <string name="welcome_text">Bienvenue chez la Liste de tâches de Privacy Friendly. Cette application ne demande aucune permission. Vous pouvez:</string>
-    <string name="welcome_hint_lists">Gérer des tâches dans les listes de tâches</string>
-    <string name="welcome_hint_deadlines">Créer des dates limites et les alarmes</string>
-    <string name="welcome_hint_subtasks">Créer des sous-tâches en élargissant les tâches</string>
-    <string name="welcome_hint_pin">Introduire un mot de passe</string>
+    <string name="welcome_text">Bienvenue dans la Liste de tâches de Privacy Friendly. Cette application ne demande aucune permission. Vous pouvez :</string>
+    <string name="welcome_hint_lists">Créer des listes de tâches.</string>
+    <string name="welcome_hint_deadlines">Configurer des dates limites et des notifications.</string>
+    <string name="welcome_hint_subtasks">Diviser les tâches en sous-tâches plus précises.</string>
+    <string name="welcome_hint_pin">Protéger l\'application par un code PIN.</string>
     <string name="welcome_button">Commencer</string>
 
     <!-- Help -->
     <string name="help_overview_heading">Vue d\'ensemble</string>
-    <string name="help_intro">L\'application peut être utilisé pour organiser des tâches et pour obtenir des notifications.</string>
-    <string name="help_group_lists">Administration des listes de tâches</string>
+    <string name="help_intro">L\'application peut être utilisée pour organiser des tâches et pour obtenir des notifications.</string>
+    <string name="help_group_lists">Gestion des listes de tâches</string>
     <string name="help_todo_lists_title">Listes de tâches</string>
-    <string name="help_todo_lists">Une liste de tâches est un groupe de tâches et peut être créée en choissant le bouton dans le menu. Les tâches dedans une liste de tâches peuvent ?tre marquées comme faites.</string>
+    <string name="help_todo_lists">Une liste de tâches est créée en cliquant sur le bouton correspondant du menu. Les tâches dans une liste de tâches peuvent être marquées comme accomplies.</string>
     <string name="help_subtasks_title">Sous-tâches</string>
-    <string name="help_subtasks">Les sous-tâches sont les pas qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
-    <string name="help_deadline_reminder_title">Dates limites et alarmes</string>
-    <string name="help_deadline_reminder">Les dates limites et les alarmes ne peuvent ?tre créées que pour les tâches. Vous pouvez les introduire en créant une tâche ou en en éditant. Cliquez sur la tâche et attendez un moment pour l\'éditer.</string>
+    <string name="help_subtasks">Les sous-tâches sont les étapes qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur une tâche dans une liste de tâches.</string>
+    <string name="help_deadline_reminder_title">Dates limites et notifications</string>
+    <string name="help_deadline_reminder">Les dates limites et les notifications ne peuvent être ajoutées que pour les tâches. Vous pouvez les configurer en créant ou en en éditant une tâche. Cliquez sur une tâche pour l\'éditer.</string>
     <string name="help_group_app">Application</string>
-    <string name="help_pin_title">Mot de passe</string>
-    <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
-    <string name="help_group_privacy">Information sur la vie privée</string>
+    <string name="help_pin_title">Code PIN</string>
+    <string name="help_pin">Un code PIN peut être configuré dans les paramètres. Il est composé de quatre chiffres. Le code PIN devra être saisi à chaque fois que l\'application sera ouverte pour accéder aux informations.</string>
+    <string name="help_group_privacy">Informations sur la vie privée</string>
     <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Cela permet de verifier si l\'utiliseteur souhaite être informé sur les prochaines dates limites juste après avoir mis en marche le périphérique.</string>
+    <string name="help_permissions">Permet de vérifier au démarrage de l\'appareil si l\'utilisateur souhaite être informé des prochaines dates limites.</string>
 
     <!-- About -->
     <string name="about">Auteurs</string>
     <string name="version_number">Version 1.0.1</string>
-    <string name="about_author">Auteurs:</string>
-    <string name="about_author_contributors">et des collaborateurs.</string>
+    <string name="about_author">Auteurs :</string>
+    <string name="about_author_contributors">et des contributeurs.</string>
     <string name="about_affiliation">En collaboration avec</string>
-    <string name="privacy_friendly">Cette application appartient à Privacy Friendly Apps</string>
-    <string name="more_info">Plus d\'informations sur:</string>
+    <string name="privacy_friendly">Cette application fait partie des Privacy Friendly Apps, développées par l\'université technique de Darmstadt. Le code source est sous license Apache. Les images sont sous copyright de l\'université technique de Darmstadt et de Google Inc.</string>
+    <string name="more_info">Plus d\'informations sur :</string>
 
     <!-- To-Do list overview -->
-	<string name="done">Fait</string>
-	<string name="no_todo_lists_available">Aucune liste de tâches disponible</string>
-	<string name="next_deadline_dd">La prochaine date limite: %1$s</string>
+    <string name="done">Fait</string>
+    <string name="no_todo_lists_available">Pas de liste de tâches</string>
+    <string name="next_deadline_dd">Prochaine date limite : %1$s</string>
     <string name="no_next_deadline">Aucune date limite à venir</string>
     <string name="add_list_feedback">%1$s ajouté</string>
-    <string name="edit_todo_list">Editer la liste de tâches</string>
+    <string name="edit_todo_list">Éditer la liste</string>
     <string name="uncheck_todo_list">Réinitialiser toutes les tâches</string>
-    <string name="toast_uncheck_todo_list">Réinitialisé toutes les tâches</string>
-    <string name="delete_list">Supprimer une liste de tâches</string>
+    <string name="toast_uncheck_todo_list">Toutes les tâches ont été réinitialisées</string>
+    <string name="delete_list">Supprimer la liste</string>
     <string name="delete_list_feedback">%1$s supprimé</string>
 
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Nouvelle liste de tâches</string>
-    <string name="list_name_must_not_be_empty">Il faut introduire le nom de la liste de tâches.</string>
-    <string name="show_description">Montrer la description</string>
-    <string name="no_description_available">Aucune description disponible</string>
+    <string name="list_name_must_not_be_empty">La liste doit être nommée.</string>
+    <string name="show_description">Afficher la description</string>
+    <string name="no_description_available">Pas de description disponible</string>
 
     <!-- To-Do tasks overview -->
-    <string name="empty_todo_list">Aucune tâche disponible.</string>
+    <string name="empty_todo_list">Pas de tâche disponible.</string>
     <string name="all_tasks">Toutes les tâches</string>
-    <string name="open_tasks">Tâches non accomplies</string>
+    <string name="open_tasks">Tâches en cours</string>
     <string name="completed_tasks">Tâches accomplies</string>
-    <string name="group_by_priority">Classer par le niveau d\'importance</string>
-    <string name="sort_by_deadline">Classer par la date limite</string>
+    <string name="group_by_priority">Classer par priorité</string>
+    <string name="sort_by_deadline">Classer par date limite</string>
     <string name="add_subtask">Créer une sous-tâche</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nouvelle tâche</string>
-    <string name="deadline_dd">Date limite:</string>
-    <string name="no_deadline">Aucune date limite</string>
-    <string name="edit_task">Editer la tâche</string>
+    <string name="deadline_dd">Date limite :</string>
+    <string name="no_deadline">Pas de date limite</string>
+    <string name="edit_task">Éditer la tâche</string>
     <string name="delete_task">Supprimer la tâche</string>
     <string name="task_removed">La tâche a été supprimée.</string>
     <string name="deadline">Date limite</string>
-    <string name="reminder">Alarme</string>
-    <string name="deadline_smaller_reminder">La date limite ne peut pas précéder l\'alarme.</string>
-    <string name="set_deadline_before_reminder">Il faut mettre l\'alarme d\'abord.</string>
-    <string name="progress_colon">Progrès:</string>
-    <string name="priority_colon">Importance:</string>
-    <string name="zero_percent">0%</string>
-    <string name="select_priority">Importance</string>
+    <string name="reminder">Notification</string>
+    <string name="deadline_smaller_reminder">Une notification ne peut avoir lieu après la date limite.</string>
+    <string name="set_deadline_before_reminder">Une date limite doit être ajoutée avant de configurer une notification.</string>
+    <string name="progress_colon">Progrès :</string>
+    <string name="priority_colon">Priorité :</string>
+    <string name="zero_percent">0 %</string>
+    <string name="select_priority">sélectionner</string>
     <string name="new_todo_subtask">Nouvelle sous-tâche</string>
-    <string name="todo_name_must_not_be_empty">Le nom ne peut pas être vide.</string>
-    <string name="edit_subtask">Editer la sous-tâche</string>
+    <string name="todo_name_must_not_be_empty">La sous-tâche doit être nommée.</string>
+    <string name="edit_subtask">Éditer la sous-tâche</string>
     <string name="delete_subtask">Supprimer la sous-tâche</string>
     <string name="subtask_removed">La sous-tâche a été supprimée.</string>
 
     <!-- Select reminder dialog -->
-	<string name="date">Date</string>
-	<string name="time">Heure</string>
-	<string name="no_reminder">Aucune alarme</string>
+    <string name="date">Date</string>
+    <string name="time">Heure</string>
+    <string name="no_reminder">Pas de notification</string>
 
     <!-- Calendar view -->
     <string name="calendar">Calendrier</string>
-    <string name="no_deadline_today">Aucune alarme aujourd\'hui.</string>
+    <string name="no_deadline_today">Pas de notification pour aujourd\'hui.</string>
 
     <!-- PIN -->
-	<string name="enter_pin">Introduire le mot de passe</string>
-	<string name="wrong_pin">Mot de passe incorrect</string>
-    <string name="reset_application_button">Restarter l\'application</string>
-    <string name="invalid_pin">Entrez votre mot de pass à 4 chiffres.</string>
-    <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
-    <string name="add_pin">Mettez votre mot de passe pour pouvoir ouvrir l\'application. Le mot de passe doit contenir au moins 4 chiffres.</string>
+    <string name="enter_pin">Entrer le code PIN</string>
+    <string name="wrong_pin">Code PIN incorrect</string>
+    <string name="reset_application_button">Réinitialiser l\'application</string>
+    <string name="invalid_pin">Entrer le code PIN.</string>
+    <string name="reset_application_msg">Êtes-vous sûr de vouloir réinitialiser l\'application? Le code PIN et toutes les listes de tâches seront supprimés.</string>
+    <string name="add_pin">Entrer le code PIN pour ouvrir l\'application. Il doit être composé quatre chiffres au moins.</string>
 
     <!-- Settings -->
-	<string name="default_reminder_time">Alarme standard</string>
+    <string name="default_reminder_time">Notification par défaut</STRING>
     <string-array name="default_reminder_times_human">
-        <item>Avec la date limite</item>
-        <item>0.5 jour avant</item>
+        <item>Le jour de la date limite</item>
+        <item>0,5 jour avant</item>
         <item>1 jour avant</item>
-        <item>1.5 jour avant</item>
+        <item>1,5 jour avant</item>
         <item>2 jours avant</item>
-        <item>2.5 jours avant</item>
+        <item>2,5 jours avant</item>
         <item>3 jours avant</item>
     </string-array>
-    <string name="pin_enabled">Demander le mot de passe à l\'entrée</string>
-    <string name="set_pin">Régler le mot de passe</string>
+    <string name="pin_enabled">Demander un code PIN à l\'ouverture de l\'application</string>
+    <string name="set_pin">Configurer le code PIN</string>
 
     <!-- Reminder service -->
-    <string name="deadline_approaching">Date limite prochaine: %1$s</string>
+    <string name="deadline_approaching">Prochaine date limite : %1$s</string>
 
     <!-- Date and Time -->
-	<string name="sunday_abbr">DI</string>
-	<string name="monday_abbr">LU</string>
-	<string name="tuesday_abbr">MA</string>
-	<string name="wednesday_abbr">ME</string>
-	<string name="thursday_abbr">JE</string>
-	<string name="friday_abbr">VE</string>
-	<string name="saturday_abbr">SA</string>
-	<string name="january">Janvier</string>
-	<string name="february">Février</string>
-	<string name="march">Mars</string>
-	<string name="april">April</string>
-	<string name="may">Mai</string>
-	<string name="june">Juin</string>
-	<string name="july">Juillet</string>
-	<string name="august">Août</string>
-	<string name="september">Septembre</string>
-	<string name="october">Octobre</string>
-	<string name="november">Novembre</string>
-	<string name="december">Décembre</string>
+    <string name="sunday_abbr">dim</string>
+    <string name="monday_abbr">lun</string>
+    <string name="tuesday_abbr">mar</string>
+    <string name="wednesday_abbr">mer</string>
+    <string name="thursday_abbr">jeu</string>
+    <string name="friday_abbr">ven</string>
+    <string name="saturday_abbr">sam</string>
+    <string name="january">janvier</string>
+    <string name="february">février</string>
+    <string name="march">mars</string>
+    <string name="april">avril</string>
+    <string name="may">mai</string>
+    <string name="june">juin</string>
+    <string name="july">juillet</string>
+    <string name="august">août</string>
+    <string name="september">septembre</string>
+    <string name="october">octobre</string>
+    <string name="november">novembre</string>
+    <string name="december">décembre</string>
 
     <!-- Error messages -->
     <string name="error_removing_subtask">La sous-tâche n\'a pas été supprimée.</string>
     <string name="error_removing_task">La tâche a été supprimée.</string>
-    <string name="list_to_db_error">La liste de tâches n\'a pas été enregistée dans la base de données.</string>
-    <string name="task_to_db_error">La tâche n\'a pas été enregistrée dans la base de données.</string>
-    <string name="subtask_to_db_error">La sous-tâche n\'a pas été enregistrée dans la base de données.</string>
+    <string name="list_to_db_error">Erreur lors de la création de la liste de tâches.</string>
+    <string name="task_to_db_error">Erreur lors de l\'insertion de la nouvelle tâche dans la base de données.</string>
+    <string name="subtask_to_db_error">Erreur lors de l\'insertion de la nouvelle sous-tâche dans la base de données.</string>
 </resources>
