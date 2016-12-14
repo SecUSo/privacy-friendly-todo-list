@@ -1,0 +1,178 @@
+<resources>
+    <!-- Application Specific -->
+	<string name="app_name">To-Do List</string>
+    <string name="app_name_long">Privacy Friendly To-Do List</string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">To-Do</string>
+    <string name="toolbar_title_main">To-Do</string>
+    <string name="todos">To-Do</string>
+    <string name="home">ホーム</string>
+    <string name="calendar_view">カレンダー表示</string>
+    <string name="show_all_tasks">すべてのタスクを表示</string>
+    <string name="settings">設定</string>
+    <string name="other">その他</string>
+	<string name="help">ヘルプ</string>
+	<string name="menu_about">アプリについて</string>
+    <string name="search">検索</string>
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">メニューを開く</string>
+    <string name="navigation_drawer_close">メニューを閉じる</string>
+    <string name="name">名前</string>
+    <string name="todo_list_description_hint">説明</string>
+    <string name="ok">OK</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">オプションの選択</string>
+    <string name="high_priority">高</string>
+    <string name="medium_priority">中</string>
+    <string name="low_priority">低</string>
+    <string name="unknown_priority">優先度不明</string>
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+
+    <!-- Welcome Dialog -->
+    <string name="welcome_title">ようこそ</string>
+    <string name="welcome_viewhelp">ヘルプを表示</string>
+    <string name="welcome_text">プライバシーに配慮した To-Do リストへようこそ。 このアプリケーションはアクセス権を必要としません。 できることは:</string>
+    <string name="welcome_hint_lists">ラベル付き To-Do リストでタスクの管理。</string>
+    <string name="welcome_hint_deadlines">タスクの期限とリマインダーを作成します。</string>
+    <string name="welcome_hint_subtasks">タスクを展開してサブタスクを作成します。</string>
+    <string name="welcome_hint_pin">設定で PIN 保護を追加します。</string>
+    <string name="welcome_button">開始</string>
+
+    <!-- Help -->
+    <string name="help_overview_heading">概要</string>
+    <string name="help_intro">プライバシーに配慮した To-Do リストは、優先するタスクを念頭に置いて個人スケジュールを整理するために使用できます。</string>
+    <string name="help_group_lists">リストの管理</string>
+    <string name="help_todo_lists_title">To-Do リスト</string>
+    <string name="help_todo_lists">To-Do リストはタスクのグループです。メインメニューの + ボタンを使用して作成できます。 To-Do 内のタスクは、チェックを付けたり、チェックを外したりして、リスト全体の進行状況を追跡することができます。</string>
+    <string name="help_subtasks_title">サブタスク</string>
+    <string name="help_subtasks">サブタスクをタスクに添付して、タスクを達成するためのより小さいステップを表すことができます。 1 つのリストを表示しているときにタスクをタップして作成することができます。</string>
+    <string name="help_deadline_reminder_title">期限とリマインダー</string>
+    <string name="help_deadline_reminder">期限とリマインダーは、タスクにのみ作成できます。 タスクの作成中または編集中のどちらかに指定することができます。 編集するには、しばらくの間タスクを長押ししてください。</string>
+    <string name="help_group_app">アプリケーション</string>
+    <string name="help_pin_title">PIN 保護</string>
+    <string name="help_pin">設定メニューを開いてアプリケーションの PIN 保護を設定します。 PIN は 4 桁の数字でなければなりません。 アプリケーションを起動するたびに入力を求められます。</string>
+    <string name="help_group_privacy">プライバシー情報</string>
+    <string name="help_permissions_title">アクセス許可 RECEIVE_BOOT_COMPLETED</string>
+    <string name="help_permissions">このアクセス許可は、ユーザーに予定されている期限を知らせたい場合に、デバイスの起動直後にアプリがチェックできるようにします。</string>
+
+    <!-- About -->
+    <string name="about">アプリについて</string>
+    <string name="version_number">バージョン 1.0.1</string>
+    <string name="about_author">作者:</string>
+    <string name="about_author_contributors">と貢献者。</string>
+    <string name="about_affiliation">提携</string>
+    <string name="privacy_friendly">このアプリケーションは、ダルムシュタット工科大学 (Technische Universität Darmstadt, Germany) が開発したプライバシーフレンドリーアプリのグループに属しています。ソースコードは GPLv3 の下でライセンスされます。画像の著作権は TU Darmstadt および Google Inc.</string>
+    <string name="more_info">さらに詳しい情報は以下でご覧ください:</string>
+
+    <!-- To-Do list overview -->
+	<string name="done">完了</string>
+	<string name="no_todo_lists_available">To-Do リストはありません。</string>
+	<string name="next_deadline_dd">次の期限: %1$s</string>
+    <string name="no_next_deadline">予定の期限はありません</string>
+    <string name="add_list_feedback">%1$s を追加しました</string>
+    <string name="edit_todo_list">To-Do リストを編集</string>
+    <string name="delete_list">To-Do リストを削除</string>
+    <string name="delete_list_feedback">%1$s を削除しました</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">新しい To-Do リスト</string>
+    <string name="list_name_must_not_be_empty">リスト名を入力してください。</string>
+    <string name="show_description">説明を表示</string>
+    <string name="no_description_available">説明はありません。</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">タスクはありません。</string>
+    <string name="all_tasks">すべてのタスク</string>
+    <string name="open_tasks">タスクを開く</string>
+    <string name="completed_tasks">完了したタスク</string>
+    <string name="group_by_priority">優先度別グループ</string>
+    <string name="sort_by_deadline">期限で並べ替え</string>
+    <string name="add_subtask">サブタスクを追加</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">新しい To-Do タスク</string>
+    <string name="deadline_dd">期限:</string>
+    <string name="no_deadline">期限なし</string>
+    <string name="edit_task">To-Do タスクを編集</string>
+    <string name="delete_task">To-Do タスクを削除</string>
+    <string name="task_removed">タスクを削除しました。</string>
+    <string name="deadline">期限</string>
+    <string name="reminder">リマインダー</string>
+    <string name="deadline_smaller_reminder">期限をリマインダーの時間より早くすることはできません。</string>
+    <string name="set_deadline_before_reminder">リマインダーの時間を設定する前に期限を指定してください。</string>
+    <string name="progress_colon">進捗:</string>
+    <string name="priority_colon">優先度:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">優先度を選択してください!</string>
+    <string name="new_todo_subtask">新しいサブタスク</string>
+    <string name="todo_name_must_not_be_empty">タスク名を入力してください。</string>
+    <string name="edit_subtask">サブタスクを編集</string>
+    <string name="delete_subtask">サブタスクを削除</string>
+    <string name="subtask_removed">サブタスクを削除しました。</string>
+
+    <!-- Select reminder dialog -->
+	<string name="date">日付</string>
+	<string name="time">時間</string>
+	<string name="no_reminder">リマインダーなし</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">カレンダー</string>
+    <string name="no_deadline_today">今日の期限はありません。</string>
+
+    <!-- PIN -->
+	<string name="enter_pin">PIN を入力</string>
+	<string name="wrong_pin">PIN が間違っています</string>
+    <string name="reset_application_button">アプリケーションをリセット</string>
+    <string name="invalid_pin">4 桁の数字で PIN を入力してください。</string>
+    <string name="reset_application_msg">アプリケーションをリセットしてもよろしいですか? これは PIN 保護を削除して、すべての To-Do リストを削除します。</string>
+    <string name="add_pin">数字の PIN を追加して、アプリに入るアクセス制御を提供します。 PIN は少なくとも 4 桁の数字を入力する必要があります。</string>
+
+    <!-- Settings -->
+	<string name="default_reminder_time">デフォルトのリマインダー時間</string>
+    <string-array name="default_reminder_times_human">
+        <item>期限</item>
+        <item>0.5 日前</item>
+        <item>1 日前</item>
+        <item>1.5 日前</item>
+        <item>2 日前</item>
+        <item>2.5 日前</item>
+        <item>3 日前</item>
+    </string-array>
+    <string name="pin_enabled">起動時に PIN が必要</string>
+    <string name="set_pin">PIN を設定</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">期限が近づいています: %1$s</string>
+
+    <!-- Date and Time -->
+	<string name="sunday_abbr">日</string>
+	<string name="monday_abbr">月</string>
+	<string name="tuesday_abbr">火</string>
+	<string name="wednesday_abbr">水</string>
+	<string name="thursday_abbr">木</string>
+	<string name="friday_abbr">金</string>
+	<string name="saturday_abbr">土</string>
+	<string name="january">1 月</string>
+	<string name="february">2 月</string>
+	<string name="march">3 月</string>
+	<string name="april">4 月</string>
+	<string name="may">5 月</string>
+	<string name="june">6 月</string>
+	<string name="july">7 月</string>
+	<string name="august">8 月</string>
+	<string name="september">9 月</string>
+	<string name="october">10 月</string>
+	<string name="november">11 月</string>
+	<string name="december">12 月</string>
+
+    <!-- Error messages -->
+    <string name="error_removing_subtask">サブタスクをデータベースから削除できませんでした。</string>
+    <string name="error_removing_task">To-Do タスクをデータベースから削除できませんでした。</string>
+    <string name="list_to_db_error">新しい To-Do リストの作成中にエラーが発生しました。</string>
+    <string name="task_to_db_error">データベースに新しいタスクを挿入中にエラーが発生しました。</string>
+    <string name="subtask_to_db_error">データベースに新しいサブタスクを挿入中にエラーが発生しました。</string>
+</resources>
