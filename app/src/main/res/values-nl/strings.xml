@@ -1,0 +1,178 @@
+<resources>
+    <!-- Application Specific -->
+	<string name="app_name">To-Do List</string>
+    <string name="app_name_long">Privacy Friendly To-Do List</string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">Te doen</string>
+    <string name="toolbar_title_main">Te doen</string>
+    <string name="todos">Taken</string>
+    <string name="home">Thuis</string>
+    <string name="calendar_view">Kalender</string>
+    <string name="show_all_tasks">Toon alle taken</string>
+    <string name="settings">Instelling</string>
+    <string name="other">Ander</string>
+	<string name="help">Help</string>
+	<string name="menu_about">Over</string>
+    <string name="search">Zoeken</string>
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="navigation_drawer_close">Sluit menu</string>
+    <string name="name">Naam</string>
+    <string name="todo_list_description_hint">Beschrijving</string>
+    <string name="ok">Okay</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">Selecteer optie</string>
+    <string name="high_priority">Hoog</string>
+    <string name="medium_priority">Medium</string>
+    <string name="low_priority">Laag</string>
+    <string name="unknown_priority">Onbekende Prioriteit</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nee</string>
+
+    <!-- Welcome Dialog -->
+    <string name="welcome_title">Welkom</string>
+    <string name="welcome_viewhelp">Bekijk Help</string>
+    <string name="welcome_text">Welkom bij de privacyvriendelijke takenlijst. Deze applicatie vereist geen enkele toestemmingen. Je kan:</string>
+    <string name="welcome_hint_lists">Taken beheren in gelabelde To-Do lijsten.</string>
+    <string name="welcome_hint_deadlines">Deadlines en herinneringen plaatsen</string>
+    <string name="welcome_hint_subtasks">Ondertaken maken door de taak uit te breiden</string>
+    <string name="welcome_hint_pin">PIN-bescherming toevoegen aan de instellingen</string>
+    <string name="welcome_button">Begin</string>
+
+    <!-- Help -->
+    <string name="help_overview_heading">Overzicht</string>
+    <string name="help_intro">Deze app kan gebruikt worden om taken te organiseren en om herinneringen in te stellen.</string>
+    <string name="help_group_lists">Beheer lijsten</string>
+    <string name="help_todo_lists_title">To-Do lijsten</string>
+    <string name="help_todo_lists">Een To-Do lijst is een groep van taken en kan gemaakt worden door de + knop in het hoofdmenu. Taken in een To-Do lijst kunnen aangevinkt worden om vooruitgang aan te duiden.</string>
+    <string name="help_subtasks_title">Ondertaken</string>
+    <string name="help_subtasks">Ondertaken kunnen worden toegevoegd aan een lijst om vooruitgang aan te duiden. Ze kunnen gemaakt worden door op een taak te tikken als je ze als lijst bekijkt.</string>
+    <string name="help_deadline_reminder_title">Deadlines en herinneringen</string>
+    <string name="help_deadline_reminder">Deadlines en herinneringen kunnen alleen voor taken gemaakt worden. Je kan ze instellen als je een taak maakt of als je een taak bewerkt. Houd een taak ingedrukt om hem te bewerken.</string>
+    <string name="help_group_app">Applicatie</string>
+    <string name="help_pin_title">PIN bescherming</string>
+    <string name="help_pin">Open het instellingsmenu om PIN bescherming in te stellen. De PIN moet een nummer zijn met 4 cijfers. Je zal ernaar gevraagd worden elke keer je de applicatie opent.</string>
+    <string name="help_group_privacy">Privacy Info</string>
+    <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
+    <string name="help_permissions">Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
+
+    <!-- About -->
+    <string name="about">Over</string>
+    <string name="version_number">Versie 1.0.1</string>
+    <string name="about_author">Auteurs:</string>
+    <string name="about_author_contributors">en medewerkers.</string>
+    <string name="about_affiliation">In samenwerking met</string>
+    <string name="privacy_friendly">Deze applicatie behoort tot de Privacy Friendly Apps ontwikkeld door de Technische Universiteit Darmstadt. De broncode is gelicentieerd onder de Apache license. De afbeeldingen staan onder copyright van TU Darmstadt en Google Inc.</string>
+    <string name="more_info">Meer informatie kan gevonden worden op:</string>
+
+    <!-- To-Do list overview -->
+	<string name="done">Gedaan</string>
+	<string name="no_todo_lists_available">Geen To-Do lijst beschikbaar.</string>
+	<string name="next_deadline_dd">Volgende Deadline: %1$s</string>
+    <string name="no_next_deadline">Geen volgende deadline</string>
+    <string name="add_list_feedback">%1$s toegevoegd</string>
+    <string name="edit_todo_list">Bewerk To-Do lijst</string>
+    <string name="delete_list">Verwijder To-Do lijst</string>
+    <string name="delete_list_feedback">%1$s verwijderd</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">Nieuwe To-Do lijst</string>
+    <string name="list_name_must_not_be_empty">Gelieve een lijstnaam in te vullen.</string>
+    <string name="show_description">Toon beschrijving</string>
+    <string name="no_description_available">Geen bescrijving beschikbaar.</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">Geen taken beschikbaar.</string>
+    <string name="all_tasks">Alle taken</string>
+    <string name="open_tasks">Open taken</string>
+    <string name="completed_tasks">Voltooide taken</string>
+    <string name="group_by_priority">Sorteer op prioriteit</string>
+    <string name="sort_by_deadline">Sorteer op deadline</string>
+    <string name="add_subtask">Voeg ondertaak toe</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">Nieuwe taak</string>
+    <string name="deadline_dd">Deadline:</string>
+    <string name="no_deadline">Geen Deadline</string>
+    <string name="edit_task">Bewerk taak</string>
+    <string name="delete_task">Verwijder taak</string>
+    <string name="task_removed">Taak is verwijderd.</string>
+    <string name="deadline">Deadline</string>
+    <string name="reminder">Herinnering</string>
+    <string name="deadline_smaller_reminder">De deadline kan niet voor de herinneringstijd zijn.</string>
+    <string name="set_deadline_before_reminder">Gelieve een deadline in te vullen voor de herinneringstijd.</string>
+    <string name="progress_colon">Vooruitgang:</string>
+    <string name="priority_colon">Prioriteit:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">Gelieve een prioriteit te selecteren!</string>
+    <string name="new_todo_subtask">Nieuwe ondertaak</string>
+    <string name="todo_name_must_not_be_empty">Gelieve een naam te geven aan de taak.</string>
+    <string name="edit_subtask">Bewerk ondertaak</string>
+    <string name="delete_subtask">Verwijder ondertaak</string>
+    <string name="subtask_removed">Ondertaak verwijderd.</string>
+
+    <!-- Select reminder dialog -->
+	<string name="date">Datum</string>
+	<string name="time">Tijd</string>
+	<string name="no_reminder">Geen herinnering</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">Kalender</string>
+    <string name="no_deadline_today">Er zijn vandaag geen deadlines.</string>
+
+    <!-- PIN -->
+	<string name="enter_pin">Geef PIN in</string>
+	<string name="wrong_pin">Foute PIN</string>
+    <string name="reset_application_button">Reset applicatie</string>
+    <string name="invalid_pin">Gelieve een PIN van 4 cijfers in te geven.</string>
+    <string name="reset_application_msg">Ben je zeker dat je deze applicatie wil resetten? Dit zal de PIN-bescherming en alle taken verwijderen</string>
+    <string name="add_pin">Geef een PIN in om toegang tot de app te krijgen. De PIN moet minstens 4 cijfers bevatten.</string>
+
+    <!-- Settings -->
+	<string name="default_reminder_time">Standaard herinneringstijd</string>
+    <string-array name="default_reminder_times_human">
+        <item>Op het moment van de deadline</item>
+        <item>een halve dag op voorhand</item>
+        <item>één dag op voorhand</item>
+        <item>anderhalve dag op voorhand</item>
+        <item>twee dagen op voorhand</item>
+        <item>tweeëneenhalve dagen op voorhand</item>
+        <item>drie dagen op voorhand</item>
+    </string-array>
+    <string name="pin_enabled">PIN vereist bij opstarten</string>
+    <string name="set_pin">PIN instellen</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">Deadline nadert: %1$s</string>
+
+    <!-- Date and Time -->
+	<string name="sunday_abbr">ZO</string>
+	<string name="monday_abbr">MA</string>
+	<string name="tuesday_abbr">DI</string>
+	<string name="wednesday_abbr">WO</string>
+	<string name="thursday_abbr">DO</string>
+	<string name="friday_abbr">VR</string>
+	<string name="saturday_abbr">ZA</string>
+	<string name="january">januari</string>
+	<string name="february">februari</string>
+	<string name="march">maart</string>
+	<string name="april">april</string>
+	<string name="may">mei</string>
+	<string name="june">juni</string>
+	<string name="july">juli</string>
+	<string name="august">augustus</string>
+	<string name="september">september</string>
+	<string name="october">october</string>
+	<string name="november">november</string>
+	<string name="december">december</string>
+
+    <!-- Error messages -->
+    <string name="error_removing_subtask">Ondertaak kon niet verwijderd worden uit de database.</string>
+    <string name="error_removing_task">Kon de taak niet verwijderen uit de database.</string>
+    <string name="list_to_db_error">Fout tijdens het maken van een nieuwe takenlijst.</string>
+    <string name="task_to_db_error">Fout tijdens het invoegen van een taak in de database.</string>
+    <string name="subtask_to_db_error">Fout tijdens het invoegen van een ondertaak in de database.</string>
+</resources>
