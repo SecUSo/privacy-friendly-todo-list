@@ -1,6 +1,7 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -28,9 +29,11 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
+import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
-import org.secuso.privacyfriendlytodolist.view.dialog.WelcomeDialog;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,16 +192,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        boolean firstStart = preferences.getBoolean("firstStart", true);
-        if (firstStart) {
-            preferences.edit().putBoolean("firstStart", false).commit();
-            WelcomeDialog dialog = new WelcomeDialog();
-            dialog.show(getFragmentManager(), "WelcomeDialog");
-        }
+        // Start Tutorial
+        Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //overridePendingTransition(0, 0);
 
         guiSetup();
         setFragment(currentFragment);
         this.isInitialized = true;
+
+
     }
 
 
