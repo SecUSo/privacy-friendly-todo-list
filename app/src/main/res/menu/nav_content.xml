@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <item android:title="@string/todos">
+
         <menu>
 
             <item
@@ -18,9 +20,34 @@
                 android:id="@+id/menu_show_all_tasks"
                 android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="@string/show_all_tasks" />
+
+            //only for testing
+            <item
+                android:id="@+id/menu_show_all_bla"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
+                android:title="@string/show_all_tasks" />
+
+            <item
+                android:id="@+id/menu_show_all_bli"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
+                android:title="@string/show_all_tasks" />
+
+            <item
+                android:id="@+id/menu_show_all_tblu"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
+                android:title="@string/show_all_tasks" />
+
         </menu>
     </item>
 
+    <item android:title="Categories">
+        <menu>
+            <group android:checkableBehavior="single"
+                android:id="@+id/drawer_group2">
+                //Get's filled by categories
+            </group>
+        </menu>
+    </item>
 
     <group android:checkableBehavior="single">
         <item
@@ -37,7 +64,7 @@
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_menu_info_details"
             android:title="@string/about" />
-
     </group>
 
 </menu>
+

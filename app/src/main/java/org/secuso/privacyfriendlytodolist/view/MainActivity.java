@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -13,12 +15,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
@@ -29,6 +35,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoList;
 import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
 import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
@@ -193,9 +200,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Start Tutorial
-        Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        //Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //startActivity(intent);
         //overridePendingTransition(0, 0);
 
         guiSetup();
@@ -240,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         // side menu setup
+        addListToNav();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -325,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             startActivity(intent);
             super.onResume();
+            addListToNav();
             return;
         }
         // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:
@@ -479,4 +488,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return null;
     }
+
+    private void addListToNav(){
+        NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
+        Menu navMenu = nv.getMenu();
+        navMenu.clear();
+        MenuInflater mf = new MenuInflater(getApplicationContext());
+        mf.inflate(R.menu.nav_content, navMenu);
+        ArrayList<TodoList> help = new ArrayList<>();
+        help.addAll(todoLists);
+        for (int i=0; i < help.size(); i++){
+            String name = help.get(i).getName();
+            int id = help.get(i).getId();
+            navMenu.add(R.id.drawer_group2, id, Menu.CATEGORY_CONTAINER, name).setIcon(R.drawable.ic_label_black_24dp);
+        }
+
+
+    }
+
+
+
 }

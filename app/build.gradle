@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '27.0.1'
 
     defaultConfig {
         applicationId "org.secuso.privacyfriendlytodolist"
