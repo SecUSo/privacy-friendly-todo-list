@@ -500,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int i=0; i < help.size(); i++){
             String name = help.get(i).getName();
             int id = help.get(i).getId();
-            navMenu.add(R.id.drawer_group2, id, Menu.CATEGORY_CONTAINER, name).setIcon(R.drawable.ic_label_black_24dp);
+            navMenu.add(R.id.drawer_group2, id, 1, name).setIcon(R.drawable.ic_label_black_24dp);
         }
 
 

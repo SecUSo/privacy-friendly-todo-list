@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:title="@string/todos">
+    <item android:title="@string/todos"
+        android:orderInCategory="0">
 
         <menu>
 
@@ -43,13 +44,15 @@
     <item android:title="Categories">
         <menu>
             <group android:checkableBehavior="single"
-                android:id="@+id/drawer_group2">
+                android:id="@+id/drawer_group2"
+                android:orderInCategory="1">
                 //Get's filled by categories
             </group>
         </menu>
     </item>
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:orderInCategory="3">
         <item
             android:id="@+id/nav_settings"
             android:icon="@android:drawable/ic_menu_manage"
