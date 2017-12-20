@@ -167,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Bundle extras = getIntent().getExtras();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+        setCurrentFragment();
+        //currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
 
         // check if app was started by clicking on a reminding notification
         if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION))) {
@@ -284,21 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.menu_show_all_tasks) {
 
             // create a dummy list containing all tasks
-            ArrayList<TodoTask> allTasks = new ArrayList<>();
-            for (TodoList currentList : todoLists)
-                allTasks.addAll(currentList.getTasks());
-
-            dummyList = new TodoList();
-            dummyList.setDummyList();
-            dummyList.setName(getString(R.string.all_tasks));
-            dummyList.setTasks(allTasks);
-
-            TodoTasksFragment fragment = new TodoTasksFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
-            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
-            fragment.setArguments(bundle);
-            setFragment(fragment);
+            showAllTasks();
 
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
@@ -506,6 +493,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    //helping method to show all tasks
+    private void showAllTasks(){
+        ArrayList<TodoTask> allTasks = new ArrayList<>();
+        for (TodoList currentList : todoLists)
+            allTasks.addAll(currentList.getTasks());
+
+        dummyList = new TodoList();
+        dummyList.setDummyList();
+        dummyList.setName(getString(R.string.all_tasks));
+        dummyList.setTasks(allTasks);
+
+        TodoTasksFragment fragment = new TodoTasksFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
+        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
+        fragment.setArguments(bundle);
+        setFragment(fragment);
+    }
+
+    //This method sets the currenFragment to view all tasks
+    private void setCurrentFragment(){
+        ArrayList<TodoTask> allTasks = new ArrayList<>();
+        for (TodoList currentList : todoLists)
+            allTasks.addAll(currentList.getTasks());
+
+        dummyList = new TodoList();
+        dummyList.setDummyList();
+        dummyList.setName(getString(R.string.all_tasks));
+        dummyList.setTasks(allTasks);
+
+        TodoTasksFragment fragment = new TodoTasksFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
+        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
+        fragment.setArguments(bundle);
+        currentFragment = fragment;
+    }
 
 
 }

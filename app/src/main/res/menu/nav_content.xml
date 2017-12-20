@@ -22,26 +22,11 @@
                 android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="@string/show_all_tasks" />
 
-            //only for testing
-            <item
-                android:id="@+id/menu_show_all_bla"
-                android:icon="@android:drawable/ic_menu_sort_by_size"
-                android:title="@string/show_all_tasks" />
-
-            <item
-                android:id="@+id/menu_show_all_bli"
-                android:icon="@android:drawable/ic_menu_sort_by_size"
-                android:title="@string/show_all_tasks" />
-
-            <item
-                android:id="@+id/menu_show_all_tblu"
-                android:icon="@android:drawable/ic_menu_sort_by_size"
-                android:title="@string/show_all_tasks" />
-
         </menu>
     </item>
 
-    <item android:title="Categories">
+
+    <item android:title="Lists">
         <menu>
             <group android:checkableBehavior="single"
                 android:id="@+id/drawer_group2"
@@ -50,6 +35,7 @@
             </group>
         </menu>
     </item>
+
 
     <group android:checkableBehavior="single"
         android:orderInCategory="3">
