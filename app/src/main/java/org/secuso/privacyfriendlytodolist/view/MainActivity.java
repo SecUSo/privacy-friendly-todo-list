@@ -284,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setFragment(fragment);
         } else if (id == R.id.menu_show_all_tasks) {
 
-            // create a dummy list containing all tasks
             showAllTasks();
 
         } else if (id == R.id.nav_about) {
@@ -298,6 +297,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.menu_home) {
             TodoListsFragment fragment = new TodoListsFragment();
             setFragment(fragment);
+        } else {
+            TodoTasksFragment tasks = new TodoTasksFragment();
+            for (int i=0; i < todoLists.size(); i++){
+                if (id == todoLists.get(i).getId()){
+                    Bundle b = new Bundle();
+                    b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
+                    b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
+                    tasks.setArguments(b);
+                    this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+                    setFragment(tasks);
+                }
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
@@ -493,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    //helping method to show all tasks
+    // create a dummy list containing all tasks
     private void showAllTasks(){
         ArrayList<TodoTask> allTasks = new ArrayList<>();
         for (TodoList currentList : todoLists)
