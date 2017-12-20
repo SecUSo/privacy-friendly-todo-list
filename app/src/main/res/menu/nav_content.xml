@@ -21,6 +21,10 @@
                 android:id="@+id/menu_show_all_tasks"
                 android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="@string/show_all_tasks" />
+            <item
+                android:id="@+id/nav_trash"
+                android:icon="@drawable/ic_delete_black_24dp"
+                android:title="Recycle bin"/>
 
         </menu>
     </item>

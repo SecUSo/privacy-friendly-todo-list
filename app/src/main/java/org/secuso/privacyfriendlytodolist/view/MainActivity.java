@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        // If a fragment is currently displayed, replace it by the new one.
+        // If a fragment is currently displayed, replace it by the new one. PROBLEM WITH .getFragments()?
         List<Fragment> addedFragments = fragmentManager.getFragments();
         if(addedFragments != null && addedFragments.size() > 0 ) {
             transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
