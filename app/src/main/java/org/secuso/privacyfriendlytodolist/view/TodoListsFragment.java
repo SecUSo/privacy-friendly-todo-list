@@ -75,24 +75,25 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
-            addListDialog.setDialogResult(new TodoCallback() {
+                ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
+                addListDialog.setDialogResult(new TodoCallback() {
 
-                @Override
-                public void finish(BaseTodo newList) {
-                if(newList instanceof TodoList) {
-                    Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
-                    todoLists.add((TodoList) newList);
-                    adapter.updateList(todoLists); // run filter again
-                    adapter.notifyDataSetChanged();
-                    Log.i(TAG, "list added");
-                }
-                }
-            });
-            addListDialog.show();
+                    @Override
+                    public void finish(BaseTodo newList) {
+                        if (newList instanceof TodoList) {
+                            Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
+                            todoLists.add((TodoList) newList);
+                            adapter.updateList(todoLists); // run filter again
+                            adapter.notifyDataSetChanged();
+                            Log.i(TAG, "list added");
+                        }
+                    }
+                });
+                addListDialog.show();
             }
         });
     }
+
 
     @Override
     public void onPause() {
@@ -190,4 +191,24 @@ public class TodoListsFragment extends Fragment implements SearchView.OnQueryTex
         if (containerActivity.getSupportActionBar() != null)
             containerActivity.getSupportActionBar().setTitle(R.string.toolbar_title_main);
     }
+
+    public void addList() {
+        ProcessTodoListDialog addListDialog = new ProcessTodoListDialog(getActivity());
+        addListDialog.setDialogResult(new TodoCallback() {
+
+            @Override
+            public void finish(BaseTodo newList) {
+                if (newList instanceof TodoList) {
+                    Toast.makeText(getContext(), getContext().getString(R.string.add_list_feedback, newList.getName()), Toast.LENGTH_SHORT).show();
+                    todoLists.add((TodoList) newList);
+                    adapter.updateList(todoLists); // run filter again
+                    adapter.notifyDataSetChanged();
+                    Log.i(TAG, "list added");
+                }
+            }
+        });
+        addListDialog.show();
+    }
+
+
 }

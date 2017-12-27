@@ -183,6 +183,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         expandableListView.setAdapter(taskAdapter);
     }
 
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {

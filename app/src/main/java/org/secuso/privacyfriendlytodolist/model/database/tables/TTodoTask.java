@@ -21,6 +21,7 @@ public class TTodoTask {
     public static final String COLUMN_NUM_SUBTAKS = "num_subtasks";
     public static final String COLUMN_DEADLINE_WARNING_TIME = "deadline_warning_time"; // absolut value in seconds
     public static final String COLUMN_LIST_POSITION = "position_in_todo_list";
+    public static final String COLUMN_TRASH = "in_trash";
 
 
     // sql table creation

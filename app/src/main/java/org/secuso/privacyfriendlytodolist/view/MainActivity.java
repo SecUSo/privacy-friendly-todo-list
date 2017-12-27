@@ -1,12 +1,9 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -15,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
@@ -35,12 +31,9 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoList;
-import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
-import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
-
+import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -234,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else { // no fragment is currently displayed
             transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
         }
-
         transaction.addToBackStack(null);
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -282,10 +274,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.menu_calendar_view) {
             CalendarFragment fragment = new CalendarFragment();
             setFragment(fragment);
-        } else if (id == R.id.menu_show_all_tasks) {
-
-            showAllTasks();
-
+        }  else if (id == R.id.nav_trash){
+            Intent intent = new Intent (this, RecyclerActivity.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+            startActivity(intent);
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, AboutActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
@@ -295,15 +287,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_home) {
-            TodoListsFragment fragment = new TodoListsFragment();
-            setFragment(fragment);
-        } else {
+            //TodoListsFragment fragment = new TodoListsFragment();
+            //setFragment(fragment);
+            showAllTasks();
+        } else if (id == R.id.nav_addList) {
+            ProcessTodoListDialog ptl = new ProcessTodoListDialog(this, dummyList);
+            ptl.setDialogResult(new TodoCallback() {
+                @Override
+                public void finish(BaseTodo b) {
+                    if (b instanceof TodoList){
+                        Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.add_list_feedback, b.getName()), Toast.LENGTH_SHORT).show();
+                        todoLists.add((TodoList) b);
+                    }
+                }
+            });
+            ptl.show();
+        }
+
+        else {
             TodoTasksFragment tasks = new TodoTasksFragment();
             for (int i=0; i < todoLists.size(); i++){
                 if (id == todoLists.get(i).getId()){
                     Bundle b = new Bundle();
                     b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
-                    b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
+                    b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
                     tasks.setArguments(b);
                     this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
                     setFragment(tasks);
@@ -321,6 +328,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStop() {
         this.isUnlocked = false;
         super.onStop();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     @Override
@@ -541,6 +555,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragment.setArguments(bundle);
         currentFragment = fragment;
     }
+
 
 
 }
