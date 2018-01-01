@@ -180,18 +180,22 @@
     <string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
-    <string name="slide1_heading">Welcome to privacy!</string>
-    <string name="slide1_text">You can save a lot of time and nerves using this privacy friendly ToDo-App!</string>
+    <string name="slide1_heading">Welcome!</string>
+    <string name="slide1_text">Welcome to your privacy friendly todo-list. This app does not use any permissions.</string>
 
-    <string name="slide2_heading">Key Elements</string>
-    <string name="slide2_text">Introduce key elements of your app. Do not introduce too many details.</string>
+    <string name="slide2_heading">Lists</string>
+    <string name="slide2_text">Manage your tasks in well-ordered lists.</string>
 
-    <string name="slide3_heading">Github and Guide</string>
-    <string name="slide3_text">The sourcecode of this app is available at GitHub. For further explanations have a look at the Privacy Friendly App Guide.</string>
+    <string name="slide3_heading">Reminder</string>
+    <string name="slide3_text">Set reminders and settlement dates for your tasks.</string>
+
+    <string name="slide4_heading">Everything is important</string>
+    <string name="slide4_text">Use subtasks by opening the view of your task.</string>
+
+    <string name="slide5_heading">Privacy</string>
+    <string name="slide5_text">You can set up a PIN in your settings.</string>
 
     <string name="okay">Okay</string>
-    <string name="viewhelp">View Help</string>
-    <string name="main_button_welcomedialog">Show Welcome</string>
     <string name="next">Next</string>
     <string name="skip">Skip</string>
 </resources>

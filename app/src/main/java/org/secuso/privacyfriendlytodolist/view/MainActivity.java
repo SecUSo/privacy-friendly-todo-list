@@ -31,6 +31,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
@@ -64,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<TodoList> todoLists = new ArrayList<>();
     private TodoList dummyList; // use this list if you need a container for tasks that does not exist in the database (e.g. to show all tasks, tasks of today etc.)
     private TodoList clickedList; // reference of last clicked list for fragment
+    private TodoRecyclerView mRecyclerView;
+    private TodoListAdapter adapter;
+    private MainActivity containerActivity;
 
     // Service that triggers notifications for upcoming tasks
     private ReminderService reminderService;
@@ -193,23 +197,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        // Start Tutorial
-        //Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        //startActivity(intent);
-        //overridePendingTransition(0, 0);
-
+        //startTut();
         guiSetup();
         setFragment(currentFragment);
         this.isInitialized = true;
-
 
     }
 
 
     public void onStart() {
+
         super.onStart();
         uncheckNavigationEntries();
+
+
     }
 
 
@@ -266,6 +267,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        //adapter = new TodoListAdapter(getBaseContext(), todoLists);
+        //mRecyclerView.setAdapter(adapter);
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
@@ -291,20 +294,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //setFragment(fragment);
             showAllTasks();
         } else if (id == R.id.nav_addList) {
-            ProcessTodoListDialog ptl = new ProcessTodoListDialog(this, dummyList);
-            ptl.setDialogResult(new TodoCallback() {
-                @Override
-                public void finish(BaseTodo b) {
-                    if (b instanceof TodoList){
-                        Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.add_list_feedback, b.getName()), Toast.LENGTH_SHORT).show();
-                        todoLists.add((TodoList) b);
-                    }
-                }
-            });
-            ptl.show();
-        }
-
-        else {
+           startListDialog();
+        } else {
             TodoTasksFragment tasks = new TodoTasksFragment();
             for (int i=0; i < todoLists.size(); i++){
                 if (id == todoLists.get(i).getId()){
@@ -345,6 +336,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             startActivity(intent);
             super.onResume();
+            adapter.updateList(todoLists);
+            adapter.notifyDataSetChanged();
             addListToNav();
             return;
         }
@@ -556,6 +549,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         currentFragment = fragment;
     }
 
+    private void startListDialog() {
+        containerActivity = (MainActivity)this;
+        adapter = new TodoListAdapter(this, todoLists );
+        //mRecyclerView.setAdapter(adapter);
+
+        ProcessTodoListDialog ptl = new ProcessTodoListDialog(this, dummyList);
+        ptl.setDialogResult(new TodoCallback() {
+            @Override
+            public void finish(BaseTodo b) {
+                if (b instanceof TodoList){
+                    Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.add_list_feedback, b.getName()), Toast.LENGTH_SHORT).show();
+                    todoLists.add((TodoList) b);
+                    adapter.updateList(todoLists);
+                    adapter.setQueryString("hm");
+                    adapter.notifyDataSetChanged();
+                    Log.i(TAG, "list added");
+                }
+            }
+        });
+        ptl.show();
+    }
+
+
+    // Start Tutorial
+    private void startTut() {
+
+        Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        overridePendingTransition(0, 0);
+    }
 
 
 }
