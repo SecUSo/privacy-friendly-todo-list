@@ -32,15 +32,6 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
 
-    <!-- Welcome Dialog -->
-    <string name="welcome_title">Willkommen</string>
-    <string name="welcome_viewhelp">Hilfe</string>
-    <string name="welcome_text">Willkommen in der Privacy Friendly To-Do Liste. Diese App kommt ohne Berechtigungen aus. Sie können:</string>
-    <string name="welcome_hint_lists">Aufgaben in To-Do Listen verwalten.</string>
-    <string name="welcome_hint_deadlines">Fälligkeitsdatum und Erinnerungen für Aufgaben erstellen.</string>
-    <string name="welcome_hint_subtasks">Unteraufgaben erstellen, indem die Aufgabe in der Ansicht aufgeklappt wird.</string>
-    <string name="welcome_hint_pin">Einen PIN-Schutz in den Einstellungen einrichten.</string>
-    <string name="welcome_button">Beginnen</string>
 
     <!-- Help -->
     <string name="help_overview_heading">Übersicht</string>
@@ -57,7 +48,7 @@
     <string name="help_pin">Im Einstellungsmenü kann eine vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem start der App eingegeben werden.</string>
     <string name="help_group_privacy">Privatsphäre</string>
     <string name="help_permissions_title">Berechtigung RECEIVE_BOOT_COMPLETED</string>
-    d<string name="help_permissions">Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte.</string>
+    <string name="help_permissions">Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte.</string>
 
     <!-- About -->
     <string name="about">Über</string>

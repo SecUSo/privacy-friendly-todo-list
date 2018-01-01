@@ -99,8 +99,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
 
 
     public void setQueryString(String query) {
-        this.queryString = query;
-        applyFilter();
+        this.queryString = query;        applyFilter();
     }
 
     private void applyFilter() {

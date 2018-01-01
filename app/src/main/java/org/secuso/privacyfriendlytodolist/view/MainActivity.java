@@ -164,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Bundle extras = getIntent().getExtras();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        setCurrentFragment();
-        //currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+        //showAllTasks();
+        currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
 
         // check if app was started by clicking on a reminding notification
         if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION))) {
@@ -206,11 +206,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void onStart() {
-
         super.onStart();
         uncheckNavigationEntries();
-
-
+        showAllTasks();
     }
 
 
@@ -553,7 +551,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         containerActivity = (MainActivity)this;
         adapter = new TodoListAdapter(this, todoLists );
         //mRecyclerView.setAdapter(adapter);
-
         ProcessTodoListDialog ptl = new ProcessTodoListDialog(this, dummyList);
         ptl.setDialogResult(new TodoCallback() {
             @Override
@@ -572,9 +569,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    // Start Tutorial
+    // Method starting tutorial
     private void startTut() {
-
         Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
