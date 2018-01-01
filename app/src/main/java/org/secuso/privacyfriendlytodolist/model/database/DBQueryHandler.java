@@ -153,6 +153,8 @@ public class DBQueryHandler {
     public static int deleteTodoTask(SQLiteDatabase db, TodoTask todoTask) {
 
         long id = todoTask.getId();
+        ContentValues args = new ContentValues();
+        args.put("COLUMN_TRASH", 1);
 
         int removedSubTask = 0;
         for(TodoSubTask subTask : todoTask.getSubTasks())
@@ -162,7 +164,8 @@ public class DBQueryHandler {
 
         String where = TTodoTask.COLUMN_ID + " = ?";
         String whereArgs[] = {String.valueOf(id)};
-        return db.delete(TTodoTask.TABLE_NAME, where, whereArgs);
+        return db.update(TTodoTask.TABLE_NAME, args, where, whereArgs);
+        //return db.delete(TTodoTask.TABLE_NAME, where, whereArgs);
     }
 
     public static ArrayList<TodoList> getAllToDoLists (SQLiteDatabase db) {

@@ -206,9 +206,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void onStart() {
+        showAllTasks();
         super.onStart();
         uncheckNavigationEntries();
-        showAllTasks();
+
     }
 
 
@@ -323,7 +324,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onRestart(){
         super.onRestart();
         finish();
-        startActivity(getIntent());
     }
 
     @Override
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.add_list_feedback, b.getName()), Toast.LENGTH_SHORT).show();
                     todoLists.add((TodoList) b);
                     adapter.updateList(todoLists);
-                    adapter.setQueryString("hm");
+                    //adapter.setQueryString("hm");
                     adapter.notifyDataSetChanged();
                     Log.i(TAG, "list added");
                 }
