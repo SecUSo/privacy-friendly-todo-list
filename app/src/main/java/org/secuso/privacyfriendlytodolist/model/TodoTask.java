@@ -43,6 +43,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
         RED
     }
 
+    private boolean inTrash;
     private boolean done;
     private int progress;
     private Priority priority;
@@ -61,6 +62,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
     public TodoTask() {
         super();
         done = false;
+        inTrash = false;
     }
 
     public String getListName() {
@@ -81,6 +83,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
         name = parcel.readString();
         description = parcel.readString();
         done = parcel.readByte() != 0;
+        inTrash = parcel.readByte() != 0;
         progress = parcel.readInt();
         deadline = parcel.readLong();
         reminderTime = parcel.readLong();
@@ -109,6 +112,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
         return subTasks;
     }
 
+    public boolean isInTrash () { return inTrash; }
 
     public boolean getDone() {
         return done;
@@ -129,6 +133,8 @@ public class TodoTask extends BaseTodo implements Parcelable {
     public void setDone(boolean done) {
         this.done = done;
     }
+
+    public void setInTrash(boolean inTrash) { this.inTrash = inTrash; }
 
     // This method expects the deadline to be greater than the reminder time.
     public DeadlineColors getDeadlineColor(long defaultReminderTime) {
@@ -180,6 +186,7 @@ public class TodoTask extends BaseTodo implements Parcelable {
         dest.writeString(name);
         dest.writeString(description);
         dest.writeByte((byte) (done ? 1 : 0));
+        dest.writeByte((byte)(inTrash ? 1 : 0));
         dest.writeInt(progress);
         dest.writeLong(deadline);
         dest.writeLong(reminderTime);

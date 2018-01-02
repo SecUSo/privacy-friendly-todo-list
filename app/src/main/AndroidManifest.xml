@@ -40,6 +40,8 @@
         </activity>
         <activity android:name=".view.AboutActivity"
             android:label="@string/about" />
+        <activity android:name=".view.RecyclerActivity"
+            android:label="@string/bin" />
         <activity android:name=".view.HelpActivity"
             android:label="@string/help" />
         <activity android:name=".view.Settings"

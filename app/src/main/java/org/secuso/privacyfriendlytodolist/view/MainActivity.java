@@ -398,6 +398,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return todoLists;
     }
 
+    public TodoList getTodoTasks() {
+        ArrayList<TodoTask> tasks = new ArrayList<>();
+        if (dbHelper != null) {
+            tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
+            for (int i=0; i < tasks.size(); i++){
+                dummyList.setDummyList();
+                dummyList.setName("All tasks");
+                dummyList.setTasks(tasks);
+            }
+        }
+        return dummyList;
+    }
+
 
     public DatabaseHelper getDbHelper() {
         return dbHelper;
@@ -505,8 +518,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             int id = help.get(i).getId();
             navMenu.add(R.id.drawer_group2, id, 1, name).setIcon(R.drawable.ic_label_black_24dp);
         }
-
-
     }
 
     // create a dummy list containing all tasks
@@ -523,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TodoTasksFragment fragment = new TodoTasksFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
-        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
+        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
         fragment.setArguments(bundle);
         setFragment(fragment);
     }
@@ -548,9 +559,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void startListDialog() {
-        containerActivity = (MainActivity)this;
+        //containerActivity = (MainActivity)this;
         adapter = new TodoListAdapter(this, todoLists );
-        //mRecyclerView.setAdapter(adapter);
         ProcessTodoListDialog ptl = new ProcessTodoListDialog(this, dummyList);
         ptl.setDialogResult(new TodoCallback() {
             @Override
@@ -559,7 +569,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.add_list_feedback, b.getName()), Toast.LENGTH_SHORT).show();
                     todoLists.add((TodoList) b);
                     adapter.updateList(todoLists);
-                    //adapter.setQueryString("hm");
                     adapter.notifyDataSetChanged();
                     Log.i(TAG, "list added");
                 }
@@ -567,7 +576,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         ptl.show();
     }
-
 
     // Method starting tutorial
     private void startTut() {

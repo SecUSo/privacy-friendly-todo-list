@@ -7,11 +7,13 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
 
     private String name;
     private boolean done;
+    private boolean inTrash;
     private long taskIdForeignKey;
 
     public TodoSubTask() {
         super();
         done = false;
+        inTrash = false;
     }
 
     public TodoSubTask(Parcel parcel) {
@@ -19,6 +21,7 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
         name = parcel.readString();
         done = parcel.readByte() != 0;
         taskIdForeignKey = parcel.readLong();
+        inTrash = parcel.readByte() != 0;
     }
 
     public void setName(String name) {
@@ -33,9 +36,13 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
         return done;
     }
 
+    public boolean isInTrash() {return inTrash; }
+
     public void setDone(boolean d) {
         done = d;
     }
+
+    public void setInTrash(boolean a) { inTrash = a; }
 
     public static final Parcelable.Creator<TodoSubTask> CREATOR =
             new Creator<TodoSubTask>() {
@@ -60,6 +67,7 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
         dest.writeInt(id);
         dest.writeString(name);
         dest.writeByte((byte) (done ? 1 : 0));
+        dest.writeByte((byte) (inTrash ? 1 : 0));
         dest.writeLong(taskIdForeignKey);
     }
 
