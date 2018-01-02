@@ -192,4 +192,5 @@
 
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="bin">Recycle</string>
+    <string name="bin_toolbar">Recycle bin</string>
 </resources>

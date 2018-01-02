@@ -185,4 +185,9 @@
 
     <string name="next">Weiter</string>
     <string name="skip">Überspringen</string>
+
+    <!-- ### RECYCLE ACTIVITY ### -->
+    <string name="bin">Papierkorb</string>
+    <string name="bin_toolbar">Papierkorb</string>
+
 </resources>
