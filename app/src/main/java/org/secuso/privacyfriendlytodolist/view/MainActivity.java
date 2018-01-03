@@ -31,6 +31,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
 import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
@@ -86,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PrefManager prefManager = new PrefManager(this);
+        if(prefManager.isFirstTimeLaunch()) {
+            startTut();
+            finish();
+        }
 
         if(savedInstanceState != null) {
             isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
@@ -164,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Bundle extras = getIntent().getExtras();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        //showAllTasks();
+        showAllTasks();
         currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
 
         // check if app was started by clicking on a reminding notification
@@ -323,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onRestart(){
         super.onRestart();
-        finish();
+        //finish();
     }
 
     @Override
@@ -558,14 +564,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         ptl.show();
     }
-    
+
 
     // Method starting tutorial
     private void startTut() {
         Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        overridePendingTransition(0, 0);
+        //overridePendingTransition(0, 0);
     }
 
 

@@ -34,7 +34,6 @@ public class TutorialActivity extends AppCompatActivity{
 
     private PrefManager prefManager;
     public static final String TAG = TutorialActivity.class.getSimpleName();
-    public static final String ACTION_SHOW_ANYWAYS = TAG + ".ACTION_SHOW_ANYWAYS";
     private ViewPager viewPager;
     private LinearLayout dotsLayout;
     private Button btnSkip, btnNext;
@@ -50,10 +49,6 @@ public class TutorialActivity extends AppCompatActivity{
         prefManager = new PrefManager(this);
         Intent i = getIntent();
 
-        if (!prefManager.isFirstTimeLaunch() && (i == null || !ACTION_SHOW_ANYWAYS.equals(i.getAction()))){
-            launchHomeScreen();
-            return;
-        }
 
         // Make notification bar transparent
         if(Build.VERSION.SDK_INT >= 21) {
@@ -84,6 +79,7 @@ public class TutorialActivity extends AppCompatActivity{
         myViewPageAdapter = new MyViewPageAdapter();
         viewPager.setAdapter(myViewPageAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+
         btnSkip.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v){
