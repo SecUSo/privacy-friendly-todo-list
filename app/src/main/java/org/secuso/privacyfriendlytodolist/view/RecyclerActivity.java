@@ -95,7 +95,6 @@ public class RecyclerActivity extends AppCompatActivity {
         dbhelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks = new ArrayList<>();
         tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-        String[] bla = {"Test String bla"};
 
         ArrayAdapter<TodoTask> adapter = new ArrayAdapter<TodoTask>(this, R.layout.exlv_tasks_group, tasks);
         ListView lv = (ListView) findViewById(R.id.trash_tasks);
@@ -103,10 +102,8 @@ public class RecyclerActivity extends AppCompatActivity {
         lv.setEmptyView(tv);
         lv.setAdapter(adapter);
 
-        String selection = TTodoTask.COLUMN_TRASH + " = ?";
-        String[] selectionArgs = {"1"};
-        tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-
+        // String selection = TTodoTask.COLUMN_TRASH + " = ?"
+        // String[] selectionArgs = {"1"};
 
     }
 

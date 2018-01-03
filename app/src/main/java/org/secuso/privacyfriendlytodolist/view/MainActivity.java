@@ -539,24 +539,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setFragment(fragment);
     }
 
-    //This method sets the currenFragment to view all tasks
-    private void setCurrentFragment(){
-        ArrayList<TodoTask> allTasks = new ArrayList<>();
-        for (TodoList currentList : todoLists)
-            allTasks.addAll(currentList.getTasks());
-
-        dummyList = new TodoList();
-        dummyList.setDummyList();
-        dummyList.setName(getString(R.string.all_tasks));
-        dummyList.setTasks(allTasks);
-
-        TodoTasksFragment fragment = new TodoTasksFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
-        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
-        fragment.setArguments(bundle);
-        currentFragment = fragment;
-    }
 
     private void startListDialog() {
         //containerActivity = (MainActivity)this;
@@ -576,6 +558,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         ptl.show();
     }
+    
 
     // Method starting tutorial
     private void startTut() {
