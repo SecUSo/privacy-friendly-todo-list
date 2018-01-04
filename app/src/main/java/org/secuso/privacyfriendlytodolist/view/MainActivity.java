@@ -299,7 +299,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //setFragment(fragment);
             showAllTasks();
         } else if (id == R.id.nav_addList) {
-           startListDialog();
+            TodoListsFragment tl = new TodoListsFragment();
+            setFragment(tl);
+            tl.addList();
+            tl.onDestroy();
+           //startListDialog();
         } else {
             TodoTasksFragment tasks = new TodoTasksFragment();
             for (int i=0; i < todoLists.size(); i++){
