@@ -301,6 +301,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         super.onCreateOptionsMenu(menu,inflater);
         inflater.inflate(R.menu.main, menu);
         inflater.inflate(R.menu.search, menu);
+        inflater.inflate(R.menu.add_list, menu);
 
         MenuItem searchItem = menu.findItem(R.id.ac_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
