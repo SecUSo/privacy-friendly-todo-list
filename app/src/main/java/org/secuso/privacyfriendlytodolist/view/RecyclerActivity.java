@@ -1,21 +1,11 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -26,10 +16,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Sebastian Lutz on 20.12.2017.
@@ -95,7 +83,7 @@ public class RecyclerActivity extends AppCompatActivity {
         }
 
 
-        dbhelper = DatabaseHelper.getInstance(this);
+        /*dbhelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks = new ArrayList<>();
         tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
 
@@ -103,7 +91,7 @@ public class RecyclerActivity extends AppCompatActivity {
         ListView lv = (ListView) findViewById(R.id.trash_tasks);
         TextView tv = (TextView) findViewById(R.id.tv_empty_view_no_tasks);
         lv.setEmptyView(tv);
-        lv.setAdapter(adapter);
+        lv.setAdapter(adapter); */
 
     }
 

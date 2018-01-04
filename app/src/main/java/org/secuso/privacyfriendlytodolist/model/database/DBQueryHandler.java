@@ -77,7 +77,7 @@ public class DBQueryHandler {
         }
         excludedIDs.append(";");
 
-        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " /*+ TTodoTask.COLUMN_TRASH + "=0 AND "*/ + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? " + excludedIDs.toString();
+        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + " = 0 AND " + TTodoTask.COLUMN_TRASH + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " <= ? " + excludedIDs.toString();
         String selectionArgs[] = {String.valueOf(today)};
         try {
             Cursor cursor = db.rawQuery(rawQuery, selectionArgs);
@@ -116,7 +116,7 @@ public class DBQueryHandler {
         int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
         int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
         int listID = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_TODO_LIST_ID));
-        //boolean inTrash = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_TRASH)) > 0;
+        boolean inTrash = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_TRASH)) > 0;
 
         TodoTask task = new TodoTask();
         task.setName(title);
@@ -129,7 +129,7 @@ public class DBQueryHandler {
         task.setProgress(progress);
         task.setDone(done);
         task.setListId(listID);
-        //task.setInTrash(inTrash);
+        task.setInTrash(inTrash);
 
         return task;
     }
@@ -177,7 +177,7 @@ public class DBQueryHandler {
     public static ArrayList<TodoTask> getAllToDoTasks (SQLiteDatabase db) {
         ArrayList<TodoTask> todo = new ArrayList<>();
 
-        String where = "";// TTodoTask.COLUMN_TRASH + " =0";
+        String where = TTodoTask.COLUMN_TRASH + " =0";
 
         try {
             Cursor c = db.query(TTodoTask.TABLE_NAME, null, where, null, null, null, null);
@@ -208,7 +208,7 @@ public class DBQueryHandler {
     public static ArrayList<TodoTask> getBin (SQLiteDatabase db) {
         ArrayList<TodoTask> todo = new ArrayList<>();
 
-        String where = ""; // TTodoTask.COLUMN_TRASH + " =1";
+        String where = TTodoTask.COLUMN_TRASH + " =1";
 
         try {
             Cursor c = db.query(TTodoTask.TABLE_NAME, null, where, null, null, null, null);
@@ -271,7 +271,7 @@ public class DBQueryHandler {
     private static ArrayList<TodoTask> getTasksByListId(SQLiteDatabase db, int listId, String listName) {
 
         ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
-        String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId;
+        String where = TTodoTask.COLUMN_TODO_LIST_ID + " = " + listId + " AND " + TTodoTask.COLUMN_TRASH + "=0";
         Cursor cursor = db.query(TTodoTask.TABLE_NAME, null, where, null, null, null, null);
 
         try {
@@ -295,7 +295,7 @@ public class DBQueryHandler {
     private static ArrayList<TodoSubTask> getSubTasksByTaskId(SQLiteDatabase db, long taskId) {
 
         ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
-        String where = TTodoSubTask.COLUMN_TASK_ID + " = " + taskId;
+        String where = TTodoSubTask.COLUMN_TASK_ID + " = " + taskId + " AND " + TTodoSubTask.COLUMN_TRASH + "=0";
         Cursor cursor = db.query(TTodoSubTask.TABLE_NAME, null, where, null, null, null, null);
         cursor.moveToFirst();
 
@@ -305,14 +305,14 @@ public class DBQueryHandler {
                     int id = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_ID));
                     String title = cursor.getString(cursor.getColumnIndex(TTodoSubTask.COLUMN_TITLE));
                     boolean done = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_DONE)) > 0;
-                    //boolean trash = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_TRASH)) > 0;
+                    boolean trash = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_TRASH)) > 0;
 
                     TodoSubTask currentSubTask = new TodoSubTask();
                     currentSubTask.setId(id);
                     currentSubTask.setName(title);
                     currentSubTask.setDone(done);
                     currentSubTask.setTaskId(taskId);
-                    //currentSubTask.setInTrash(trash);
+                    currentSubTask.setInTrash(trash);
                     subTasks.add(currentSubTask);
                 } while (cursor.moveToNext());
             }
@@ -333,7 +333,7 @@ public class DBQueryHandler {
             values.put(TTodoSubTask.COLUMN_TITLE, subTask.getName());
             values.put(TTodoSubTask.COLUMN_DONE, subTask.getDone());
             values.put(TTodoSubTask.COLUMN_TASK_ID, subTask.getTaskId());
-            //values.put(TTodoSubTask.COLUMN_TRASH, subTask.isInTrash());
+            values.put(TTodoSubTask.COLUMN_TRASH, subTask.isInTrash());
 
             if(subTask.getDBState() == ObjectStates.INSERT_TO_DB) {
                 returnCode = (int) db.insert(TTodoSubTask.TABLE_NAME, null, values);
@@ -372,7 +372,7 @@ public class DBQueryHandler {
             values.put(TTodoTask.COLUMN_TODO_LIST_ID, todoTask.getListId());
             values.put(TTodoTask.COLUMN_LIST_POSITION, todoTask.getListPosition());
             values.put(TTodoTask.COLUMN_DONE, todoTask.getDone());
-            //values.put(TTodoTask.COLUMN_TRASH, todoTask.isInTrash());
+            values.put(TTodoTask.COLUMN_TRASH, todoTask.isInTrash());
 
             if(todoTask.getDBState() == ObjectStates.INSERT_TO_DB) {
                 returnCode = (int) db.insert(TTodoTask.TABLE_NAME, null, values);
