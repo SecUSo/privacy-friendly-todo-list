@@ -1,5 +1,6 @@
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
@@ -226,13 +228,16 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 break;
 
             case R.id.delete_subtask:
-                affectedRows = DBQueryHandler.deleteTodoSubTask(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
+                affectedRows = DBQueryHandler.putSubtaskInTrash(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
                 longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
                 else
                     Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
                 taskAdapter.notifyDataSetChanged();
+                break;
+            case R.id.ac_add:
+
                 break;
             case R.id.change_task:
                 ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
@@ -248,7 +253,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                affectedRows = DBQueryHandler.deleteTodoTask(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
+                affectedRows = DBQueryHandler.putTaskInTrash(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
                 todoTasks.remove(longClickedTodo.getLeft());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
@@ -307,6 +312,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
     }
+
+
 
     private void collapseAll()
     {
@@ -377,4 +384,6 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
         return true;
     }
+
+
 }

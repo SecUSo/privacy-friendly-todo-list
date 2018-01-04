@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
+        <ExpandableListView
             android:id="@+id/trash_tasks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -36,7 +36,7 @@
             android:groupIndicator="@null"/>
 
         <TextView
-            android:id="@+id/tv_empty_view_no_tasks"
+            android:id="@+id/rv_empty_view_no_tasks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"

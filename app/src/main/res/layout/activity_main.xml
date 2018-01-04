@@ -62,7 +62,7 @@
             android:clickable="true"
             android:orientation="vertical">
 
-            //Hier sollen Items stehen
+
 
         </LinearLayout>
 

@@ -32,7 +32,7 @@ public class DBQueryHandler {
 
     public static TodoTask getNextDueTask(SQLiteDatabase db, long today) {
 
-        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " /*+ TTodoTask.COLUMN_TRASH + "=0 AND "*/ + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + "-? > 0 ORDER BY ABS(" + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " -?) LIMIT 1;";
+        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " /*+ TTodoTask.COLUMN_TRASH + "=0 AND " */ + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + "-? > 0 ORDER BY ABS(" + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " -?) LIMIT 1;";
         String selectionArgs[] = {String.valueOf(today)};
 
         TodoTask nextDueTask = null;
@@ -146,7 +146,7 @@ public class DBQueryHandler {
 
         int deletedTasks = 0;
         for(TodoTask task : todoList.getTasks())
-            deletedTasks+=deleteTodoTask(db, task);
+            deletedTasks+=putTaskInTrash(db, task);
         Log.i(TAG, deletedTasks + " tasks removed from the database.");
 
         String where = TTodoList.COLUMN_ID + "=?";
@@ -159,8 +159,6 @@ public class DBQueryHandler {
     public static int deleteTodoTask(SQLiteDatabase db, TodoTask todoTask) {
 
         long id = todoTask.getId();
-        ContentValues args = new ContentValues();
-        args.put("COLUMN_TRASH", 1);
 
         int removedSubTask = 0;
         for(TodoSubTask subTask : todoTask.getSubTasks())
@@ -170,7 +168,6 @@ public class DBQueryHandler {
 
         String where = TTodoTask.COLUMN_ID + " = ?";
         String whereArgs[] = {String.valueOf(id)};
-        //return db.update(TTodoTask.TABLE_NAME, args, where, whereArgs);
         return db.delete(TTodoTask.TABLE_NAME, where, whereArgs);
     }
 
@@ -430,11 +427,37 @@ public class DBQueryHandler {
 
     public static int deleteTodoSubTask(SQLiteDatabase db, TodoSubTask subTask) {
         long id = subTask.getId();
-        ContentValues args = new ContentValues();
-        args.put("COLUMN_TRASH", 1);
+
         String where = TTodoSubTask.COLUMN_ID + " = ?";
         String whereArgs[] = {String.valueOf(id)};
-        //return db.update(TTodoSubTask.TABLE_NAME, args, where, whereArgs);
         return db.delete(TTodoSubTask.TABLE_NAME, where, whereArgs);
+    }
+
+    public static int putTaskInTrash(SQLiteDatabase db, TodoTask todoTask) {
+        long id = todoTask.getId();
+        ContentValues args = new ContentValues();
+        args.put(TTodoTask.COLUMN_TRASH, 1);
+
+        int removedSubTask = 0;
+        for(TodoSubTask subTask : todoTask.getSubTasks())
+            removedSubTask += putSubtaskInTrash(db, subTask);
+
+        Log.i(TAG, removedSubTask + " subtasks put into bin");
+
+        String where = TTodoTask.COLUMN_ID + " = ?";
+        String whereArgs[] = {String.valueOf(id)};
+
+        return db.update(TTodoTask.TABLE_NAME, args, where, whereArgs);
+    }
+
+    public static int putSubtaskInTrash(SQLiteDatabase db, TodoSubTask subTask) {
+        long id = subTask.getId();
+
+        ContentValues args = new ContentValues();
+        args.put(TTodoSubTask.COLUMN_TRASH, 1);
+
+        String where = TTodoSubTask.COLUMN_ID + " = ?";
+        String whereArgs[] = {String.valueOf(id)};
+        return db.update(TTodoSubTask.TABLE_NAME, args, where, whereArgs);
     }
 }

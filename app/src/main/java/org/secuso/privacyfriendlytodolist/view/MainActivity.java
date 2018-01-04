@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+//import android.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //MenuInflater mf = new MenuInflater(getApplicationContext());
+        //mf.inflate(R.menu.add_list, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -166,8 +170,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void initActivity(Bundle savedInstanceState) {
 
+
+    public void initActivity(Bundle savedInstanceState) {
 
         this.isUnlocked = true;
         getTodoLists(true);
@@ -221,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uncheckNavigationEntries();
 
     }
+
 
 
     public void setFragment(Fragment fragment) {
@@ -306,7 +312,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TodoListsFragment tl = new TodoListsFragment();
             setFragment(tl);
             tl.addList();
-            tl.onDestroy();
            //startListDialog();
         } else {
             TodoTasksFragment tasks = new TodoTasksFragment();
@@ -351,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             adapter.updateList(todoLists);
             adapter.notifyDataSetChanged();
             addListToNav();
+            guiSetup();
             return;
         }
         // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:

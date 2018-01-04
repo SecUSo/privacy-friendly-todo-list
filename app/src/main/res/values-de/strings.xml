@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
-    <string name="home">Startseite</string>
+    <string name="home">Alle Aufgaben</string>
     <string name="calendar_view">Kalenderansicht</string>
     <string name="show_all_tasks">Alle Aufgaben</string>
     <string name="settings">Einstellungen</string>
@@ -169,10 +169,10 @@
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="slide1_heading">Willkommen!</string>
-    <string name="slide1_text">Willkommen in der Privacy Friendly To-Do Liste. Diese App kommt ohne Berechtigungen aus.</string>
+    <string name="slide1_text">Willkommen in der To-Do Liste, die Ihre Privatsphäre nicht verletzt. Diese App kommt ohne Berechtigungen aus.</string>
 
     <string name="slide2_heading">Listen</string>
-    <string name="slide2_text">Aufgaben in To-Do Listen verwalten..</string>
+    <string name="slide2_text">Aufgaben in To-Do Listen verwalten.</string>
 
     <string name="slide3_heading">Erinnerungen</string>
     <string name="slide3_text">Fälligkeitsdatum und Erinnerungen für Aufgaben erstellen.</string>
