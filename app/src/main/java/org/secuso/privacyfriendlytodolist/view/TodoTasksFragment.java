@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -31,8 +33,10 @@ import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
+import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTextListener {
 
@@ -46,7 +50,11 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     private ExpandableListView expandableListView;
     private ExpandableTodoTaskAdapter taskAdapter;
 
+
+
     private MainActivity containingActivity;
+
+
 
     private TodoList currentList;
     private ArrayList<TodoTask> todoTasks = new ArrayList<>();

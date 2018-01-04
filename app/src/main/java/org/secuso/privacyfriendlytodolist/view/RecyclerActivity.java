@@ -1,6 +1,7 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -9,9 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.LayoutInflater;
 
@@ -27,7 +31,7 @@ import java.util.ArrayList;
  * Created by Sebastian Lutz on 20.12.2017.
  */
 
-public class RecyclerActivity extends AppCompatActivity {
+public class RecyclerActivity extends AppCompatActivity{
 
     private DatabaseHelper dbhelper;
     private ExpandableListView expandableListView;
@@ -38,6 +42,8 @@ public class RecyclerActivity extends AppCompatActivity {
     private TodoList currentList;
 
     private MainActivity containingActivity;
+
+    private ExpandableListAdapter expandableListAdapter;
 
 
    @Override
@@ -88,21 +94,21 @@ public class RecyclerActivity extends AppCompatActivity {
 
         }
 
-        LayoutInflater infalter;
-        View v = inflater.inflate(R.layout.fragment_todo_tasks, container, false);
 
         dbhelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks = new ArrayList<>();
         tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
 
+        ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         ArrayAdapter<TodoTask> adapter = new ArrayAdapter<TodoTask>(this, R.layout.exlv_tasks_group, tasks);
+
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_recycle);
         ExpandableListView lv = (ExpandableListView) findViewById(R.id.trash_tasks);
         TextView tv = (TextView) findViewById(R.id.rv_empty_view_no_tasks);
+        lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
-        lv.setAdapter(adapter);
 
     }
-
 
 
 }
