@@ -8,11 +8,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:text="@string/new_todo_list"
+        android:textColor="@color/black"
         android:textSize="22sp"
-        android:textColor="@color/white"
-        android:background="@color/colorPrimary"/>
+        android:padding="20sp"
+        android:textStyle="bold"
+        android:background="@color/transparent"/>
 
     <EditText
         android:id="@+id/et_todo_list_name"

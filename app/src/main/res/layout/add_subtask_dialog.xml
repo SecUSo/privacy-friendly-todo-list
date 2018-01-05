@@ -6,12 +6,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/transparent"
         android:text="@string/new_todo_subtask"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:maxLength="@integer/max_todo_titel_length"
-        android:textSize="22sp" />
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:padding="20sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/et_new_subtask_name"
