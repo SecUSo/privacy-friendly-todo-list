@@ -8,12 +8,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="@string/new_todo_task"
-        android:textAlignment="center"
-        android:textColor="@color/white"
+        android:background="@android:color/transparent"
         android:maxLength="@integer/max_todo_titel_length"
-        android:textSize="22sp" />
+        android:text="@string/new_todo_task"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:padding="20sp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/et_new_task_name"
