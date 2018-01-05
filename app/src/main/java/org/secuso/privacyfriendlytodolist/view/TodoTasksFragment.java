@@ -126,11 +126,13 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                     public void finish(BaseTodo b) {
                     if (b instanceof TodoTask) {
                         todoTasks.add((TodoTask) b);
+                        saveNewTasks();
                         taskAdapter.notifyDataSetChanged();
                     }
                     }
                 });
                 addListDialog.show();
+
                 }
             });
         } else
@@ -280,31 +282,11 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         setRetainInstance(true);
     }
 
     @Override
     public void onPause() {
-
-        // write new tasks to the database
-        for(int i=0; i<todoTasks.size(); i++) {
-            TodoTask currentTask = todoTasks.get(i);
-
-            // If a dummy list is displayed, its id must not be assigned to the task.
-            if(!currentList.isDummyList())
-                currentTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
-
-            boolean dbChanged = containingActivity.sendToDatabase(currentTask);
-            if(dbChanged)
-                containingActivity.notifyReminderService(currentTask);
-
-            // write subtasks to the database
-            for(TodoSubTask subTask : currentTask.getSubTasks()) {
-                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
-                containingActivity.sendToDatabase(subTask);
-            }
-        }
 
         super.onPause();
     }
@@ -393,5 +375,26 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         return true;
     }
 
+    // write new tasks to the database
+    public void saveNewTasks() {
+        for(int i=0; i<todoTasks.size(); i++) {
+            TodoTask currentTask = todoTasks.get(i);
+
+            // If a dummy list is displayed, its id must not be assigned to the task.
+            if(!currentList.isDummyList())
+                currentTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
+
+            boolean dbChanged = containingActivity.sendToDatabase(currentTask);
+            if(dbChanged)
+                containingActivity.notifyReminderService(currentTask);
+
+            // write subtasks to the database
+            for(TodoSubTask subTask : currentTask.getSubTasks()) {
+                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
+                containingActivity.sendToDatabase(subTask);
+            }
+        }
+
+    }
 
 }
