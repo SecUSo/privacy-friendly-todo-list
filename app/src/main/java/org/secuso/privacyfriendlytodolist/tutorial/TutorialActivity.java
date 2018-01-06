@@ -125,11 +125,11 @@ public class TutorialActivity extends AppCompatActivity{
             // change button text 'NEXT' on last slide to 'GOT IT'
             if (position == layouts.length - 1){
                 // last slide
-                btnNext.setText("Got it!");
+                btnNext.setText(R.string.okay);
                 btnSkip.setVisibility(View.GONE);
             } else{
                 // not last slide reached yet
-                btnNext.setText("Next");
+                btnNext.setText(R.string.next);
                 btnSkip.setVisibility(View.VISIBLE);
             }
         }

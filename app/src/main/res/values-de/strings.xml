@@ -185,6 +185,7 @@
 
     <string name="next">Weiter</string>
     <string name="skip">Überspringen</string>
+    <string name="okay">Okay</string>
 
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="bin">Papierkorb</string>
