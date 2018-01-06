@@ -66,11 +66,19 @@ public class RecyclerActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 finish();
             case R.id.btn_clear:
+                dbhelper = DatabaseHelper.getInstance(this);
+                ArrayList<TodoTask> tasks = new ArrayList<>();
+                tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
+                for ( TodoTask t : tasks){
+                    DBQueryHandler.deleteTodoTask(this.dbhelper.getReadableDatabase(), t);
+                }
+                updateAdapter();
                 Toast.makeText(this, "All tasks deleted", Toast.LENGTH_SHORT).show();
                 return true;
         }
@@ -83,6 +91,7 @@ public class RecyclerActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycle);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trash);
 
@@ -98,21 +107,7 @@ public class RecyclerActivity extends AppCompatActivity{
             getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         }
-
-
-        dbhelper = DatabaseHelper.getInstance(this);
-        ArrayList<TodoTask> tasks = new ArrayList<>();
-        tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-
-        ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        ArrayAdapter<TodoTask> adapter = new ArrayAdapter<TodoTask>(this, R.layout.exlv_tasks_group, tasks);
-
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_recycle);
-        ExpandableListView lv = (ExpandableListView) findViewById(R.id.trash_tasks);
-        TextView tv = (TextView) findViewById(R.id.rv_empty_view_no_tasks);
-        lv.setAdapter(expandableTodoTaskAdapter);
-        lv.setEmptyView(tv);
-
+        updateAdapter();
     }
 
     @Override
@@ -122,5 +117,16 @@ public class RecyclerActivity extends AppCompatActivity{
         return true;
     }
 
+    public void updateAdapter() {
+        dbhelper = DatabaseHelper.getInstance(this);
+        ArrayList<TodoTask> tasks = new ArrayList<>();
+        tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
+        ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_recycle);
+        ExpandableListView lv = (ExpandableListView) findViewById(R.id.trash_tasks);
+        TextView tv = (TextView) findViewById(R.id.rv_empty_view_no_tasks);
+        lv.setAdapter(expandableTodoTaskAdapter);
+        lv.setEmptyView(tv);
+    }
 
 }
