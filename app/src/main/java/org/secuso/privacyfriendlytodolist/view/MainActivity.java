@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TodoListsFragment tl = new TodoListsFragment();
             setFragment(tl);
             tl.addList();
-           //startListDialog();
+            addListToNav();
         } else {
             TodoTasksFragment tasks = new TodoTasksFragment();
             for (int i=0; i < todoLists.size(); i++){
@@ -361,7 +361,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onResume();
             adapter.updateList(todoLists);
             adapter.notifyDataSetChanged();
-            addListToNav();
             guiSetup();
             return;
         }

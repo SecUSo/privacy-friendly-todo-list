@@ -1,6 +1,7 @@
 package org.secuso.privacyfriendlytodolist.model;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.util.TypedValue;
@@ -69,11 +70,12 @@ public class Helper {
         blueBackground.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
         blueBackground.setText(title);
-        blueBackground.setTextColor(ContextCompat.getColor(context, R.color.white));
+        blueBackground.setTextColor(ContextCompat.getColor(context, R.color.black));
+        blueBackground.setPadding(65, 65, 65, 65);
         blueBackground.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        blueBackground.setGravity(Gravity.CENTER);
+        blueBackground.setTypeface(null, Typeface.BOLD);
 
         return blueBackground;
     }

@@ -7,4 +7,9 @@
         app:showAsAction="ifRoom"
         android:actionMenuTextColor="@color/white"/>
 
+    <item android:id="@+id/btn_re"
+        android:title="@string/btn_clear"
+        app:showAsAction="ifRoom"
+        android:actionMenuTextColor="@color/white"/>
+
 </menu>
