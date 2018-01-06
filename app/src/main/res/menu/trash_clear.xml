@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/btn_clear"
-        android:title="Clear"
+        android:title="@string/btn_clear"
         app:showAsAction="ifRoom"
         android:actionMenuTextColor="@color/white"/>
 

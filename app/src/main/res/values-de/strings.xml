@@ -190,5 +190,6 @@
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="bin">Papierkorb</string>
     <string name="bin_toolbar">Papierkorb</string>
+    <string name="btn_clear">Leeren</string>
 
 </resources>
