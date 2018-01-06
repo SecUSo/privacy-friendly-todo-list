@@ -188,6 +188,7 @@
     <string name="okay">Okay</string>
 
     <!-- ### RECYCLE ACTIVITY ### -->
+    <string name="toast_del">Papierkorb wurde geleert.</string>
     <string name="bin">Papierkorb</string>
     <string name="bin_toolbar">Papierkorb</string>
     <string name="btn_clear">Leeren</string>

@@ -72,14 +72,14 @@ public class RecyclerActivity extends AppCompatActivity{
             case android.R.id.home:
                 finish();
             case R.id.btn_clear:
+                Toast.makeText(this, R.string.toast_del, Toast.LENGTH_SHORT).show();
                 dbhelper = DatabaseHelper.getInstance(this);
-                ArrayList<TodoTask> tasks = new ArrayList<>();
+                ArrayList<TodoTask> tasks;
                 tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 for ( TodoTask t : tasks){
                     DBQueryHandler.deleteTodoTask(this.dbhelper.getReadableDatabase(), t);
                 }
                 updateAdapter();
-                Toast.makeText(this, "All tasks deleted", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
