@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
@@ -69,6 +70,8 @@ public class RecyclerActivity extends AppCompatActivity{
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 finish();
+            case R.id.btn_clear:
+                Toast.makeText(this, "All tasks deleted", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -115,8 +118,9 @@ public class RecyclerActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.trash_clear, menu);
         return true;
     }
+
 
 }
