@@ -197,4 +197,7 @@
     <string name="bin_toolbar">Recycle bin</string>
     <string name="btn_clear">Clear bin</string>
 
+    <!-- ### TodoList ACTIVITY ### -->
+    <string name="list">Todo-Lists</string>
+
 </resources>

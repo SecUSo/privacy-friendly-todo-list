@@ -193,4 +193,7 @@
     <string name="bin_toolbar">Papierkorb</string>
     <string name="btn_clear">Leeren</string>
 
+    <!-- ### TodoList ACTIVITY ### -->
+    <string name="list">Todo-Listen</string>
+
 </resources>

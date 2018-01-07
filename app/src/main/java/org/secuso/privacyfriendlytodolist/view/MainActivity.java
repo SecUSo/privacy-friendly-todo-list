@@ -316,9 +316,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //setFragment(fragment);
             showAllTasks();
         } else if (id == R.id.nav_addList) {
-            TodoListsFragment tl = new TodoListsFragment();
-            setFragment(tl);
-            tl.addList();
+            startListDialog();
             addListToNav();
         } else {
             TodoTasksFragment tasks = new TodoTasksFragment();
@@ -530,6 +528,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return null;
     }
 
+    //Adds Todo-Lists to the navigation-drawer
     private void addListToNav(){
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         Menu navMenu = nv.getMenu();
@@ -564,24 +563,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setFragment(fragment);
     }
 
-
+    // Method to add a new Todo-List
     private void startListDialog() {
-        //containerActivity = (MainActivity)this;
-        adapter = new TodoListAdapter(this, todoLists );
-        ProcessTodoListDialog ptl = new ProcessTodoListDialog(this, dummyList);
-        ptl.setDialogResult(new TodoCallback() {
+        dbHelper = DatabaseHelper.getInstance(this);
+        todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        adapter = new TodoListAdapter(this, todoLists);
+
+        ProcessTodoListDialog pl = new ProcessTodoListDialog(this);
+        pl.setDialogResult(new TodoCallback() {
             @Override
             public void finish(BaseTodo b) {
-                if (b instanceof TodoList){
-                    Toast.makeText(getBaseContext(), getBaseContext().getString(R.string.add_list_feedback, b.getName()), Toast.LENGTH_SHORT).show();
+                if (b instanceof TodoList) {
                     todoLists.add((TodoList) b);
-                    adapter.updateList(todoLists);
+                    adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
                     Log.i(TAG, "list added");
                 }
             }
         });
-        ptl.show();
+        pl.show();
     }
 
 
