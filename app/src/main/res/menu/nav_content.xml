@@ -23,10 +23,6 @@
                 android:icon="@drawable/ic_delete_black_24dp"
                 android:title="@string/bin"/>
 
-            <item
-                android:id="@+id/nav_addList"
-                android:title="Add list"
-                android:icon="@mipmap/plus_white"/>
 
         </menu>
     </item>

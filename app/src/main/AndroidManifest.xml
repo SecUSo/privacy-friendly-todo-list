@@ -42,6 +42,8 @@
             android:label="@string/about" />
         <activity android:name=".view.RecyclerActivity"
             android:label="@string/bin" />
+        <activity android:name=".view.TodoTaskActivity"
+            android:label="@string/todo_activity" />
         <activity android:name=".view.HelpActivity"
             android:label="@string/help" />
         <activity android:name=".view.Settings"

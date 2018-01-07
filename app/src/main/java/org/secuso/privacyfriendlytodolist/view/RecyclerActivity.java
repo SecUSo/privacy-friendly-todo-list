@@ -71,6 +71,7 @@ public class RecyclerActivity extends AppCompatActivity{
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 finish();
+                return true;
             case R.id.btn_clear:
                 Toast.makeText(this, R.string.toast_del, Toast.LENGTH_SHORT).show();
                 dbhelper = DatabaseHelper.getInstance(this);

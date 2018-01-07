@@ -246,9 +246,6 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                     Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
                 taskAdapter.notifyDataSetChanged();
                 break;
-            case R.id.ac_add:
-
-                break;
             case R.id.change_task:
                 ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
                 editTaskDialog.setDialogResult(new TodoCallback() {
@@ -267,6 +264,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 todoTasks.remove(longClickedTodo.getLeft());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+
                 else
                     Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
                 taskAdapter.notifyDataSetChanged();

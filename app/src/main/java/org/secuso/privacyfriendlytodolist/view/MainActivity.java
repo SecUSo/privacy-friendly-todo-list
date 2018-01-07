@@ -1,6 +1,5 @@
 package org.secuso.privacyfriendlytodolist.view;
 
-import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -12,20 +11,16 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-//import android.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -45,6 +40,8 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+//import android.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -91,9 +88,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //MenuInflater mf = new MenuInflater(getApplicationContext());
-        //mf.inflate(R.menu.add_list, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.ac_add:
+                TodoListsFragment tl = new TodoListsFragment();
+                setFragment(tl);
+                tl.addList();
+                //startListDialog();
+                //addListToNav();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -216,16 +226,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        //startTut();
         guiSetup();
-        setFragment(currentFragment);
+        //setFragment(currentFragment);
         this.isInitialized = true;
 
     }
 
 
     public void onStart() {
-        showAllTasks();
+        //showAllTasks();
         super.onStart();
         uncheckNavigationEntries();
 
@@ -260,12 +269,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         // side menu setup
-        addListToNav();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        addListToNav();
+
         //LinearLayout l = (LinearLayout) findViewById(R.id.footer);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -289,8 +299,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //adapter = new TodoListAdapter(getBaseContext(), todoLists);
-        //mRecyclerView.setAdapter(adapter);
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
@@ -311,13 +319,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, HelpActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
+            item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(getApplicationContext(), "Hallo du", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
         } else if (id == R.id.menu_home) {
             //TodoListsFragment fragment = new TodoListsFragment();
             //setFragment(fragment);
-            showAllTasks();
-        } else if (id == R.id.nav_addList) {
-            startListDialog();
-            addListToNav();
+            Intent intent = new Intent (this, TodoTaskActivity.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+            startActivity(intent);
         } else {
             TodoTasksFragment tasks = new TodoTasksFragment();
             for (int i=0; i < todoLists.size(); i++){
@@ -329,12 +343,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
                     setFragment(tasks);
                 }
-            }
+            } //item.getActionView().setOnLongClickListener();
         }
+
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+
     }
+
 
 
     @Override
@@ -357,8 +374,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
             startActivity(intent);
             super.onResume();
-            adapter.updateList(todoLists);
-            adapter.notifyDataSetChanged();
             guiSetup();
             return;
         }
