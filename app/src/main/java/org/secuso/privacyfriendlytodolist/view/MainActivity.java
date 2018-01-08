@@ -94,13 +94,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.ac_add:
-                TodoListsFragment tl = new TodoListsFragment();
-                setFragment(tl);
-                tl.addList();
-                //startListDialog();
-                //addListToNav();
+                startListDialog();
+                addListToNav();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -110,16 +107,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PrefManager prefManager = new PrefManager(this);
-        if(prefManager.isFirstTimeLaunch()) {
+        if (prefManager.isFirstTimeLaunch()) {
             startTut();
             finish();
         }
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
             unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL);
-        }
-        else {
+        } else {
             isUnlocked = false;
             unlockUntil = -1;
         }
@@ -185,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     public void initActivity(Bundle savedInstanceState) {
 
         this.isUnlocked = true;
@@ -207,14 +202,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
 
 
-            if(currentFragment == null) {
+            if (currentFragment == null) {
                 currentFragment = new TodoListsFragment();
                 Log.i(TAG, "Activity was not retained.");
 
             } else {
 
                 // restore state before configuration change
-                if(savedInstanceState != null) {
+                if (savedInstanceState != null) {
                     todoLists = savedInstanceState.getParcelableArrayList(KEY_TODO_LISTS);
                     clickedList = (TodoList) savedInstanceState.get(KEY_CLICKED_LIST);
                     dummyList = (TodoList) savedInstanceState.get(KEY_DUMMY_LIST);
@@ -241,17 +236,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     public void setFragment(Fragment fragment) {
 
-        if(fragment == null)
+        if (fragment == null)
             return;
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // If a fragment is currently displayed, replace it by the new one. PROBLEM WITH .getFragments()?
         List<Fragment> addedFragments = fragmentManager.getFragments();
-        if(addedFragments != null && addedFragments.size() > 0 ) {
+        if (addedFragments != null && addedFragments.size() > 0) {
             transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
         } else { // no fragment is currently displayed
             transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
@@ -285,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void uncheckNavigationEntries() {
         // uncheck all navigtion entries
-        if(navigationView != null) {
+        if (navigationView != null) {
             int size = navigationView.getMenu().size();
             for (int i = 0; i < size; i++) {
                 navigationView.getMenu().getItem(i).setChecked(false);
@@ -307,8 +301,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.menu_calendar_view) {
             CalendarFragment fragment = new CalendarFragment();
             setFragment(fragment);
-        }  else if (id == R.id.nav_trash){
-            Intent intent = new Intent (this, RecyclerActivity.class);
+        } else if (id == R.id.nav_trash) {
+            Intent intent = new Intent(this, RecyclerActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.nav_about) {
@@ -327,23 +321,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
         } else if (id == R.id.menu_home) {
-            //TodoListsFragment fragment = new TodoListsFragment();
-            //setFragment(fragment);
-            Intent intent = new Intent (this, TodoTaskActivity.class);
+           /* Intent intent = new Intent (this, TodoTaskActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
-            startActivity(intent);
+            startActivity(intent); */
+            showAllTasks();
         } else {
-            TodoTasksFragment tasks = new TodoTasksFragment();
-            for (int i=0; i < todoLists.size(); i++){
-                if (id == todoLists.get(i).getId()){
-                    Bundle b = new Bundle();
-                    b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
-                    b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
-                    tasks.setArguments(b);
-                    this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
-                    setFragment(tasks);
-                }
-            } //item.getActionView().setOnLongClickListener();
+            showTasksOfList(id);
         }
 
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
@@ -353,7 +336,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @Override
     protected void onStop() {
         this.isUnlocked = false;
@@ -361,14 +343,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onRestart(){
+    protected void onRestart() {
         super.onRestart();
         //finish();
     }
 
     @Override
     protected void onResume() {
-        if(this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+        if (this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             // restart activity to show pin dialog again
             Intent intent = new Intent(this, MainActivity.class);
             finish();
@@ -440,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ArrayList<TodoTask> tasks = new ArrayList<>();
         if (dbHelper != null) {
             tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
-            for (int i=0; i < tasks.size(); i++){
+            for (int i = 0; i < tasks.size(); i++) {
                 dummyList.setDummyList();
                 dummyList.setName("All tasks");
                 dummyList.setTasks(tasks);
@@ -460,13 +442,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ServiceConnection reminderServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
-            Log.d("ServiceConnection","connected");
+            Log.d("ServiceConnection", "connected");
             reminderService = ((ReminderService.ReminderServiceBinder) binder).getService();
         }
         //binder comes from server to communicate with method's of
 
         public void onServiceDisconnected(ComponentName className) {
-            Log.d("ServiceConnection","disconnected");
+            Log.d("ServiceConnection", "disconnected");
             reminderService = null;
         }
     };
@@ -487,10 +469,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // TODO This method is called from other fragments as well (e.g. after opening MainActivity by reminder). In such cases the service is null and alarms cannot be updated. Fix this!
 
-        if(reminderService != null) {
+        if (reminderService != null) {
 
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
-            if((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
+            if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
                 reminderService.processTask(currentTask);
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
@@ -508,7 +490,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String errorMessage = "";
 
         // call appropriate method depending on type
-        if(todo instanceof TodoList) {
+        if (todo instanceof TodoList) {
             databaseID = DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), (TodoList) todo);
             errorMessage = getString(R.string.list_to_db_error);
         } else if (todo instanceof TodoTask) {
@@ -522,11 +504,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // set unique database id (primary key) to the current object
-        if(databaseID == -1) {
+        if (databaseID == -1) {
             Log.e(TAG, errorMessage);
             return false;
-        }
-        else if(databaseID != DBQueryHandler.NO_CHANGES){
+        } else if (databaseID != DBQueryHandler.NO_CHANGES) {
             todo.setId(databaseID);
             return true;
         }
@@ -535,8 +516,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public TodoList getListByID(int id) {
-        for(TodoList currentList : todoLists) {
-            if(currentList.getId() == id)
+        for (TodoList currentList : todoLists) {
+            if (currentList.getId() == id)
                 return currentList;
         }
 
@@ -544,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //Adds Todo-Lists to the navigation-drawer
-    private void addListToNav(){
+    private void addListToNav() {
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         Menu navMenu = nv.getMenu();
         navMenu.clear();
@@ -552,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mf.inflate(R.menu.nav_content, navMenu);
         ArrayList<TodoList> help = new ArrayList<>();
         help.addAll(todoLists);
-        for (int i=0; i < help.size(); i++){
+        for (int i = 0; i < help.size(); i++) {
             String name = help.get(i).getName();
             int id = help.get(i).getId();
             navMenu.add(R.id.drawer_group2, id, 1, name).setIcon(R.drawable.ic_label_black_24dp);
@@ -560,7 +541,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     // create a dummy list containing all tasks
-    private void showAllTasks(){
+    private void showAllTasks() {
         ArrayList<TodoTask> allTasks = new ArrayList<>();
         for (TodoList currentList : todoLists)
             allTasks.addAll(currentList.getTasks());
@@ -592,6 +573,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     todoLists.add((TodoList) b);
                     adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
+                    sendToDatabase(b);
+                    addListToNav();
                     Log.i(TAG, "list added");
                 }
             }
@@ -608,5 +591,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //overridePendingTransition(0, 0);
     }
 
+    private void showTasksOfList(int id) {
+        TodoTasksFragment tasks = new TodoTasksFragment();
+        for (int i = 0; i < todoLists.size(); i++) {
+            if (id == todoLists.get(i).getId()) {
+                Bundle b = new Bundle();
+                b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
+                b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
+                tasks.setArguments(b);
+                this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+                setFragment(tasks);
+              //  TodoListAdapter adapter = new TodoListAdapter(this, todoLists);
+               // adapter.updateList(todoLists);
+            }
 
+        }
+    }
 }
