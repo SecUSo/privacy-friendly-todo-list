@@ -22,12 +22,3 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-android {
-    buildTypes {
-        release {
-            lintOptions {
-                disable 'MissingTranslation'
-            }
-        }
-    }
-}
