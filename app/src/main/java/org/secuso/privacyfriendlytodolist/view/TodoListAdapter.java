@@ -54,8 +54,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     public TodoListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                          int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.todo_list_entry, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_entry, parent, false);
 
         return new ViewHolder(v);
     }

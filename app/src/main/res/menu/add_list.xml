@@ -5,7 +5,8 @@
     <item
         android:id="@+id/ac_add"
         android:icon="@mipmap/plus_white"
-        app:showAsAction="collapseActionView|ifRoom"
-        android:title="List" />
+        android:title="List"
+        android:text="Neu"
+        app:showAsAction="always|withText"/>
 
 </menu>

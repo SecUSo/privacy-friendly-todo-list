@@ -28,7 +28,7 @@
     </item>
 
 
-    <item android:title="List's">
+    <item android:title="Lists">
         <menu>
             <group android:checkableBehavior="single"
                 android:id="@+id/drawer_group2"

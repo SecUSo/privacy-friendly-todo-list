@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -102,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Bundle extras = getIntent().getExtras();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         showAllTasks();
-        currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+        //currentFragment = fragmentManager.findFragmentByTag(KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
 
         // check if app was started by clicking on a reminding notification
         if (extras != null && TodoTasksFragment.KEY.equals(extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION))) {
@@ -203,7 +208,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             if (currentFragment == null) {
-                currentFragment = new TodoListsFragment();
+                showAllTasks();
+                //currentFragment = new TodoListsFragment();
                 Log.i(TAG, "Activity was not retained.");
 
             } else {
@@ -293,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        //item.getActionView().setLongClickable(true);
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
@@ -313,13 +320,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, HelpActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
-            item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Toast.makeText(getApplicationContext(), "Hallo du", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-            });
         } else if (id == R.id.menu_home) {
            /* Intent intent = new Intent (this, TodoTaskActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
@@ -537,6 +537,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String name = help.get(i).getName();
             int id = help.get(i).getId();
             navMenu.add(R.id.drawer_group2, id, 1, name).setIcon(R.drawable.ic_label_black_24dp);
+            /*MenuItem item = navMenu.getItem(id);
+            item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(MainActivity.this, "Options menu item long clicked!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }); */
         }
     }
 
@@ -554,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TodoTasksFragment fragment = new TodoTasksFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
-        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
+        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
         fragment.setArguments(bundle);
         setFragment(fragment);
     }
@@ -583,6 +591,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
+
+
+
     // Method starting tutorial
     private void startTut() {
         Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
@@ -601,10 +613,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tasks.setArguments(b);
                 this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
                 setFragment(tasks);
-              //  TodoListAdapter adapter = new TodoListAdapter(this, todoLists);
-               // adapter.updateList(todoLists);
             }
 
         }
+    }
+
+    private void setLongClick(MenuItem item) {
+
+        Menu myMenu = navigationView.getMenu();
+        item = myMenu.findItem(R.id.nav_help);
+        item.getActionView().setLongClickable(true);
+        item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(MainActivity.this, "Options menu item long clicked!", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "long clicked item");
+                return true;
+            }
+        });
     }
 }
