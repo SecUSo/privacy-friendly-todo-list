@@ -32,15 +32,6 @@
     <string name="yes">はい</string>
     <string name="no">いいえ</string>
 
-    <!-- Welcome Dialog -->
-    <string name="welcome_title">ようこそ</string>
-    <string name="welcome_viewhelp">ヘルプを表示</string>
-    <string name="welcome_text">プライバシーに配慮した To-Do リストへようこそ。 このアプリケーションはアクセス権を必要としません。 できることは:</string>
-    <string name="welcome_hint_lists">ラベル付き To-Do リストでタスクの管理。</string>
-    <string name="welcome_hint_deadlines">タスクの期限とリマインダーを作成します。</string>
-    <string name="welcome_hint_subtasks">タスクを展開してサブタスクを作成します。</string>
-    <string name="welcome_hint_pin">設定で PIN 保護を追加します。</string>
-    <string name="welcome_button">開始</string>
 
     <!-- Help -->
     <string name="help_overview_heading">概要</string>

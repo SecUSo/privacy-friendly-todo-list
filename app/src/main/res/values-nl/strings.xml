@@ -32,15 +32,6 @@
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
 
-    <!-- Welcome Dialog -->
-    <string name="welcome_title">Welkom</string>
-    <string name="welcome_viewhelp">Bekijk Help</string>
-    <string name="welcome_text">Welkom bij de privacyvriendelijke takenlijst. Deze applicatie vereist geen enkele toestemmingen. Je kan:</string>
-    <string name="welcome_hint_lists">Taken beheren in gelabelde To-Do lijsten.</string>
-    <string name="welcome_hint_deadlines">Deadlines en herinneringen plaatsen</string>
-    <string name="welcome_hint_subtasks">Ondertaken maken door de taak uit te breiden</string>
-    <string name="welcome_hint_pin">PIN-bescherming toevoegen aan de instellingen</string>
-    <string name="welcome_button">Begin</string>
 
     <!-- Help -->
     <string name="help_overview_heading">Overzicht</string>

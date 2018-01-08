@@ -32,15 +32,6 @@
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
 
-    <!-- Welcome Dialog -->
-    <string name="welcome_title">Witam!</string>
-    <string name="welcome_viewhelp">Pomoc</string>
-    <string name="welcome_text">Witamy w Liście zadań Privacy Friendly. Ta aplikacja nie wymaga żadnych uprawnień. Możesz:</string>
-    <string name="welcome_hint_lists">Zarządzać listą zadań.</string>
-    <string name="welcome_hint_deadlines">Zarządzać terminami i alarmami.</string>
-    <string name="welcome_hint_subtasks">Wprowadzać podzadania rozszerzając zadania.</string>
-    <string name="welcome_hint_pin">Wprowadzać hasło do ustawień.</string>
-    <string name="welcome_button">Start</string>
 
     <!-- Help -->
     <string name="help_overview_heading">Podgląd</string>
