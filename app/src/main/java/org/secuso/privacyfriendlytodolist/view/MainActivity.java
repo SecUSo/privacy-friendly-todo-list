@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // GUI
     private NavigationView navigationView;
+    private NavigationView navigationBottomView;
 
     // Others
     boolean isInitialized = false;
@@ -280,7 +281,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //LinearLayout l = (LinearLayout) findViewById(R.id.footer);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationBottomView = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationBottomView.setNavigationItemSelectedListener(this);
+
 
 
     }
