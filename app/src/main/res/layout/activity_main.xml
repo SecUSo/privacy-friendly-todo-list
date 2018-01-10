@@ -72,10 +72,9 @@
                 android:layout_gravity="top"
                 android:fitsSystemWindows="true"
                 android:layout_above="@id/nav_bottom"
-                android:scrollbarSize="0dp"
                 app:headerLayout="@layout/nav_header"
                 app:menu="@menu/nav_content"
-                app:elevation="1pt"/>
+                app:elevation="0pt"/>
 
         </RelativeLayout>
 

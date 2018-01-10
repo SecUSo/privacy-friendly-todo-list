@@ -305,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //item.getActionView().setLongClickable(true);
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
@@ -351,7 +350,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onRestart() {
         super.onRestart();
-        //finish();
     }
 
     @Override
@@ -554,6 +552,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+
     // create a dummy list containing all tasks
     private void showAllTasks() {
         ArrayList<TodoTask> allTasks = new ArrayList<>();
@@ -587,6 +587,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     todoLists.add((TodoList) b);
                     adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
+                    sendToDatabase(b);
                     sendToDatabase(b);
                     addListToNav();
                     Log.i(TAG, "list added");
@@ -627,7 +628,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setLongClick(MenuItem item) {
 
         Menu myMenu = navigationView.getMenu();
-        item = myMenu.findItem(R.id.nav_help);
+        item = (MenuItem) myMenu.findItem(R.id.nav_help);
         item.getActionView().setLongClickable(true);
         item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
