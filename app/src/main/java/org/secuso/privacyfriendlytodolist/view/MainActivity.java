@@ -243,10 +243,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uncheckNavigationEntries();
 
     }
-
+ int i = 0;
 
     public void setFragment(Fragment fragment) {
-
         if (fragment == null)
             return;
 
@@ -254,11 +253,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // If a fragment is currently displayed, replace it by the new one. PROBLEM WITH .getFragments()?
         List<Fragment> addedFragments = fragmentManager.getFragments();
-        if (addedFragments != null && addedFragments.size() > 0) {
+        if (i == 0){
+            transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+            i = 1;
+        } else
+            transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
+       /* if (addedFragments != null && addedFragments.size() > 0) {
             transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
         } else { // no fragment is currently displayed
             transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
-        }
+        } */
         transaction.addToBackStack(null);
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -623,6 +627,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         }
+    }
+
+    @Override
+    public FragmentManager getSupportFragmentManager() {
+        return super.getSupportFragmentManager();
     }
 
     private void setLongClick(MenuItem item) {

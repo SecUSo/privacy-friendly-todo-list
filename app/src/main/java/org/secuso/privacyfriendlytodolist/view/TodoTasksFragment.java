@@ -289,6 +289,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         super.onPause();
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu,inflater);
