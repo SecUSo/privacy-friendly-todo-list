@@ -54,7 +54,7 @@
     <string name="about">About</string>
     <string name="version_number">Version 1.0.1</string>
     <string name="about_author">Authors:</string>
-    <string name="about_author_names" translatable="false">Dominik Püllen, Simon Breitfelder</string>
+    <string name="about_author_names" translatable="false">Sebastian Lutz, Dominik Püllen, Simon Breitfelder</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">In affiliation with</string>
     <string name="privacy_friendly">This application belongs to the group of Privacy Friendly Apps developed by Technische Universität Darmstadt. Sourcecode licensed under Apache license. Images copyright TU Darmstadt and Google Inc.</string>
