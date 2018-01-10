@@ -32,7 +32,7 @@ public class DBQueryHandler {
 
     public static TodoTask getNextDueTask(SQLiteDatabase db, long today) {
 
-        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " /*+ TTodoTask.COLUMN_TRASH + "=0 AND " */ + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + "-? > 0 ORDER BY ABS(" + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " -?) LIMIT 1;";
+        String rawQuery = "SELECT * FROM " + TTodoTask.TABLE_NAME + " WHERE " + TTodoTask.COLUMN_DONE + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " > 0 AND " + TTodoTask.COLUMN_TRASH + "=0 AND " + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + "-? > 0 ORDER BY ABS(" + TTodoTask.COLUMN_DEADLINE_WARNING_TIME + " -?) LIMIT 1;";
         String selectionArgs[] = {String.valueOf(today)};
 
         TodoTask nextDueTask = null;
@@ -147,7 +147,7 @@ public class DBQueryHandler {
         int deletedTasks = 0;
         for(TodoTask task : todoList.getTasks())
             deletedTasks+=putTaskInTrash(db, task);
-        Log.i(TAG, deletedTasks + " tasks removed from the database.");
+        Log.i(TAG, deletedTasks + " tasks put into trash");
 
         String where = TTodoList.COLUMN_ID + "=?";
         String whereArgs[] = {String.valueOf(id)};

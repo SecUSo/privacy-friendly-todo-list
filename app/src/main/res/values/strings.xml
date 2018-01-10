@@ -79,7 +79,7 @@
     <string name="no_description_available">No description available.</string>
 
     <!-- To-Do tasks overview -->
-    <string name="empty_todo_list">No tasks available.</string>
+    <string name="empty_todo_list">No tasks available</string>
     <string name="all_tasks">All tasks</string>
     <string name="open_tasks">Open tasks</string>
     <string name="completed_tasks">Completed tasks</string>
@@ -195,6 +195,8 @@
     <string name="bin">Recycle</string>
     <string name="bin_toolbar">Recycle bin</string>
     <string name="btn_clear">Clear bin</string>
+    <string name="bin_empty">Bin is empty</string>
+
 
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Tasks</string>

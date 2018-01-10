@@ -125,7 +125,7 @@ public class RecyclerActivity extends AppCompatActivity{
         ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_recycle);
         ExpandableListView lv = (ExpandableListView) findViewById(R.id.trash_tasks);
-        TextView tv = (TextView) findViewById(R.id.rv_empty_view_no_tasks);
+        TextView tv = (TextView) findViewById(R.id.bin_empty);
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
     }

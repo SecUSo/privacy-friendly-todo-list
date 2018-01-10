@@ -43,11 +43,11 @@
             android:groupIndicator="@null"/>
 
         <TextView
-            android:id="@+id/rv_empty_view_no_tasks"
+            android:id="@+id/bin_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/empty_todo_list"
+            android:text="@string/bin_empty"
             android:textSize="18sp" />
 
 

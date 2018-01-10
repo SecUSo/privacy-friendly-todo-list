@@ -76,7 +76,7 @@
     <string name="no_description_available">Keine Beschreibung vorhanden.</string>
 
     <!-- To-Do tasks overview -->
-    <string name="empty_todo_list">Keine Aufgaben verfügbar.</string>
+    <string name="empty_todo_list">Keine Aufgaben</string>
     <string name="all_tasks">Alle Aufgaben</string>
     <string name="open_tasks">Ausstehende Aufgaben</string>
     <string name="completed_tasks">Erledigte Aufgaben</string>
@@ -192,6 +192,7 @@
     <string name="bin">Papierkorb</string>
     <string name="bin_toolbar">Papierkorb</string>
     <string name="btn_clear">Leeren</string>
+    <string name="bin_empty">Papierkorb ist leer</string>
 
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Aufgaben</string>

@@ -285,10 +285,14 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
     @Override
     public void onPause() {
-
+        saveNewTasks();
         super.onPause();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

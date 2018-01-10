@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uncheckNavigationEntries();
 
     }
- int i = 0;
+
 
     public void setFragment(Fragment fragment) {
         if (fragment == null)
@@ -253,16 +254,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // If a fragment is currently displayed, replace it by the new one. PROBLEM WITH .getFragments()?
         List<Fragment> addedFragments = fragmentManager.getFragments();
-        if (i == 0){
-            transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
-            i = 1;
-        } else
-            transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
-       /* if (addedFragments != null && addedFragments.size() > 0) {
+
+       if (addedFragments != null && addedFragments.size() > 0) {
             transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
         } else { // no fragment is currently displayed
             transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
-        } */
+        }
         transaction.addToBackStack(null);
         transaction.commit();
         fragmentManager.executePendingTransactions();
@@ -618,6 +615,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TodoTasksFragment tasks = new TodoTasksFragment();
         for (int i = 0; i < todoLists.size(); i++) {
             if (id == todoLists.get(i).getId()) {
+
+
                 Bundle b = new Bundle();
                 b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
                 b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
