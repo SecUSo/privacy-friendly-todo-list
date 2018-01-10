@@ -128,6 +128,8 @@ public class RecyclerActivity extends AppCompatActivity{
         TextView tv = (TextView) findViewById(R.id.bin_empty);
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
+
+        //TODO AlertDialog "Wirklich löschen?"
     }
 
 }

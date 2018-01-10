@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -239,10 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void onStart() {
-        //showAllTasks();
         super.onStart();
         uncheckNavigationEntries();
-
     }
 
 
@@ -327,9 +324,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_home) {
-           /* Intent intent = new Intent (this, TodoTaskActivity.class);
-            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
-            startActivity(intent); */
             showAllTasks();
         } else {
             showTasksOfList(id);
@@ -376,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i(TAG, "onResume()");
     }
 
+
     @Override
     protected void onDestroy() {
 
@@ -387,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         super.onDestroy();
     }
+
 
     @Override
     protected void onUserLeaveHint() {
@@ -404,6 +400,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -414,6 +411,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
     public ArrayList<TodoList> getTodoLists(boolean reload) {
         if (reload) {
             if (dbHelper != null)
@@ -422,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return todoLists;
     }
+
 
     public TodoList getTodoTasks() {
         ArrayList<TodoTask> tasks = new ArrayList<>();
@@ -458,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
+    
     public TodoList getDummyList() {
         return dummyList;
     }
@@ -487,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "Service is null. Cannot update alarms");
         }
     }
+
 
     // returns true if object was created in the database
     public boolean sendToDatabase(BaseTodo todo) {
@@ -520,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
+
     public TodoList getListByID(int id) {
         for (TodoList currentList : todoLists) {
             if (currentList.getId() == id)
@@ -529,30 +531,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return null;
     }
 
+
     //Adds Todo-Lists to the navigation-drawer
     private void addListToNav() {
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
         Menu navMenu = nv.getMenu();
         navMenu.clear();
+
         MenuInflater mf = new MenuInflater(getApplicationContext());
         mf.inflate(R.menu.nav_content, navMenu);
+
         ArrayList<TodoList> help = new ArrayList<>();
         help.addAll(todoLists);
+
         for (int i = 0; i < help.size(); i++) {
             String name = help.get(i).getName();
             int id = help.get(i).getId();
             navMenu.add(R.id.drawer_group2, id, 1, name).setIcon(R.drawable.ic_label_black_24dp);
-            /*MenuItem item = navMenu.getItem(id);
-            item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Toast.makeText(MainActivity.this, "Options menu item long clicked!", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            }); */
         }
     }
-
 
 
     // create a dummy list containing all tasks
@@ -573,6 +570,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragment.setArguments(bundle);
         setFragment(fragment);
     }
+
 
     // Method to add a new Todo-List
     private void startListDialog() {
@@ -599,23 +597,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
-
-
-
     // Method starting tutorial
     private void startTut() {
         Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        //overridePendingTransition(0, 0);
     }
+
 
     private void showTasksOfList(int id) {
         TodoTasksFragment tasks = new TodoTasksFragment();
         for (int i = 0; i < todoLists.size(); i++) {
             if (id == todoLists.get(i).getId()) {
-
 
                 Bundle b = new Bundle();
                 b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
@@ -624,25 +617,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
                 setFragment(tasks);
             }
-
         }
     }
 
-    @Override
-    public FragmentManager getSupportFragmentManager() {
-        return super.getSupportFragmentManager();
-    }
 
     private void setLongClick(MenuItem item) {
 
         Menu myMenu = navigationView.getMenu();
-        item = (MenuItem) myMenu.findItem(R.id.nav_help);
+        item = myMenu.findItem(R.id.nav_help);
         item.getActionView().setLongClickable(true);
         item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(MainActivity.this, "Options menu item long clicked!", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "long clicked item");
+                Toast.makeText(MainActivity.this, "MenuItem long clicked!", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "long clicked MenuItem");
                 return true;
             }
         });
