@@ -1,6 +1,8 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -16,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -457,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     };
 
-    
+
     public TodoList getDummyList() {
         return dummyList;
     }
@@ -547,7 +551,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int i = 0; i < help.size(); i++) {
             String name = help.get(i).getName();
             int id = help.get(i).getId();
-            navMenu.add(R.id.drawer_group2, id, 1, name).setIcon(R.drawable.ic_label_black_24dp);
+            MenuItem item = navMenu.add(R.id.drawer_group2, id, 1, name);
+            item.setIcon(R.drawable.ic_label_black_24dp);
+            ImageButton v = new ImageButton(this, null, R.style.BorderlessButtonStyle);
+            v.setImageResource(R.drawable.ic_delete_black_24dp);
+            v.setOnClickListener(new OnCustomMenuItemClickListener(id, name, this));
+            item.setActionView(v);
         }
     }
 
@@ -586,7 +595,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     todoLists.add((TodoList) b);
                     adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
-                    sendToDatabase(b);
                     sendToDatabase(b);
                     addListToNav();
                     Log.i(TAG, "list added");
@@ -629,10 +637,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         item.getActionView().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(MainActivity.this, "MenuItem long clicked!", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "long clicked MenuItem");
+                Toast.makeText(MainActivity.this, "MenuItem deleted", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "click delete for MenuItem");
                 return true;
             }
         });
+    }
+
+    public static class OnCustomMenuItemClickListener implements View.OnClickListener {
+        private final String name;
+        private final int id;
+        private Context context;
+
+        OnCustomMenuItemClickListener(int id, String name, Context context) {
+            this.id = id;
+            this.name = name;
+            this.context = context;
+        }
+
+        @Override
+        public void onClick(View view) {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+            builder1.setMessage(R.string.alert_listdelete);
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    R.string.alert_listdelete_yes,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+            builder1.setNegativeButton(
+                    R.string.alert_listdelete_no,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+
+            return;
+        }
     }
 }

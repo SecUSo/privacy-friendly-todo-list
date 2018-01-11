@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:title="@string/todos"
+    <group android:title="@string/todos"
+        android:checkableBehavior="single"
         android:orderInCategory="0">
 
-        <menu>
             <item
                 android:id="@+id/menu_home"
                 android:icon="@drawable/ic_home_black_24dp"
@@ -21,8 +21,7 @@
                 android:id="@+id/nav_trash"
                 android:icon="@drawable/ic_delete_black_24dp"
                 android:title="@string/bin"/>
-        </menu>
-    </item>
+    </group>
 
 
         <item android:title="Listen">

@@ -129,7 +129,6 @@ public class RecyclerActivity extends AppCompatActivity{
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
 
-        //TODO AlertDialog "Wirklich löschen?"
     }
 
 }

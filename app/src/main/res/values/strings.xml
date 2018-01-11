@@ -201,4 +201,9 @@
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Tasks</string>
 
+    <!-- ### Delete AlertDialog ### -->
+    <string name="alert_listdelete">Do you really want to delete this list?</string>
+    <string name="alert_listdelete_yes">Delete</string>
+    <string name="alert_listdelete_no">Cancel</string>
+
 </resources>
