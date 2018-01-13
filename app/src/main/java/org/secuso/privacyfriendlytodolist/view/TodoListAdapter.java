@@ -144,7 +144,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);
 
-            contextActivity.setFragment(fragment);
+            //contextActivity.setFragment(fragment);
         }
 
         @Override

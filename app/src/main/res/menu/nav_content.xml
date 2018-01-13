@@ -24,16 +24,12 @@
     </group>
 
 
-        <item android:title="Listen">
-            <menu>
             <group android:checkableBehavior="single"
                 android:id="@+id/drawer_group2"
                 android:orderInCategory="1">
                 //Get's filled by Lists
 
             </group>
-            </menu>
-        </item>
 
 
         <group android:checkableBehavior="single"

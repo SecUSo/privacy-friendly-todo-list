@@ -75,7 +75,7 @@ public class CalendarFragment extends Fragment {
                     bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
                     TodoTasksFragment fragment = new TodoTasksFragment();
                     fragment.setArguments(bundle);
-                    containerActivity.setFragment(fragment);
+                    //containerActivity.setFragment(fragment);
                 }
             }
         });
