@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         rl = (RelativeLayout) findViewById(R.id.relative_task);
         exLv = (ExpandableListView) findViewById(R.id.exlv_tasks);
         tv = (TextView) findViewById(R.id.tv_empty_view_no_tasks);
+        optionFab = (FloatingActionButton) findViewById(R.id.fab_new_task);
 
         dbHelper = DatabaseHelper.getInstance(this);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
@@ -573,7 +574,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             item.setIcon(R.drawable.ic_label_black_24dp);
             ImageButton v = new ImageButton(this, null, R.style.BorderlessButtonStyle);
             v.setImageResource(R.drawable.ic_delete_black_24dp);
-            v.setOnClickListener(new OnCustomMenuItemClickListener(id, name, this, MainActivity.this));
+            v.setOnClickListener(new OnCustomMenuItemClickListener(id, name, MainActivity.this, MainActivity.this));
             item.setActionView(v);
         }
     }
@@ -723,6 +724,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
+        optionFab.setVisibility(View.VISIBLE);
+        initFab(true);
     }
 
     private void showTasksOfList(int id) {
@@ -738,29 +741,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, help);
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
-        FloatingActionButton optionFab = (FloatingActionButton) findViewById(R.id.fab_new_task);
         optionFab.setVisibility(View.VISIBLE);
+        initFab(true);
         //initFab(true, id);
 
     }
 
-    private void initFab(boolean showFab, int id) {
-        clickedList = getListByID(id);
-        todoTasksContainer = clickedList.getTasks();
-        final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, todoTasksContainer);
-
-        ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(getBaseContext());
-        pt.setDialogResult(new TodoCallback() {
+    private void initFab(boolean showFab) {
+        optionFab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void finish(BaseTodo b) {
-                if (b instanceof TodoList) {
-                    todoTasksContainer.add((TodoTask) b);
-                    //saveNewTasks();
-                    taskAdapter.notifyDataSetChanged();
-                }
+            public void onClick(View v) {
+                ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(MainActivity.this);
+                pt.setDialogResult(new TodoCallback() {
+                    @Override
+                    public void finish(BaseTodo b) {
+                        if (b instanceof TodoList) {
+
+                        }
+                    }
+                });
+                pt.show();
             }
         });
-        pt.show();
+        /*dbHelper = DatabaseHelper.getInstance(this);
+        final ArrayList<TodoTask> tasks;
+        tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
+        final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks); */
+
+
     }
 
 
