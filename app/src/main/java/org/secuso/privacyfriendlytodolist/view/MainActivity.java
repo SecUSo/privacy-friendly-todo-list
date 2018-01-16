@@ -20,14 +20,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
@@ -36,6 +39,7 @@ import org.secuso.privacyfriendlytodolist.model.ReminderService;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
@@ -43,6 +47,7 @@ import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
+import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
 import java.lang.reflect.Array;
@@ -72,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RelativeLayout rl;
     private ExpandableListView exLv;
     private TextView tv;
+    ArrayList<TodoTask> todoTasksContainer;
+    private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
 
     private FloatingActionButton optionFab;
 
@@ -696,7 +703,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
-        ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        exLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+
+                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+                    expandableTodoTaskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+                } else {
+                    expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
+                }
+                registerForContextMenu(exLv);
+                Log.i(TAG, "long ficked");
+                return false;
+            }
+        });
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
     }
@@ -711,17 +735,133 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 help.addAll(lists.get(i).getTasks());
             }
         }
-        ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, help);
+        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, help);
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
         FloatingActionButton optionFab = (FloatingActionButton) findViewById(R.id.fab_new_task);
         optionFab.setVisibility(View.VISIBLE);
-        initFab(true, id);
+        //initFab(true, id);
 
     }
 
     private void initFab(boolean showFab, int id) {
-        
+        clickedList = getListByID(id);
+        todoTasksContainer = clickedList.getTasks();
+        final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, todoTasksContainer);
+
+        ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(getBaseContext());
+        pt.setDialogResult(new TodoCallback() {
+            @Override
+            public void finish(BaseTodo b) {
+                if (b instanceof TodoList) {
+                    todoTasksContainer.add((TodoTask) b);
+                    //saveNewTasks();
+                    taskAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+        pt.show();
     }
+
+
+    public void saveNewTasks() {
+        for(int i=0; i<todoTasksContainer.size(); i++) {
+            TodoTask currentTask = todoTasksContainer.get(i);
+
+            // If a dummy list is displayed, its id must not be assigned to the task.
+            if(!clickedList.isDummyList())
+                currentTask.setListId(clickedList.getId()); // crucial step to not lose the connection to the list
+
+            boolean dbChanged = sendToDatabase(currentTask);
+            if(dbChanged)
+                notifyReminderService(currentTask);
+
+            // write subtasks to the database
+            for(TodoSubTask subTask : currentTask.getSubTasks()) {
+                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
+                sendToDatabase(subTask);
+            }
+        }
+
+    }
+
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+
+        ExpandableListView.ExpandableListContextMenuInfo info =
+                (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+
+        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+        MenuInflater inflater = this.getMenuInflater();
+        menu.setHeaderView(Helper.getMenuHeader(getBaseContext(), getBaseContext().getString(R.string.select_option)));
+
+        // context menu for child items
+        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+            inflater.inflate(R.menu.todo_subtask_long_click, menu);
+        } else { // context menu for group items
+            inflater.inflate(R.menu.todo_task_long_click, menu);
+        }
+    }
+
+    public boolean onContextItemSelected(MenuItem item) {
+
+        final Tuple<TodoTask, TodoSubTask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
+        int affectedRows;
+
+        switch(item.getItemId()) {
+            case R.id.change_subtask:
+
+                ProcessTodoSubTaskDialog dialog = new ProcessTodoSubTaskDialog(this, longClickedTodo.getRight());
+                dialog.setDialogResult(new TodoCallback() {
+                    @Override
+                    public void finish(BaseTodo b) {
+                        if(b instanceof TodoTask) {
+                            expandableTodoTaskAdapter.notifyDataSetChanged();
+                            Log.i(TAG, "subtask altered");
+                        }
+                    }
+                });
+                dialog.show();
+                break;
+
+            case R.id.delete_subtask:
+                affectedRows = DBQueryHandler.putSubtaskInTrash(this.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
+                longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
+                if(affectedRows == 1)
+                    Toast.makeText(getBaseContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
+                else
+                    Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                break;
+            case R.id.change_task:
+                ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(this, longClickedTodo.getLeft());
+                editTaskDialog.setDialogResult(new TodoCallback() {
+
+                    @Override
+                    public void finish(BaseTodo alteredTask) {
+                        if(alteredTask instanceof TodoTask) {
+                            expandableTodoTaskAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                editTaskDialog.show();
+                break;
+            case R.id.delete_task:
+                affectedRows = DBQueryHandler.putTaskInTrash(this.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
+                todoTasksContainer.remove(longClickedTodo.getLeft());
+                if(affectedRows == 1)
+                    Toast.makeText(this, getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+
+                else
+                    Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid menu item selected.");
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
 }
 
