@@ -93,7 +93,7 @@ public class TodoListWidgetConfigureActivity extends Activity {
             return;
         }
 
-        mAppWidgetText.setText(loadTitlePref(TodoListWidgetConfigureActivity.this, mAppWidgetId));
+        //mAppWidgetText.setText(loadTitlePref(TodoListWidgetConfigureActivity.this, mAppWidgetId));
     }
 }
 

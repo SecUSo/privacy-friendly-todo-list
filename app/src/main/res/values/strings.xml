@@ -205,8 +205,11 @@
     <string name="alert_listdelete">Do you really want to delete this list?</string>
     <string name="alert_listdelete_yes">Delete</string>
     <string name="alert_listdelete_no">Cancel</string>
+
+    <!-- ### WIDGET ### -->
+    <string name="add_widget">Add widget</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
-    <string name="add_widget">Add widget</string>
+    <string name="widget_list">Choose a list:</string>
 
 </resources>

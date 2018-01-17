@@ -202,4 +202,10 @@
     <string name="alert_listdelete_yes">Löschen</string>
     <string name="alert_listdelete_no">Abbrechen</string>
 
+    <!-- ### WIDGET ### -->
+    <string name="add_widget">Widget hinzufügen</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Konfigurieren</string>
+    <string name="widget_list">Wählen Sie eine Liste aus:</string>
+
 </resources>
