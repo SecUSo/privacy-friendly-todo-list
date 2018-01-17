@@ -748,6 +748,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initFab(boolean showFab) {
+        dbHelper = DatabaseHelper.getInstance(this);
+        final ArrayList<TodoTask> tasks;
+        tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
+        final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+
         optionFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -756,19 +761,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void finish(BaseTodo b) {
                         if (b instanceof TodoList) {
-
+                            todoTasksContainer.add((TodoTask) b);
+                            saveNewTasks();
+                            taskAdapter.notifyDataSetChanged();
                         }
                     }
                 });
                 pt.show();
             }
         });
-        /*dbHelper = DatabaseHelper.getInstance(this);
-        final ArrayList<TodoTask> tasks;
-        tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
-        final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks); */
-
-
     }
 
 
@@ -792,6 +793,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
+
 
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
