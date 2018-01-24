@@ -898,13 +898,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.delete_task:
                 affectedRows = DBQueryHandler.putTaskInTrash(this.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
-                todoTasksContainer.remove(longClickedTodo.getLeft());
                 if(affectedRows == 1)
                     Toast.makeText(this, getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
-
                 else
                     Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
-                expandableTodoTaskAdapter.notifyDataSetChanged();
+                showAllTasks();
+                //expandableTodoTaskAdapter.notifyDataSetChanged();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");

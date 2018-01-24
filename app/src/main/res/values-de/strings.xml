@@ -90,7 +90,7 @@
     <string name="no_deadline">Keine Deadline</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="delete_task">Aufgabe löschen</string>
-    <string name="task_removed">Aufgabe wurde gelöscht.</string>
+    <string name="task_removed">Aufgabe wurde in PApierkorb verschoben.</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Erinnerung</string>
     <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>

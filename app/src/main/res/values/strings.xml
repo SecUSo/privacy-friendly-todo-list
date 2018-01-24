@@ -93,7 +93,7 @@
     <string name="no_deadline">No Deadline</string>
     <string name="edit_task">Edit To-Do Task</string>
     <string name="delete_task">Delete To-Do Task</string>
-    <string name="task_removed">Task was successfully removed.</string>
+    <string name="task_removed">Task was successfully put into bin.</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Reminder</string>
     <string name="deadline_smaller_reminder">The deadline can not be earlier than the reminder time.</string>
