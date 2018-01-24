@@ -76,7 +76,7 @@ public class TodoListWidgetConfigureActivity extends Activity {
         setResult(RESULT_CANCELED);
 
         setContentView(R.layout.todo_list_widget_configure);
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
+        //mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
         findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
 
         // Find the widget id from the intent.

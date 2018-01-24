@@ -17,7 +17,7 @@ public class TodoListWidget extends AppWidgetProvider {
         CharSequence widgetText = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+        //views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

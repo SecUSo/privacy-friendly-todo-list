@@ -14,10 +14,12 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -112,9 +114,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.add_list, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.ac_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                collapseAll();
+                expandableTodoTaskAdapter.setQueryString(query);
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                collapseAll();
+                expandableTodoTaskAdapter.setQueryString(query);
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
+
     }
+
+    private void collapseAll()
+    {
+        // collapse all elements on view change.
+        // the expandable list view keeps the expanded indices, so other items
+        // get expanded, when they get the old expanded index
+        int groupCount = expandableTodoTaskAdapter.getGroupCount();
+        for(int i = 0; i < groupCount; i++)
+            exLv.collapseGroup(i);
+    }
+
+
 
 
     @Override
@@ -306,9 +345,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationBottomView.setNavigationItemSelectedListener(this);
 
-
-
     }
+
 
     public void uncheckNavigationEntries() {
         // uncheck all navigtion entries
@@ -321,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "Navigation entries unchecked.");
         }
     }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -725,7 +764,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
-        initFab(true);
+        //initFab(true, id);
     }
 
     private void showTasksOfList(int id) {
@@ -742,16 +781,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
-        initFab(true);
+        initFab(true, id);
         //initFab(true, id);
 
     }
 
-    private void initFab(boolean showFab) {
+    private void initFab(boolean showFab, int id) {
         dbHelper = DatabaseHelper.getInstance(this);
         final ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
         final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        final int helpId = id;
 
         optionFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -760,10 +800,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 pt.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
-                        if (b instanceof TodoList) {
-                            todoTasksContainer.add((TodoTask) b);
-                            saveNewTasks();
-                            taskAdapter.notifyDataSetChanged();
+                        if (b instanceof TodoTask) {
+                            ((TodoTask) b).setListId(helpId);
+                            sendToDatabase(b);
+                            showTasksOfList(helpId);
                         }
                     }
                 });
@@ -773,7 +813,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void saveNewTasks() {
+ /*   public void saveNewTasks() {
         for(int i=0; i<todoTasksContainer.size(); i++) {
             TodoTask currentTask = todoTasksContainer.get(i);
 
@@ -792,7 +832,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-    }
+    } */
 
 
     public void onCreateContextMenu(ContextMenu menu, View v,
