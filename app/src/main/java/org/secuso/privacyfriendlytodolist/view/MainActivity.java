@@ -757,7 +757,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
                 }
                 registerForContextMenu(exLv);
-                Log.i(TAG, "long ficked");
                 return false;
             }
         });
