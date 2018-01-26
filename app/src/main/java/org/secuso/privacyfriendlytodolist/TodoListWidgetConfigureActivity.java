@@ -7,7 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
+
+import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+
+import java.util.ArrayList;
 
 /**
  * The configuration screen for the {@link TodoListWidget TodoListWidget} AppWidget.
@@ -17,18 +25,22 @@ public class TodoListWidgetConfigureActivity extends Activity {
     private static final String PREFS_NAME = "org.secuso.privacyfriendlytodolist.TodoListWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private Spinner spinner;
+    private String selected;
+    private DatabaseHelper dbHelper;
+    private ArrayAdapter<String> lists;
     EditText mAppWidgetText;
     View.OnClickListener mOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             final Context context = TodoListWidgetConfigureActivity.this;
 
             // When the button is clicked, store the string locally
-            String widgetText = mAppWidgetText.getText().toString();
-            saveTitlePref(context, mAppWidgetId, widgetText);
+            //String widgetText = mAppWidgetText.getText().toString();
+            //saveTitlePref(context, mAppWidgetId, widgetText);
 
             // It is the responsibility of the configuration activity to update the app widget
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            TodoListWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
+            //TodoListWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
 
             // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();
@@ -71,6 +83,8 @@ public class TodoListWidgetConfigureActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        updateLists();
+
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
@@ -78,6 +92,11 @@ public class TodoListWidgetConfigureActivity extends Activity {
         setContentView(R.layout.todo_list_widget_configure);
         //mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
         findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
+
+        //initialize spinner dropdown
+        spinner = (Spinner) findViewById(R.id.spinner1);
+        lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(lists);
 
         // Find the widget id from the intent.
         Intent intent = getIntent();
@@ -95,5 +114,24 @@ public class TodoListWidgetConfigureActivity extends Activity {
 
         //mAppWidgetText.setText(loadTitlePref(TodoListWidgetConfigureActivity.this, mAppWidgetId));
     }
+
+    //updates the lists array and prepare adapter for spinner
+    public void updateLists(){
+        dbHelper = DatabaseHelper.getInstance(this);
+        ArrayList<TodoList> tl = new ArrayList<TodoList>();
+        tl = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        ArrayList<String> help = new ArrayList<>();
+        for (int i=0; i<tl.size(); i++){
+            help.add(tl.get(i).getName());
+        }
+        lists = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, help);
+        lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    }
+
+    public String getSelectedItem(){
+        selected = spinner.getSelectedItem().toString();
+        return selected;
+    }
+
 }
 

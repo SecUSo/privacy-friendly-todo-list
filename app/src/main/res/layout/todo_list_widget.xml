@@ -4,32 +4,17 @@
     android:background="#4D000000"
     android:padding="@dimen/widget_margin">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_widget"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            android:layout_height="wrap_content"
+            android:text="Looool"
+            android:id="@+id/text_wid"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </LinearLayout>
 
-
-    <ListView
-        android:id="@+id/widget_tasks"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:groupIndicator="@null">
-
-
-
-    </ListView>
 
 </RelativeLayout>

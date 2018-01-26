@@ -283,12 +283,14 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     }
 
 
-
+    //updates the lists array
     public void updateLists(){
         dbHelper = DatabaseHelper.getInstance(getContext());
         lists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
     }
 
+
+    //change the dialogtitle from "new task" to "edit task"
     public void titleEdit(){
         dialogTitleNew.setVisibility(View.GONE);
         dialogTitleEdit.setVisibility(View.VISIBLE);
