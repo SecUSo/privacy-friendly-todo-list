@@ -860,12 +860,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(item.getItemId()) {
             case R.id.change_subtask:
 
-                ProcessTodoSubTaskDialog dialog = new ProcessTodoSubTaskDialog(this, longClickedTodo.getRight());
+                final ProcessTodoSubTaskDialog dialog = new ProcessTodoSubTaskDialog(this, longClickedTodo.getRight());
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
                         if(b instanceof TodoTask) {
-                            expandableTodoTaskAdapter.notifyDataSetChanged();
+                            sendToDatabase(b);
                             Log.i(TAG, "subtask altered");
                         }
                     }
@@ -883,12 +883,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 expandableTodoTaskAdapter.notifyDataSetChanged();
                 break;
             case R.id.change_task:
-                ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(this, longClickedTodo.getLeft());
+                final ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(this, longClickedTodo.getLeft());
+                editTaskDialog.titleEdit();
                 editTaskDialog.setDialogResult(new TodoCallback() {
 
                     @Override
                     public void finish(BaseTodo alteredTask) {
                         if(alteredTask instanceof TodoTask) {
+                            sendToDatabase(alteredTask);
                             expandableTodoTaskAdapter.notifyDataSetChanged();
                         }
                     }

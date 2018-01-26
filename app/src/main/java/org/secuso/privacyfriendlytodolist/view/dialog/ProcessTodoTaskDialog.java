@@ -1,6 +1,8 @@
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,17 +15,28 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+
+import java.util.ArrayList;
 
 public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     private TextView prioritySelector;
     private TextView deadlineTextView;
     private TextView reminderTextView;
+    private TextView listSelector;
+    private TextView dialogTitleNew;
+    private TextView dialogTitleEdit;
     private SeekBar progressSelector;
     private EditText taskName;
     private EditText taskDescription;
     private TodoTask.Priority taskPriority = null;
+    private int selectedListID;
+    private ArrayList<TodoList> lists;
+    private DatabaseHelper dbHelper;
     private int taskProgress = 0;
     private String name, description;
     private long deadline = -1;
@@ -42,6 +55,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         task.setCreated();
         //task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
+
 
     public ProcessTodoTaskDialog(Context context, TodoTask task) {
         super(context, R.layout.add_task_dialog);
@@ -83,6 +97,25 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         taskPriority = defaultPriority;
         prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
 
+        //initialize titles of the dialog
+        dialogTitleNew = (TextView) findViewById(R.id.dialog_title);
+        dialogTitleEdit = (TextView) findViewById(R.id.dialog_edit);
+
+
+        //initialize textview that displays selected list
+        listSelector = (TextView) findViewById (R.id.tv_new_task_listchoose);
+        listSelector.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerForContextMenu(listSelector);
+                openContextMenu(listSelector);
+            }
+        });
+        listSelector.setOnCreateContextMenuListener(this);
+        //selectedListID = 0;
+        //listSelector.setText("");
+
+
         // initialize seekbar that allows to select the progress
         final TextView selectedProgress = (TextView) findViewById(R.id.new_task_progress);
         progressSelector = (SeekBar) findViewById(R.id.sb_new_task_progress);
@@ -122,6 +155,9 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     task.setDescription(description);
                     task.setDeadline(deadline);
                     task.setPriority(taskPriority);
+                    if (selectedListID < 10000){
+                        task.setListId(selectedListID);
+                    }
                     task.setProgress(taskProgress);
                     task.setReminderTime(reminderTime);
                     callback.finish(task);
@@ -204,24 +240,60 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        switch (v.getId()){
+            case R.id.tv_new_task_priority:
+                ContextMenu pri = menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_list)));
+                for (TodoTask.Priority prio : TodoTask.Priority.values()) {
+                    menu.add(Menu.NONE, prio.getValue(), Menu.NONE, Helper.priority2String(getContext(), prio));
+                }
+                break;
 
-        menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_priority)));
-        for (TodoTask.Priority prio : TodoTask.Priority.values()) {
-            menu.add(Menu.NONE, prio.getValue(), Menu.NONE, Helper.priority2String(getContext(), prio));
+            case R.id.tv_new_task_listchoose:
+                ContextMenu li = menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_list)));
+                updateLists();
+                for (TodoList tl : lists){
+                    menu.add(tl.getName());
+                }
+            break;
         }
-
     }
+
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
         for (TodoTask.Priority prio : TodoTask.Priority.values()) {
             if (item.getItemId() == prio.getValue()) {
                 taskPriority = prio;
                 prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
             }
+            else {
+                taskPriority = defaultPriority;
+                prioritySelector.setText((Helper.priority2String(getContext(), taskPriority)));
+            }
+        }
+
+        for (TodoList tl : lists){
+            if (item.getTitle() == tl.getName()){
+                this.selectedListID = tl.getId();
+                listSelector.setText(tl.getName());
+            }
         }
 
         return super.onMenuItemSelected(featureId, item);
     }
+
+
+
+    public void updateLists(){
+        dbHelper = DatabaseHelper.getInstance(getContext());
+        lists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+    }
+
+    public void titleEdit(){
+        dialogTitleNew.setVisibility(View.GONE);
+        dialogTitleEdit.setVisibility(View.VISIBLE);
+
+    }
+
+
 }

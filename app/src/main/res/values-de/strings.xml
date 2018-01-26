@@ -86,11 +86,12 @@
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Neue Aufgabe</string>
+    <string name="edit_todo_task">Aufgabe bearbeiten</string>
     <string name="deadline_dd">Deadline:</string>
     <string name="no_deadline">Keine Deadline</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="delete_task">Aufgabe löschen</string>
-    <string name="task_removed">Aufgabe wurde in PApierkorb verschoben.</string>
+    <string name="task_removed">Aufgabe wurde in Papierkorb verschoben.</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Erinnerung</string>
     <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
@@ -99,6 +100,7 @@
     <string name="priority_colon">Priorität:</string>
     <string name="zero_percent">0%</string>
     <string name="select_priority">Priorität</string>
+    <string name="select_list">Bitte wählen Sie eine Liste!</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>

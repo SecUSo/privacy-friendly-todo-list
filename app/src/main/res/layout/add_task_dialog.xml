@@ -6,11 +6,25 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:maxLength="@integer/max_todo_titel_length"
         android:text="@string/new_todo_task"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:padding="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/dialog_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:maxLength="@integer/max_todo_titel_length"
+        android:visibility="gone"
+        android:text="@string/edit_todo_task"
         android:textColor="@color/black"
         android:textSize="22sp"
         android:padding="20sp"
@@ -128,14 +142,33 @@
             android:id="@+id/tv_new_task_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_new_task_priority_str"
+            android:layout_alignBottom="@+id/tv_new_task_priority_str"
+            android:layout_alignStart="@+id/tv_new_task_listchoose"
             android:text="Click to select!"
             android:textSize="16sp"
-            android:textStyle="italic"
-            android:layout_alignLeft="@+id/new_task_progress"
-            android:layout_marginTop="12dp"
-            android:layout_below="@+id/new_task_progress"
-            android:layout_toRightOf="@+id/tv_new_task_priority_str"
-            />
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_new_task_listchoose_str"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose list:"
+            android:layout_below="@+id/tv_new_task_priority"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_new_task_listchoose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_new_task_listchoose_str"
+            android:layout_alignBottom="@+id/tv_new_task_listchoose_str"
+            android:layout_centerHorizontal="true"
+            android:text="Click to select!"
+            android:textSize="16sp"
+            android:textStyle="italic" />
 
     </RelativeLayout>
 

@@ -89,6 +89,7 @@
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">New To-Do task</string>
+    <string name="edit_todo_task">Edit To-Do task</string>
     <string name="deadline_dd">Deadline:</string>
     <string name="no_deadline">No Deadline</string>
     <string name="edit_task">Edit To-Do Task</string>
@@ -102,6 +103,7 @@
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0%</string>
     <string name="select_priority">Please select a priority!</string>
+    <string name="select_list">Please select a list!</string>
     <string name="new_todo_subtask">New subtask</string>
     <string name="todo_name_must_not_be_empty">Please enter a task name.</string>
     <string name="edit_subtask">Edit subtask</string>
