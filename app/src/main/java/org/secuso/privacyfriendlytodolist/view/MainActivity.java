@@ -863,6 +863,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.change_subtask:
 
                 final ProcessTodoSubTaskDialog dialog = new ProcessTodoSubTaskDialog(this, longClickedTodo.getRight());
+                dialog.titleEdit();
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {

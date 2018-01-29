@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -15,6 +16,8 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
     private EditText etSubtaskName;
     private Button cancelButton;
     private TodoSubTask subtask;
+    private TextView dialogTitleNew;
+    private TextView dialogTitleEdit;
 
     public ProcessTodoSubTaskDialog(Context context) {
         super(context, R.layout.add_subtask_dialog);
@@ -41,6 +44,10 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
         Button okButton = (Button) findViewById(R.id.bt_new_subtask_ok);
         cancelButton = (Button) findViewById(R.id.bt_new_subtask_cancel);
 
+        //initialize titles of the dialog
+        dialogTitleEdit = (TextView) findViewById(R.id.dialog_edit_sub);
+        dialogTitleNew = (TextView) findViewById(R.id.dialog_subtitle);
+
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,5 +73,10 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
                 ProcessTodoSubTaskDialog.this.dismiss();
             }
         });
+    }
+
+    public void titleEdit() {
+        dialogTitleNew.setVisibility(View.GONE);
+        dialogTitleEdit.setVisibility(View.VISIBLE);
     }
 }
