@@ -145,7 +145,7 @@
             android:layout_alignBaseline="@+id/tv_new_task_priority_str"
             android:layout_alignBottom="@+id/tv_new_task_priority_str"
             android:layout_alignStart="@+id/tv_new_task_listchoose"
-            android:text="Click to select!"
+            android:text="@string/click_to_choose"
             android:textSize="16sp"
             android:textStyle="italic" />
 
@@ -166,7 +166,7 @@
             android:layout_alignBaseline="@+id/tv_new_task_listchoose_str"
             android:layout_alignBottom="@+id/tv_new_task_listchoose_str"
             android:layout_centerHorizontal="true"
-            android:text="Click to select!"
+            android:text="@string/click_to_choose"
             android:textSize="16sp"
             android:textStyle="italic" />
 

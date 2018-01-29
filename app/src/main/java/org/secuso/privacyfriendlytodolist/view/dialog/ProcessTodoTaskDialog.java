@@ -147,9 +147,14 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                 String name = taskName.getText().toString();
                 String description = taskDescription.getText().toString();
 
+                String listName = listSelector.getText().toString();
+
                 if(name.equals("")) {
                     Toast.makeText(getContext(), getContext().getString(R.string.todo_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (listName.equals(getContext().getString(R.string.click_to_choose))) {
+                    Toast.makeText(getContext(), getContext().getString(R.string.to_choose_list), Toast.LENGTH_SHORT).show();
+                }
+                else {
 
                     task.setName(name);
                     task.setDescription(description);
@@ -294,6 +299,19 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     public void titleEdit(){
         dialogTitleNew.setVisibility(View.GONE);
         dialogTitleEdit.setVisibility(View.VISIBLE);
+
+    }
+
+    public void setListSelector(int id, boolean idExists){
+        updateLists();
+        for (TodoList tl : lists){
+            if (id == tl.getId() && idExists == true){
+                listSelector.setText(tl.getName());
+                selectedListID = tl.getId();
+            }else if (!idExists){
+                listSelector.setText(getContext().getString(R.string.click_to_choose));
+            }
+        }
 
     }
 

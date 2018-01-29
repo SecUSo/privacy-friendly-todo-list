@@ -106,6 +106,8 @@
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
     <string name="delete_subtask">Unteraufgabe löschen</string>
     <string name="subtask_removed">Unteraufgabe wurde gelöscht</string>
+    <string name="to_choose_list">Bitte Liste auswählen!</string>
+    <string name="click_to_choose">Klicken zum Wählen!</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>

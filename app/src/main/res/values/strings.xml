@@ -109,6 +109,9 @@
     <string name="edit_subtask">Edit subtask</string>
     <string name="delete_subtask">Delete subtask</string>
     <string name="subtask_removed">Subtask successfully removed.</string>
+    <string name="to_choose_list">Please select a list!</string>
+    <string name="click_to_choose">Click to select!</string>
+
 
     <!-- Select reminder dialog -->
     <string name="date">Date</string>

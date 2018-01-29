@@ -765,7 +765,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
-        //initFab(true, id);
+        initFab(true, 0, false);
     }
 
     private void showTasksOfList(int id) {
@@ -782,29 +782,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
-        initFab(true, id);
-        //initFab(true, id);
+        initFab(true, id , true);
 
     }
 
-    private void initFab(boolean showFab, int id) {
+    private void initFab(boolean showFab, int id, boolean idExists) {
         dbHelper = DatabaseHelper.getInstance(this);
         final ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
         final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         final int helpId = id;
+        final boolean helpExists = idExists;
 
         optionFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(MainActivity.this);
+                pt.setListSelector(helpId, helpExists);
                 pt.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
                         if (b instanceof TodoTask) {
-                            ((TodoTask) b).setListId(helpId);
+                            //((TodoTask) b).setListId(helpId);
                             sendToDatabase(b);
-                            showTasksOfList(helpId);
+                            if (helpExists){
+                                showTasksOfList(helpId);
+                            } else
+                                showAllTasks();
                         }
                     }
                 });
