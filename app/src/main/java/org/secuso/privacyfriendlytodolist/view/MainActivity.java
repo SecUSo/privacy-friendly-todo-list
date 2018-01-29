@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -54,6 +55,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 //import android.app.FragmentManager;
 
@@ -304,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uncheckNavigationEntries();
     }
 
-/*
+
     public void setFragment(Fragment fragment) {
         if (fragment == null)
             return;
@@ -323,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
         fragmentManager.executePendingTransactions();
 
-    } */
+    }
 
     private void guiSetup() {
 
@@ -892,6 +894,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if(alteredTask instanceof TodoTask) {
                             sendToDatabase(alteredTask);
                             expandableTodoTaskAdapter.notifyDataSetChanged();
+                            showTasksOfList(((TodoTask) alteredTask).getListId());
                         }
                     }
                 });
