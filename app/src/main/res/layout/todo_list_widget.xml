@@ -1,18 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4D000000"
+    android:background="#6D000000"
     android:padding="@dimen/widget_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Looool"
-            android:id="@+id/text_wid"/>
+            android:id="@+id/list_widget">
+
+        </ListView>
 
     </LinearLayout>
 
