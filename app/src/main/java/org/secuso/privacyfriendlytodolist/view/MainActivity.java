@@ -615,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             item.setIcon(R.drawable.ic_label_black_24dp);
             ImageButton v = new ImageButton(this, null, R.style.BorderlessButtonStyle);
             v.setImageResource(R.drawable.ic_delete_black_24dp);
-            v.setOnClickListener(new OnCustomMenuItemClickListener(id, name, MainActivity.this, MainActivity.this));
+            v.setOnClickListener(new OnCustomMenuItemClickListener(help.get(i).getId(), name, MainActivity.this, MainActivity.this));
             item.setActionView(v);
         }
     }
@@ -691,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static class OnCustomMenuItemClickListener implements View.OnClickListener {
         private final String name;
-        private final int id;
+        private int id;
         private Context context;
         private MainActivity mainActivity;
 
@@ -710,16 +710,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             builder1.setMessage(R.string.alert_listdelete);
             builder1.setCancelable(true);
 
-
             builder1.setPositiveButton(
                     R.string.alert_listdelete_yes,
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+                        public void onClick(DialogInterface dialog, int setId) {
                             ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mainActivity).getReadableDatabase());
                             for (TodoList t : todoLists) {
                                 if (t.getId() == id) {
                                     DBQueryHandler.deleteTodoList(DatabaseHelper.getInstance(mainActivity).getWritableDatabase(), t);
-                                    mainActivity.addListToNav();
+                                    //mainActivity.addListToNav();
                                 }
                             }
                             dialog.cancel();
@@ -786,6 +785,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    //idExists describes if id is given from list (true) or new task is created in all-tasks (false)
     private void initFab(boolean showFab, int id, boolean idExists) {
         dbHelper = DatabaseHelper.getInstance(this);
         final ArrayList<TodoTask> tasks;
@@ -805,6 +805,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (b instanceof TodoTask) {
                             //((TodoTask) b).setListId(helpId);
                             sendToDatabase(b);
+                            //show List if created in certain list, else show all tasks
                             if (helpExists){
                                 showTasksOfList(helpId);
                             } else
