@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 /*
  * This calender marks a day if there is a deadline of a task which is not yet finished.
+ *
  */
 public class CalendarGridAdapter extends ArrayAdapter<Date>{
 

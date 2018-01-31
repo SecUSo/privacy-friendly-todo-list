@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         } else if (id == R.id.menu_calendar_view) {
             CalendarFragment fragment = new CalendarFragment();
-            //setFragment(fragment);
+            setFragment(fragment);
         } else if (id == R.id.nav_trash) {
             Intent intent = new Intent(this, RecyclerActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
