@@ -47,6 +47,7 @@ import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
 import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
+import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
@@ -373,8 +374,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_calendar_view) {
-            CalendarFragment fragment = new CalendarFragment();
-            setFragment(fragment);
+            Intent intent = new Intent(this, CalendarActivity.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+            startActivity(intent);
+            /*CalendarFragment fragment = new CalendarFragment();
+            setFragment(fragment); */
         } else if (id == R.id.nav_trash) {
             Intent intent = new Intent(this, RecyclerActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
@@ -481,7 +485,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (dbHelper != null)
                 todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
         }
-
         return todoLists;
     }
 
@@ -783,6 +786,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         optionFab.setVisibility(View.VISIBLE);
         initFab(true, id , true);
 
+    }
+
+    public void showDeadlineTasks(ArrayList<TodoTask> tasks){
+        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        exLv.setAdapter(expandableTodoTaskAdapter);
     }
 
     //idExists describes if id is given from list (true) or new task is created in all-tasks (false)

@@ -46,6 +46,9 @@
             android:name=".view.RecyclerActivity"
             android:label="@string/bin" />
         <activity
+            android:name=".view.calendar.CalendarActivity"
+            android:label="@string/calendar" />
+        <activity
             android:name=".view.TodoTaskActivity"
             android:label="@string/todo_activity" />
         <activity

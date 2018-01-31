@@ -120,7 +120,7 @@ public class RecyclerActivity extends AppCompatActivity{
 
     public void updateAdapter() {
         dbhelper = DatabaseHelper.getInstance(this);
-        ArrayList<TodoTask> tasks = new ArrayList<>();
+        ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
         ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_recycle);
