@@ -184,12 +184,20 @@ public class DBQueryHandler {
                         int id = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_ID));
                         String taskName = c.getString(c.getColumnIndex(TTodoTask.COLUMN_NAME));
                         String taskDescription = c.getString(c.getColumnIndex(TTodoTask.COLUMN_DESCRIPTION));
+                        int progress = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
+                        //int priority =  c.getColumnIndex(TTodoTask.COLUMN_PRIORITY);
+                       /* boolean done = false;
+                        if (c.getColumnIndex(TTodoTask.COLUMN_DONE) == 1)
+                            done = true; */
 
                         TodoTask currentTask = new TodoTask();
                         currentTask.setName(taskName);
                         currentTask.setDescription(taskDescription);
                         currentTask.setId(id);
                         currentTask.setSubTasks(getSubTasksByTaskId(db, id));
+                        currentTask.setProgress(progress);
+                        //currentTask.setPriority(priority);
+                        //currentTask.setDone(done);
                         todo.add(currentTask);
                     } while (c.moveToNext());
                 }

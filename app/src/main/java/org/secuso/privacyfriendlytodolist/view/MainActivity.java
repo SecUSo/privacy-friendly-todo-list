@@ -718,8 +718,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             for (TodoList t : todoLists) {
                                 if (t.getId() == id) {
                                     DBQueryHandler.deleteTodoList(DatabaseHelper.getInstance(mainActivity).getWritableDatabase(), t);
-                                    //mainActivity.addListToNav();
                                 }
+                                mainActivity.addListToNav();
                             }
                             dialog.cancel();
                         }

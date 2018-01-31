@@ -27,6 +27,7 @@ public class TodoListWidget extends AppWidgetProvider {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
         //views.setTextViewText(R.id.text_widget, widgetText);
+        views.addView(R.id.list_widget, views);
 
 
         // Instruct the widget manager to update the widget

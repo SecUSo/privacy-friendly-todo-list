@@ -302,6 +302,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     }
 
+    //sets the textview either to listname in context or if no context to default
     public void setListSelector(int id, boolean idExists){
         updateLists();
         for (TodoList tl : lists){
