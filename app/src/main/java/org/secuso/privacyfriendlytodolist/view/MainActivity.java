@@ -159,15 +159,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        boolean checked = false;
+        ExpandableTodoTaskAdapter.SortTypes sortType = null;
+
+        collapseAll();
+
         switch (item.getItemId()) {
             case R.id.ac_add:
                 startListDialog();
                 addListToNav();
                 break;
+            case R.id.ac_show_all_tasks:
+                expandableTodoTaskAdapter.setFilter(ExpandableTodoTaskAdapter.Filter.ALL_TASKS);
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.ac_show_open_tasks:
+                expandableTodoTaskAdapter.setFilter(ExpandableTodoTaskAdapter.Filter.OPEN_TASKS);
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.ac_show_completed_tasks:
+                expandableTodoTaskAdapter.setFilter(ExpandableTodoTaskAdapter.Filter.COMPLETED_TASKS);
+                expandableTodoTaskAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.ac_group_by_prio:
+                checked = !item.isChecked();
+                item.setChecked(checked);
+                sortType = ExpandableTodoTaskAdapter.SortTypes.PRIORITY;
+                break;
+            case R.id.ac_sort_by_deadline:
+                checked = !item.isChecked();
+                item.setChecked(checked);
+                sortType = ExpandableTodoTaskAdapter.SortTypes.DEADLINE;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+        if(checked)
+            expandableTodoTaskAdapter.addSortCondition(sortType);
+        else
+            expandableTodoTaskAdapter.removeSortCondition(sortType);
+            expandableTodoTaskAdapter.notifyDataSetChanged();
+
+        return true;
     }
 
 
@@ -675,23 +711,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
-/*
-    private void showTasksOfList(int id) {
-        TodoTasksFragment tasks = new TodoTasksFragment();
-        for (int i = 0; i < todoLists.size(); i++) {
-            if (id == todoLists.get(i).getId()) {
 
-                Bundle b = new Bundle();
-                b.putInt(TodoList.UNIQUE_DATABASE_ID, id);
-                b.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true);
-                tasks.setArguments(b);
-                this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
-                //setFragment(tasks);
-            }
-        }
-    } */
-
-
+    //ClickListener to delete a Todo-List
     public static class OnCustomMenuItemClickListener implements View.OnClickListener {
         private final String name;
         private int id;
@@ -826,27 +847,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-
- /*   public void saveNewTasks() {
-        for(int i=0; i<todoTasksContainer.size(); i++) {
-            TodoTask currentTask = todoTasksContainer.get(i);
-
-            // If a dummy list is displayed, its id must not be assigned to the task.
-            if(!clickedList.isDummyList())
-                currentTask.setListId(clickedList.getId()); // crucial step to not lose the connection to the list
-
-            boolean dbChanged = sendToDatabase(currentTask);
-            if(dbChanged)
-                notifyReminderService(currentTask);
-
-            // write subtasks to the database
-            for(TodoSubTask subTask : currentTask.getSubTasks()) {
-                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
-                sendToDatabase(subTask);
-            }
-        }
-
-    } */
 
 
     public void onCreateContextMenu(ContextMenu menu, View v,
