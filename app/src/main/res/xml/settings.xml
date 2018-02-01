@@ -14,7 +14,7 @@
         android:title="@string/pin_enabled" />
 
     <SwitchPreference
-        android:key="pref_auto_deadline"
+        android:key="pref_progress"
         android:defaultValue="false"
         android:title="@string/auto_progress" />
 
