@@ -22,12 +22,14 @@ public class TodoListWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
 
-        CharSequence widgetText = "Hahahaha!!! Tested";
+        CharSequence widgetText = "Test";
         // CharSequence widgetText = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
         //views.setTextViewText(R.id.text_widget, widgetText);
-        views.addView(R.id.list_widget, views);
+
+        //views.setRemoteAdapter(R.id.list_widget, ); // Service intent als zweiter param
+        views.setTextViewText(R.id.text, "Test");
 
 
         // Instruct the widget manager to update the widget

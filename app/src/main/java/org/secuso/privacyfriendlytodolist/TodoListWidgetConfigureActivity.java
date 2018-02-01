@@ -79,6 +79,7 @@ public class TodoListWidgetConfigureActivity extends Activity {
         prefs.apply();
     }
 
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);

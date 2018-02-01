@@ -54,9 +54,11 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView = (CalendarView) findViewById(R.id.calendar_view);
         calendarGridAdapter = new CalendarGridAdapter(this, R.layout.calendar_day);
         calendarView.setGridAdapter(calendarGridAdapter);
-        expandableListView = (ExpandableListView) findViewById(R.id.trash_tasks);
+        expandableListView = (ExpandableListView) findViewById(R.id.exlv_tasks);
 
         dbHelper = DatabaseHelper.getInstance(this);
+
+        updateDeadlines();
 
         calendarView.setNextMonthOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +79,7 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView.setDayOnClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                updateDeadlines();
                 Date selectedDate = calendarGridAdapter.getItem(position);
                 String key = absSecondsToDate(selectedDate.getTime()/1000);
                 ArrayList<TodoTask> todaysTasks = tasksPerDay.get(key);
@@ -87,30 +90,10 @@ public class CalendarActivity extends AppCompatActivity {
                 }
             }
         });
-        updateDeadlines();
+
     }
 
-/*    @Override
-    protected void onResume() {
-        super.onResume();
 
-        ArrayList<TodoList> todoLists = containerActivity.getTodoLists(true);
-        tasksPerDay.clear();
-        for(TodoList list : todoLists) {
-            for(TodoTask task : list.getTasks()) {
-                long deadline = task.getDeadline();
-                String key = absSecondsToDate(deadline);
-                if(!tasksPerDay.containsKey(key)) {
-                    tasksPerDay.put(key, new ArrayList<TodoTask>());
-                }
-                tasksPerDay.get(key).add(task);
-            }
-        }
-
-        calendarGridAdapter.setTodoTasks(tasksPerDay);
-        calendarGridAdapter.notifyDataSetChanged();
-        containerActivity.getSupportActionBar().setTitle(R.string.calendar);
-    }*/
 
     private void updateDeadlines(){
         ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
@@ -125,6 +108,9 @@ public class CalendarActivity extends AppCompatActivity {
                 tasksPerDay.get(key).add(task);
             }
         }
+        calendarGridAdapter.setTodoTasks(tasksPerDay);
+        calendarGridAdapter.notifyDataSetChanged();
+        //containerActivity.getSupportActionBar().setTitle(R.string.calendar);
     }
 
     private String absSecondsToDate(long seconds) {
@@ -134,7 +120,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void showDeadlineTasks(ArrayList<TodoTask> tasks){
-        taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        expandableListView.setAdapter(taskAdapter);
+        setContentView(R.layout.content_main);
+        //taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        //expandableListView.setAdapter(taskAdapter);
     }
 }

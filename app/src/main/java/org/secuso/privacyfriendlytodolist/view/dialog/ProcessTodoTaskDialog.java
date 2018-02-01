@@ -21,6 +21,7 @@ import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProcessTodoTaskDialog extends FullScreenDialog {
 
@@ -35,7 +36,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private EditText taskDescription;
     private TodoTask.Priority taskPriority = null;
     private int selectedListID;
-    private ArrayList<TodoList> lists;
+    private List<TodoList> lists = new ArrayList<>();
     private DatabaseHelper dbHelper;
     private int taskProgress = 0;
     private String name, description;
@@ -160,9 +161,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     task.setDescription(description);
                     task.setDeadline(deadline);
                     task.setPriority(taskPriority);
-                    if (selectedListID < 10000){
-                        task.setListId(selectedListID);
-                    }
+                    task.setListId(selectedListID);
                     task.setProgress(taskProgress);
                     task.setReminderTime(reminderTime);
                     callback.finish(task);
@@ -266,18 +265,13 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        for (TodoTask.Priority prio : TodoTask.Priority.values()) {
-            if (item.getItemId() == prio.getValue()) {
-                taskPriority = prio;
-                prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
-            }
-            else {
-                taskPriority = defaultPriority;
-                prioritySelector.setText((Helper.priority2String(getContext(), taskPriority)));
-            }
+        int numValues = TodoTask.Priority.values().length;
+        if (item != null && item.getItemId() < numValues && item.getItemId() >= 0) {
+            taskPriority = TodoTask.Priority.values()[item.getItemId()];
+            prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
         }
 
-        for (TodoList tl : lists){
+       for (TodoList tl : lists){
             if (item.getTitle() == tl.getName()){
                 this.selectedListID = tl.getId();
                 listSelector.setText(tl.getName());

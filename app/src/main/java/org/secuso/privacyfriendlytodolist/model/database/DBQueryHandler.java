@@ -186,6 +186,8 @@ public class DBQueryHandler {
                         String taskDescription = c.getString(c.getColumnIndex(TTodoTask.COLUMN_DESCRIPTION));
                         int progress = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
                         long deadline = c.getLong(c.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
+                        //TodoTask.Priority priority = TodoTask.Priority.fromInt(c.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
+
 
                         TodoTask currentTask = new TodoTask();
                         currentTask.setName(taskName);
