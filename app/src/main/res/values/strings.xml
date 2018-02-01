@@ -144,6 +144,7 @@
     </string-array>
     <string name="pin_enabled">PIN required on startup</string>
     <string name="set_pin">Set PIN</string>
+    <string name="auto_progress">Progress dependend on subtasks</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>

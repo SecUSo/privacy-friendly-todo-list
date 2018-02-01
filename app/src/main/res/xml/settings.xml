@@ -13,6 +13,12 @@
         android:defaultValue="false"
         android:title="@string/pin_enabled" />
 
+    <SwitchPreference
+        android:key="pref_auto_deadline"
+        android:defaultValue="false"
+        android:title="@string/auto_progress" />
+
+
     <EditTextPreference
         android:defaultValue=""
         android:dependency="pref_pin_enabled"

@@ -140,6 +140,7 @@
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
+    <string name="auto_progress">Fortschritt in Abhängigkeit der Subtasks</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
