@@ -17,6 +17,7 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
@@ -146,6 +147,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             });
         } else {
             makeProgressGone();
+            autoProgress();
         }
 
 
@@ -332,6 +334,18 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             progressSelector.setVisibility(View.GONE);
             progressPercent.setVisibility(View.GONE);
             progressText.setVisibility(View.GONE);
+    }
+
+    private void autoProgress() {
+        int doneSubs = 0;
+        int sizeSubs = 0;
+        for (int i=0; i<sizeSubs; i++){
+            if (task.getSubTasks().get(i).getDone())
+                doneSubs++;
+        }
+        int computedProgress = sizeSubs/doneSubs;
+        taskProgress = computedProgress;
+        progressPercent.setText(String.valueOf(computedProgress) + "%");
     }
 
 
