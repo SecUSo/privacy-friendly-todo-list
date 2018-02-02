@@ -440,6 +440,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
                             currentTask.setChanged();
+                            //DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                             //currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
                         }
@@ -542,6 +543,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             currentSubTask.setDone(buttonView.isChecked());
                             currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
                             currentSubTask.setChanged();
+                            DBQueryHandler.saveTodoSubTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentSubTask);
                             //currentSubTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
                         }
@@ -589,6 +591,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         public RelativeLayout addSubTaskButton;
         public View deadlineColorBar;
     }
+
 
 
 }
