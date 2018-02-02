@@ -279,12 +279,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private boolean hasAutoProgress() {
-        //automatic-progress enabled?
-        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_progress", false))
-            return false;
-        return true;
-    }
 
     private boolean hasPin() {
         // pin activated?

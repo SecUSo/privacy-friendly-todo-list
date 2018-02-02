@@ -2,6 +2,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -31,6 +32,8 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private TextView listSelector;
     private TextView dialogTitleNew;
     private TextView dialogTitleEdit;
+    private TextView progressText;
+    private TextView progressPercent;
     private SeekBar progressSelector;
     private EditText taskName;
     private EditText taskDescription;
@@ -113,31 +116,38 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             }
         });
         listSelector.setOnCreateContextMenuListener(this);
-        //selectedListID = 0;
-        //listSelector.setText("");
 
+
+        progressText = (TextView) findViewById(R.id.tv_task_progress);
+        progressPercent = (TextView) findViewById(R.id.new_task_progress);
 
         // initialize seekbar that allows to select the progress
         final TextView selectedProgress = (TextView) findViewById(R.id.new_task_progress);
         progressSelector = (SeekBar) findViewById(R.id.sb_new_task_progress);
-        progressSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                taskProgress = progress;
-                selectedProgress.setText(String.valueOf(progress) + "%");
-            }
+        if (!hasAutoProgress()) {
+            progressSelector.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    taskProgress = progress;
+                    selectedProgress.setText(String.valueOf(progress) + "%");
+                }
 
-            }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+                }
 
-            }
-        });
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+        } else {
+            makeProgressGone();
+        }
+
 
         // initialize buttons
         Button okayButton = (Button) findViewById(R.id.bt_new_task_ok);
@@ -308,6 +318,20 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             }
         }
 
+    }
+
+    private boolean hasAutoProgress() {
+        //automatic-progress enabled?
+        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("pref_progress", false))
+            return false;
+        return true;
+    }
+
+    //Make progress-selectionbar disappear
+    private void makeProgressGone() {
+            progressSelector.setVisibility(View.GONE);
+            progressPercent.setVisibility(View.GONE);
+            progressText.setVisibility(View.GONE);
     }
 
 
