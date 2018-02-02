@@ -199,9 +199,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         if(checked)
             expandableTodoTaskAdapter.addSortCondition(sortType);
-        else
+        /*else
             expandableTodoTaskAdapter.removeSortCondition(sortType);
-            expandableTodoTaskAdapter.notifyDataSetChanged();
+            expandableTodoTaskAdapter.notifyDataSetChanged(); */
 
         return true;
     }

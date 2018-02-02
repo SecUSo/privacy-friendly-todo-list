@@ -37,16 +37,6 @@ import java.util.zip.Inflater;
 public class RecyclerActivity extends AppCompatActivity{
 
     private DatabaseHelper dbhelper;
-    private ExpandableListView expandableListView;
-    private ExpandableTodoTaskAdapter taskAdapter;
-
-    private ArrayList<TodoTask> todoTasks = new ArrayList<>();
-
-    private TodoList currentList;
-
-    private MainActivity containingActivity;
-
-    private ExpandableListAdapter expandableListAdapter;
 
 
    @Override

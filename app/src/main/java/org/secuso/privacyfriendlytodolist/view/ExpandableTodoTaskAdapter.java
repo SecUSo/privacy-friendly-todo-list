@@ -3,6 +3,8 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,12 @@ import android.widget.TextView;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
+import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 
 import java.util.ArrayList;
@@ -87,6 +92,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         rawData = tasks;
+
 
         // default values
         setFilter(Filter.ALL_TASKS);
@@ -502,6 +508,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             if(b instanceof TodoSubTask) {
                                 TodoSubTask newSubTask = (TodoSubTask) b;
                                 currentTask.getSubTasks().add(newSubTask);
+                                newSubTask.setTaskId(currentTask.getId());
+                                DBQueryHandler.saveTodoSubTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), newSubTask);
                                 notifyDataSetChanged();
                             }
                         }
@@ -581,4 +589,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         public RelativeLayout addSubTaskButton;
         public View deadlineColorBar;
     }
+
+
 }
