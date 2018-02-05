@@ -46,7 +46,9 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 /**
@@ -56,6 +58,9 @@ import java.util.zip.Inflater;
 public class RecyclerActivity extends AppCompatActivity{
 
     private DatabaseHelper dbhelper;
+    private TextView tv;
+    private ExpandableListView lv;
+    RelativeLayout rl;
 
 
    @Override
@@ -76,24 +81,32 @@ public class RecyclerActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.btn_clear:
-                Snackbar snackbar = Snackbar.make(this.findViewById(R.id.btn_clear), "Hello World", Snackbar.LENGTH_LONG);
-                snackbar.show();
-                //Toast.makeText(this, R.string.toast_del, Toast.LENGTH_SHORT).show();
                 dbhelper = DatabaseHelper.getInstance(this);
-                ArrayList<TodoTask> tasks;
+                final ArrayList<TodoTask> tasks;
                 tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 for ( TodoTask t : tasks){
                     DBQueryHandler.deleteTodoTask(this.dbhelper.getReadableDatabase(), t);
                 }
                 updateAdapter();
-                return true;
+
+                Snackbar snackbar = Snackbar.make(this.findViewById(R.id.btn_clear), R.string.toast_del, Snackbar.LENGTH_LONG);
+                snackbar.setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       for (TodoTask task : tasks) {
+                           DBQueryHandler.saveTodoTaskInDb(dbhelper.getWritableDatabase(), task);
+                       }
+                       updateAdapter();
+                    }
+                });
+                snackbar.show();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -104,6 +117,10 @@ public class RecyclerActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycle);
+
+        rl = (RelativeLayout) findViewById(R.id.relative_recycle);
+        lv = (ExpandableListView) findViewById(R.id.trash_tasks);
+        tv = (TextView) findViewById(R.id.bin_empty);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trash);
@@ -135,12 +152,13 @@ public class RecyclerActivity extends AppCompatActivity{
         ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
         ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.relative_recycle);
-        ExpandableListView lv = (ExpandableListView) findViewById(R.id.trash_tasks);
-        TextView tv = (TextView) findViewById(R.id.bin_empty);
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
+    }
 
+    public ArrayList<TodoTask> getTasksInTrash() {
+       ArrayList<TodoTask> backup = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
+       return backup;
     }
 
 }
