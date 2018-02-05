@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -451,9 +452,25 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 vh2.done.setChecked(currentTask.getDone());
                 vh2.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
 
                         if(buttonView.isPressed()) {
+                            Snackbar snackbar = Snackbar.make(buttonView, "Checked", Snackbar.LENGTH_LONG);
+                            snackbar.setAction("Undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (currentTask.getDone()){
+                                        currentTask.setDone(false);
+                                        currentTask.setAllSubTasksDone(false);
+                                        buttonView.setChecked(false);
+                                    } else {
+                                        currentTask.setAllSubTasksDone(true);
+                                        currentTask.setDone(true);
+                                        buttonView.setChecked(true);
+                                    }
+                                }
+                            });
+                            snackbar.show();
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
                             currentTask.setChanged();
