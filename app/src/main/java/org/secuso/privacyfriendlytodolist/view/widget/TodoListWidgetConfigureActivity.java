@@ -15,7 +15,7 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist;
+package org.secuso.privacyfriendlytodolist.view.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
  */
 public class TodoListWidgetConfigureActivity extends Activity {
 
-    private static final String PREFS_NAME = "org.secuso.privacyfriendlytodolist.TodoListWidget";
+    private static final String PREFS_NAME = "org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Spinner spinner;

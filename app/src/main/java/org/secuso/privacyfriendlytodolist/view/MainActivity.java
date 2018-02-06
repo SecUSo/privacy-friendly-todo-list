@@ -45,6 +45,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
@@ -70,6 +72,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView tv;
     ArrayList<TodoTask> todoTasksContainer;
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
+    private TextView initialAlert;
 
     private FloatingActionButton optionFab;
 
@@ -247,6 +251,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv = (ExpandableListView) findViewById(R.id.exlv_tasks);
         tv = (TextView) findViewById(R.id.tv_empty_view_no_tasks);
         optionFab = (FloatingActionButton) findViewById(R.id.fab_new_task);
+        initialAlert = (TextView) findViewById(R.id.initial_alert);
+
+        hints();
 
         dbHelper = DatabaseHelper.getInstance(this);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
@@ -713,6 +720,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
                     sendToDatabase(b);
+                    hints();
                     addListToNav();
                     Log.i(TAG, "list added");
                 }
@@ -946,6 +954,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onContextItemSelected(item);
+    }
+
+
+
+    public void hints() {
+
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        dbHelper = DatabaseHelper.getInstance(this);
+        if (DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()).size() == 0) {
+
+            initialAlert.setVisibility(View.VISIBLE);
+            anim.setDuration(1500);
+            anim.setStartOffset(20);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setRepeatCount(Animation.INFINITE);
+            initialAlert.startAnimation(anim);
+
+        } else {
+            initialAlert.setVisibility(View.GONE);
+            initialAlert.clearAnimation();
+        }
+
     }
 
 }

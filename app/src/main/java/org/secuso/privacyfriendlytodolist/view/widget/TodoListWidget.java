@@ -15,13 +15,14 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist;
+package org.secuso.privacyfriendlytodolist.view.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.widget.ListView;
 import android.widget.RemoteViews;
+
+import org.secuso.privacyfriendlytodolist.R;
 
 /**
  * Implementation of App Widget functionality.

@@ -2,6 +2,7 @@
     <!-- Application Specific -->
     <string name="app_name">To-Do List</string>
     <string name="app_name_long">Privacy Friendly To-Do List</string>
+    <string name="initial_alert">CLICK + FOR NEW LIST</string>
 
     <!-- Menu -->
     <string name="nav_header_app_name">To-Do</string>

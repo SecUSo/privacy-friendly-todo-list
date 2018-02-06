@@ -27,6 +27,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +62,7 @@ public class RecyclerActivity extends AppCompatActivity{
     private TextView tv;
     private ExpandableListView lv;
     RelativeLayout rl;
+    private List<TodoTask> backupTasks = new ArrayList<TodoTask>();
 
 
    @Override
@@ -88,6 +90,7 @@ public class RecyclerActivity extends AppCompatActivity{
                 return true;
             case R.id.btn_clear:
                 dbhelper = DatabaseHelper.getInstance(this);
+                this.backupTasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 final ArrayList<TodoTask> tasks;
                 tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 for ( TodoTask t : tasks){
@@ -99,8 +102,8 @@ public class RecyclerActivity extends AppCompatActivity{
                 snackbar.setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       for (TodoTask task : tasks) {
-                           DBQueryHandler.saveTodoTaskInDb(dbhelper.getWritableDatabase(), task);
+                       for (TodoTask task : backupTasks) {
+                          DBQueryHandler.saveTodoTaskInDb(dbhelper.getWritableDatabase(), task);
                        }
                        updateAdapter();
                     }

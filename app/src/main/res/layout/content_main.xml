@@ -7,6 +7,20 @@
     android:id="@+id/relative_task"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+
+    <TextView
+        android:id="@+id/initial_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/initial_alert"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold|italic" />
+
     <ExpandableListView
         android:id="@+id/exlv_tasks"
         android:layout_width="match_parent"
