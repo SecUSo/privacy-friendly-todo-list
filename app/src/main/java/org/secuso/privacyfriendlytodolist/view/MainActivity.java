@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<TodoTask> todoTasksContainer;
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
     private TextView initialAlert;
+    private TextView secondAlert;
 
     private FloatingActionButton optionFab;
 
@@ -252,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tv = (TextView) findViewById(R.id.tv_empty_view_no_tasks);
         optionFab = (FloatingActionButton) findViewById(R.id.fab_new_task);
         initialAlert = (TextView) findViewById(R.id.initial_alert);
+        secondAlert = (TextView) findViewById(R.id.second_alert);
 
         hints();
 
@@ -860,6 +862,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (b instanceof TodoTask) {
                             //((TodoTask) b).setListId(helpId);
                             sendToDatabase(b);
+                            hints();
                             //show List if created in certain list, else show all tasks
                             if (helpExists){
                                 showTasksOfList(helpId);
@@ -942,8 +945,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.delete_task:
                 affectedRows = DBQueryHandler.putTaskInTrash(this.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
-                if(affectedRows == 1)
+                if(affectedRows == 1) {
                     Toast.makeText(this, getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+                    hints();
+                }
                 else
                     Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
                 showAllTasks();
@@ -974,6 +979,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             initialAlert.setVisibility(View.GONE);
             initialAlert.clearAnimation();
+        }
+
+        if (DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase()).size() == 0 &&
+                DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()).size() != 0) {
+
+            secondAlert.setVisibility(View.VISIBLE);
+            anim.setDuration(1500);
+            anim.setStartOffset(20);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setRepeatCount(Animation.INFINITE);
+            secondAlert.startAnimation(anim);
+        } else {
+            secondAlert.setVisibility(View.GONE);
+            secondAlert.clearAnimation();
         }
 
     }

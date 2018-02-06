@@ -21,6 +21,18 @@
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold|italic" />
 
+    <TextView
+        android:id="@+id/second_alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="34dp"
+        android:gravity="center_vertical"
+        android:text="@string/second_alert"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold|italic" />
+
     <ExpandableListView
         android:id="@+id/exlv_tasks"
         android:layout_width="match_parent"
