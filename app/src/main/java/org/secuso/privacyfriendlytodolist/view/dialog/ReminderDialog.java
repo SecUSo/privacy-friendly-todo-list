@@ -58,7 +58,7 @@ public class ReminderDialog extends FullScreenDialog {
         TimePicker timePicker = (TimePicker) findViewById(R.id.tp_reminder);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-        timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+        timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE)+1);
 
         Button buttonDate = (Button) findViewById(R.id.bt_reminder_date);
         buttonDate.setOnClickListener(new View.OnClickListener() {
