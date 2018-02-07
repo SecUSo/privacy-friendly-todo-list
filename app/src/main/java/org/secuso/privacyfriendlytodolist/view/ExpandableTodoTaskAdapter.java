@@ -455,8 +455,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                     public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
 
                         if(buttonView.isPressed()) {
-                            Snackbar snackbar = Snackbar.make(buttonView, "Checked", Snackbar.LENGTH_LONG);
-                            snackbar.setAction("Undo", new View.OnClickListener() {
+                            Snackbar snackbar = Snackbar.make(buttonView, R.string.snack_check, Snackbar.LENGTH_LONG);
+                            snackbar.setAction(R.string.snack_undo, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     if (currentTask.getDone()){
@@ -474,7 +474,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
                             currentTask.setChanged();
-                            //DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
+                            DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                             //currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
                         }

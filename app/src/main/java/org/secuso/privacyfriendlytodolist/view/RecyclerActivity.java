@@ -98,8 +98,8 @@ public class RecyclerActivity extends AppCompatActivity{
                 }
                 updateAdapter();
 
-                Snackbar snackbar = Snackbar.make(this.findViewById(R.id.btn_clear), R.string.toast_del, Snackbar.LENGTH_LONG);
-                snackbar.setAction("Undo", new View.OnClickListener() {
+                Snackbar snackbar = Snackbar.make(this.findViewById(R.id.btn_clear), R.string.snack_clear, Snackbar.LENGTH_LONG);
+                snackbar.setAction(R.string.snack_undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                        for (TodoTask task : backupTasks) {

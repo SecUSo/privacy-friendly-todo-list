@@ -221,4 +221,10 @@
     <string name="configure">Configure</string>
     <string name="widget_list">Choose a list:</string>
 
+
+    <!-- ### Snackbar Messages ### -->
+    <string name="snack_check">Task is checked</string>
+    <string name="snack_undo">undo action</string>
+    <string name="snack_clear">Bin is now cleared</string>
+
 </resources>
