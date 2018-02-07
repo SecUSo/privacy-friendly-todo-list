@@ -452,31 +452,35 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 vh2.done.setChecked(currentTask.getDone());
                 vh2.done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 
                         if(buttonView.isPressed()) {
                             Snackbar snackbar = Snackbar.make(buttonView, R.string.snack_check, Snackbar.LENGTH_LONG);
                             snackbar.setAction(R.string.snack_undo, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (currentTask.getDone()){
+                                    if (isChecked){
                                         currentTask.setDone(false);
                                         currentTask.setAllSubTasksDone(false);
+                                        currentTask.setChanged();
                                         buttonView.setChecked(false);
+                                        DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                                     } else {
                                         currentTask.setAllSubTasksDone(true);
                                         currentTask.setDone(true);
+                                        currentTask.setChanged();
                                         buttonView.setChecked(true);
+                                        DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                                     }
+
                                 }
                             });
                             snackbar.show();
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
                             currentTask.setChanged();
-                            DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
-                            //currentTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
                             notifyDataSetChanged();
+                            DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                         }
                     }
                 });
