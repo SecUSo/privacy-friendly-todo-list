@@ -207,13 +207,19 @@
 
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_listdelete">Wollen Sie die Liste wirklich löschen?</string>
-    <string name="alert_listdelete_yes">Löschen</string>
-    <string name="alert_listdelete_no">Abbrechen</string>
+    <string name="alert_taskdelete">Wollen Sie die Aufgabe wirklich löschen?</string>
+    <string name="alert_delete_yes">Löschen</string>
+    <string name="alert_delete_no">Abbrechen</string>
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Widget hinzufügen</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Konfigurieren</string>
     <string name="widget_list">Wählen Sie eine Liste aus:</string>
+
+    <!-- ### Snackbar Messages ### -->
+    <string name="snack_check">Status geändert</string>
+    <string name="snack_undo">Rückgängig machen</string>
+    <string name="snack_clear">Papierkorb geleert</string>
 
 </resources>

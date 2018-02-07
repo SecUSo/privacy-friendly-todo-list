@@ -212,8 +212,9 @@
 
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_listdelete">Do you really want to delete this list?</string>
-    <string name="alert_listdelete_yes">Delete</string>
-    <string name="alert_listdelete_no">Cancel</string>
+    <string name="alert_taskdelete">Do you really want to delete this task?</string>
+    <string name="alert_delete_yes">Delete</string>
+    <string name="alert_delete_no">Cancel</string>
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>
@@ -223,7 +224,7 @@
 
 
     <!-- ### Snackbar Messages ### -->
-    <string name="snack_check">Task is checked</string>
+    <string name="snack_check">Task changed status</string>
     <string name="snack_undo">undo action</string>
     <string name="snack_clear">Bin is now cleared</string>
 

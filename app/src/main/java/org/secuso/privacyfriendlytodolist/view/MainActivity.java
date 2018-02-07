@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean isUnlocked = false;
     long unlockUntil = -1;
     private static final long UnlockPeriod = 30000; // keep the app unlocked for 30 seconds after switching to another activity (settings/help/about)
-
+    int affectedRows;
 
 
 
@@ -763,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             builder1.setCancelable(true);
 
             builder1.setPositiveButton(
-                    R.string.alert_listdelete_yes,
+                    R.string.alert_delete_yes,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int setId) {
                             ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mainActivity).getReadableDatabase());
@@ -778,7 +778,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
 
             builder1.setNegativeButton(
-                    R.string.alert_listdelete_no,
+                    R.string.alert_delete_no,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
 
@@ -899,7 +899,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onContextItemSelected(MenuItem item) {
 
         final Tuple<TodoTask, TodoSubTask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
-        int affectedRows;
 
         switch(item.getItemId()) {
             case R.id.change_subtask:
@@ -944,16 +943,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                affectedRows = DBQueryHandler.putTaskInTrash(this.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
-                if(affectedRows == 1) {
-                    Toast.makeText(this, getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
-                    hints();
-                }
-                else
-                    Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
-                showAllTasks();
-                //expandableTodoTaskAdapter.notifyDataSetChanged();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.alert_taskdelete);
+                builder.setCancelable(true);
+
+                builder.setPositiveButton(R.string.alert_delete_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        affectedRows = DBQueryHandler.putTaskInTrash(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
+                        if(affectedRows == 1) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+                            hints();
+                            dialog.cancel();
+                        }
+                        else
+                            Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                        showAllTasks();
+                        //expandableTodoTaskAdapter.notifyDataSetChanged();
+                        dialog.cancel();
+                    }
+                });
+                builder.setNegativeButton(R.string.alert_delete_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
                 break;
+
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");
         }
