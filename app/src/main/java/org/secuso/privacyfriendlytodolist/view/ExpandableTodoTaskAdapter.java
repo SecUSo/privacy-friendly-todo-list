@@ -100,6 +100,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     // OTHERS
     private Context context;
     private HashMap<TodoTask.Priority, Integer> prioBarPositions = new HashMap<>();
+    private int progressDone;
 
     // Normally the toolbar title contains the list name. However, it all tasks are displayed in a dummy list it is not obvious to what list a tasks belongs. This missing information is then added to each task in an additional text view.
     private boolean showListName = false;
@@ -479,6 +480,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
                             currentTask.setChanged();
+                            getProgressDone(currentTask);
                             notifyDataSetChanged();
                             DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                         }
@@ -579,6 +581,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
                         if(buttonView.isPressed()) {
                             currentSubTask.setDone(buttonView.isChecked());
+                            currentTask.setProgress(getProgressDone(currentTask));
                             currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
                             currentSubTask.setChanged();
                             DBQueryHandler.saveTodoSubTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentSubTask);
@@ -599,6 +602,19 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         return childPosition > 0 && childPosition < getTaskByPosition(groupPosition).getSubTasks().size() + 1;
     }
 
+    public int getProgressDone(TodoTask t) {
+        int progress = 0;
+        int help = 0;
+        ArrayList<TodoSubTask> subs = t.getSubTasks();
+        for (TodoSubTask st : subs){
+            if (st.getDone()){
+                help++;
+            }
+        }
+        double computedProgress = ((double)help/(double)t.getSubTasks().size())*100;
+        progress = (int) computedProgress;
+        return progress;
+    }
 
     public class GroupTaskViewHolder {
         public TextView name;
