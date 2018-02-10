@@ -35,10 +35,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * Created by dominik on 19.05.16.
- *
- * This class encapsulates all sql statements and returns
+ * This class encapsulates sql statements and returns them.
  */
+
 public class DBQueryHandler {
 
     private static final String TAG = DBQueryHandler.class.getSimpleName();

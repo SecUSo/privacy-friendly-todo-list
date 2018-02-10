@@ -54,6 +54,8 @@ import java.util.zip.Inflater;
 
 /**
  * Created by Sebastian Lutz on 20.12.2017.
+ *
+ * This Activity handles deleted tasks in a kind of recycle bin.
  */
 
 public class RecyclerActivity extends AppCompatActivity{

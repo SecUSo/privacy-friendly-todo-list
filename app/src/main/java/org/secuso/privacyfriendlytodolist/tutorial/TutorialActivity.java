@@ -41,10 +41,9 @@ import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 /**
+ * Created by Sebastian Lutz on 06.12.2017.
  *
- * @author Sebastian Lutz
- * @version 06.12.2017
- *
+ * This Activity sets up the tutorial that shall appear for the first start of the app.
  */
 
 public class TutorialActivity extends AppCompatActivity{

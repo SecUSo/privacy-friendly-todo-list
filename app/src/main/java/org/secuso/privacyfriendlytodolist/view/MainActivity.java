@@ -78,7 +78,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-//import android.app.FragmentManager;
+/**
+ * This Activity handles the navigation and displaying of lists and tasks.
+ */
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -340,7 +342,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if (currentFragment == null) {
                 showAllTasks();
-                //currentFragment = new TodoListsFragment();
                 Log.i(TAG, "Activity was not retained.");
 
             } else {
@@ -686,26 +687,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-/*
-    // create a dummy list containing all tasks
-    private void showAllTasks() {
-        ArrayList<TodoTask> allTasks = new ArrayList<>();
-        for (TodoList currentList : todoLists)
-            allTasks.addAll(currentList.getTasks());
-
-        dummyList = new TodoList();
-        dummyList.setDummyList();
-        dummyList.setName(getString(R.string.all_tasks));
-        dummyList.setTasks(allTasks);
-
-        TodoTasksFragment fragment = new TodoTasksFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(TodoList.UNIQUE_DATABASE_ID, dummyList.getId());
-        bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, false);
-        fragment.setArguments(bundle);
-        //setFragment(fragment);
-    }
- */
 
     // Method to add a new Todo-List
     private void startListDialog() {

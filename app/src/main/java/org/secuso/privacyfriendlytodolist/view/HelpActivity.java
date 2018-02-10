@@ -26,6 +26,10 @@ import android.view.MenuItem;
 
 import org.secuso.privacyfriendlytodolist.R;
 
+/**
+ * Activity that gives the user some help regarding the handling of the app.
+ */
+
 public class HelpActivity extends AppCompatActivity {
 
     @Override

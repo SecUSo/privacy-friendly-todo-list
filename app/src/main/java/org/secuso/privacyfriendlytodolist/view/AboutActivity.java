@@ -29,6 +29,10 @@ import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
 
+/**
+ * Activity that shows information of the app development.
+ */
+
 public class AboutActivity extends AppCompatActivity {
 
     @Override

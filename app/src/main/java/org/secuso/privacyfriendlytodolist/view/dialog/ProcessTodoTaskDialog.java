@@ -41,6 +41,10 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class shows a dialog that lets the user create/edit a task.
+ */
+
 public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     private TextView prioritySelector;

@@ -27,6 +27,10 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 
+/**
+ * This class shows a dialog that lets the user create/edit a subtask.
+ */
+
 
 public class ProcessTodoSubTaskDialog extends FullScreenDialog {
 

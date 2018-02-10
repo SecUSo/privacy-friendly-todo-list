@@ -17,6 +17,10 @@
 
 package org.secuso.privacyfriendlytodolist.model.database.tables;
 
+/**
+ * This Class is responsible for creating sql table for To-Do subtasks.
+ */
+
 public final class TTodoSubTask {
 
     // TAG

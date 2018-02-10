@@ -49,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Sebastian Lutz on 31.01.2018.
  *
+ * This Activity creates a calendar using CalendarGripAdapter to show deadlines of a task.
  */
 
 public class CalendarActivity extends AppCompatActivity {

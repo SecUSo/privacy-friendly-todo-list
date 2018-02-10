@@ -22,6 +22,8 @@ import android.content.SharedPreferences;
 
 /**
  * Created by Sebastian Lutz on 06.12.2017.
+ *
+ * This class is used to help create Preference hierarchies for the tutorial.
  */
 
 public class PrefManager {

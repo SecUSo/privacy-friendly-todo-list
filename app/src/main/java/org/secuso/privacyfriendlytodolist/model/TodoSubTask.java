@@ -20,6 +20,10 @@ package org.secuso.privacyfriendlytodolist.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Class to set up To-Do subtasks and its parameters.
+ */
+
 public class TodoSubTask extends BaseTodo implements Parcelable {
 
     private String name;

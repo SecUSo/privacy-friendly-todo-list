@@ -17,6 +17,10 @@
 
 package org.secuso.privacyfriendlytodolist.model.database.tables;
 
+/**
+ * This class is responsible for creating sql table of To-Do lists.
+ */
+
 public final class TTodoList {
 
 	private static final String TAG = TTodoList.class.getSimpleName();

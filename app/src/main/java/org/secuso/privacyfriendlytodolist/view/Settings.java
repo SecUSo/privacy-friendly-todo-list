@@ -32,6 +32,10 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 
+/**
+ * Activity that can enable/disable particular functionalities.
+ */
+
 public class Settings extends AppCompatActivity {
 
     private static final String TAG = Settings.class.getSimpleName();

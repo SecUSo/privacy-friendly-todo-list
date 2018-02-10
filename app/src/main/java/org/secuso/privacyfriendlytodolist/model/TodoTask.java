@@ -25,6 +25,10 @@ import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 
 import java.util.ArrayList;
 
+/**
+ * Class to set up To-Do Tasks and its parameters.
+ */
+
 public class TodoTask extends BaseTodo implements Parcelable {
 
     private static final String TAG = TodoTask.class.getSimpleName();

@@ -23,6 +23,10 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+/**
+ * Class to set up a To-Do List and its parameters.
+ */
+
 
 public class TodoList extends BaseTodo implements Parcelable{
 
