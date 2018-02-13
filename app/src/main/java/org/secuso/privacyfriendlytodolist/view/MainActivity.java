@@ -28,6 +28,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -411,7 +412,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationBottomView = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationView.setNavigationItemSelectedListener(this);
         navigationBottomView.setNavigationItemSelectedListener(this);
-
     }
 
 
@@ -488,6 +488,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
             super.onResume();
             guiSetup();
+            showAllTasks();
             return;
         }
         // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:
@@ -682,7 +683,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             item.setIcon(R.drawable.ic_label_black_24dp);
             ImageButton v = new ImageButton(this, null, R.style.BorderlessButtonStyle);
             v.setImageResource(R.drawable.ic_delete_black_24dp);
-            v.setOnClickListener(new OnCustomMenuItemClickListener(help.get(i).getId(), name, MainActivity.this, MainActivity.this));
+            v.setOnClickListener(new OnCustomMenuItemClickListener(help.get(i).getId(), name, MainActivity.this));
             item.setActionView(v);
         }
     }
@@ -726,14 +727,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         private final String name;
         private int id;
         private Context context;
-        private MainActivity mainActivity;
 
 
-        OnCustomMenuItemClickListener(int id, String name, Context context, MainActivity mainActivity) {
+        OnCustomMenuItemClickListener(int id, String name, Context context) {
             this.id = id;
             this.name = name;
             this.context = context;
-            this.mainActivity = mainActivity;
 
         }
 
@@ -747,12 +746,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     R.string.alert_delete_yes,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int setId) {
-                            ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mainActivity).getReadableDatabase());
+                            ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(context).getReadableDatabase());
                             for (TodoList t : todoLists) {
                                 if (t.getId() == id) {
-                                    DBQueryHandler.deleteTodoList(DatabaseHelper.getInstance(mainActivity).getWritableDatabase(), t);
+                                    DBQueryHandler.deleteTodoList(DatabaseHelper.getInstance(context).getWritableDatabase(), t);
                                 }
-                                mainActivity.addListToNav();
                             }
                             dialog.cancel();
                         }
@@ -924,34 +922,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.alert_taskdelete);
-                builder.setCancelable(true);
+                Snackbar snackbar = Snackbar.make(optionFab, R.string.task_removed, Snackbar.LENGTH_LONG);
+                affectedRows = DBQueryHandler.putTaskInTrash(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
+                if(affectedRows == 1) {
+                    hints();
+                }else
+                    Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                showTasksOfList(longClickedTodo.getLeft().getListId());
 
-                builder.setPositiveButton(R.string.alert_delete_yes, new DialogInterface.OnClickListener() {
+                snackbar.setAction(R.string.snack_undo, new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        affectedRows = DBQueryHandler.putTaskInTrash(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
-                        if(affectedRows == 1) {
-                            Toast.makeText(getApplicationContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
-                            hints();
-                            dialog.cancel();
+                     public void onClick(View v) {
+                         DBQueryHandler.recoverTasks(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
+                         showTasksOfList(longClickedTodo.getLeft().getListId());
+
                         }
-                        else
-                            Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
-                        showAllTasks();
-                        //expandableTodoTaskAdapter.notifyDataSetChanged();
-                        dialog.cancel();
-                    }
-                });
-                builder.setNegativeButton(R.string.alert_delete_no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
+                     });
+                snackbar.show();
                 break;
 
             default:

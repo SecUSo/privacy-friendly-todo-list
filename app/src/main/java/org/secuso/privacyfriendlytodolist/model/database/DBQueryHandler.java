@@ -506,4 +506,33 @@ public class DBQueryHandler {
         String whereArgs[] = {String.valueOf(id)};
         return db.update(TTodoSubTask.TABLE_NAME, args, where, whereArgs);
     }
+
+    public static int recoverTasks(SQLiteDatabase db, TodoTask todoTask) {
+        long id = todoTask.getId();
+        ContentValues args = new ContentValues();
+        args.put(TTodoTask.COLUMN_TRASH, 0);
+
+        int removedSubTask = 0;
+        for(TodoSubTask subTask : todoTask.getSubTasks())
+            removedSubTask += recoverSubtasks(db, subTask);
+
+        Log.i(TAG, removedSubTask + " subtasks put into bin");
+
+        String where = TTodoTask.COLUMN_ID + " = ?";
+        String whereArgs[] = {String.valueOf(id)};
+
+        return db.update(TTodoTask.TABLE_NAME, args, where, whereArgs);
+    }
+
+    public static int recoverSubtasks(SQLiteDatabase db, TodoSubTask subTask) {
+        long id = subTask.getId();
+
+        ContentValues args = new ContentValues();
+        args.put(TTodoSubTask.COLUMN_TRASH, 0);
+
+        String where = TTodoSubTask.COLUMN_ID + " = ?";
+        String whereArgs[] = {String.valueOf(id)};
+        return db.update(TTodoSubTask.TABLE_NAME, args, where, whereArgs);
+    }
+
 }

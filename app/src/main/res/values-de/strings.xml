@@ -201,6 +201,7 @@
     <string name="bin_toolbar">Papierkorb</string>
     <string name="btn_clear">Leeren</string>
     <string name="bin_empty">Papierkorb ist leer</string>
+    <string name="restore">Wiederherstellen</string>
 
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Aufgaben</string>

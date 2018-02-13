@@ -205,6 +205,7 @@
     <string name="bin_toolbar">Recycle bin</string>
     <string name="btn_clear">Clear bin</string>
     <string name="bin_empty">Bin is empty</string>
+    <string name="restore">Restore task</string>
 
 
     <!-- ### TodoTask ACTIVITY ### -->

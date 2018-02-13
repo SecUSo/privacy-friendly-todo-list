@@ -28,10 +28,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -42,8 +45,11 @@ import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
@@ -65,6 +71,7 @@ public class RecyclerActivity extends AppCompatActivity{
     private ExpandableListView lv;
     RelativeLayout rl;
     private List<TodoTask> backupTasks = new ArrayList<TodoTask>();
+    private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
 
 
    @Override
@@ -83,6 +90,20 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final Tuple<TodoTask, TodoSubTask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
+
+       switch(item.getItemId()){
+           case R.id.restore:
+               DBQueryHandler.recoverTasks(dbhelper.getWritableDatabase(), longClickedTodo.getLeft());
+               updateAdapter();
+               break;
+
+       }
+       return super.onContextItemSelected(item);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -92,7 +113,6 @@ public class RecyclerActivity extends AppCompatActivity{
                 return true;
             case R.id.btn_clear:
                 dbhelper = DatabaseHelper.getInstance(this);
-                this.backupTasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 final ArrayList<TodoTask> tasks;
                 tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 for ( TodoTask t : tasks){
@@ -105,7 +125,8 @@ public class RecyclerActivity extends AppCompatActivity{
                     @Override
                     public void onClick(View v) {
                        for (TodoTask task : backupTasks) {
-                          DBQueryHandler.saveTodoTaskInDb(dbhelper.getWritableDatabase(), task);
+                           if (task instanceof  TodoTask)
+                               DBQueryHandler.saveTodoTaskInDb(dbhelper.getWritableDatabase(), task);
                        }
                        updateAdapter();
                     }
@@ -116,7 +137,18 @@ public class RecyclerActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        ExpandableListView.ExpandableListContextMenuInfo info =
+                (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 
+        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+        MenuInflater inflater = this.getMenuInflater();
+        menu.setHeaderView(Helper.getMenuHeader(getBaseContext(), getBaseContext().getString(R.string.select_option)));
+
+        inflater.inflate(R.menu.deleted_task_long_click, menu);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,6 +175,7 @@ public class RecyclerActivity extends AppCompatActivity{
 
         }
         updateAdapter();
+        backupTasks = getTasksInTrash();
     }
 
     @Override
@@ -156,9 +189,25 @@ public class RecyclerActivity extends AppCompatActivity{
         dbhelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-        ExpandableTodoTaskAdapter expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+
+                    int childPosition = ExpandableListView.getPackedPositionChild(id);
+                    expandableTodoTaskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+                } else {
+                    expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
+                }
+                registerForContextMenu(lv);
+                return false;
+            }
+        });
     }
 
     public ArrayList<TodoTask> getTasksInTrash() {

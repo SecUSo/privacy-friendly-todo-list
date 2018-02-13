@@ -14,6 +14,7 @@
         android:title="@string/pin_enabled" />
 
     <SwitchPreference
+        android:id="@+id/switch_progress"
         android:key="pref_progress"
         android:defaultValue="false"
         android:title="@string/auto_progress" />

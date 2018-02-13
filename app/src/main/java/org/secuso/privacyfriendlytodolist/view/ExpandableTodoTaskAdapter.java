@@ -20,9 +20,8 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
+import android.preference.SwitchPreference;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ import android.widget.TextView;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
@@ -50,6 +48,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+/**
+ * This class manages the To-Do task expandableList items.
+ */
 
 public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
@@ -100,7 +102,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     // OTHERS
     private Context context;
     private HashMap<TodoTask.Priority, Integer> prioBarPositions = new HashMap<>();
-    private int progressDone;
 
     // Normally the toolbar title contains the list name. However, it all tasks are displayed in a dummy list it is not obvious to what list a tasks belongs. This missing information is then added to each task in an additional text view.
     private boolean showListName = false;
@@ -111,7 +112,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         rawData = tasks;
-
 
         // default values
         setFilter(Filter.ALL_TASKS);
@@ -385,6 +385,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
+
         int type = getGroupType(groupPosition);
 
         switch (type) {
@@ -410,7 +411,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
             case GR_TASK_ROW:
 
                 final TodoTask currentTask = getTaskByPosition(groupPosition);
-                GroupTaskViewHolder vh2;
+                final TodoSubTask currentSubTask;
+                final GroupTaskViewHolder vh2;
 
                 if (convertView == null) {
 
@@ -434,6 +436,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 }
 
                 vh2.name.setText(currentTask.getName());
+                getProgressDone(currentTask, hasAutoProgress());
                 vh2.progressBar.setProgress(currentTask.getProgress());
                 String deadline;
                 if (currentTask.getDeadline() <= 0)
@@ -461,17 +464,29 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                                 @Override
                                 public void onClick(View v) {
                                     if (isChecked){
-                                        currentTask.setDone(false);
-                                        currentTask.setAllSubTasksDone(false);
-                                        currentTask.setChanged();
                                         buttonView.setChecked(false);
-                                        DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
-                                    } else {
-                                        currentTask.setAllSubTasksDone(true);
-                                        currentTask.setDone(true);
+                                        currentTask.setDone(buttonView.isChecked());
+                                        currentTask.setAllSubTasksDone(false);
+                                        getProgressDone(currentTask, hasAutoProgress());
                                         currentTask.setChanged();
-                                        buttonView.setChecked(true);
+                                        notifyDataSetChanged();
                                         DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
+                                        for (TodoSubTask st : currentTask.getSubTasks()){
+                                            st.setDone(false);
+                                            DBQueryHandler.saveTodoSubTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), st);
+                                        }
+                                    } else {
+                                        buttonView.setChecked(true);
+                                        currentTask.setDone(buttonView.isChecked());
+                                        currentTask.setAllSubTasksDone(true);
+                                        getProgressDone(currentTask, hasAutoProgress());
+                                        currentTask.setChanged();
+                                        notifyDataSetChanged();
+                                        DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
+                                        for (TodoSubTask st : currentTask.getSubTasks()){
+                                            st.setDone(true);
+                                            DBQueryHandler.saveTodoSubTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), st);
+                                        }
                                     }
 
                                 }
@@ -479,10 +494,14 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             snackbar.show();
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubTasksDone(buttonView.isChecked());
+                            getProgressDone(currentTask, hasAutoProgress());
                             currentTask.setChanged();
-                            getProgressDone(currentTask);
                             notifyDataSetChanged();
                             DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
+                            for (int i=0; i < currentTask.getSubTasks().size(); i++) {
+                                currentTask.getSubTasks().get(i).setChanged();
+                                notifyDataSetChanged();
+                            }
                         }
                     }
                 });
@@ -581,11 +600,11 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
                         if(buttonView.isPressed()) {
                             currentSubTask.setDone(buttonView.isChecked());
-                            currentTask.setProgress(getProgressDone(currentTask));
                             currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
                             currentSubTask.setChanged();
                             DBQueryHandler.saveTodoSubTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentSubTask);
-                            //currentSubTask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+                            getProgressDone(currentTask, hasAutoProgress());
+                            DBQueryHandler.saveTodoTaskInDb(DatabaseHelper.getInstance(context).getWritableDatabase(), currentTask);
                             notifyDataSetChanged();
                         }
                     }
@@ -602,18 +621,21 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         return childPosition > 0 && childPosition < getTaskByPosition(groupPosition).getSubTasks().size() + 1;
     }
 
-    public int getProgressDone(TodoTask t) {
-        int progress = 0;
-        int help = 0;
-        ArrayList<TodoSubTask> subs = t.getSubTasks();
-        for (TodoSubTask st : subs){
-            if (st.getDone()){
-                help++;
+    public void getProgressDone(TodoTask t, boolean autoProgress) {
+        if (autoProgress) {
+            int progress = 0;
+            int help = 0;
+            ArrayList<TodoSubTask> subs = t.getSubTasks();
+            for (TodoSubTask st : subs){
+                if (st.getDone()){
+                    help++;
+                }
             }
-        }
-        double computedProgress = ((double)help/(double)t.getSubTasks().size())*100;
-        progress = (int) computedProgress;
-        return progress;
+            double computedProgress = ((double)help/(double)t.getSubTasks().size())*100;
+            progress = (int) computedProgress;
+            t.setProgress(progress);
+        } else
+        t.setProgress(t.getProgress());
     }
 
     public class GroupTaskViewHolder {
@@ -646,6 +668,12 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         public View deadlineColorBar;
     }
 
+    private boolean hasAutoProgress() {
+        //automatic-progress enabled?
+        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("pref_progress", false))
+            return false;
+        return true;
+    }
 
 
 }
