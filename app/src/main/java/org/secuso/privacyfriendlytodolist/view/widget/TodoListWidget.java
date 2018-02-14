@@ -17,12 +17,16 @@
 
 package org.secuso.privacyfriendlytodolist.view.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -35,9 +39,11 @@ import org.secuso.privacyfriendlytodolist.R;
 
 public class TodoListWidget extends AppWidgetProvider {
 
+    public static final String EXTRA_ITEM = "com.example.edockh.EXTRA_ITEM";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
+
 
 
         CharSequence widgetText = "Test";
@@ -57,9 +63,24 @@ public class TodoListWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+        for (int i = 0; i < appWidgetIds.length; ++i) {
+            //updateAppWidget(context, appWidgetManager, appWidgetIds);
+
+            Intent intent = new Intent(context, ListViewWidgetServie.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
+            rv.setRemoteAdapter(appWidgetIds[i], R.id.list_widget, intent);
+            Intent startActivityIntent = new Intent(context, MainActivity.class);
+            PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            rv.setPendingIntentTemplate(R.id.list_widget, startActivityPendingIntent);
+            rv.setEmptyView(R.id.list_widget, R.id.tv_empty_view_no_tasks);
+            appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
+
         }
+
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+
     }
 
     @Override
