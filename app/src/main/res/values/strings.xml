@@ -96,7 +96,7 @@
     <string name="no_deadline">No Deadline</string>
     <string name="edit_task">Edit To-Do Task</string>
     <string name="delete_task">Delete To-Do Task</string>
-    <string name="task_removed">Task was successfully put into bin.</string>
+    <string name="task_removed">Task put into bin</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Reminder</string>
     <string name="deadline_smaller_reminder">The deadline can not be earlier than the reminder time.</string>
@@ -147,6 +147,7 @@
     <string name="pin_enabled">PIN required on startup</string>
     <string name="set_pin">Set PIN</string>
     <string name="auto_progress">Progress by subtasks</string>
+    <string name="notify">Enable notification sound</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
@@ -212,8 +213,8 @@
     <string name="todo_activity">Todo Tasks</string>
 
     <!-- ### Delete AlertDialog ### -->
-    <string name="alert_listdelete">Do you really want to delete this list?</string>
-    <string name="alert_taskdelete">Do you really want to delete this task?</string>
+    <string name="alert_listdelete">Really delete this list?</string>
+    <string name="alert_clear">Really clear?</string>
     <string name="alert_delete_yes">Delete</string>
     <string name="alert_delete_no">Cancel</string>
 

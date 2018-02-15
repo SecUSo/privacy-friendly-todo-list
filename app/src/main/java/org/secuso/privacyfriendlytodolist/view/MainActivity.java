@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     long unlockUntil = -1;
     private static final long UnlockPeriod = 30000; // keep the app unlocked for 30 seconds after switching to another activity (settings/help/about)
     int affectedRows;
+    int notificationDone;
 
 
 
@@ -262,6 +263,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         dbHelper = DatabaseHelper.getInstance(this);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
+
+        notificationDone = getIntent().getIntExtra("snooze", 0);
+        if (notificationDone == 1){
+            int taskId = getIntent().getIntExtra("taskId", 0);
+            TodoList tasks = getTodoTasks();
+            TodoTask currentTask = tasks.getTasks().get(taskId);
+            currentTask.setReminderTime(System.currentTimeMillis() + 15);
+            sendToDatabase(currentTask);
+        }
 
         authAndGuiInit(savedInstanceState);
 
@@ -486,6 +496,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
+            if (reminderService == null)
+                bindToReminderService();
             super.onResume();
             guiSetup();
             showAllTasks();
@@ -611,6 +623,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
             if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
                 reminderService.processTask(currentTask);
+            } else if (currentTask.getReminderTime() < Helper.getCurrentTimestamp()) {
+
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
             }
@@ -633,6 +647,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             errorMessage = getString(R.string.list_to_db_error);
         } else if (todo instanceof TodoTask) {
             databaseID = DBQueryHandler.saveTodoTaskInDb(dbHelper.getWritableDatabase(), (TodoTask) todo);
+            notifyReminderService((TodoTask) todo);
             errorMessage = getString(R.string.task_to_db_error);
         } else if (todo instanceof TodoSubTask) {
             databaseID = DBQueryHandler.saveTodoSubTaskInDb(dbHelper.getWritableDatabase(), (TodoSubTask) todo);
@@ -796,6 +811,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
         initFab(true, 0, false);
+        hints();
     }
 
     private void showTasksOfList(int id) {
@@ -826,7 +842,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = DatabaseHelper.getInstance(this);
         final ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
-        final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        //final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         final int helpId = id;
         final boolean helpExists = idExists;
 
@@ -935,7 +951,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                      public void onClick(View v) {
                          DBQueryHandler.recoverTasks(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
                          showTasksOfList(longClickedTodo.getLeft().getListId());
-
+                         hints();
                         }
                      });
                 snackbar.show();

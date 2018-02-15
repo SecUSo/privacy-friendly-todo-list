@@ -18,14 +18,17 @@
 package org.secuso.privacyfriendlytodolist.model;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -131,8 +134,17 @@ public class ReminderService extends Service {
     private void handleAlarm(TodoTask task) {
 
         String title = task.getName();
+        Uri sound = Uri.parse("android.resource://" + getPackageName() + "/app/src/main/res/Sounds/notify");
 
-
+        Intent snooze = new Intent(this, MainActivity.class);
+        PendingIntent pendingSnooze =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        snooze,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+        snooze.putExtra("snooze", 1);
+        snooze.putExtra("taskId", task.getId());
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
         resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
@@ -146,7 +158,11 @@ public class ReminderService extends Service {
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.addAction(R.drawable.snooze, "Snooze", pendingSnooze);
+        mBuilder.addAction(R.drawable.done, "Set done", resultPendingIntent);
         mBuilder.setContentIntent(resultPendingIntent);
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true))
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setAutoCancel(true);
         mBuilder.setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);
         mNotificationManager.notify(task.getId(), mBuilder.build());

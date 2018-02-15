@@ -19,6 +19,13 @@
         android:defaultValue="false"
         android:title="@string/auto_progress" />
 
+    <SwitchPreference
+        android:id="@+id/switch_notifysound"
+        android:key="pref_progress"
+        android:defaultValue="true"
+        android:title="@string/notify" />
+
+
 
     <EditTextPreference
         android:defaultValue=""

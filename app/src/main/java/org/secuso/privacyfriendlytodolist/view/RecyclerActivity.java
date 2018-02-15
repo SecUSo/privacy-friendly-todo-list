@@ -19,11 +19,13 @@ package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -115,23 +117,29 @@ public class RecyclerActivity extends AppCompatActivity{
                 dbhelper = DatabaseHelper.getInstance(this);
                 final ArrayList<TodoTask> tasks;
                 tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-                for ( TodoTask t : tasks){
-                    DBQueryHandler.deleteTodoTask(this.dbhelper.getReadableDatabase(), t);
-                }
-                updateAdapter();
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                builder1.setMessage(R.string.alert_clear);
+                builder1.setCancelable(true);
 
-                Snackbar snackbar = Snackbar.make(this.findViewById(R.id.btn_clear), R.string.snack_clear, Snackbar.LENGTH_LONG);
-                snackbar.setAction(R.string.snack_undo, new View.OnClickListener() {
+                builder1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                       for (TodoTask task : backupTasks) {
-                           if (task instanceof  TodoTask)
-                               DBQueryHandler.saveTodoTaskInDb(dbhelper.getWritableDatabase(), task);
-                       }
-                       updateAdapter();
+                    public void onClick(DialogInterface dialog, int which) {
+                        for ( TodoTask t : tasks){
+                            DBQueryHandler.deleteTodoTask(DatabaseHelper.getInstance(getBaseContext()).getReadableDatabase(), t);
+                        }
+                        dialog.cancel();
+                        updateAdapter();
                     }
                 });
-                snackbar.show();
+
+                builder1.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert = builder1.create();
+                alert.show();
 
         }
         return super.onOptionsItemSelected(item);

@@ -93,7 +93,7 @@
     <string name="no_deadline">Keine Deadline</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="delete_task">Aufgabe löschen</string>
-    <string name="task_removed">Aufgabe wurde in Papierkorb verschoben.</string>
+    <string name="task_removed">Aufgabe ist im Papierkorb</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Erinnerung</string>
     <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
@@ -143,6 +143,7 @@
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
     <string name="auto_progress">Fortschritt durch Subtasks</string>
+    <string name="notify">Benachrichtigungston</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
@@ -208,7 +209,7 @@
 
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_listdelete">Wollen Sie die Liste wirklich löschen?</string>
-    <string name="alert_taskdelete">Wollen Sie die Aufgabe wirklich löschen?</string>
+    <string name="alert_clear">Wirklich leeren?</string>
     <string name="alert_delete_yes">Löschen</string>
     <string name="alert_delete_no">Abbrechen</string>
 
