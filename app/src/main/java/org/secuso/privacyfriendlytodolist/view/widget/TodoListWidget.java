@@ -45,6 +45,8 @@ public class TodoListWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
 
+        Intent intent = new Intent(context, ListViewWidgetService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         CharSequence widgetText = "Test";
         // CharSequence widgetText = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
@@ -52,10 +54,20 @@ public class TodoListWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
         //views.setTextViewText(R.id.text_widget, widgetText);
 
-        //views.setRemoteAdapter(R.id.list_widget, ); // Service intent als zweiter param
-        views.setTextViewText(R.id.text, "Test");
+
+        Intent svcIntent = new Intent(context, ListViewWidgetService.class);
+        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        views.setRemoteAdapter(appWidgetId, R.id.list_widget,
+                svcIntent);
+        views.setEmptyView(R.id.list_widget, R.id.tv_empty_view_no_tasks);
 
 
+/*
+        views.setRemoteAdapter(R.id.list_widget,intent);// Service intent als zweiter param
+        views.setTextViewText(R.id.text, "Test"); */
+
+        views.setOnClickPendingIntent(R.id.list_widget, pendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -64,18 +76,8 @@ public class TodoListWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int i = 0; i < appWidgetIds.length; ++i) {
-            //updateAppWidget(context, appWidgetManager, appWidgetIds);
+            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
 
-            Intent intent = new Intent(context, ListViewWidgetServie.class);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
-            rv.setRemoteAdapter(appWidgetIds[i], R.id.list_widget, intent);
-            Intent startActivityIntent = new Intent(context, MainActivity.class);
-            PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setPendingIntentTemplate(R.id.list_widget, startActivityPendingIntent);
-            rv.setEmptyView(R.id.list_widget, R.id.tv_empty_view_no_tasks);
-            appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
 
         }
 

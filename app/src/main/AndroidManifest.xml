@@ -58,7 +58,7 @@
             android:name=".view.Settings"
             android:label="@string/settings" />
         <service
-            android:name=".view.widget.ListViewWidgetServie"
+            android:name=".view.widget.ListViewWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:label="Widget" />
 
