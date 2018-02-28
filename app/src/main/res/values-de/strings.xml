@@ -177,20 +177,22 @@
     <string name="subtask_to_db_error">Unteraufgabe konnte nicht in die Datenbank geschrieben werden.</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
+    <string name="tutorial">Tutorial</string>
+
     <string name="slide1_heading">Willkommen!</string>
     <string name="slide1_text">Willkommen in der To-Do Liste, die Ihre Privatsphäre nicht verletzt. Diese App kommt ohne Berechtigungen aus.</string>
 
     <string name="slide2_heading">Listen</string>
-    <string name="slide2_text">Aufgaben in To-Do Listen verwalten.</string>
+    <string name="slide2_text">Sie können Ihre Aufgaben in Kategorien unterteilen, indem Sie To-Do Listen anlegen und verwalten.</string>
 
     <string name="slide3_heading">Erinnerungen</string>
-    <string name="slide3_text">Fälligkeitsdatum und Erinnerungen für Aufgaben erstellen.</string>
+    <string name="slide3_text">Zusätzlich können sie ein Fälligkeitsdatum und eine Erinnerung für Aufgaben definieren.</string>
 
-    <string name="slide4_heading">Vergessen Sie nichts</string>
-    <string name="slide4_text">Unteraufgaben erstellen, indem die Aufgabe in der Ansicht aufgeklappt wird.</string>
+    <string name="slide4_heading">Details</string>
+    <string name="slide4_text">Sie können Unteraufgaben erstellen, indem die Aufgabe durch Antippen aufgeklappt wird. Der Fortschritt einer Aufgabe kann entweder manuell oder automatisch durch die Anzahl der erledigten Subtasks gesetzt werden.</string>
 
     <string name="slide5_heading">Privatsphäre</string>
-    <string name="slide5_text">Einen PIN-Schutz in den Einstellungen einrichten.</string>
+    <string name="slide5_text">Erstellen sie einen PIN-Schutz in den Einstellungen dieser App.</string>
 
     <string name="next">Weiter</string>
     <string name="skip">Überspringen</string>

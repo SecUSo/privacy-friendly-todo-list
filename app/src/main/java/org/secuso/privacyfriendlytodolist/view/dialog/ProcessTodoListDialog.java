@@ -51,11 +51,11 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
         initGui();
         etName.setText(list2Change.getName());
-        etDescription.setText(list2Change.getDescription());
         todoList = list2Change;
         todoList.setChanged();
         //todoList.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
     }
+
 
 
     private void initGui() {
@@ -69,7 +69,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
             }
         });
         etName = (EditText) findViewById(R.id.et_todo_list_name);
-        etDescription = (EditText) findViewById(R.id.et_todo_list_description);
     }
 
     private class OkayButtonListener implements View.OnClickListener {
@@ -78,15 +77,14 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
             // prepare list data
             String listName = etName.getText().toString();
-            String listDescription = etDescription.getText().toString();
+            //String listDescription = etDescription.getText().toString();
 
             if (listName.equals("") || listName == null) {
                 Toast.makeText(getContext(), getContext().getString(R.string.list_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
             } else {
 
-                if (changesMade(listName, listDescription)) {
+                if (changesMade(listName)) {
                     todoList.setName(listName);
-                    todoList.setDescription(listDescription);
                     callback.finish(todoList);
                 }
                 self.dismiss();
@@ -94,12 +92,10 @@ public class ProcessTodoListDialog extends FullScreenDialog {
         }
     }
 
-    private boolean changesMade(String listName, String listDescription) {
+    private boolean changesMade(String listName) {
 
         // check if real changes were made
-        if (listName.equals(todoList.getName()) &&
-                listDescription.equals(todoList.getDescription())) {
-
+        if (listName.equals(todoList.getName())) {
             return false;
         }
 

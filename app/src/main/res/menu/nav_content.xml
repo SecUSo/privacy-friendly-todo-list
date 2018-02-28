@@ -21,6 +21,11 @@
                 android:id="@+id/nav_trash"
                 android:icon="@drawable/ic_delete_black_24dp"
                 android:title="@string/bin"/>
+
+        <item
+            android:id="@+id/nav_tutorial"
+            android:icon="@drawable/ic_school_black_24dp"
+            android:title="@string/tutorial"/>
     </group>
 
 

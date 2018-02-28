@@ -161,7 +161,7 @@ public class ReminderService extends Service {
         mBuilder.addAction(R.drawable.snooze, "Snooze", pendingSnooze);
         mBuilder.addAction(R.drawable.done, "Set done", resultPendingIntent);
         mBuilder.setContentIntent(resultPendingIntent);
-        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true))
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true))
             mBuilder.setDefaults(Notification.DEFAULT_ALL);
         mBuilder.setAutoCancel(true);
         mBuilder.setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);

@@ -30,18 +30,6 @@
         android:layout_height="1dp"
         android:background="@color/grey" />
 
-    <EditText
-        android:id="@+id/et_todo_list_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/todo_list_description_hint"
-        android:inputType="textMultiLine"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:minLines="1"
-        android:maxLines="15" />
-
-
 
     <View
         android:layout_width="match_parent"

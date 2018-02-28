@@ -20,8 +20,11 @@ package org.secuso.privacyfriendlytodolist.view.calendar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ExpandableListAdapter;
@@ -69,6 +72,22 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.fragment_calendar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_calendar);
+
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.calendar);
+            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        }
+
         calendarView = (CalendarView) findViewById(R.id.calendar_view);
         calendarGridAdapter = new CalendarGridAdapter(this, R.layout.calendar_day);
         calendarView.setGridAdapter(calendarGridAdapter);
@@ -142,4 +161,17 @@ public class CalendarActivity extends AppCompatActivity {
         //taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         //expandableListView.setAdapter(taskAdapter);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

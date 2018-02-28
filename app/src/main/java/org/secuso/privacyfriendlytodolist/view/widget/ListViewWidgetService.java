@@ -24,6 +24,9 @@ import android.widget.RemoteViewsService;
 
 /**
  * Created by Sebastian Lutz on 15.02.2018.
+ *
+ * Service that gives data to AppWidgetProvider Class
+ *
  */
 
 public class ListViewWidgetService extends RemoteViewsService {

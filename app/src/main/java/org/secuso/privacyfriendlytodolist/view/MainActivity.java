@@ -447,6 +447,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, Settings.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
+        } else if (id == R.id.nav_tutorial) {
+            Intent intent = new Intent(this, TutorialActivity.class);
+            this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
+            startActivity(intent);
         } else if (id == R.id.menu_calendar_view) {
             Intent intent = new Intent(this, CalendarActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
@@ -469,6 +473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showAllTasks();
         } else {
             showTasksOfList(id);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);

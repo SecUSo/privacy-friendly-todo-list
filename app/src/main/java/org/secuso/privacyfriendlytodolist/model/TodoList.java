@@ -40,7 +40,6 @@ public class TodoList extends BaseTodo implements Parcelable{
 
         id = parcel.readInt();
         name = parcel.readString();
-        description = parcel.readString();
         parcel.readList(tasks, TodoTask.class.getClassLoader());
     }
 
@@ -101,7 +100,6 @@ public class TodoList extends BaseTodo implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeString(description);
         dest.writeList(tasks);
     }
 
@@ -169,8 +167,7 @@ public class TodoList extends BaseTodo implements Parcelable{
         String queryLowerCase = query.toLowerCase();
         if (this.name.toLowerCase().contains(queryLowerCase))
             return true;
-        if (this.description.toLowerCase().contains(queryLowerCase))
-            return true;
+
         if (recursive)
             for (int i = 0; i < this.tasks.size(); i++)
                 if (this.tasks.get(i).checkQueryMatch(queryLowerCase, recursive))

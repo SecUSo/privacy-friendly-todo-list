@@ -13,20 +13,6 @@
         android:defaultValue="false"
         android:title="@string/pin_enabled" />
 
-    <SwitchPreference
-        android:id="@+id/switch_progress"
-        android:key="pref_progress"
-        android:defaultValue="false"
-        android:title="@string/auto_progress" />
-
-    <SwitchPreference
-        android:id="@+id/switch_notifysound"
-        android:key="pref_progress"
-        android:defaultValue="true"
-        android:title="@string/notify" />
-
-
-
     <EditTextPreference
         android:defaultValue=""
         android:dependency="pref_pin_enabled"
@@ -37,6 +23,19 @@
         android:maxLength="4"
         android:password="true"
         android:title="@string/set_pin" />
+
+    <SwitchPreference
+        android:id="@+id/switch_progress"
+        android:key="pref_progress"
+        android:defaultValue="false"
+        android:title="@string/auto_progress" />
+
+    <SwitchPreference
+        android:id="@+id/switch_notifysound"
+        android:key="notify"
+        android:defaultValue="true"
+        android:title="@string/notify" />
+
 
     <!--TODO NumberPicker for reapting interval of alarm notifications -->
 

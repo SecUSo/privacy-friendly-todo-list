@@ -23,8 +23,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ExpandableListView;
+import org.secuso.privacyfriendlytodolist.view.ExpandableListAdapter;
 
 import org.secuso.privacyfriendlytodolist.R;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Activity that gives the user some help regarding the handling of the app.
@@ -32,13 +38,23 @@ import org.secuso.privacyfriendlytodolist.R;
 
 public class HelpActivity extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_help);
 
+        ExpandableListAdapter expandableListAdapter;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_help);
+        ExpandableListView generalExpandableListView = (ExpandableListView) findViewById(R.id.generalExpandableListView);
+        HelpDataDump helpDataDump = new HelpDataDump(this);
+
+        LinkedHashMap<String, List<String>> expandableListDetail = helpDataDump.getDataGeneral();
+        List<String> expandableListTitleGeneral = new ArrayList<String>(expandableListDetail.keySet());
+        expandableListAdapter = new ExpandableListAdapter(this, expandableListTitleGeneral, expandableListDetail);
+        generalExpandableListView.setAdapter(expandableListAdapter);
 
         if (toolbar != null) {
             toolbar.setTitle(R.string.help);
@@ -53,7 +69,7 @@ public class HelpActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.help_fragment_container, new HelpFragment()).commit();
+        //getFragmentManager().beginTransaction().replace(R.id.help_fragment_container, new HelpFragment()).commit();
     }
 
     @Override
