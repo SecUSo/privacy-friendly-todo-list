@@ -554,6 +554,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                     vh2.addSubTaskButton = (RelativeLayout) convertView.findViewById(R.id.rl_add_subtask);
                     vh2.deadlineColorBar = convertView.findViewById(R.id.v_setting_deadline_color_bar);
                     convertView.setTag(vh2);
+                    if (currentTask.isInTrash())
+                        convertView.setVisibility(View.GONE);
                 } else {
                     vh2 = (SettingViewHolder) convertView.getTag();
                 }

@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private TextView dialogTitleEdit;
     private TextView progressText;
     private TextView progressPercent;
+    private RelativeLayout progress_layout;
     private SeekBar progressSelector;
     private EditText taskName;
     private EditText taskDescription;
@@ -141,6 +143,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
         progressText = (TextView) findViewById(R.id.tv_task_progress);
         progressPercent = (TextView) findViewById(R.id.new_task_progress);
+        progress_layout = (RelativeLayout) findViewById(R.id.progress_relative);
 
         // initialize seekbar that allows to select the progress
         final TextView selectedProgress = (TextView) findViewById(R.id.new_task_progress);
@@ -302,7 +305,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
         }
 
-       for (TodoList tl : lists){
+        for (TodoList tl : lists){
             if (item.getTitle() == tl.getName()){
                 this.selectedListID = tl.getId();
                 listSelector.setText(tl.getName());
@@ -350,9 +353,10 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     //Make progress-selectionbar disappear
     private void makeProgressGone() {
-            progressSelector.setVisibility(View.GONE);
-            progressPercent.setVisibility(View.GONE);
-            progressText.setVisibility(View.GONE);
+        progress_layout.setVisibility(View.GONE);
+           /* progressSelector.setVisibility(View.INVISIBLE);
+            progressPercent.setVisibility(View.INVISIBLE);
+            progressText.setVisibility(View.INVISIBLE); */
     }
 
     private void autoProgress() {

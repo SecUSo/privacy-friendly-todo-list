@@ -20,6 +20,7 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -98,6 +99,10 @@ public class RecyclerActivity extends AppCompatActivity{
        switch(item.getItemId()){
            case R.id.restore:
                DBQueryHandler.recoverTasks(dbhelper.getWritableDatabase(), longClickedTodo.getLeft());
+               ArrayList<TodoSubTask> subTasks = longClickedTodo.getLeft().getSubTasks();
+               for (TodoSubTask ts : subTasks){
+                   DBQueryHandler.recoverSubtasks(dbhelper.getWritableDatabase(), ts);
+               }
                updateAdapter();
                break;
 
@@ -223,4 +228,11 @@ public class RecyclerActivity extends AppCompatActivity{
        return backup;
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+    }
 }

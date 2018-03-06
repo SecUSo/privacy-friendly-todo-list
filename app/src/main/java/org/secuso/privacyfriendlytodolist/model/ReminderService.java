@@ -134,7 +134,7 @@ public class ReminderService extends Service {
     private void handleAlarm(TodoTask task) {
 
         String title = task.getName();
-        Uri sound = Uri.parse("android.resource://" + getPackageName() + "/app/src/main/res/Sounds/notify");
+        //Uri sound = Uri.parse("android.resource://" + getPackageName() + "/app/src/main/res/Sounds/notify");
 
         Intent snooze = new Intent(this, MainActivity.class);
         PendingIntent pendingSnooze =

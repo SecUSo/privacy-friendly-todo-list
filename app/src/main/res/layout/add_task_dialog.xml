@@ -97,10 +97,11 @@
         android:background="@color/grey" />
 
     <RelativeLayout
+        android:id="@+id/progress_relative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
         android:paddingBottom="10dp">
 
         <TextView
@@ -128,12 +129,20 @@
             android:layout_alignLeft="@+id/sb_new_task_progress"
             android:layout_marginLeft="15dp"/>
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp">
+
         <TextView
             android:id="@+id/tv_new_task_priority_str"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/priority_colon"
-            android:layout_below="@+id/new_task_progress"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
@@ -145,7 +154,8 @@
             android:layout_alignBaseline="@+id/tv_new_task_priority_str"
             android:layout_alignBottom="@+id/tv_new_task_priority_str"
             android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/tv_task_progress"
+            android:layout_marginStart="44dp"
+            android:layout_toEndOf="@+id/tv_new_task_priority_str"
             android:text="@string/click_to_choose"
             android:textSize="16sp"
             android:textStyle="italic" />
@@ -180,8 +190,9 @@
         android:background="@color/grey" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
 
         <Button
             android:id="@+id/bt_new_task_cancel"
@@ -200,6 +211,7 @@
             android:layout_weight="1"
             android:minHeight="48dip"
             android:text="@string/ok" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -157,9 +157,9 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void showDeadlineTasks(ArrayList<TodoTask> tasks){
-        setContentView(R.layout.content_main);
-        //taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        //expandableListView.setAdapter(taskAdapter);
+        setContentView(R.layout.activity_main);
+        taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        expandableListView.setAdapter(taskAdapter);
     }
 
     @Override
