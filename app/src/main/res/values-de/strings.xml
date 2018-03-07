@@ -226,4 +226,9 @@
     <string name="snack_undo">Rückgängig machen</string>
     <string name="snack_clear">Papierkorb geleert</string>
 
+    <!-- ### EXIT ### -->
+    <string name="exit_app">To-Do Liste beenden?</string>
+    <string name="exit_positive">Ja</string>
+    <string name="exit_negative">Nein</string>
+
 </resources>

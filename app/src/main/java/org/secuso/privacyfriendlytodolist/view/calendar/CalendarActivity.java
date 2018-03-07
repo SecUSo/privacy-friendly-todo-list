@@ -62,9 +62,10 @@ public class CalendarActivity extends AppCompatActivity {
     protected MainActivity containerActivity;
     private HashMap<String, ArrayList<TodoTask>> tasksPerDay = new HashMap<>();
     private DatabaseHelper dbHelper;
+    private ArrayList<TodoTask> todaysTasks;
 
-    private ExpandableListView expandableListView;
-    private ExpandableTodoTaskAdapter taskAdapter;
+  /*  private ExpandableListView expandableListView;
+    private ExpandableTodoTaskAdapter taskAdapter; */
 
 
     @Override
@@ -91,9 +92,10 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView = (CalendarView) findViewById(R.id.calendar_view);
         calendarGridAdapter = new CalendarGridAdapter(this, R.layout.calendar_day);
         calendarView.setGridAdapter(calendarGridAdapter);
-        expandableListView = (ExpandableListView) findViewById(R.id.exlv_tasks);
+        //expandableListView = (ExpandableListView) findViewById(R.id.exlv_tasks);
 
         dbHelper = DatabaseHelper.getInstance(this);
+        todaysTasks = new ArrayList<>();
 
         updateDeadlines();
 
@@ -116,10 +118,11 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView.setDayOnClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //todaysTasks.clear();
                 updateDeadlines();
                 Date selectedDate = calendarGridAdapter.getItem(position);
                 String key = absSecondsToDate(selectedDate.getTime()/1000);
-                ArrayList<TodoTask> todaysTasks = tasksPerDay.get(key);
+                todaysTasks = tasksPerDay.get(key);
                 if(todaysTasks == null) {
                     Toast.makeText(getApplicationContext(), getString(R.string.no_deadline_today), Toast.LENGTH_SHORT).show();
                 } else {
@@ -134,16 +137,17 @@ public class CalendarActivity extends AppCompatActivity {
 
     private void updateDeadlines(){
         ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        ArrayList<TodoTask> todoTasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
         tasksPerDay.clear();
-        for (TodoList list : todoLists){
-            for (TodoTask task : list.getTasks()){
+        //for (TodoList list : todoLists){
+            for (TodoTask task : todoTasks){
                 long deadline = task.getDeadline();
                 String key = absSecondsToDate(deadline);
                 if (!tasksPerDay.containsKey(key)){
                     tasksPerDay.put(key, new ArrayList<TodoTask>());
                 }
                 tasksPerDay.get(key).add(task);
-            }
+            //}
         }
         calendarGridAdapter.setTodoTasks(tasksPerDay);
         calendarGridAdapter.notifyDataSetChanged();
@@ -157,9 +161,11 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void showDeadlineTasks(ArrayList<TodoTask> tasks){
-        setContentView(R.layout.activity_main);
-        taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        expandableListView.setAdapter(taskAdapter);
+        Intent intent = new Intent(this, CalendarPopup.class);
+        Bundle b = new Bundle();
+        b.putParcelableArrayList("Deadlines", tasks);
+        intent.putExtras(b);
+        startActivity(intent);
     }
 
     @Override
@@ -168,10 +174,20 @@ public class CalendarActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+    }
 }

@@ -42,8 +42,10 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.secuso.privacyfriendlytodolist.model.TodoList.DUMMY_LIST_ID;
+
 /**
- * This class shows a dialog that lets the user create/edit a task.
+ * This class creates a dialog that lets the user create/edit a task.
  */
 
 public class ProcessTodoTaskDialog extends FullScreenDialog {
@@ -186,9 +188,9 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
                 if(name.equals("")) {
                     Toast.makeText(getContext(), getContext().getString(R.string.todo_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
-                } else if (listName.equals(getContext().getString(R.string.click_to_choose))) {
+                } /* else if (listName.equals(getContext().getString(R.string.click_to_choose))) {
                     Toast.makeText(getContext(), getContext().getString(R.string.to_choose_list), Toast.LENGTH_SHORT).show();
-                }
+                } */
                 else {
 
                     task.setName(name);
@@ -309,6 +311,8 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             if (item.getTitle() == tl.getName()){
                 this.selectedListID = tl.getId();
                 listSelector.setText(tl.getName());
+            } else if (item.getTitle() == getContext().getString(R.string.to_choose_list)){
+                this.selectedListID = -3;
             }
         }
 
@@ -339,6 +343,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                 selectedListID = tl.getId();
             }else if (!idExists){
                 listSelector.setText(getContext().getString(R.string.click_to_choose));
+                selectedListID = -3;
             }
         }
 

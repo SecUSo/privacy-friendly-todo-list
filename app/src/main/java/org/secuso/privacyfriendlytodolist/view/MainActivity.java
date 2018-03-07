@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // GUI
     private NavigationView navigationView;
     private NavigationView navigationBottomView;
+    private Toolbar toolbar;
 
     // Others
     private boolean inList;
@@ -277,6 +278,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         authAndGuiInit(savedInstanceState);
+        TodoList defaultList = new TodoList();
+        defaultList.setDummyList();
+        DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), defaultList);
 
     }
 
@@ -408,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void guiSetup() {
 
         // toolbar setup
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // side menu setup
@@ -474,9 +478,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.menu_home) {
             this.inList = false;
             showAllTasks();
+            toolbar.setTitle(R.string.home);
         } else {
             this.inList = true;
             showTasksOfList(id);
+            toolbar.setTitle(item.getTitle());
         }
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -556,12 +562,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (inList){
+            showAllTasks();
+            toolbar.setTitle(R.string.home);
+            inList = false;
         } else {
-            super.onBackPressed();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.exit_app);
+            builder.setCancelable(true);
+            builder.setPositiveButton(R.string.exit_positive, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.setNegativeButton(R.string.exit_negative, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
         }
+        
     }
 
 
@@ -777,7 +801,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             }
                             dialog.cancel();
-
+                            Intent intent = new Intent (context, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         }
                     });
 
@@ -943,7 +969,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if(alteredTask instanceof TodoTask) {
                             sendToDatabase(alteredTask);
                             expandableTodoTaskAdapter.notifyDataSetChanged();
-                            showTasksOfList(((TodoTask) alteredTask).getListId());
+                            if (inList && longClickedTodo.getLeft().getListId() != -3) {
+                                showTasksOfList(((TodoTask) alteredTask).getListId());
+                            } else {
+                                showAllTasks();
+                            }
                         }
                     }
                 });
@@ -962,7 +992,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
 
                 // Dependent on the current View, update All-tasks or a certain List
-                if (this.inList) {
+                if (this.inList && longClickedTodo.getLeft().getListId() != -3) {
                     showTasksOfList(longClickedTodo.getLeft().getListId());
                 } else {
                     showAllTasks();
@@ -976,7 +1006,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         for (TodoSubTask ts : subTasks){
                             DBQueryHandler.recoverSubtasks(dbHelper.getWritableDatabase(), ts);
                         }
-                        if (inList) {
+                        if (inList && longClickedTodo.getLeft().getListId() != -3) {
                             showTasksOfList(longClickedTodo.getLeft().getListId());
                         } else {
                             showAllTasks();
@@ -1000,7 +1030,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
         dbHelper = DatabaseHelper.getInstance(this);
-        if (DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()).size() == 0) {
+        if ( DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase()).size() == 0 &&
+                DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()).size() == 0) {
 
             initialAlert.setVisibility(View.VISIBLE);
             anim.setDuration(1500);
@@ -1009,14 +1040,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             anim.setRepeatCount(Animation.INFINITE);
             initialAlert.startAnimation(anim);
 
-        } else {
+        } else /*if (DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase()).size() > 0 ||
+                DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()).size() > 0) */ {
             initialAlert.setVisibility(View.GONE);
             initialAlert.clearAnimation();
         }
 
-        if (DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase()).size() == 0 &&
-                DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase()).size() != 0) {
-
+        if (DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase()).size() == 0) {
             secondAlert.setVisibility(View.VISIBLE);
             anim.setDuration(1500);
             anim.setStartOffset(20);

@@ -49,6 +49,9 @@
             android:name=".view.calendar.CalendarActivity"
             android:label="@string/calendar" />
         <activity
+            android:name=".view.calendar.CalendarPopup"
+            android:label="@string/app_name"/>
+        <activity
             android:name=".view.TodoTaskActivity"
             android:label="@string/todo_activity" />
         <activity

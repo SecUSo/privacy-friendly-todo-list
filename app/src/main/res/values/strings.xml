@@ -10,7 +10,7 @@
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
     <string name="home">All tasks</string>
-    <string name="calendar_view">Calendar View</string>
+    <string name="calendar_view">Calendar</string>
     <string name="show_all_tasks">Show all tasks</string>
     <string name="settings">Settings</string>
     <string name="other">Other</string>
@@ -190,10 +190,10 @@
     <string name="slide2_text">You can manage your tasks in labled To-Do lists.</string>
 
     <string name="slide3_heading">Reminder</string>
-    <string name="slide3_text">You can define Ddeadlines and reminders for your tasks.</string>
+    <string name="slide3_text">You can define deadlines and reminders for your tasks.</string>
 
     <string name="slide4_heading">Everything is important</string>
-    <string name="slide4_text">Additionally you can add Subtasks and the progress of your their Maintask. Progress can be set manually or automatically by the number of done Subtasks.</string>
+    <string name="slide4_text">You can add subtasks and the progress of their maintask. Progress can be set manually or automatically by the number of done subtasks.</string>
 
     <string name="slide5_heading">Secure</string>
     <string name="slide5_text">You can add a PIN-protection in the settings.</string>
@@ -231,5 +231,10 @@
     <string name="snack_check">Task changed status</string>
     <string name="snack_undo">undo action</string>
     <string name="snack_clear">Bin is now cleared</string>
+
+    <!-- ### EXIT ### -->
+    <string name="exit_app">Exit To-Do List?</string>
+    <string name="exit_positive">Yes</string>
+    <string name="exit_negative">No</string>
 
 </resources>
