@@ -4,10 +4,14 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listview_widget"/>
+        android:id="@+id/listview_widget">
+
+
+    </ListView>
 
     <TextView
         android:id="@+id/tv_empty_widget"

@@ -47,6 +47,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
     private ArrayList<TodoTask> tasks;
     private Context mContext;
+    private static final int ID_CONSTANT = 0x0101010;
     private static int appWidgetId;
     //private Cursor cursor;
 
@@ -77,9 +78,9 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     @Override
     public void onDataSetChanged() {
 
-        final long identityToken = Binder.clearCallingIdentity();
+        /*final long identityToken = Binder.clearCallingIdentity();
         Binder.restoreCallingIdentity(identityToken);
-        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase()); */
     }
 
     @Override
@@ -95,19 +96,21 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
         TodoTask todo = tasks.get(position);
 
-        RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.exlv_tasks_group);
-        itemView.setTextViewText(R.id.tv_exlv_task_description, todo.getName());
+        RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.widget_tasks);
 
-        Intent intent = new Intent();
+            itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
+            itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
+
+       /* Intent intent = new Intent();
         intent.putExtra(TodoListWidget.EXTRA_ITEM, todo);
-        //itemView.setOnClickFillInIntent(R.id.article_item, intent);
+        itemView.setOnClickFillInIntent(R.id.listview_widget, intent); */
         return itemView;
     }
 
     @Override
     public long getItemId(int position) {
 
-        return position;
+        return ID_CONSTANT + position;
     }
 
     @Override

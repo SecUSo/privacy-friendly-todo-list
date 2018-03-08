@@ -82,6 +82,7 @@ public class TodoListWidget extends AppWidgetProvider {
 
             Intent intent = new Intent (context, ListViewWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            //views.setTextViewText(R.id.widget_title, "To-Do List:");
             views.setRemoteAdapter(R.id.listview_widget, intent);
             views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
             appWidgetManager.updateAppWidget(appWidgetId, views);
