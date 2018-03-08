@@ -21,6 +21,10 @@ import android.appwidget.AppWidgetManager;
 import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Binder;
+import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -28,6 +32,7 @@ import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
 
 import java.util.ArrayList;
 
@@ -40,22 +45,26 @@ import java.util.ArrayList;
 
 public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private ArrayList<TodoTask> tasks = new ArrayList<TodoTask>();
-    private Context context;
-    private int appWidgetId;
+    private ArrayList<TodoTask> tasks;
+    private Context mContext;
+    private static int appWidgetId;
+    //private Cursor cursor;
 
     public WidgetViewsFactory(Context context, Intent intent){
-        this.context = context;
+        mContext = context;
+        tasks = new ArrayList<TodoTask>();
 
-        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+        /*appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
 
-        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(context).getReadableDatabase());
+        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(context).getReadableDatabase()); */
     }
 
 
     @Override
     public void onCreate() {
+
+        tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
 
     }
 
@@ -64,9 +73,13 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         return tasks.size();
     }
 
+
     @Override
     public void onDataSetChanged() {
-        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(context).getReadableDatabase());
+
+        final long identityToken = Binder.clearCallingIdentity();
+        Binder.restoreCallingIdentity(identityToken);
+        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
     }
 
     @Override
@@ -76,20 +89,30 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public RemoteViews getViewAt(int position) {
-        RemoteViews listView = new RemoteViews(context.getPackageName(), R.id.list_widget);
+        if (position == AdapterView.INVALID_POSITION){
+            return null;
+        }
+
         TodoTask todo = tasks.get(position);
-        listView.setTextViewText(android.R.layout.simple_selectable_list_item, todo.getName());
-        return listView;
+
+        RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.exlv_tasks_group);
+        itemView.setTextViewText(R.id.tv_exlv_task_description, todo.getName());
+
+        Intent intent = new Intent();
+        intent.putExtra(TodoListWidget.EXTRA_ITEM, todo);
+        //itemView.setOnClickFillInIntent(R.id.article_item, intent);
+        return itemView;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+
+        return position;
     }
 
     @Override
     public void onDestroy() {
-
+        tasks.clear();
     }
 
     @Override

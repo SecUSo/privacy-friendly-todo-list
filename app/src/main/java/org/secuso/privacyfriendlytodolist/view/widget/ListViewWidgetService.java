@@ -33,28 +33,20 @@ public class ListViewWidgetService extends RemoteViewsService {
 
     private Context context;
 
-    @Override
+/*    @Override
     public IBinder onBind(Intent intent) {
         return super.onBind(intent);
-    }
+    } */
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return (new WidgetViewsFactory(context, intent));
+        return new WidgetViewsFactory(getApplicationContext(), intent);
     }
 
-    public ListViewWidgetService(Context context) {
+  /*  public ListViewWidgetService(Context context) {
         super();
         this.context = context;
-    }
-
-    public ListViewWidgetService(){
-
-    }
-
-
-
-
+    } */
 
 
 

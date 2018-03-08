@@ -45,7 +45,7 @@ public class TodoListWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
 
-        Intent intent = new Intent(context, ListViewWidgetService.class);
+       /* Intent intent = new Intent(context, ListViewWidgetService.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         CharSequence widgetText = "Test";
@@ -63,23 +63,30 @@ public class TodoListWidget extends AppWidgetProvider {
         views.setEmptyView(R.id.list_widget, R.id.tv_empty_view_no_tasks);
 
 
-/*
-        views.setRemoteAdapter(R.id.list_widget,intent);// Service intent als zweiter param
-        views.setTextViewText(R.id.text, "Test"); */
+
+        views.setRemoteAdapter(R.id.list_widget,svcIntent);// Service intent als zweiter param
+        views.setTextViewText(R.id.text, "Test");
 
         views.setOnClickPendingIntent(R.id.list_widget, pendingIntent);
         // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        appWidgetManager.updateAppWidget(appWidgetId, views); */
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        for (int i = 0; i < appWidgetIds.length; ++i) {
-            updateAppWidget(context, appWidgetManager, appWidgetIds[i]);
+        for (int appWidgetId : appWidgetIds) {
+            int widgetId = appWidgetId;
 
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
 
+            Intent intent = new Intent (context, ListViewWidgetService.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            views.setRemoteAdapter(R.id.listview_widget, intent);
+            views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 

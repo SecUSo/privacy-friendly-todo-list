@@ -63,7 +63,7 @@
         <service
             android:name=".view.widget.ListViewWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:label="Widget" />
+             />
 
         <service android:name=".model.ReminderService" />
 
