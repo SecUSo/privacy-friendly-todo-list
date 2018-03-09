@@ -101,8 +101,8 @@
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
     <string name="zero_percent">0%</string>
-    <string name="select_priority">Priorität</string>
-    <string name="select_list">Bitte wählen Sie eine Liste!</string>
+    <string name="select_priority">Priorität wählen:</string>
+    <string name="select_list">Liste wählen:</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>

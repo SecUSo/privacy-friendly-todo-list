@@ -65,8 +65,8 @@ public class TodoListWidget extends AppWidgetProvider {
             views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
 
             Intent detailIntent = new Intent(context, MainActivity.class);
-            PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, detailIntent, 0);
-            views.setOnClickPendingIntent(R.layout.todo_list_widget, pIntent);
+            PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_undone, pIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

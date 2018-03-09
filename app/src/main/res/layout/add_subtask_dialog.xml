@@ -38,8 +38,9 @@
         android:inputType="text" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
 
         <Button
             android:id="@+id/bt_new_subtask_cancel"

@@ -282,17 +282,19 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         switch (v.getId()){
             case R.id.tv_new_task_priority:
-                ContextMenu pri = menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_list)));
+                menu.setHeaderTitle(R.string.select_priority);
                 for (TodoTask.Priority prio : TodoTask.Priority.values()) {
                     menu.add(Menu.NONE, prio.getValue(), Menu.NONE, Helper.priority2String(getContext(), prio));
+
                 }
                 break;
 
             case R.id.tv_new_task_listchoose:
-                ContextMenu li = menu.setHeaderView(Helper.getMenuHeader(getContext(), getContext().getString(R.string.select_list)));
+                menu.setHeaderTitle(R.string.select_list);
                 updateLists();
                 for (TodoList tl : lists){
-                    menu.add(tl.getName());
+                    //+3 so that IDs are non-overlapping with prio-IDs
+                    menu.add(Menu.NONE, tl.getId()+3, Menu.NONE, tl.getName());
                 }
             break;
         }
@@ -302,13 +304,13 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int numValues = TodoTask.Priority.values().length;
-        if (item != null && item.getItemId() < numValues && item.getItemId() >= 0) {
+        if (item != null && item.getItemId() < numValues && item.getItemId() >= 0 ) {
             taskPriority = TodoTask.Priority.values()[item.getItemId()];
             prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
         }
 
         for (TodoList tl : lists){
-            if (item.getTitle() == tl.getName()){
+            if (item.getItemId()-3 == tl.getId()){
                 this.selectedListID = tl.getId();
                 listSelector.setText(tl.getName());
             } else if (item.getTitle() == getContext().getString(R.string.to_choose_list)){

@@ -386,6 +386,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 return super.onOptionsItemSelected(item);
         }
 
+
+
         if(checked)
             taskAdapter.addSortCondition(sortType);
         else

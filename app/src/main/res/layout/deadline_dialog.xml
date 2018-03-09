@@ -18,16 +18,18 @@
         android:background="@color/grey" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
+
         <Button
             android:id="@+id/bt_deadline_nodeadline"
-            android:layout_width="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="51dp"
             android:layout_height="wrap_content"
-            android:minHeight="48dip"
             android:layout_weight="1"
-            android:text="@string/no_deadline"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:minHeight="48dip"
+            android:text="@string/no_deadline" />
         <Button
             android:id="@+id/bt_deadline_ok"
             android:layout_width="0dp"

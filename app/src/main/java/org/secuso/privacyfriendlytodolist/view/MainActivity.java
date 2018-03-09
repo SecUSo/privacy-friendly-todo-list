@@ -17,6 +17,7 @@
 
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -386,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onStart() {
         super.onStart();
         uncheckNavigationEntries();
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
 
@@ -428,6 +430,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationBottomView = (NavigationView) findViewById(R.id.nav_view_bottom);
         navigationView.setNavigationItemSelectedListener(this);
         navigationBottomView.setNavigationItemSelectedListener(this);
+
     }
 
 
@@ -438,7 +441,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             for (int i = 0; i < size; i++) {
                 navigationView.getMenu().getItem(i).setChecked(false);
             }
-
             Log.i(TAG, "Navigation entries unchecked.");
         }
     }
@@ -447,7 +449,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+        uncheckNavigationEntries();
         int id = item.getItemId();
+        item.setCheckable(true);
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
@@ -479,10 +484,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.inList = false;
             showAllTasks();
             toolbar.setTitle(R.string.home);
+            item.setChecked(true);
         } else {
             this.inList = true;
             showTasksOfList(id);
             toolbar.setTitle(item.getTitle());
+            navigationView.getMenu().getItem(id).setChecked(true);
         }
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -566,6 +573,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showAllTasks();
             toolbar.setTitle(R.string.home);
             inList = false;
+            uncheckNavigationEntries();
+            navigationView.getMenu().getItem(0).setChecked(true);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.exit_app);

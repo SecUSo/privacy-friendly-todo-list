@@ -104,8 +104,8 @@
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0%</string>
-    <string name="select_priority">Please select a priority!</string>
-    <string name="select_list">Please select a list!</string>
+    <string name="select_priority">Select a priority:</string>
+    <string name="select_list">Select a list:</string>
     <string name="new_todo_subtask">New subtask</string>
     <string name="todo_name_must_not_be_empty">Please enter a task name.</string>
     <string name="edit_subtask">Edit subtask</string>

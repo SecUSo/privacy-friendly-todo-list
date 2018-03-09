@@ -17,6 +17,7 @@
 
 package org.secuso.privacyfriendlytodolist.view.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ClipData.Item;
 import android.content.Context;
@@ -98,7 +99,10 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         TodoTask todo = tasks.get(position);
 
         RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.widget_tasks);
-        if (!todo.getDone()){
+        if (todo.getDone()){
+            itemView.setViewVisibility(R.id.widget_done, View.VISIBLE);
+            itemView.setViewVisibility(R.id.widget_undone, View.INVISIBLE);
+        } else if (!todo.getDone()) {
             itemView.setViewVisibility(R.id.widget_done, View.INVISIBLE);
             itemView.setViewVisibility(R.id.widget_undone, View.VISIBLE);
         }
@@ -106,9 +110,13 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
         itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
 
-        Intent intent = new Intent();
+        /*Intent intent = new Intent();
         intent.putExtra(TodoListWidget.EXTRA_ITEM, todo);
-        itemView.setOnClickFillInIntent(R.id.listview_widget, intent);
+        itemView.setOnClickFillInIntent(R.id.listview_widget, intent); */
+
+        Intent detailIntent = new Intent(mContext, MainActivity.class);
+        PendingIntent pIntent = PendingIntent.getBroadcast(mContext, 0, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        itemView.setOnClickPendingIntent(R.id.widget_undone, pIntent);
         return itemView;
     }
 
