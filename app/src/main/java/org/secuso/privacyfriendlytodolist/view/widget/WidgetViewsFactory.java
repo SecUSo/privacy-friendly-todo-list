@@ -23,7 +23,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Binder;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -33,6 +35,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
+import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 import java.util.ArrayList;
 
@@ -78,9 +81,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     @Override
     public void onDataSetChanged() {
 
-        /*final long identityToken = Binder.clearCallingIdentity();
-        Binder.restoreCallingIdentity(identityToken);
-        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase()); */
+        tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
     }
 
     @Override
@@ -97,13 +98,17 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         TodoTask todo = tasks.get(position);
 
         RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.widget_tasks);
+        if (!todo.getDone()){
+            itemView.setViewVisibility(R.id.widget_done, View.INVISIBLE);
+            itemView.setViewVisibility(R.id.widget_undone, View.VISIBLE);
+        }
 
-            itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
-            itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
+        itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
+        itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
 
-       /* Intent intent = new Intent();
+        Intent intent = new Intent();
         intent.putExtra(TodoListWidget.EXTRA_ITEM, todo);
-        itemView.setOnClickFillInIntent(R.id.listview_widget, intent); */
+        itemView.setOnClickFillInIntent(R.id.listview_widget, intent);
         return itemView;
     }
 

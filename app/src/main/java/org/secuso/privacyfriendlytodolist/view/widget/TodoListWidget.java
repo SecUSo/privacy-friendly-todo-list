@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 /**
@@ -40,36 +41,13 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity;
 public class TodoListWidget extends AppWidgetProvider {
 
     public static final String EXTRA_ITEM = "com.example.edockh.EXTRA_ITEM";
+    public static final String ACTION_VIEW_DETAILS = "com.company.android.ACTION_VIEW_DETAILS";
+
+
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-
-       /* Intent intent = new Intent(context, ListViewWidgetService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-        CharSequence widgetText = "Test";
-        // CharSequence widgetText = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
-        //views.setTextViewText(R.id.text_widget, widgetText);
-
-
-        Intent svcIntent = new Intent(context, ListViewWidgetService.class);
-        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        views.setRemoteAdapter(appWidgetId, R.id.list_widget,
-                svcIntent);
-        views.setEmptyView(R.id.list_widget, R.id.tv_empty_view_no_tasks);
-
-
-
-        views.setRemoteAdapter(R.id.list_widget,svcIntent);// Service intent als zweiter param
-        views.setTextViewText(R.id.text, "Test");
-
-        views.setOnClickPendingIntent(R.id.list_widget, pendingIntent);
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views); */
     }
 
     @Override
@@ -85,6 +63,11 @@ public class TodoListWidget extends AppWidgetProvider {
             //views.setTextViewText(R.id.widget_title, "To-Do List:");
             views.setRemoteAdapter(R.id.listview_widget, intent);
             views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
+
+            Intent detailIntent = new Intent(context, MainActivity.class);
+            PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, detailIntent, 0);
+            views.setOnClickPendingIntent(R.layout.todo_list_widget, pIntent);
+
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
 
@@ -109,6 +92,21 @@ public class TodoListWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if(intent.getAction().equals(ACTION_VIEW_DETAILS)) {
+            TodoTask todo = (TodoTask) intent.getSerializableExtra(EXTRA_ITEM);
+            if(todo != null) {
+
+                // Handle the click here.
+                // Maybe start a details activity?
+                // Maybe consider using an Activity PendingIntent instead of a Broadcast?
+            }
+        }
+
+        super.onReceive(context, intent);
     }
 }
 
