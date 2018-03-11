@@ -20,9 +20,12 @@ package org.secuso.privacyfriendlytodolist.view.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.secuso.privacyfriendlytodolist.R;
@@ -42,13 +45,9 @@ public class TodoListWidget extends AppWidgetProvider {
 
     public static final String EXTRA_ITEM = "com.example.edockh.EXTRA_ITEM";
     public static final String ACTION_VIEW_DETAILS = "com.company.android.ACTION_VIEW_DETAILS";
+    public String list;
 
 
-
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -56,19 +55,39 @@ public class TodoListWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             int widgetId = appWidgetId;
 
+            //list = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
+
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
 
+            //Intent to open MainActivity
+            Intent clickIntent = new Intent (context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
+
+            //Intent to call the Service adding the tasks to the ListView
             Intent intent = new Intent (context, ListViewWidgetService.class);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-            //views.setTextViewText(R.id.widget_title, "To-Do List:");
+
+
+            //Intents to open the App by clicking on an elements of the LinearLayout
+            Intent templateIntent = new Intent(context, MainActivity.class);
+            templateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            PendingIntent templatePendingIntent = PendingIntent.getActivity(
+                    context, 0, templateIntent, 0);
+
+            //Intent to update the widget by button-click
+            Intent update = new Intent(context, TodoListWidget.class);
+            update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds);
+            PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
+
             views.setRemoteAdapter(R.id.listview_widget, intent);
+            views.setOnClickPendingIntent(R.id.click_widget, pendingUpdate);
+            views.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent);
             views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
 
-            Intent detailIntent = new Intent(context, MainActivity.class);
-            PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_undone, pIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
+
+            Log.d("UPDATE", "Widget was updated here!");
         }
 
 
@@ -96,17 +115,12 @@ public class TodoListWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equals(ACTION_VIEW_DETAILS)) {
-            TodoTask todo = (TodoTask) intent.getSerializableExtra(EXTRA_ITEM);
-            if(todo != null) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TodoListWidget.class.getName());
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
 
-                // Handle the click here.
-                // Maybe start a details activity?
-                // Maybe consider using an Activity PendingIntent instead of a Broadcast?
-            }
-        }
+            onUpdate(context, appWidgetManager, appWidgetIds);
 
-        super.onReceive(context, intent);
     }
 }
 

@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
@@ -53,18 +54,25 @@ public class TodoListWidgetConfigureActivity extends Activity {
             final Context context = TodoListWidgetConfigureActivity.this;
 
             // When the button is clicked, store the string locally
-            //String widgetText = mAppWidgetText.getText().toString();
-            //saveTitlePref(context, mAppWidgetId, widgetText);
 
-            // It is the responsibility of the configuration activity to update the app widget
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            //TodoListWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
+            if (!lists.isEmpty()) {
+                String listTitle = getSelectedItem();
+                saveTitlePref(context, mAppWidgetId, listTitle);
 
-            // Make sure we pass back the original appWidgetId
-            Intent resultValue = new Intent();
-            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            setResult(RESULT_OK, resultValue);
-            finish();
+
+                /*
+                // It is the responsibility of the configuration activity to update the app widget
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                TodoListWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId); */
+
+                // Make sure we pass back the original appWidgetId
+                Intent resultValue = new Intent();
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                setResult(RESULT_OK, resultValue);
+                finish();
+            } else
+                Toast.makeText(context, "No list available", Toast.LENGTH_SHORT).show();
+
         }
     };
 
@@ -143,6 +151,7 @@ public class TodoListWidgetConfigureActivity extends Activity {
         for (int i=0; i<tl.size(); i++){
             help.add(tl.get(i).getName());
         }
+        help.add("All tasks");
         lists = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, help);
         lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }

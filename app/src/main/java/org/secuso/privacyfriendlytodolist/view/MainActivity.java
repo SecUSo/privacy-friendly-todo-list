@@ -443,6 +443,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             Log.i(TAG, "Navigation entries unchecked.");
         }
+
+        if (navigationBottomView != null) {
+            int size = navigationBottomView.getMenu().size();
+            for (int i = 0; i < size; i++) {
+                navigationBottomView.getMenu().getItem(i).setChecked(false);
+            }
+            Log.i(TAG, "Navigation-Bottom entries unchecked.");
+        }
     }
 
 
@@ -489,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.inList = true;
             showTasksOfList(id);
             toolbar.setTitle(item.getTitle());
-            navigationView.getMenu().getItem(id).setChecked(true);
+            item.setChecked(true);
         }
         DrawerLayout drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

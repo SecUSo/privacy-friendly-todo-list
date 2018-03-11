@@ -32,6 +32,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
@@ -53,16 +54,16 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     private Context mContext;
     private static final int ID_CONSTANT = 0x0101010;
     private static int appWidgetId;
+    private String listName;
+    private ArrayList<TodoTask> listTasks;
     //private Cursor cursor;
 
     public WidgetViewsFactory(Context context, Intent intent){
         mContext = context;
         tasks = new ArrayList<TodoTask>();
-
-        /*appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
-
-        this.tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(context).getReadableDatabase()); */
+        /*listName = intent.getStringExtra("List");
+        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID); */
     }
 
 
@@ -83,6 +84,8 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     public void onDataSetChanged() {
 
         tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+
+
     }
 
     @Override
@@ -110,13 +113,14 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
         itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
 
-        /*Intent intent = new Intent();
-        intent.putExtra(TodoListWidget.EXTRA_ITEM, todo);
-        itemView.setOnClickFillInIntent(R.id.listview_widget, intent); */
+        Intent fillInIntent = new Intent();
+        itemView.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent);
+        itemView.setOnClickFillInIntent(R.id.widget_undone, fillInIntent);
+        itemView.setOnClickFillInIntent(R.id.widget_done, fillInIntent);
 
-        Intent detailIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent pIntent = PendingIntent.getBroadcast(mContext, 0, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        itemView.setOnClickPendingIntent(R.id.widget_undone, pIntent);
+
+
+
         return itemView;
     }
 
