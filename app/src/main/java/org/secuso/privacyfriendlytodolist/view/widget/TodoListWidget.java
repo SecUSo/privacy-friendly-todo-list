@@ -23,8 +23,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -45,9 +47,13 @@ public class TodoListWidget extends AppWidgetProvider {
 
     public static final String EXTRA_ITEM = "com.example.edockh.EXTRA_ITEM";
     public static final String ACTION_VIEW_DETAILS = "com.company.android.ACTION_VIEW_DETAILS";
-    public String list;
+    public static String listChosen;
+    private SharedPreferences sp;
 
 
+    public static void getListName(Context context, AppWidgetManager appWidgetManager, int AppWidgetId) {
+        listChosen = TodoListWidgetConfigureActivity.loadTitlePref(context, AppWidgetId);
+    }
 
 
     @Override
@@ -56,17 +62,11 @@ public class TodoListWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             int widgetId = appWidgetId;
 
-            //list = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
 
-            //Intent to open MainActivity
-            Intent clickIntent = new Intent (context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
-
             //Intent to call the Service adding the tasks to the ListView
             Intent intent = new Intent (context, ListViewWidgetService.class);
-
 
             //Intents to open the App by clicking on an elements of the LinearLayout
             Intent templateIntent = new Intent(context, MainActivity.class);
@@ -80,6 +80,7 @@ public class TodoListWidget extends AppWidgetProvider {
             update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds);
             PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            views.setTextViewText(R.id.widget_title, listChosen);
             views.setRemoteAdapter(R.id.listview_widget, intent);
             views.setOnClickPendingIntent(R.id.click_widget, pendingUpdate);
             views.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent);

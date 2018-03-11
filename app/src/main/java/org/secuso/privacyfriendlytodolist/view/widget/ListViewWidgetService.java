@@ -41,6 +41,7 @@ public class ListViewWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new WidgetViewsFactory(getApplicationContext(), intent);
+
     }
 
   /*  public ListViewWidgetService(Context context) {

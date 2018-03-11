@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -43,6 +44,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private NavigationView navigationBottomView;
     private Toolbar toolbar;
+    private DrawerLayout drawer;
 
     // Others
     private boolean inList;
@@ -283,6 +286,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         defaultList.setDummyList();
         DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), defaultList);
 
+        Intent intent = getIntent();
+        if(intent != null && intent.getExtras() != null) {
+            String listChosen = intent.getStringExtra("List");
+            TodoList help = getTodoTasks();
+            for (int i=0; i < help.getSize(); i++){
+                if (help.getTasks().get(i).getListName() == listChosen)
+                    showTasksOfList(help.getTasks().get(i).getListId());
+            }
+
+        }
+
     }
 
     @Override
@@ -418,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         // side menu setup
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -577,7 +591,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (inList){
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else if (inList){
             showAllTasks();
             toolbar.setTitle(R.string.home);
             inList = false;
@@ -602,7 +619,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             AlertDialog alert = builder.create();
             alert.show();
         }
-
     }
 
 

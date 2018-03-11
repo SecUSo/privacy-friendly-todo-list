@@ -22,6 +22,8 @@ import android.appwidget.AppWidgetManager;
 import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.opengl.Visibility;
@@ -50,41 +52,57 @@ import java.util.ArrayList;
 
 public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private ArrayList<TodoTask> tasks;
+    private ArrayList<TodoList> lists;
     private Context mContext;
     private static final int ID_CONSTANT = 0x0101010;
     private static int appWidgetId;
-    private String listName;
+    private static String listName;
+    private Intent mIntent;
     private ArrayList<TodoTask> listTasks;
-    //private Cursor cursor;
+    private AppWidgetManager awm;
+    private String listChosen;
+    private static Context c;
+    private static int id;
+
+
 
     public WidgetViewsFactory(Context context, Intent intent){
         mContext = context;
-        tasks = new ArrayList<TodoTask>();
-        /*listName = intent.getStringExtra("List");
+        lists = new ArrayList<TodoList>();
+        listTasks = new ArrayList<TodoTask>();
         appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID); */
+                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
 
     @Override
     public void onCreate() {
+        listChosen = getListName(c, id);
+            lists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+            for (int i=0; i < lists.size(); i++){
+                if (lists.get(i).getName().equals(this.listChosen))
+                    listTasks = lists.get(i).getTasks();
 
-        tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+            }
+
 
     }
 
     @Override
     public int getCount() {
-        return tasks.size();
+        return listTasks.size();
     }
 
 
     @Override
     public void onDataSetChanged() {
+        listChosen = getListName(c, id);
+            lists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+            for (int i=0; i < lists.size(); i++){
+                if (lists.get(i).getName().equals(this.listChosen))
+                    listTasks = lists.get(i).getTasks();
 
-        tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
-
+            }
     }
 
     @Override
@@ -98,7 +116,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
             return null;
         }
 
-        TodoTask todo = tasks.get(position);
+        TodoTask todo = listTasks.get(position);
 
         RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.widget_tasks);
         if (todo.getDone()){
@@ -131,7 +149,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onDestroy() {
-        tasks.clear();
+        lists.clear();
     }
 
     @Override
@@ -143,4 +161,15 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     public boolean hasStableIds() {
         return true;
     }
+
+    public static String getListName(Context context, int AppWidgetId) {
+        c = context;
+        id = AppWidgetId;
+        return TodoListWidgetConfigureActivity.loadTitlePref(context, AppWidgetId);
+    }
+
 }
+
+
+
+

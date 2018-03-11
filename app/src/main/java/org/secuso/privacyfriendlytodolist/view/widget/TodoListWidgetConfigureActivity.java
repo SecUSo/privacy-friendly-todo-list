@@ -60,10 +60,11 @@ public class TodoListWidgetConfigureActivity extends Activity {
                 saveTitlePref(context, mAppWidgetId, listTitle);
 
 
-                /*
+
                 // It is the responsibility of the configuration activity to update the app widget
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                TodoListWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId); */
+                WidgetViewsFactory.getListName(context, mAppWidgetId);
+                TodoListWidget.getListName(context, appWidgetManager, mAppWidgetId);
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();
@@ -151,7 +152,6 @@ public class TodoListWidgetConfigureActivity extends Activity {
         for (int i=0; i<tl.size(); i++){
             help.add(tl.get(i).getName());
         }
-        help.add("All tasks");
         lists = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, help);
         lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
@@ -160,6 +160,7 @@ public class TodoListWidgetConfigureActivity extends Activity {
         selected = spinner.getSelectedItem().toString();
         return selected;
     }
+
 
 }
 
