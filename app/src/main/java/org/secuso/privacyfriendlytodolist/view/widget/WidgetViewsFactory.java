@@ -85,7 +85,6 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
         tasks = DBQueryHandler.getAllToDoTasks(DatabaseHelper.getInstance(mContext).getReadableDatabase());
 
-
     }
 
     @Override

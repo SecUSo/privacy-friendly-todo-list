@@ -49,6 +49,7 @@ public class TodoListWidget extends AppWidgetProvider {
 
 
 
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -85,6 +86,7 @@ public class TodoListWidget extends AppWidgetProvider {
             views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
 
 
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview_widget);
             appWidgetManager.updateAppWidget(appWidgetId, views);
 
             Log.d("UPDATE", "Widget was updated here!");
