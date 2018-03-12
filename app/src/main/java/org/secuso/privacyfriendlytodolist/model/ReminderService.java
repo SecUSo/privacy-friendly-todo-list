@@ -19,17 +19,22 @@ package org.secuso.privacyfriendlytodolist.model;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -40,6 +45,7 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,6 +79,8 @@ public class ReminderService extends Service {
 
     private NotificationManager mNotificationManager;
     private AlarmManager alarmManager;
+    private NotificationChannel mChannel;
+    private NotificationHelper helper;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -102,6 +110,7 @@ public class ReminderService extends Service {
         dbHelper = DatabaseHelper.getInstance(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = AlarmManagerHolder.getAlarmManager(this);
+        helper = new NotificationHelper(this);
 
         boolean alarmTriggered = false;
         Bundle extras = intent.getExtras();
@@ -134,8 +143,6 @@ public class ReminderService extends Service {
     private void handleAlarm(TodoTask task) {
 
         String title = task.getName();
-        //Uri sound = Uri.parse("android.resource://" + getPackageName() + "/app/src/main/res/Sounds/notify");
-
         Intent snooze = new Intent(this, MainActivity.class);
         PendingIntent pendingSnooze =
                 PendingIntent.getActivity(
@@ -143,31 +150,66 @@ public class ReminderService extends Service {
                         0,
                         snooze,
                         PendingIntent.FLAG_UPDATE_CURRENT);
-        snooze.putExtra("snooze", 1);
+        snooze.putExtra("snooze", 900000);
         snooze.putExtra("taskId", task.getId());
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
         resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
-        mBuilder.setContentTitle(title);
-        if(task.hasDeadline())
-            mBuilder.setContentText(getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())));
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.addAction(R.drawable.snooze, "Snooze", pendingSnooze);
-        mBuilder.addAction(R.drawable.done, "Set done", resultPendingIntent);
-        mBuilder.setContentIntent(resultPendingIntent);
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true))
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        mBuilder.setAutoCancel(true);
-        mBuilder.setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);
-        mNotificationManager.notify(task.getId(), mBuilder.build());
+        NotificationCompat.Builder nb = helper.getNotification(title, getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())), task);
+        helper.getManager().notify(task.getId(), nb.build());
+
+       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager n = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            String CHANNEL_ID = "my_channel_01";// The id of the channel.
+            CharSequence name = "Channel";//getString(R.string.channel_name);// The user-visible name of the channel.
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription("Test");
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.WHITE);
+            mChannel.enableVibration(true);
+            if (n != null) {
+                n.createNotificationChannel(mChannel);
+            }
+
+
+            Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID);
+            builder.setContentTitle(getPackageName());
+            builder.setSmallIcon(R.mipmap.icon);
+            builder.setContentTitle("TESTINGER");
+            builder.setContentText("Test");
+            builder.setColor(Color.RED);
+            builder.setDefaults(Notification.DEFAULT_ALL);
+            builder.setAutoCancel(true);
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+            notificationManagerCompat.notify(1000, builder.build());
+        } else {
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+            mBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
+            mBuilder.setContentTitle(title);
+            if(task.hasDeadline())
+                mBuilder.setContentText(getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())));
+            mBuilder.setContentText("bla", "blu");
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.addAction(R.drawable.snooze, "Snooze", pendingSnooze);
+            mBuilder.addAction(R.drawable.done, "Set done", resultPendingIntent);
+            mBuilder.setContentIntent(resultPendingIntent);
+            mBuilder.setAutoCancel(true);
+            mBuilder.setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);
+            if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)){
+                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                mBuilder.setSound(uri);
+            }
+            mNotificationManager.notify(task.getId(), mBuilder.build());
+        //} */
 
     }
+
 
     public void reloadAlarmsFromDB() {
         mNotificationManager.cancelAll(); // cancel all alarms
@@ -194,11 +236,21 @@ public class ReminderService extends Service {
         PendingIntent pendingAlarmIntent = PendingIntent.getService(this, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
         long reminderTime = task.getReminderTime();
-        Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
-        calendar.setTime(date);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
 
-        Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
+        if (reminderTime <= Helper.getCurrentTimestamp()){
+            Date date = new Date(TimeUnit.SECONDS.toMillis(Helper.getCurrentTimestamp()));
+            calendar.setTime(date);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
+
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
+        } else {
+            Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
+            calendar.setTime(date);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
+
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
+        }
+
 
     }
 

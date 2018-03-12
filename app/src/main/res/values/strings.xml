@@ -36,21 +36,24 @@
     <string name="no">No</string>
 
     <!-- Help -->
-    <string name="help_overview_heading">Overview</string>
+    <string name="help_overview_heading">General Information</string>
     <string name="help_intro">The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
-    <string name="help_group_lists">List management</string>
+    <string name="help_group_lists">Task management</string>
     <string name="help_todo_lists_title">To-Do lists</string>
-    <string name="help_todo_lists">A To-Do list is a group of tasks and can be created using the + Button in the main menu. Tasks inside a To-Do can be checked and unchecked to track the progress of the whole list.</string>
+    <string name="help_todo_lists">A To-Do list is a group of tasks and can be created using the + button in the toolbar. The lists appear in the navigation menu and can be called there. Tasks inside a To-Do list can be checked, edited and deleted.</string>
     <string name="help_subtasks_title">Subtasks</string>
     <string name="help_subtasks">Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
     <string name="help_deadline_reminder_title">Deadlines and reminders</string>
     <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it. Hold on a task for a while to edit it.</string>
-    <string name="help_group_app">Application</string>
-    <string name="help_pin_title">PIN protection</string>
+    <string name="help_group_app">Settings</string>
+    <string name="help_pin_title">Settings</string>
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with 4 digits. You are asked for it every time you start the application.</string>
+    <string name="help_sound">Moreover you can choose if a notification sound should be played by receiving a notification.</string>
     <string name="help_group_privacy">Privacy Info</string>
     <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline.</string>
+    <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline. Tracking, advertisement or other permissions do not exist.</string>
+    <string name="help_widget">In addition, this app provides a widget that you can add to your homescreen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
+
 
     <!-- About -->
     <string name="about">About</string>

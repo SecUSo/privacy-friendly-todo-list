@@ -80,7 +80,8 @@ public class TodoListWidget extends AppWidgetProvider {
             update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds);
             PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            views.setTextViewText(R.id.widget_title, listChosen);
+            //views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
+            views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
             views.setRemoteAdapter(R.id.listview_widget, intent);
             views.setOnClickPendingIntent(R.id.click_widget, pendingUpdate);
             views.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent);

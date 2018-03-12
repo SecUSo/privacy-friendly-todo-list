@@ -286,16 +286,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         defaultList.setDummyList();
         DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), defaultList);
 
-        Intent intent = getIntent();
-        if(intent != null && intent.getExtras() != null) {
-            String listChosen = intent.getStringExtra("List");
-            TodoList help = getTodoTasks();
-            for (int i=0; i < help.getSize(); i++){
-                if (help.getTasks().get(i).getListName() == listChosen)
-                    showTasksOfList(help.getTasks().get(i).getListId());
-            }
-
-        }
 
     }
 
@@ -686,10 +676,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (reminderService != null) {
 
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
-            if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && currentTask.getReminderTime() >= Helper.getCurrentTimestamp() && !currentTask.getDone()) {
+            if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline())  && !currentTask.getDone()) {
                 reminderService.processTask(currentTask);
-            } else if (currentTask.getReminderTime() < Helper.getCurrentTimestamp()) {
-
+                Log.i(TAG, "Reminder is set!");
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
             }

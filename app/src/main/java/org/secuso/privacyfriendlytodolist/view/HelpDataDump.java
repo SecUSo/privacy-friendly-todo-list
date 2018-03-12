@@ -35,15 +35,21 @@ public class HelpDataDump {
 
         expandableListDetail.put(context.getResources().getString(R.string.help_group_lists), features);
 
-        List<String> privacy = new ArrayList<String>();
-        privacy.add(context.getResources().getString(R.string.help_pin));
+        List<String> settings = new ArrayList<String>();
+        settings.add(context.getResources().getString(R.string.help_pin));
+        settings.add(context.getResources().getString(R.string.help_sound));
 
-        expandableListDetail.put(context.getResources().getString(R.string.help_group_app), privacy);
+        expandableListDetail.put(context.getResources().getString(R.string.help_group_app), settings);
 
         List<String> permissions = new ArrayList<String>();
         permissions.add(context.getResources().getString(R.string.help_permissions));
 
         expandableListDetail.put(context.getResources().getString(R.string.help_group_privacy), permissions);
+
+        List<String> widget = new ArrayList<String>();
+        widget.add(context.getResources().getString(R.string.help_widget));
+
+        expandableListDetail.put("Widget", widget);
 
         return expandableListDetail;
     }
