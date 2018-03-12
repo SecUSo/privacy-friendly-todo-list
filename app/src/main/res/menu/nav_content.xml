@@ -43,15 +43,18 @@
 
             <item
                 android:id="@+id/nav_dummy1"
-                android:title="" />
+                android:title=""
+                android:checkable="false" />
 
             <item
                 android:id="@+id/nav_dummy2"
-                android:title="" />
+                android:title=""
+                android:checkable="false" />
 
             <item
                 android:id="@+id/nav_dummy3"
-                android:title="" />
+                android:title=""
+                android:checkable="false" />
         </group>
 
 </menu>

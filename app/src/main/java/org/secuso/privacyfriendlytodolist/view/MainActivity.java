@@ -285,8 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TodoList defaultList = new TodoList();
         defaultList.setDummyList();
         DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), defaultList);
-
-
     }
 
     @Override
@@ -391,7 +389,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onStart() {
         super.onStart();
         uncheckNavigationEntries();
-        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
 
@@ -435,6 +432,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigationBottomView.setNavigationItemSelectedListener(this);
 
+        navigationView.getMenu().getItem(0).setChecked(true);
+
     }
 
 
@@ -464,7 +463,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         uncheckNavigationEntries();
         int id = item.getItemId();
-        item.setCheckable(true);
 
         if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Settings.class);
@@ -496,8 +494,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.inList = false;
             showAllTasks();
             toolbar.setTitle(R.string.home);
+            item.setCheckable(true);
             item.setChecked(true);
-        } else {
+        } else if (id == R.id.nav_dummy1 || id == R.id.nav_dummy2 || id == R.id.nav_dummy3) {
+
+        } else{
             this.inList = true;
             showTasksOfList(id);
             toolbar.setTitle(item.getTitle());
@@ -532,7 +533,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 bindToReminderService();
             super.onResume();
             guiSetup();
-
             showAllTasks();
             return;
         }
@@ -749,6 +749,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String name = help.get(i).getName();
             int id = help.get(i).getId();
             MenuItem item = navMenu.add(R.id.drawer_group2, id, 1, name);
+            item.setCheckable(true);
             item.setIcon(R.drawable.ic_label_black_24dp);
             ImageButton v = new ImageButton(this, null, R.style.BorderlessButtonStyle);
             v.setImageResource(R.drawable.ic_delete_black_24dp);
@@ -871,6 +872,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         optionFab.setVisibility(View.VISIBLE);
         initFab(true, 0, false);
         hints();
+        //navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     private void showTasksOfList(int id) {
