@@ -237,13 +237,13 @@ public class ReminderService extends Service {
         Calendar calendar = Calendar.getInstance();
         long reminderTime = task.getReminderTime();
 
-        if (reminderTime <= Helper.getCurrentTimestamp()){
+        if (reminderTime != -1 && reminderTime <= Helper.getCurrentTimestamp()){
             Date date = new Date(TimeUnit.SECONDS.toMillis(Helper.getCurrentTimestamp()));
             calendar.setTime(date);
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
 
             Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
-        } else {
+        } else if (reminderTime != -1) {
             Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
             calendar.setTime(date);
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
@@ -273,7 +273,7 @@ public class ReminderService extends Service {
             // 2. delete old notification if it exists
             mNotificationManager.cancel(changedTask.getId());
             Log.i(TAG, "Notification of task " + changedTask.getName() + " deleted (if existed). (id="+changedTask.getId()+")");
-        } else {
+        } else  {
             Log.i(TAG, "No alarm found for " + changedTask.getName() + " (alarm id: " + changedTask.getId() + ")");
         }
 
