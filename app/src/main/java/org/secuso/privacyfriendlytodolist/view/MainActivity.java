@@ -389,6 +389,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onStart() {
         super.onStart();
         uncheckNavigationEntries();
+        if (navigationView != null){
+            navigationView.getMenu().getItem(0).setChecked(true);
+        }
     }
 
 
@@ -461,44 +464,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
-        uncheckNavigationEntries();
         int id = item.getItemId();
 
         if (id == R.id.nav_settings) {
+            uncheckNavigationEntries();
             Intent intent = new Intent(this, Settings.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.nav_tutorial) {
+            uncheckNavigationEntries();
             Intent intent = new Intent(this, TutorialActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_calendar_view) {
+            uncheckNavigationEntries();
             Intent intent = new Intent(this, CalendarActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
             /*CalendarFragment fragment = new CalendarFragment();
             setFragment(fragment); */
         } else if (id == R.id.nav_trash) {
+            uncheckNavigationEntries();
             Intent intent = new Intent(this, RecyclerActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.nav_about) {
+            uncheckNavigationEntries();
             Intent intent = new Intent(this, AboutActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.nav_help) {
+            uncheckNavigationEntries();
             Intent intent = new Intent(this, HelpActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
         } else if (id == R.id.menu_home) {
+            uncheckNavigationEntries();
             this.inList = false;
             showAllTasks();
             toolbar.setTitle(R.string.home);
             item.setCheckable(true);
             item.setChecked(true);
         } else if (id == R.id.nav_dummy1 || id == R.id.nav_dummy2 || id == R.id.nav_dummy3) {
-
+            if (!inList){
+                uncheckNavigationEntries();
+                navigationView.getMenu().getItem(0).setChecked(true);
+                return false;
+            }
+            if (inList)
+                return false;
         } else{
+            uncheckNavigationEntries();
             this.inList = true;
             showTasksOfList(id);
             toolbar.setTitle(item.getTitle());
