@@ -862,7 +862,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showAllTasks() {
-
         dbHelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
@@ -888,7 +887,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         optionFab.setVisibility(View.VISIBLE);
         initFab(true, 0, false);
         hints();
-        //navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     private void showTasksOfList(int id) {
@@ -909,10 +907,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void showDeadlineTasks(ArrayList<TodoTask> tasks){
-        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        exLv.setAdapter(expandableTodoTaskAdapter);
-    }
+
 
     //idExists describes if id is given from list (true) or new task is created in all-tasks (false)
     private void initFab(boolean showFab, int id, boolean idExists) {

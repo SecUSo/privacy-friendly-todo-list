@@ -46,9 +46,10 @@ import java.util.ArrayList;
 /**
  * Created by Sebastian Lutz on 15.02.2018.
  *
- * This class sets to-do tasks to show
+ * This class sets to-do tasks to show up in the widget
  *
  */
+
 
 public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
