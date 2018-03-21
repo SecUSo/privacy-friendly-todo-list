@@ -56,11 +56,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     private ArrayList<TodoList> lists;
     private Context mContext;
     private static final int ID_CONSTANT = 0x0101010;
-    private static int appWidgetId;
-    private static String listName;
-    private Intent mIntent;
     private ArrayList<TodoTask> listTasks;
-    private AppWidgetManager awm;
     private String listChosen;
     private static Context c;
     private static int id;
@@ -71,8 +67,6 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         mContext = context;
         lists = new ArrayList<TodoList>();
         listTasks = new ArrayList<TodoTask>();
-        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
 
@@ -95,6 +89,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     }
 
 
+
     @Override
     public void onDataSetChanged() {
         listChosen = getListName(c, id);
@@ -102,14 +97,17 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
             for (int i=0; i < lists.size(); i++){
                 if (lists.get(i).getName().equals(this.listChosen))
                     listTasks = lists.get(i).getTasks();
-
             }
     }
+
+
 
     @Override
     public int getViewTypeCount() {
         return 1;
     }
+
+
 
     @Override
     public RemoteViews getViewAt(int position) {
@@ -142,32 +140,43 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         return itemView;
     }
 
+
+
     @Override
     public long getItemId(int position) {
 
         return ID_CONSTANT + position;
     }
 
+
+
     @Override
     public void onDestroy() {
         lists.clear();
     }
+
+
 
     @Override
     public RemoteViews getLoadingView() {
         return null;
     }
 
+
+
     @Override
     public boolean hasStableIds() {
         return true;
     }
+
+
 
     public static String getListName(Context context, int AppWidgetId) {
         c = context;
         id = AppWidgetId;
         return TodoListWidgetConfigureActivity.loadTitlePref(context, AppWidgetId);
     }
+
 
 }
 

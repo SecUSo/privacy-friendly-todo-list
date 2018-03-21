@@ -45,15 +45,15 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 public class TodoListWidget extends AppWidgetProvider {
 
-    public static final String EXTRA_ITEM = "com.example.edockh.EXTRA_ITEM";
-    public static final String ACTION_VIEW_DETAILS = "com.company.android.ACTION_VIEW_DETAILS";
+
     public static String listChosen;
-    private SharedPreferences sp;
+    public RemoteViews views;
 
 
-    public static void getListName(Context context, AppWidgetManager appWidgetManager, int AppWidgetId) {
+    public static void getListName(Context context, int AppWidgetId) {
         listChosen = TodoListWidgetConfigureActivity.loadTitlePref(context, AppWidgetId);
     }
+
 
 
     @Override
@@ -62,42 +62,11 @@ public class TodoListWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             int widgetId = appWidgetId;
 
-
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
-
-            //Intent to call the Service adding the tasks to the ListView
-            Intent intent = new Intent (context, ListViewWidgetService.class);
-
-            //Intents to open the App by clicking on an elements of the LinearLayout
-            Intent templateIntent = new Intent(context, MainActivity.class);
-            templateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            PendingIntent templatePendingIntent = PendingIntent.getActivity(
-                    context, 0, templateIntent, 0);
-
-            //Intent to update the widget by button-click
-            Intent update = new Intent(context, TodoListWidget.class);
-            update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds);
-            PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            //views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
-            views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
-            views.setRemoteAdapter(R.id.listview_widget, intent);
-            views.setOnClickPendingIntent(R.id.click_widget, pendingUpdate);
-            views.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent);
-            views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
-
-
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview_widget);
-            appWidgetManager.updateAppWidget(appWidgetId, views);
-
-            Log.d("UPDATE", "Widget was updated here!");
+            updateAppWidget(context, appWidgetManager, widgetId);
         }
-
-
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-
     }
+
+
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
@@ -107,24 +76,76 @@ public class TodoListWidget extends AppWidgetProvider {
         }
     }
 
+
+
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
     }
+
+
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
 
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TodoListWidget.class.getName());
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
-
-            onUpdate(context, appWidgetManager, appWidgetIds);
-
+        updateHelper(context);
     }
+
+
+    // returns a PendingIntent to update the widget's contents.
+    public PendingIntent refreshWidget(Context context, int appWidgetId){
+        Intent update = new Intent(context, TodoListWidget.class);
+        update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingUpdate;
+    }
+
+
+
+    public void updateHelper(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName thisAppWidget = new ComponentName(context.getPackageName(), TodoListWidget.class.getName());
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+
+        onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+
+
+    public void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+        if (views == null)
+            views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
+
+        //Intent to call the Service adding the tasks to the ListView
+        Intent intent = new Intent (context, ListViewWidgetService.class);
+
+        //Intents to open the App by clicking on an elements of the LinearLayout
+        Intent templateIntent = new Intent(context, MainActivity.class);
+        templateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        PendingIntent templatePendingIntent = PendingIntent.getActivity(
+                context, 0, templateIntent, 0);
+
+
+        views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
+        views.setRemoteAdapter(R.id.listview_widget, intent);
+        views.setOnClickPendingIntent(R.id.click_widget, refreshWidget(context, appWidgetId));
+        views.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent);
+        views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
+
+
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview_widget);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+        Log.d("UPDATE", "Widget was updated here!");
+    }
+
+
 }
 

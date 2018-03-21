@@ -25,18 +25,11 @@ import android.widget.RemoteViewsService;
 /**
  * Created by Sebastian Lutz on 15.02.2018.
  *
- * Service that gives data to AppWidgetProvider Class
+ * Service that gives data to AppWidgetProvider (TodoListWidget) class
  *
  */
 
 public class ListViewWidgetService extends RemoteViewsService {
-
-    private Context context;
-
-/*    @Override
-    public IBinder onBind(Intent intent) {
-        return super.onBind(intent);
-    } */
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -44,10 +37,7 @@ public class ListViewWidgetService extends RemoteViewsService {
 
     }
 
-  /*  public ListViewWidgetService(Context context) {
-        super();
-        this.context = context;
-    } */
+
 
 
 

@@ -39,7 +39,10 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity;
 import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 
 /**
- * Created by sebbi on 12.03.2018.
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
+ * Creates and manages notifications based on the SDK version.
+ *
  */
 
 public class NotificationHelper extends ContextWrapper {
@@ -60,7 +63,7 @@ public class NotificationHelper extends ContextWrapper {
     @TargetApi(Build.VERSION_CODES.O)
     public void createChannel() {
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
         channel.setDescription("Test");
         channel.enableLights(true);

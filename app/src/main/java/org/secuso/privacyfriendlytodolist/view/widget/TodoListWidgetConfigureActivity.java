@@ -48,23 +48,21 @@ public class TodoListWidgetConfigureActivity extends Activity {
     private String selected;
     private DatabaseHelper dbHelper;
     private ArrayAdapter<String> lists;
-    EditText mAppWidgetText;
+
+
     View.OnClickListener mOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             final Context context = TodoListWidgetConfigureActivity.this;
 
             // When the button is clicked, store the string locally
-
             if (!lists.isEmpty()) {
                 String listTitle = getSelectedItem();
                 saveTitlePref(context, mAppWidgetId, listTitle);
 
-
-
                 // It is the responsibility of the configuration activity to update the app widget
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                //AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 WidgetViewsFactory.getListName(context, mAppWidgetId);
-                TodoListWidget.getListName(context, appWidgetManager, mAppWidgetId);
+                TodoListWidget.getListName(context, mAppWidgetId);
 
                 // Make sure we pass back the original appWidgetId
                 Intent resultValue = new Intent();
@@ -77,9 +75,13 @@ public class TodoListWidgetConfigureActivity extends Activity {
         }
     };
 
+
+
     public TodoListWidgetConfigureActivity() {
         super();
     }
+
+
 
     // Write the prefix to the SharedPreferences object for this widget
     static void saveTitlePref(Context context, int appWidgetId, String text) {
@@ -87,6 +89,8 @@ public class TodoListWidgetConfigureActivity extends Activity {
         prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
         prefs.apply();
     }
+
+
 
     // Read the prefix from the SharedPreferences object for this widget.
     // If there is no preference saved, get the default from a resource
@@ -100,11 +104,14 @@ public class TodoListWidgetConfigureActivity extends Activity {
         }
     }
 
+
+
     static void deleteTitlePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
         prefs.apply();
     }
+
 
 
     @Override
@@ -118,7 +125,6 @@ public class TodoListWidgetConfigureActivity extends Activity {
         setResult(RESULT_CANCELED);
 
         setContentView(R.layout.todo_list_widget_configure);
-        //mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
         findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
 
         //initialize spinner dropdown
@@ -140,8 +146,9 @@ public class TodoListWidgetConfigureActivity extends Activity {
             return;
         }
 
-        //mAppWidgetText.setText(loadTitlePref(TodoListWidgetConfigureActivity.this, mAppWidgetId));
     }
+
+
 
     //updates the lists array and prepare adapter for spinner
     public void updateLists(){
@@ -155,6 +162,8 @@ public class TodoListWidgetConfigureActivity extends Activity {
         lists = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, help);
         lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
+
+
 
     public String getSelectedItem(){
         selected = spinner.getSelectedItem().toString();

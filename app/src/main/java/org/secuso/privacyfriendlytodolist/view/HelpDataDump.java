@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by sebbi on 28.02.2018.
  *
- * This class handles the FAQ-style help menu
+ * This class handles the FAQ-style help menu.
  */
 
 public class HelpDataDump {

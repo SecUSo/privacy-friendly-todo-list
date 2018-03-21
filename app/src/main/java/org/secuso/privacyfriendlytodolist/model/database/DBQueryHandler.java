@@ -336,7 +336,7 @@ public class DBQueryHandler {
     private static ArrayList<TodoSubTask> getSubTasksByTaskId(SQLiteDatabase db, long taskId) {
 
         ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
-        String where = TTodoSubTask.COLUMN_TASK_ID + " = " + taskId + " AND " + TTodoSubTask.COLUMN_TRASH + "=0";
+        String where = TTodoSubTask.COLUMN_TASK_ID + " = " + taskId;
         Cursor cursor = db.query(TTodoSubTask.TABLE_NAME, null, where, null, null, null, null);
         cursor.moveToFirst();
 

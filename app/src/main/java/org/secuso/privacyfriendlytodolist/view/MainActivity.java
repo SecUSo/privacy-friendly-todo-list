@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private RelativeLayout rl;
     private ExpandableListView exLv;
     private TextView tv;
-    ArrayList<TodoTask> todoTasksContainer;
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
     private TextView initialAlert;
     private TextView secondAlert;
@@ -175,8 +174,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         return super.onCreateOptionsMenu(menu);
-
     }
+
+
 
     private void collapseAll()
     {
@@ -187,8 +187,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for(int i = 0; i < groupCount; i++)
             exLv.collapseGroup(i);
     }
-
-
 
 
 
@@ -230,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 return super.onOptionsItemSelected(item);
         }
+
         if(checked) {
             expandableTodoTaskAdapter.addSortCondition(sortType);
         }  else {
@@ -241,9 +240,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
+
         PrefManager prefManager = new PrefManager(this);
         if (prefManager.isFirstTimeLaunch()) {
             startTut();
@@ -287,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), defaultList);
     }
 
+
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -296,6 +304,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked);
         outState.putLong(KEY_UNLOCK_UNTIL, unlockUntil);
     }
+
+
 
     private void authAndGuiInit(final Bundle savedInstanceState) {
 
@@ -329,6 +339,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     private boolean hasPin() {
         // pin activated?
         if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false))
@@ -338,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return false;
         return true;
     }
+
 
 
     public void initActivity(Bundle savedInstanceState) {
@@ -386,6 +398,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     public void onStart() {
         super.onStart();
         uncheckNavigationEntries();
@@ -395,25 +408,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void setFragment(Fragment fragment) {
-        if (fragment == null)
-            return;
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // If a fragment is currently displayed, replace it by the new one. PROBLEM WITH .getFragments()?
-        List<Fragment> addedFragments = fragmentManager.getFragments();
-
-       if (addedFragments != null && addedFragments.size() > 0) {
-            transaction.replace(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
-        } else { // no fragment is currently displayed
-            transaction.add(R.id.fragment_container, fragment, KEY_FRAGMENT_CONFIG_CHANGE_SAVE);
-        }
-        transaction.addToBackStack(null);
-        transaction.commit();
-        fragmentManager.executePendingTransactions();
-
-    }
 
     private void guiSetup() {
 
@@ -440,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     public void uncheckNavigationEntries() {
         // uncheck all navigtion entries
         if (navigationView != null) {
@@ -458,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "Navigation-Bottom entries unchecked.");
         }
     }
+
 
 
     @Override
@@ -527,16 +523,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     @Override
     protected void onStop() {
         this.isUnlocked = false;
         super.onStop();
     }
 
+
+
     @Override
     protected void onRestart() {
         super.onRestart();
     }
+
+
 
     @Override
     protected void onResume() {
@@ -552,6 +553,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showAllTasks();
             return;
         }
+
         // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:
         this.isUnlocked = (this.isUnlocked || (this.unlockUntil != -1 && System.currentTimeMillis() <= this.unlockUntil));
         this.unlockUntil = -1;
@@ -563,6 +565,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.i(TAG, "onResume()");
     }
+
 
 
     @Override
@@ -578,11 +581,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     @Override
     protected void onUserLeaveHint() {
         // prevents unlocking the app by rotating while the app is inactive and then returning
         this.isUnlocked = false;
     }
+
+
 
     private void bindToReminderService() {
 
@@ -591,8 +597,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, ReminderService.class);
         bindService(intent, reminderServiceConnection, 0); // no Context.BIND_AUTO_CREATE, because service will be started by startService and thus live longer than this activity
         startService(intent);
-
     }
+
 
 
     @Override
@@ -628,6 +634,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     public ArrayList<TodoList> getTodoLists(boolean reload) {
         if (reload) {
             if (dbHelper != null)
@@ -635,6 +642,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return todoLists;
     }
+
 
 
     public TodoList getTodoTasks() {
@@ -651,13 +659,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     public DatabaseHelper getDbHelper() {
         return dbHelper;
     }
 
+
     public void setDummyList(TodoList dummyList) {
         this.dummyList = dummyList;
     }
+
 
     private ServiceConnection reminderServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
@@ -673,22 +684,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     };
 
 
+
     public TodoList getDummyList() {
         return dummyList;
     }
+
 
     public TodoList getClickedList() {
         return clickedList;
     }
 
+
     public void setClickedList(TodoList clickedList) {
         this.clickedList = clickedList;
     }
 
+
     public void notifyReminderService(TodoTask currentTask) {
 
         // TODO This method is called from other fragments as well (e.g. after opening MainActivity by reminder). In such cases the service is null and alarms cannot be updated. Fix this!
-
         if (reminderService != null) {
 
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
@@ -703,6 +717,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "Service is null. Cannot update alarms");
         }
     }
+
 
 
     // returns true if object was created in the database
@@ -739,6 +754,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     public TodoList getListByID(int id) {
         for (TodoList currentList : todoLists) {
             if (currentList.getId() == id)
@@ -747,6 +763,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return null;
     }
+
 
 
     //Adds Todo-Lists to the navigation-drawer
@@ -776,6 +793,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     // Method to add a new Todo-List
     private void startListDialog() {
         dbHelper = DatabaseHelper.getInstance(this);
@@ -801,12 +819,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     // Method starting tutorial
     private void startTut() {
         Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
+
 
 
     //ClickListener to delete a Todo-List
@@ -861,11 +881,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+
     private void showAllTasks() {
         dbHelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoTask> tasks;
         tasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
         expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+
         exLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -889,6 +912,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         hints();
     }
 
+
+
     private void showTasksOfList(int id) {
         dbHelper = DatabaseHelper.getInstance(this);
         ArrayList<TodoList> lists;
@@ -904,7 +929,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
         initFab(true, id , true);
-
     }
 
 
@@ -963,6 +987,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+
     public boolean onContextItemSelected(MenuItem item) {
 
         final Tuple<TodoTask, TodoSubTask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
@@ -1016,11 +1042,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.delete_task:
                 Snackbar snackbar = Snackbar.make(optionFab, R.string.task_removed, Snackbar.LENGTH_LONG);
-                affectedRows = DBQueryHandler.putTaskInTrash(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
                 ArrayList<TodoSubTask> subTasks = longClickedTodo.getLeft().getSubTasks();
                 for (TodoSubTask ts : subTasks){
                     DBQueryHandler.putSubtaskInTrash(dbHelper.getWritableDatabase(), ts);
                 }
+                affectedRows = DBQueryHandler.putTaskInTrash(dbHelper.getWritableDatabase(), longClickedTodo.getLeft());
                 if(affectedRows == 1) {
                     hints();
                 }else
@@ -1092,8 +1118,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             secondAlert.setVisibility(View.GONE);
             secondAlert.clearAnimation();
         }
-
     }
+
+
 
 }
 
