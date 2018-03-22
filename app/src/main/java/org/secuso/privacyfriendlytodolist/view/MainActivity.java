@@ -17,7 +17,6 @@
 
 package org.secuso.privacyfriendlytodolist.view;
 
-import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,13 +26,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -44,7 +41,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -71,20 +67,18 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
 import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity;
-import org.secuso.privacyfriendlytodolist.view.calendar.CalendarFragment;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
-import org.secuso.privacyfriendlytodolist.view.dialog.TodoTaskDialog;
-import org.w3c.dom.Text;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * This Activity handles the navigation and displaying of lists and tasks.
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
+ * This Activity handles the navigation and operation on lists and tasks.
+ *
  */
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -278,14 +272,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dbHelper = DatabaseHelper.getInstance(this);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
-        notificationDone = getIntent().getIntExtra("snooze", 0);
-        if (notificationDone == 1){
-            int taskId = getIntent().getIntExtra("taskId", 0);
-            TodoList tasks = getTodoTasks();
-            TodoTask currentTask = tasks.getTasks().get(taskId);
-            currentTask.setReminderTime(System.currentTimeMillis() + 15);
-            sendToDatabase(currentTask);
-        }
+        //Try to snooze the task by notification
+        /*if (savedInstanceState == null) {
+            Bundle b = getIntent().getExtras();
+            if (b != null){
+                notificationDone = b.getInt("snooze");
+                int taskID = b.getInt("taskId");
+                TodoList tasks = getTodoTasks();
+                TodoTask currentTask = tasks.getTasks().get(taskID);
+                currentTask.setReminderTime(System.currentTimeMillis() + notificationDone);
+                sendToDatabase(currentTask);
+            }
+        } */
+
 
         authAndGuiInit(savedInstanceState);
         TodoList defaultList = new TodoList();
@@ -477,8 +476,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, CalendarActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
-            /*CalendarFragment fragment = new CalendarFragment();
-            setFragment(fragment); */
         } else if (id == R.id.nav_trash) {
             uncheckNavigationEntries();
             Intent intent = new Intent(this, RecyclerActivity.class);

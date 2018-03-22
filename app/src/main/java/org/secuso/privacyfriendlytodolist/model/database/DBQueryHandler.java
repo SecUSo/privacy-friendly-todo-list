@@ -35,7 +35,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
+ * Created by Sebastian Lutz on 13.3.2018.
+ *
  * This class encapsulates sql statements and returns them.
+ *
  */
 
 public class DBQueryHandler {

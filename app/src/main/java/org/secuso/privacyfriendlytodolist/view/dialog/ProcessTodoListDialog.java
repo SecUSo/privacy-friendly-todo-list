@@ -27,6 +27,13 @@ import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 
+/**
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
+ * Defines the dialog that lets the user create a list
+ */
+
+
 public class ProcessTodoListDialog extends FullScreenDialog {
 
     private ProcessTodoListDialog self = this;
@@ -77,7 +84,6 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
             // prepare list data
             String listName = etName.getText().toString();
-            //String listDescription = etDescription.getText().toString();
 
             if (listName.equals("") || listName == null) {
                 Toast.makeText(getContext(), getContext().getString(R.string.list_name_must_not_be_empty), Toast.LENGTH_SHORT).show();

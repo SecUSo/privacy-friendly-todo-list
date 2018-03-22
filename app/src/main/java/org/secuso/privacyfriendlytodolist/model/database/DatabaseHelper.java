@@ -26,6 +26,16 @@ import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoList;
 import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
 
+/**
+ *
+ * Created by Sebastian Lutz on 13.3.2018.
+ *
+ * This class extends SQLiteOpenHelper and is responsible for fundamental things such as:
+ *
+ *  - Create all tables mentioned above (#createAll)
+ *  - Delete all tables (#deleteAll)
+ */
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = DatabaseHelper.class.getSimpleName();

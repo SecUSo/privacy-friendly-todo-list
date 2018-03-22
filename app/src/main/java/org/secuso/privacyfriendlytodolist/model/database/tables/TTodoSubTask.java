@@ -18,6 +18,8 @@
 package org.secuso.privacyfriendlytodolist.model.database.tables;
 
 /**
+ * Created by Sebastian Lutz on 19.12.2017.
+ *
  * This Class is responsible for creating sql table for To-Do subtasks.
  */
 

@@ -33,6 +33,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
+ * Created by Sebastian Lutz on 15.01.2018
+ *
  * Activity that gives the user some help regarding the handling of the app.
  */
 

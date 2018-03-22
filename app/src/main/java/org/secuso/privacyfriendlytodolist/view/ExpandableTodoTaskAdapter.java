@@ -50,6 +50,8 @@ import java.util.HashSet;
 import java.util.Map;
 
 /**
+ * Created by Sebastian Lutz on 06.03.2018
+ *
  * This class manages the To-Do task expandableList items.
  */
 

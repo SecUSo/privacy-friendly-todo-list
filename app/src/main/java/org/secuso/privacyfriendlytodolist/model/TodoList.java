@@ -24,6 +24,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
  * Class to set up a To-Do List and its parameters.
  */
 

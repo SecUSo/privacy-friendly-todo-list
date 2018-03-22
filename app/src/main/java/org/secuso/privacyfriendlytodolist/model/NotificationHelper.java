@@ -42,6 +42,7 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
  * Created by Sebastian Lutz on 12.03.2018.
  *
  * Creates and manages notifications based on the SDK version.
+ * If SDK >= 26 NotificationChannels will be created.
  *
  */
 
@@ -67,7 +68,7 @@ public class NotificationHelper extends ContextWrapper {
 
         channel.setDescription("Test");
         channel.enableLights(true);
-        channel.setLightColor(Color.WHITE);
+        channel.setLightColor(R.color.colorPrimary);
         channel.enableVibration(true);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
 

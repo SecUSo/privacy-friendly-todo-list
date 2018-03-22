@@ -144,7 +144,7 @@
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
-    <string name="auto_progress">Fortschritt durch Subtasks</string>
+    <string name="auto_progress">Fortschritt durch Teilaufgaben</string>
     <string name="notify">Benachrichtigungston</string>
 
     <!-- Reminder service -->

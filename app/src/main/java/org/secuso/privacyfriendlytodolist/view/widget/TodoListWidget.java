@@ -121,7 +121,7 @@ public class TodoListWidget extends AppWidgetProvider {
 
     public void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         if (views == null)
-            views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
+        views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
 
         //Intent to call the Service adding the tasks to the ListView
         Intent intent = new Intent (context, ListViewWidgetService.class);
@@ -132,13 +132,11 @@ public class TodoListWidget extends AppWidgetProvider {
         PendingIntent templatePendingIntent = PendingIntent.getActivity(
                 context, 0, templateIntent, 0);
 
-
         views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
         views.setRemoteAdapter(R.id.listview_widget, intent);
         views.setOnClickPendingIntent(R.id.click_widget, refreshWidget(context, appWidgetId));
         views.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent);
         views.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget);
-
 
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview_widget);
         appWidgetManager.updateAppWidget(appWidgetId, views);

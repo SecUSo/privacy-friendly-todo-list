@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
+ * Created by Sebastian Lutz on 12.03.2018.
  *
  * This service implements the following alarm policies:
  *
@@ -141,72 +142,10 @@ public class ReminderService extends Service {
     }
 
     private void handleAlarm(TodoTask task) {
-
         String title = task.getName();
-        Intent snooze = new Intent(this, MainActivity.class);
-        PendingIntent pendingSnooze =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        snooze,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-        snooze.putExtra("snooze", 900000);
-        snooze.putExtra("taskId", task.getId());
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
-        resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
 
         NotificationCompat.Builder nb = helper.getNotification(title, getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())), task);
         helper.getManager().notify(task.getId(), nb.build());
-
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager n = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            String CHANNEL_ID = "my_channel_01";// The id of the channel.
-            CharSequence name = "Channel";//getString(R.string.channel_name);// The user-visible name of the channel.
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-            mChannel.setDescription("Test");
-            mChannel.enableLights(true);
-            mChannel.setLightColor(Color.WHITE);
-            mChannel.enableVibration(true);
-            if (n != null) {
-                n.createNotificationChannel(mChannel);
-            }
-
-
-            Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID);
-            builder.setContentTitle(getPackageName());
-            builder.setSmallIcon(R.mipmap.icon);
-            builder.setContentTitle("TESTINGER");
-            builder.setContentText("Test");
-            builder.setColor(Color.RED);
-            builder.setDefaults(Notification.DEFAULT_ALL);
-            builder.setAutoCancel(true);
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-            notificationManagerCompat.notify(1000, builder.build());
-        } else {
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-            mBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
-            mBuilder.setContentTitle(title);
-            if(task.hasDeadline())
-                mBuilder.setContentText(getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())));
-            mBuilder.setContentText("bla", "blu");
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-            stackBuilder.addParentStack(MainActivity.class);
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            mBuilder.addAction(R.drawable.snooze, "Snooze", pendingSnooze);
-            mBuilder.addAction(R.drawable.done, "Set done", resultPendingIntent);
-            mBuilder.setContentIntent(resultPendingIntent);
-            mBuilder.setAutoCancel(true);
-            mBuilder.setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);
-            if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)){
-                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(uri);
-            }
-            mNotificationManager.notify(task.getId(), mBuilder.build());
-        //} */
 
     }
 

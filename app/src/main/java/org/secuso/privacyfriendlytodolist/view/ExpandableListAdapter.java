@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by sebbi on 28.02.2018.
+ * Created by Sebastian Lutz on 28.02.2018.
+ *
+ * Helper for HelpActivity, creating a FAQ-style layout
  */
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {

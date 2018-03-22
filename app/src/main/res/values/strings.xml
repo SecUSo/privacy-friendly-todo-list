@@ -207,7 +207,7 @@
 
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="toast_del">Bin is cleared.</string>
-    <string name="bin">Recycle</string>
+    <string name="bin">Recycler</string>
     <string name="bin_toolbar">Recycle bin</string>
     <string name="btn_clear">Clear bin</string>
     <string name="bin_empty">Bin is empty</string>

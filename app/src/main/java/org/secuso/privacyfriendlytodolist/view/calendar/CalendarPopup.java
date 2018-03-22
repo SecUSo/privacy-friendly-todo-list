@@ -27,6 +27,8 @@ import java.util.List;
 
 /**
  * Created by sebbi on 07.03.2018.
+ *
+ * This class helps to show the tasks that are on a specific deadline
  */
 
 public class CalendarPopup extends AppCompatActivity {

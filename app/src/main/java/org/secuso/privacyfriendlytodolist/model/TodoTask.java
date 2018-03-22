@@ -27,6 +27,9 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import java.util.ArrayList;
 
 /**
+ *
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
  * Class to set up To-Do Tasks and its parameters.
  */
 
@@ -259,8 +262,10 @@ public class TodoTask extends BaseTodo implements Parcelable {
     }
 
     public void setAllSubTasksDone(boolean doneSubTask) {
-        for(TodoSubTask subTask : subTasks)
+        for(TodoSubTask subTask : subTasks) {
             subTask.setDone(doneSubTask);
+        }
+
     }
 
     // A task is done if the user manually sets it done or when all subtaks are done.

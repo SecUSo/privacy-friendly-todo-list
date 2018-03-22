@@ -38,7 +38,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-/*
+/**
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
  * This calender marks a day if there is a deadline of a task which is not yet finished.
  *
  */

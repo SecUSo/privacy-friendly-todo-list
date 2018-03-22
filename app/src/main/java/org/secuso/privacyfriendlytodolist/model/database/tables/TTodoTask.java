@@ -18,7 +18,9 @@
 package org.secuso.privacyfriendlytodolist.model.database.tables;
 
 /**
- * This class is responsible for creating sql table of To-Do tasks.
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
+ * This class is responsible to define sql table of To-Do tasks.
  */
 public class TTodoTask {
 

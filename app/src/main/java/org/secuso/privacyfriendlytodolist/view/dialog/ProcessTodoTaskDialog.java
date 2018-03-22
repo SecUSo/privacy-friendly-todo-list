@@ -45,6 +45,8 @@ import java.util.List;
 import static org.secuso.privacyfriendlytodolist.model.TodoList.DUMMY_LIST_ID;
 
 /**
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
  * This class creates a dialog that lets the user create/edit a task.
  */
 

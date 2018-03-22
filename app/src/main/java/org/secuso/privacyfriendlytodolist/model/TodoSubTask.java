@@ -21,6 +21,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
  * Class to set up To-Do subtasks and its parameters.
  */
 

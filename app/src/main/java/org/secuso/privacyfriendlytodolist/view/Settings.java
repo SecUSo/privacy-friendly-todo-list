@@ -34,6 +34,9 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 
 /**
+ * Created by Sebastian Lutz on 15.03.2018
+ *
+ *
  * Activity that can enable/disable particular functionalities.
  */
 
