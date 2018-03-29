@@ -1,7 +1,6 @@
 # Built application files
 /*/build/
-build/generated/mockable-android-23.jar
-build/intermediates/dex-cache/cache.xml
+build/*
 
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
@@ -11,23 +10,12 @@ local.properties
 
 # Gradle generated files
 .gradle/
-.idea/gradle.xml
 
 # Signing files
 .signing/
 
 # User-specific configurations
-.idea/libraries/
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/.name
-.idea/compiler.xml
-.idea/copyright/profiles_settings.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/scopes/scope_settings.xml
-.idea/vcs.xml
+.idea/*
 *.iml
 
 # OS-specific files
@@ -38,3 +26,13 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Documents
+*.pdf
+*.doc
+*.docx
+*.odt
+
+# APKs
+*.apk
+
