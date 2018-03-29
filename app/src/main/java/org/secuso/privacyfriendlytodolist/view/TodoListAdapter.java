@@ -1,3 +1,20 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.app.Activity;
@@ -54,8 +71,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     public TodoListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                          int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.todo_list_entry, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_entry, parent, false);
 
         return new ViewHolder(v);
     }
@@ -145,7 +161,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
             TodoTasksFragment fragment = new TodoTasksFragment();
             fragment.setArguments(bundle);
 
-            contextActivity.setFragment(fragment);
+            //contextActivity.setFragment(fragment);
         }
 
         @Override

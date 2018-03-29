@@ -1,8 +1,28 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -27,10 +47,13 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
+import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
+import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTextListener {
 
@@ -44,7 +67,11 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     private ExpandableListView expandableListView;
     private ExpandableTodoTaskAdapter taskAdapter;
 
+
+
     private MainActivity containingActivity;
+
+
 
     private TodoList currentList;
     private ArrayList<TodoTask> todoTasks = new ArrayList<>();
@@ -116,11 +143,13 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                     public void finish(BaseTodo b) {
                     if (b instanceof TodoTask) {
                         todoTasks.add((TodoTask) b);
+                        saveNewTasks();
                         taskAdapter.notifyDataSetChanged();
                     }
                     }
                 });
                 addListDialog.show();
+
                 }
             });
         } else
@@ -183,6 +212,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         expandableListView.setAdapter(taskAdapter);
     }
 
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -225,7 +255,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 break;
 
             case R.id.delete_subtask:
-                affectedRows = DBQueryHandler.deleteTodoSubTask(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
+                affectedRows = DBQueryHandler.putSubtaskInTrash(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
                 longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
@@ -247,10 +277,11 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                affectedRows = DBQueryHandler.deleteTodoTask(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
+                affectedRows = DBQueryHandler.putTaskInTrash(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
                 todoTasks.remove(longClickedTodo.getLeft());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+
                 else
                     Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
                 taskAdapter.notifyDataSetChanged();
@@ -266,33 +297,18 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
         setRetainInstance(true);
     }
 
     @Override
     public void onPause() {
-
-        // write new tasks to the database
-        for(int i=0; i<todoTasks.size(); i++) {
-            TodoTask currentTask = todoTasks.get(i);
-
-            // If a dummy list is displayed, its id must not be assigned to the task.
-            if(!currentList.isDummyList())
-                currentTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
-
-            boolean dbChanged = containingActivity.sendToDatabase(currentTask);
-            if(dbChanged)
-                containingActivity.notifyReminderService(currentTask);
-
-            // write subtasks to the database
-            for(TodoSubTask subTask : currentTask.getSubTasks()) {
-                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
-                containingActivity.sendToDatabase(subTask);
-            }
-        }
-
+        saveNewTasks();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -300,11 +316,14 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         super.onCreateOptionsMenu(menu,inflater);
         inflater.inflate(R.menu.main, menu);
         inflater.inflate(R.menu.search, menu);
+        inflater.inflate(R.menu.add_list, menu);
 
         MenuItem searchItem = menu.findItem(R.id.ac_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
     }
+
+
 
     private void collapseAll()
     {
@@ -367,6 +386,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 return super.onOptionsItemSelected(item);
         }
 
+
+
         if(checked)
             taskAdapter.addSortCondition(sortType);
         else
@@ -375,4 +396,27 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
         return true;
     }
+
+    // write new tasks to the database
+    public void saveNewTasks() {
+        for(int i=0; i<todoTasks.size(); i++) {
+            TodoTask currentTask = todoTasks.get(i);
+
+            // If a dummy list is displayed, its id must not be assigned to the task.
+            if(!currentList.isDummyList())
+                currentTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
+
+            boolean dbChanged = containingActivity.sendToDatabase(currentTask);
+            if(dbChanged)
+                containingActivity.notifyReminderService(currentTask);
+
+            // write subtasks to the database
+            for(TodoSubTask subTask : currentTask.getSubTasks()) {
+                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
+                containingActivity.sendToDatabase(subTask);
+            }
+        }
+
+    }
+
 }

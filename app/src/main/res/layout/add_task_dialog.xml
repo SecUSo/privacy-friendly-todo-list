@@ -6,14 +6,29 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="@string/new_todo_task"
-        android:textAlignment="center"
-        android:textColor="@color/white"
+        android:background="@android:color/transparent"
         android:maxLength="@integer/max_todo_titel_length"
-        android:textSize="22sp" />
+        android:text="@string/new_todo_task"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:padding="20sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/dialog_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:maxLength="@integer/max_todo_titel_length"
+        android:visibility="gone"
+        android:text="@string/edit_todo_task"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:padding="20sp"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/et_new_task_name"
@@ -82,10 +97,11 @@
         android:background="@color/grey" />
 
     <RelativeLayout
+        android:id="@+id/progress_relative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:paddingTop="10dp"
+        android:paddingTop="20dp"
         android:paddingBottom="10dp">
 
         <TextView
@@ -113,12 +129,20 @@
             android:layout_alignLeft="@+id/sb_new_task_progress"
             android:layout_marginLeft="15dp"/>
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp">
+
         <TextView
             android:id="@+id/tv_new_task_priority_str"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/priority_colon"
-            android:layout_below="@+id/new_task_progress"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
@@ -127,14 +151,36 @@
             android:id="@+id/tv_new_task_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click to select!"
+            android:layout_alignBaseline="@+id/tv_new_task_priority_str"
+            android:layout_alignBottom="@+id/tv_new_task_priority_str"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="44dp"
+            android:layout_toEndOf="@+id/tv_new_task_priority_str"
+            android:text="@string/click_to_choose"
             android:textSize="16sp"
-            android:textStyle="italic"
-            android:layout_alignLeft="@+id/new_task_progress"
-            android:layout_marginTop="12dp"
-            android:layout_below="@+id/new_task_progress"
-            android:layout_toRightOf="@+id/tv_new_task_priority_str"
-            />
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/tv_new_task_listchoose_str"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_colon"
+            android:layout_below="@+id/tv_new_task_priority"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_new_task_listchoose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_new_task_listchoose_str"
+            android:layout_alignBottom="@+id/tv_new_task_listchoose_str"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/tv_new_task_priority"
+            android:text="@string/click_to_choose"
+            android:textSize="16sp"
+            android:textStyle="italic" />
 
     </RelativeLayout>
 
@@ -144,8 +190,9 @@
         android:background="@color/grey" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right">
 
         <Button
             android:id="@+id/bt_new_task_cancel"
@@ -164,6 +211,7 @@
             android:layout_weight="1"
             android:minHeight="48dip"
             android:text="@string/ok" />
+
     </LinearLayout>
 
 </LinearLayout>

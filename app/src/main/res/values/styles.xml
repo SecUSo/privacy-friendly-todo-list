@@ -10,6 +10,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
     <style name="AppTheme.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">false</item>
@@ -23,5 +24,10 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="BorderlessButtonStyle">
+        <item name="android:background">?android:selectableItemBackground</item>
+    </style>
 
 </resources>

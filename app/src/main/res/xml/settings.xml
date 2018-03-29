@@ -9,6 +9,11 @@
         android:title="@string/default_reminder_time" />
 
     <SwitchPreference
+        android:id="@+id/switch_notifysound"
+        android:defaultValue="true"
+        android:key="notify"
+        android:title="@string/notify" />
+    <SwitchPreference
         android:key="pref_pin_enabled"
         android:defaultValue="false"
         android:title="@string/pin_enabled" />
@@ -23,6 +28,13 @@
         android:maxLength="4"
         android:password="true"
         android:title="@string/set_pin" />
+
+    <SwitchPreference
+        android:id="@+id/switch_progress"
+        android:key="pref_progress"
+        android:defaultValue="false"
+        android:title="@string/auto_progress" />
+
 
     <!--TODO NumberPicker for reapting interval of alarm notifications -->
 

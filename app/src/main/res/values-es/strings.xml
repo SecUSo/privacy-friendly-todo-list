@@ -32,16 +32,6 @@
     <string name="yes">Sí</string>
     <string name="no">No</string>
 
-    <!-- Welcome Dialog -->
-    <string name="welcome_title">Bienvenidos</string>
-    <string name="welcome_viewhelp">Ayuda</string>
-    <string name="welcome_text">Bienvenido en la Lista de tareas de Privacy Friendly. Esta aplicación no requiere ningún permiso. Puedes:</string>
-    <string name="welcome_hint_lists">Administrar las tareas dentro de las listas de tareas</string>
-    <string name="welcome_hint_deadlines">Crear las fechas límite y las alarmas</string>
-    <string name="welcome_hint_subtasks">Crear las subtareas</string>
-    <string name="welcome_hint_pin">Introducir la contraseña en los ajustes</string>
-    <string name="welcome_button">Comenzar</string>
-
     <!-- Help -->
     <string name="help_overview_heading">Informatión general</string>
     <string name="help_intro">Esta aplicación se puede utilizar para mantener las tareas y organizar una agenda personal.</string>

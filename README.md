@@ -1,4 +1,4 @@
-# Privacy Friendly To-Do List
+﻿# Privacy Friendly To-Do List
 
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/repository/browse/?fdid=org.secuso.privacyfriendlytodolist)
 
@@ -19,7 +19,7 @@ Further development requires Android Studio, we recommend to use at least versio
 ### API Reference
 
 Mininum SDK: 16
-Target SDK: 25 
+Target SDK: 26 
 
 ## License
 
@@ -33,4 +33,5 @@ Markus Hau
 Github-Users: <br />
 Dominik Puellen <br />
 Simon Breitfelder <br />
+Sebastian Lutz <br />
 Karola Marky (yonjuni)

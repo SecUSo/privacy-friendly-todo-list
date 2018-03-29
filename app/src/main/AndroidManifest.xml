@@ -10,16 +10,16 @@
         android:normalScreens="true"
         android:resizeable="true"
         android:smallScreens="true"
-        android:xlargeScreens="true"/>
+        android:xlargeScreens="true" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="org.secuso.privacyfriendlytodolist.view.SplashActivity"
+            android:name=".view.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,16 +28,40 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".tutorial.TutorialActivity"
+            android:parentActivityName="view.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            >
+        </activity>
+        <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
+            >
         </activity>
-        <activity android:name=".view.AboutActivity"
+        <activity
+            android:name=".view.AboutActivity"
             android:label="@string/about" />
-        <activity android:name=".view.HelpActivity"
+        <activity
+            android:name=".view.RecyclerActivity"
+            android:label="@string/bin" />
+        <activity
+            android:name=".view.calendar.CalendarActivity"
+            android:label="@string/calendar" />
+        <activity
+            android:name=".view.calendar.CalendarPopup"
+            android:label="@string/app_name"/>
+        <activity
+            android:name=".view.HelpActivity"
             android:label="@string/help" />
-        <activity android:name=".view.Settings"
+        <activity
+            android:name=".view.Settings"
             android:label="@string/settings" />
+        <service
+            android:name=".view.widget.ListViewWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+             />
+
         <service android:name=".model.ReminderService" />
 
         <receiver android:name=".model.AutoStartReceiver">
@@ -45,7 +69,21 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".view.widget.TodoListWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
 
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/todo_list_widget_info" />
+        </receiver>
+
+        <activity android:name=".view.widget.TodoListWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

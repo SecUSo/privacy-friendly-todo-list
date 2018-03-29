@@ -1,3 +1,20 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.model;
 
 import android.graphics.Color;
@@ -5,6 +22,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+
+/**
+ * Created by Sebastian Lutz on 12.03.2018.
+ *
+ * Class to set up a To-Do List and its parameters.
+ */
 
 
 public class TodoList extends BaseTodo implements Parcelable{
@@ -19,7 +42,6 @@ public class TodoList extends BaseTodo implements Parcelable{
 
         id = parcel.readInt();
         name = parcel.readString();
-        description = parcel.readString();
         parcel.readList(tasks, TodoTask.class.getClassLoader());
     }
 
@@ -80,7 +102,6 @@ public class TodoList extends BaseTodo implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeString(description);
         dest.writeList(tasks);
     }
 
@@ -148,8 +169,7 @@ public class TodoList extends BaseTodo implements Parcelable{
         String queryLowerCase = query.toLowerCase();
         if (this.name.toLowerCase().contains(queryLowerCase))
             return true;
-        if (this.description.toLowerCase().contains(queryLowerCase))
-            return true;
+
         if (recursive)
             for (int i = 0; i < this.tasks.size(); i++)
                 if (this.tasks.get(i).checkQueryMatch(queryLowerCase, recursive))

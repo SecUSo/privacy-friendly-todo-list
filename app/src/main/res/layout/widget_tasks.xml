@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_exlv_task_group_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/tv_widget_task_name"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/border_img_view"
+        android:visibility="invisible"
+        android:src="@drawable/done"
+        android:id="@+id/widget_done"/>
+
+    <ImageView
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/tv_widget_task_name"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/border_img_view"
+        android:visibility="invisible"
+        android:id="@+id/widget_undone"/>
+
+
+    <TextView
+        android:id="@+id/tv_widget_task_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="7dp"
+        android:text="Task Name"
+        android:textColor="@color/white"
+        android:textSize="18dp"
+        android:textStyle="normal" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="15dp"
+        android:layout_height="1dp"
+        android:background="@color/lightblue"
+        android:layout_alignBottom="@id/tv_widget_task_name"/>
+
+
+
+
+</RelativeLayout>

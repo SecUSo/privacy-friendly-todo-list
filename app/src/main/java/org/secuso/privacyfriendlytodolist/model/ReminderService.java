@@ -1,15 +1,40 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.model;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -20,6 +45,7 @@ import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
+ * Created by Sebastian Lutz on 12.03.2018.
  *
  * This service implements the following alarm policies:
  *
@@ -53,6 +80,8 @@ public class ReminderService extends Service {
 
     private NotificationManager mNotificationManager;
     private AlarmManager alarmManager;
+    private NotificationChannel mChannel;
+    private NotificationHelper helper;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -82,6 +111,7 @@ public class ReminderService extends Service {
         dbHelper = DatabaseHelper.getInstance(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = AlarmManagerHolder.getAlarmManager(this);
+        helper = new NotificationHelper(this);
 
         boolean alarmTriggered = false;
         Bundle extras = intent.getExtras();
@@ -112,29 +142,13 @@ public class ReminderService extends Service {
     }
 
     private void handleAlarm(TodoTask task) {
-
         String title = task.getName();
 
-
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
-        resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-        mBuilder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm);
-        mBuilder.setContentTitle(title);
-        if(task.hasDeadline())
-            mBuilder.setContentText(getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())));
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-        mBuilder.setAutoCancel(true);
-        mBuilder.setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);
-        mNotificationManager.notify(task.getId(), mBuilder.build());
+        NotificationCompat.Builder nb = helper.getNotification(title, getResources().getString(R.string.deadline_approaching, Helper.getDateTime(task.getDeadline())), task);
+        helper.getManager().notify(task.getId(), nb.build());
 
     }
+
 
     public void reloadAlarmsFromDB() {
         mNotificationManager.cancelAll(); // cancel all alarms
@@ -161,11 +175,21 @@ public class ReminderService extends Service {
         PendingIntent pendingAlarmIntent = PendingIntent.getService(this, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
         long reminderTime = task.getReminderTime();
-        Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
-        calendar.setTime(date);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
 
-        Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
+        if (reminderTime != -1 && reminderTime <= Helper.getCurrentTimestamp()){
+            Date date = new Date(TimeUnit.SECONDS.toMillis(Helper.getCurrentTimestamp()));
+            calendar.setTime(date);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
+
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
+        } else if (reminderTime != -1) {
+            Date date = new Date(TimeUnit.SECONDS.toMillis(reminderTime)); // convert to milliseconds
+            calendar.setTime(date);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingAlarmIntent);
+
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.getTimeInMillis() / 1000) + " (alarm id: " + alarmID + ")");
+        }
+
 
     }
 
@@ -188,7 +212,7 @@ public class ReminderService extends Service {
             // 2. delete old notification if it exists
             mNotificationManager.cancel(changedTask.getId());
             Log.i(TAG, "Notification of task " + changedTask.getName() + " deleted (if existed). (id="+changedTask.getId()+")");
-        } else {
+        } else  {
             Log.i(TAG, "No alarm found for " + changedTask.getName() + " (alarm id: " + changedTask.getId() + ")");
         }
 

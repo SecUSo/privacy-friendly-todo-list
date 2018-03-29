@@ -1,6 +1,24 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.model;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.util.TypedValue;
@@ -69,11 +87,12 @@ public class Helper {
         blueBackground.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
         blueBackground.setText(title);
-        blueBackground.setTextColor(ContextCompat.getColor(context, R.color.white));
+        blueBackground.setTextColor(ContextCompat.getColor(context, R.color.black));
+        blueBackground.setPadding(65, 65, 65, 65);
         blueBackground.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
-        blueBackground.setGravity(Gravity.CENTER);
+        blueBackground.setTypeface(null, Typeface.BOLD);
 
         return blueBackground;
     }
