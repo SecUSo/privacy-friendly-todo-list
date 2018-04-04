@@ -610,23 +610,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             uncheckNavigationEntries();
             navigationView.getMenu().getItem(0).setChecked(true);
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.exit_app);
-            builder.setCancelable(true);
-            builder.setPositiveButton(R.string.exit_positive, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            builder.setNegativeButton(R.string.exit_negative, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setMessage(R.string.exit_app);
+//            builder.setCancelable(true);
+//            builder.setPositiveButton(R.string.exit_positive, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    finish();
+//                }
+//            });
+//            builder.setNegativeButton(R.string.exit_negative, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.cancel();
+//                }
+//            });
+//            AlertDialog alert = builder.create();
+//            alert.show();
+            super.onBackPressed();
         }
     }
 
