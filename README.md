@@ -34,4 +34,5 @@ Github-Users: <br />
 Dominik Puellen <br />
 Simon Breitfelder <br />
 Sebastian Lutz <br />
-Karola Marky (yonjuni)
+Karola Marky (yonjuni) <br />
+Christopher Beckmann (Kamuno)
