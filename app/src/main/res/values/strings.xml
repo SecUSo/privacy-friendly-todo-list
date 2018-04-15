@@ -57,7 +57,7 @@
 
     <!-- About -->
     <string name="about">About</string>
-    <string name="version_number">Version 1.0.1</string>
+    <string name="version_number">Version v%s</string>
     <string name="about_author">Authors:</string>
     <string name="about_author_names" translatable="false">Sebastian Lutz, Dominik Püllen, Simon Breitfelder</string>
     <string name="about_author_contributors">and contributors.</string>

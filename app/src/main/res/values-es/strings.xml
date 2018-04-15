@@ -51,7 +51,7 @@
 
     <!-- About -->
     <string name="about">Sobre nosotros</string>
-    <string name="version_number">Versiṕn 1.0.1</string>
+    <string name="version_number">Versiṕn %s</string>
     <string name="about_author">Autores:</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">En colaboración con:</string>

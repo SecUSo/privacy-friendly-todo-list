@@ -27,6 +27,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.secuso.privacyfriendlytodolist.BuildConfig;
 import org.secuso.privacyfriendlytodolist.R;
 
 /**
@@ -58,6 +59,7 @@ public class AboutActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        ((TextView)findViewById(R.id.textFieldVersion)).setText(getString(R.string.version_number, BuildConfig.VERSION_NAME));
     }
 
     @Override
