@@ -19,6 +19,9 @@ package org.secuso.privacyfriendlytodolist.tutorial;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import org.secuso.privacyfriendlytodolist.R;
 
 /**
  * Created by Sebastian Lutz on 06.12.2017.
@@ -50,8 +53,11 @@ public class PrefManager {
     }
 
     public boolean isFirstTimeLaunch() {
-
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
+    }
+
+    public void setFirstTimeValues(Context context) {
+        PreferenceManager.setDefaultValues(context, R.xml.settings, false);
     }
 
 }

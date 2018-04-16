@@ -51,7 +51,6 @@ import java.util.List;
  *
  * This Activity handles deleted tasks in a kind of recycle bin.
  */
-
 public class RecyclerActivity extends AppCompatActivity{
 
     private DatabaseHelper dbhelper;
