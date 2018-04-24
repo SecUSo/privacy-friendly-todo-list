@@ -35,6 +35,6 @@ public final class TTodoList {
 
 	// sql table creation
 	public static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-	 	" INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " TEXT NOT NULL);";
+	 	" INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " TEXT NOT NULL UNIQUE);";
 
 }

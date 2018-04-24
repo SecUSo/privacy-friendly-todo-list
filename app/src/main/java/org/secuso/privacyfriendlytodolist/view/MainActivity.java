@@ -772,7 +772,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // set unique database id (primary key) to the current object
-        if (databaseID == -1) {
+        if (databaseID == -1 || databaseID == DBQueryHandler.NO_INSERT_TO_DB) {
             Log.e(TAG, errorMessage);
             return false;
         } else if (databaseID != DBQueryHandler.NO_CHANGES) {
@@ -835,13 +835,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void finish(BaseTodo b) {
                 if (b instanceof TodoList) {
-                    todoLists.add((TodoList) b);
-                    adapter.updateList(todoLists); // run filter again
-                    adapter.notifyDataSetChanged();
-                    sendToDatabase(b);
-                    hints();
-                    addListToNav();
-                    Log.i(TAG, "list added");
+                    if(sendToDatabase(b)) {
+                        todoLists.add((TodoList) b);
+                        adapter.updateList(todoLists); // run filter again
+                        adapter.notifyDataSetChanged();
+
+                        hints();
+                        addListToNav();
+                        Log.i(TAG, "list added");
+                    }
+                    else {
+                        Log.i(TAG, "list not added");
+                    }
                 }
             }
         });
