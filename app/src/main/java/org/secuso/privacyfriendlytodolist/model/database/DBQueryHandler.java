@@ -20,6 +20,7 @@ package org.secuso.privacyfriendlytodolist.model.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -46,6 +47,8 @@ public class DBQueryHandler {
     private static final String TAG = DBQueryHandler.class.getSimpleName();
 
     public static final int NO_CHANGES = -2;
+
+    public static final int NO_INSERT_TO_DB = -4;
 
     public DatabaseHelper dbhelper;
 
@@ -380,8 +383,15 @@ public class DBQueryHandler {
             values.put(TTodoSubTask.COLUMN_TRASH, subTask.isInTrash());
 
             if(subTask.getDBState() == ObjectStates.INSERT_TO_DB) {
-                returnCode = (int) db.insert(TTodoSubTask.TABLE_NAME, null, values);
-                Log.d(TAG, "Todo subtask " + subTask.getName() + " was inserted into the database (return code: "+returnCode+").");
+                try {
+                    returnCode = (int) db.insertOrThrow(TTodoSubTask.TABLE_NAME, null, values);
+                    Log.d(TAG, "Todo subtask " + subTask.getName() + " was inserted into the database (return code: " + returnCode + ").");
+                }
+                catch(SQLException sqle){
+                    sqle.printStackTrace();
+                    returnCode = NO_INSERT_TO_DB;
+
+                }
             } else if(subTask.getDBState() == ObjectStates.UPDATE_DB) {
                 String whereClause = TTodoSubTask.COLUMN_ID + "=?";
                 String[] whereArgs = {String.valueOf(subTask.getId())};
@@ -419,8 +429,14 @@ public class DBQueryHandler {
             values.put(TTodoTask.COLUMN_TRASH, todoTask.isInTrash());
 
             if(todoTask.getDBState() == ObjectStates.INSERT_TO_DB) {
-                returnCode = (int) db.insert(TTodoTask.TABLE_NAME, null, values);
-                Log.d(TAG, "Todo task " + todoTask.getName() + " was inserted into the database (return code: "+returnCode+").");
+                try {
+                    returnCode = (int) db.insertOrThrow(TTodoTask.TABLE_NAME, null, values);
+                    Log.d(TAG, "Todo task " + todoTask.getName() + " was inserted into the database (return code: " + returnCode + ").");
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                    returnCode = NO_INSERT_TO_DB;
+                }
             } else if(todoTask.getDBState() == ObjectStates.UPDATE_DB) {
                 String whereClause = TTodoTask.COLUMN_ID + "=?";
                 String[] whereArgs = {String.valueOf(todoTask.getId())};
@@ -451,8 +467,15 @@ public class DBQueryHandler {
             values.put(TTodoList.COLUMN_NAME, todoList.getName());
 
             if(todoList.getDBState() == ObjectStates.INSERT_TO_DB) {
-                returnCode = (int) db.insert(TTodoList.TABLE_NAME, null, values);
-                Log.d(TAG, "Todo list " + todoList.getName() + " was inserted into the database (return code: "+returnCode+").");
+                try {
+                    returnCode = (int) db.insertOrThrow(TTodoList.TABLE_NAME, null, values);
+                    Log.d(TAG, "Todo list " + todoList.getName() + " was inserted into the database (return code: " + returnCode + ").");
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                    returnCode = NO_INSERT_TO_DB;
+                    Log.e(TAG, "Todo list " + todoList.getName() + " was not inserted into the database (return code: " + returnCode + ").");
+                }
             } else if(todoList.getDBState() == ObjectStates.UPDATE_DB) {
                 String whereClause = TTodoList.COLUMN_ID + "=?";
                 String[] whereArgs = {String.valueOf(todoList.getId())};
