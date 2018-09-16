@@ -1051,6 +1051,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void finish(BaseTodo b) {
                         if(b instanceof TodoSubTask) {
                             sendToDatabase(b);
+                            expandableTodoTaskAdapter.notifyDataSetChanged();
                             Log.i(TAG, "subtask altered");
                         }
                     }
