@@ -1049,7 +1049,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
-                        if(b instanceof TodoTask) {
+                        if(b instanceof TodoSubTask) {
                             sendToDatabase(b);
                             Log.i(TAG, "subtask altered");
                         }
