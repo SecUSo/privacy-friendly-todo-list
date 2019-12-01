@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -141,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int affectedRows;
     int notificationDone;
     private int activeList = -1;
+
+    //Pomodoro
+    private boolean pomodoroInstalled = false;
 
 
     @Override
@@ -567,6 +571,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Check if Pomodoro is installed
+        pomodoroInstalled = checkIfPomodoroInstalled();
 
         if (this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             // restart activity to show pin dialog again
@@ -1027,11 +1034,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuInflater inflater = this.getMenuInflater();
         menu.setHeaderView(Helper.getMenuHeader(getBaseContext(), getBaseContext().getString(R.string.select_option)));
 
+        int workItemId;
         // context menu for child items
         if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
             inflater.inflate(R.menu.todo_subtask_long_click, menu);
+            workItemId = R.id.work_subtask;
         } else { // context menu for group items
             inflater.inflate(R.menu.todo_task_long_click, menu);
+            workItemId = R.id.work_task;
+        }
+
+        if (pomodoroInstalled) {
+            menu.findItem(workItemId).setVisible(true);
         }
     }
 
@@ -1126,6 +1140,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 snackbar.show();
                 break;
 
+            case R.id.work_task:
+
+                Log.i(MainActivity.class.getSimpleName(), "START TASK");
+
+                /* TODO
+                Intent pomodoro = new Intent(POMODORO_ACTION);
+                int todoId = longClickedTodo.getLeft().getId();
+                String todoName = longClickedTodo.getLeft().getName();
+                pomodoro.putExtra("todo_id", todoId)
+                        .putExtra("todo_name", todoName)
+                        .setClassName(
+                                "org.secuso.privacyfriendlyproductivitytimer",
+                                "org.secuso.privacyfriendlyproductivitytimer.ui.MainActivity"
+                        )
+                        .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                startActivity(pomodoro);*/
+                break;
+
+            case R.id.work_subtask:
+                Log.i(MainActivity.class.getSimpleName(), "START SUBTASK");
+                break;
+
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");
         }
@@ -1167,5 +1203,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             secondAlert.clearAnimation();
         }
     }
+
+    private boolean checkIfPomodoroInstalled() {
+        try {
+            getPackageManager().getPackageInfo("org.secuso.privacyfriendlyproductivitytimer", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+
 }
 

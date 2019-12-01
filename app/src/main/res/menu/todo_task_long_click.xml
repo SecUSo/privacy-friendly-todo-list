@@ -2,4 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/change_task" android:title="@string/edit_task"/>
     <item android:id="@+id/delete_task" android:title="@string/delete_task"/>
+    <item android:id="@+id/work_task" android:title="@string/work_task" android:visible="false"/>
 </menu>
