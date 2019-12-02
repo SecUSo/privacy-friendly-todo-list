@@ -7,7 +7,7 @@
 
     <!-- Permission for TodoReceiver: -->
     <permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"
-        android:protectionLevel="normal"
+        android:protectionLevel="signature"
         android:label="@string/permission_todo_name"
         android:description="@string/permission_todo_description" />
 
