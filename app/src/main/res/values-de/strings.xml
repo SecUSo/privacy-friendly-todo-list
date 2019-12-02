@@ -235,4 +235,8 @@
     <string name="exit_positive">Ja</string>
     <string name="exit_negative">Nein</string>
 
+    <!-- TO-DO INTEGRATION -->
+    <string name="permission_todo_name">TODO Integration</string>
+    <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
+
 </resources>

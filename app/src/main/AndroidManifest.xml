@@ -3,6 +3,13 @@
     package="org.secuso.privacyfriendlytodolist">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"/>
+
+    <!-- Permission for TodoReceiver: -->
+    <permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"
+        android:protectionLevel="normal"
+        android:label="@string/permission_todo_name"
+        android:description="@string/permission_todo_description" />
 
     <supports-screens
         android:anyDensity="true"

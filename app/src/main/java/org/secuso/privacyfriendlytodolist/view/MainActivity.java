@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String KEY_SELECTED_FRAGMENT_BY_NOTIFICATION = "fragment_choice";
     private static final String KEY_FRAGMENT_CONFIG_CHANGE_SAVE = "current_fragment";
     private static final String KEY_ACTIVE_LIST = "KEY_ACTIVE_LIST";
+    private static final String POMODORO_ACTION = "org.secuso.privacyfriendlytodolist.TODO_ACTION";
 
 
     // Fragment administration
@@ -1144,18 +1145,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Log.i(MainActivity.class.getSimpleName(), "START TASK");
 
-                /* TODO
                 Intent pomodoro = new Intent(POMODORO_ACTION);
                 int todoId = longClickedTodo.getLeft().getId();
                 String todoName = longClickedTodo.getLeft().getName();
                 pomodoro.putExtra("todo_id", todoId)
                         .putExtra("todo_name", todoName)
-                        .setClassName(
+                        /*.setClassName(
                                 "org.secuso.privacyfriendlyproductivitytimer",
                                 "org.secuso.privacyfriendlyproductivitytimer.ui.MainActivity"
-                        )
+                        )*/
                         .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                startActivity(pomodoro);*/
+                sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION");
                 break;
 
             case R.id.work_subtask:
