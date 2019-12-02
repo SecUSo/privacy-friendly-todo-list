@@ -1150,6 +1150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String todoName = longClickedTodo.getLeft().getName();
                 pomodoro.putExtra("todo_id", todoId)
                         .putExtra("todo_name", todoName)
+                        .setPackage("org.secuso.privacyfriendlyproductivitytimer")
                         /*.setClassName(
                                 "org.secuso.privacyfriendlyproductivitytimer",
                                 "org.secuso.privacyfriendlyproductivitytimer.ui.MainActivity"
