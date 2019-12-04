@@ -1144,23 +1144,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.work_task:
 
                 Log.i(MainActivity.class.getSimpleName(), "START TASK");
-
-                Intent pomodoro = new Intent(POMODORO_ACTION);
-                int todoId = longClickedTodo.getLeft().getId();
-                String todoName = longClickedTodo.getLeft().getName();
-                pomodoro.putExtra("todo_id", todoId)
-                        .putExtra("todo_name", todoName)
-                        .setPackage("org.secuso.privacyfriendlyproductivitytimer")
-                        /*.setClassName(
-                                "org.secuso.privacyfriendlyproductivitytimer",
-                                "org.secuso.privacyfriendlyproductivitytimer.ui.MainActivity"
-                        )*/
-                        .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION");
+                sendToPomodoro(longClickedTodo.getLeft());
                 break;
 
             case R.id.work_subtask:
+
                 Log.i(MainActivity.class.getSimpleName(), "START SUBTASK");
+                sendToPomodoro(longClickedTodo.getRight());
                 break;
 
             default:
@@ -1170,7 +1160,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onContextItemSelected(item);
     }
 
-
+    private void sendToPomodoro(BaseTodo todo) {
+        Intent pomodoro = new Intent(POMODORO_ACTION);
+        int todoId = todo.getId();
+        String todoName = todo.getName();
+        pomodoro.putExtra("todo_id", todoId)
+                .putExtra("todo_name", todoName)
+                .setPackage("org.secuso.privacyfriendlyproductivitytimer")
+                .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION");
+    }
 
     public void hints() {
 
