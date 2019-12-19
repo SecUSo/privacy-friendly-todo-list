@@ -1,1 +1,1 @@
-Diese Anwendung ermöglicht das Erstellen von To-Do Listen, die individuell verwaltet werden können. 
+To-Do Listen erstellen und individuell verwalten
