@@ -1166,6 +1166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String todoName = todo.getName();
         pomodoro.putExtra("todo_id", todoId)
                 .putExtra("todo_name", todoName)
+                .putExtra("todo_progress", todo.getProgress())
                 .setPackage("org.secuso.privacyfriendlyproductivitytimer")
                 .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION");

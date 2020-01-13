@@ -33,6 +33,13 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
     private boolean inTrash;
     private long taskIdForeignKey;
 
+    private int progress = -1;
+
+    @Override
+    public int getProgress() {
+        return progress;
+    }
+
     public TodoSubTask() {
         super();
         done = false;

@@ -23,6 +23,12 @@ public abstract class BaseTodo {
 
     protected int id;
 
+    protected int progress;
+
+    public int getProgress(){
+        return progress;
+    }
+
     protected String name, description;
     protected DBQueryHandler.ObjectStates dbState;
 
@@ -42,6 +48,7 @@ public abstract class BaseTodo {
         if(this.dbState == DBQueryHandler.ObjectStates.NO_DB_ACTION)
             this.dbState = DBQueryHandler.ObjectStates.UPDATE_DB;
     }
+
 
     public void setUnchanged() {
         this.dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
