@@ -84,6 +84,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    public static final String COMMAND = "command";
+    public static final int COMMAND_RUN_TODO = 2;
+
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // Keys
@@ -96,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String KEY_FRAGMENT_CONFIG_CHANGE_SAVE = "current_fragment";
     private static final String KEY_ACTIVE_LIST = "KEY_ACTIVE_LIST";
     private static final String POMODORO_ACTION = "org.secuso.privacyfriendlytodolist.TODO_ACTION";
+
 
 
     // Fragment administration

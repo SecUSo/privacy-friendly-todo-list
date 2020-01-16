@@ -3,7 +3,7 @@
     package="org.secuso.privacyfriendlytodolist">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"/>
+   <!-- <uses-permission android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_PERMISSION"/>-->
 
     <!-- Permission for TodoReceiver: -->
     <permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"
@@ -91,6 +91,15 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <!--
+        <receiver android:name="org.secuso.privacyfriendlytodolist.receiver.TodoReceiver"
+            android:exported="true"
+            android:permission="org.secuso.privacyfriendlyproductivitytimer.TODO_PERMISSION">
+            <intent-filter>
+                <action android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_ACTION" />
+            </intent-filter>
+        </receiver> -->
     </application>
 
 </manifest>
