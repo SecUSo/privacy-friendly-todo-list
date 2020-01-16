@@ -232,5 +232,6 @@
     <string name="exit_app">To-Do Liste beenden?</string>
     <string name="exit_positive">Ja</string>
     <string name="exit_negative">Nein</string>
+    <string name="select_no_list">keine Liste</string>
 
 </resources>

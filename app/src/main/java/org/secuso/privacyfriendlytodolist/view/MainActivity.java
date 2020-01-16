@@ -1068,6 +1068,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 expandableTodoTaskAdapter.notifyDataSetChanged();
                 break;
             case R.id.change_task:
+                final int listIDold=longClickedTodo.getLeft().getListId();
                 final ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(this, longClickedTodo.getLeft());
                 editTaskDialog.titleEdit();
                 editTaskDialog.setListSelector(longClickedTodo.getLeft().getListId(), true);
@@ -1078,8 +1079,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if(alteredTask instanceof TodoTask) {
                             sendToDatabase(alteredTask);
                             expandableTodoTaskAdapter.notifyDataSetChanged();
-                            if (inList && longClickedTodo.getLeft().getListId() != -3) {
-                                showTasksOfList(((TodoTask) alteredTask).getListId());
+                            if (inList && listIDold != -3) {
+                                showTasksOfList(listIDold);
                             } else {
                                 showAllTasks();
                             }
