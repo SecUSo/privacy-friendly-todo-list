@@ -23,7 +23,7 @@ import android.util.Log;
 
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
-public class TodoReceiver extends BroadcastReceiver {
+public class TodoReReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

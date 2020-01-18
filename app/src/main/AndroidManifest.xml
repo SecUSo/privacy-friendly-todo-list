@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.secuso.privacyfriendlytodolist">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-   <!-- <uses-permission android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_PERMISSION"/>-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"/>
+    <uses-permission android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_RE_PERMISSION"/>
 
     <!-- Permission for TodoReceiver: -->
     <permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"
@@ -92,14 +93,14 @@
             </intent-filter>
         </activity>
 
-        <!--
-        <receiver android:name="org.secuso.privacyfriendlytodolist.receiver.TodoReceiver"
+
+        <receiver android:name="org.secuso.privacyfriendlytodolist.receiver.TodoReReceiver"
             android:exported="true"
-            android:permission="org.secuso.privacyfriendlyproductivitytimer.TODO_PERMISSION">
+            android:permission="org.secuso.privacyfriendlyproductivitytimer.TODO_RE_PERMISSION">
             <intent-filter>
                 <action android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_ACTION" />
             </intent-filter>
-        </receiver> -->
+        </receiver>
     </application>
 
 </manifest>
