@@ -98,7 +98,7 @@
             android:exported="true"
             android:permission="org.secuso.privacyfriendlyproductivitytimer.TODO_RE_PERMISSION">
             <intent-filter>
-                <action android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_ACTION" />
+                <action android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_RE_ACTION" />
             </intent-filter>
         </receiver>
     </application>
