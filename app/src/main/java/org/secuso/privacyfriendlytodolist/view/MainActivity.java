@@ -1059,7 +1059,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.delete_subtask:
-                affectedRows = DBQueryHandler.putSubtaskInTrash(this.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
+                affectedRows = DBQueryHandler.deleteTodoSubTask(this.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
                 longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
                     Toast.makeText(getBaseContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
