@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public static final String COMMAND = "command";
+    public static final int COMMAND_UPDATE = 3;
     public static final int COMMAND_RUN_TODO = 2;
 
 
@@ -262,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
@@ -307,8 +309,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TodoTask currentTask = tasks.getTasks().get(taskID);
                 currentTask.setReminderTime(System.currentTimeMillis() + notificationDone);
                 sendToDatabase(currentTask);
+
             }
         } */
+
 
 
         authAndGuiInit(savedInstanceState);
@@ -319,6 +323,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(activeList != -1) {
             showTasksOfList(activeList);
         }
+        if (getIntent().getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
+            updateTodoFromPomodoro();
+        }
+
     }
 
 
@@ -578,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.v("RESUME","resume");
         // Check if Pomodoro is installed
         pomodoroInstalled = checkIfPomodoroInstalled();
 
@@ -1169,6 +1177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void sendToPomodoro(BaseTodo todo) {
         Intent pomodoro = new Intent(POMODORO_ACTION);
         int todoId = todo.getId();
+        Log.v("TODO", "->"+"<-");
         String todoName = todo.getName();
         pomodoro.putExtra("todo_id", todoId)
                 .putExtra("todo_name", todoName)
@@ -1176,6 +1185,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPackage("org.secuso.privacyfriendlyproductivitytimer")
                 .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION");
+        finish();
+    }
+
+    private void updateTodoFromPomodoro() {
+        Log.v("PFA", "SEND  TO DATABASE 1");
+        TodoTask todoRe = new TodoTask();
+        todoRe.setChangedFromPomodoro();
+        todoRe.setPriority(TodoTask.Priority.HIGH);
+        todoRe.setName(getIntent().getStringExtra("todo_name"));
+        Log.v("PFA", "SEND  TO DATABASE 2");
+        todoRe.setId(getIntent().getIntExtra("todo_id", -1));
+        todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
+        Log.v("PFA",sendToDatabase(todoRe)+"");
+        Log.v("PFA", "SEND  TO DATABASE->"+getIntent().getStringExtra("todo_name")+"<-->"+getIntent().getIntExtra("todo_id", -1)+"<-->"+getIntent().getIntExtra("todo_progress", -1));
+        super.onResume();
     }
 
     public void hints() {

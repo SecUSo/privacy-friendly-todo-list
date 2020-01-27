@@ -156,6 +156,7 @@ public class DBQueryHandler {
     public enum ObjectStates {
         INSERT_TO_DB,
         UPDATE_DB,
+        UPDATE_FROM_POMODORO,
         NO_DB_ACTION
     }
 
@@ -404,7 +405,7 @@ public class DBQueryHandler {
 
         int returnCode;
 
-        if(todoTask.getDBState() != ObjectStates.NO_DB_ACTION) {
+        if((todoTask.getDBState() != ObjectStates.NO_DB_ACTION) && (todoTask.getDBState() != ObjectStates.UPDATE_FROM_POMODORO)) {
 
             ContentValues values = new ContentValues();
             values.put(TTodoTask.COLUMN_NAME, todoTask.getName());
@@ -421,21 +422,47 @@ public class DBQueryHandler {
             if(todoTask.getDBState() == ObjectStates.INSERT_TO_DB) {
                 returnCode = (int) db.insert(TTodoTask.TABLE_NAME, null, values);
                 Log.d(TAG, "Todo task " + todoTask.getName() + " was inserted into the database (return code: "+returnCode+").");
+
             } else if(todoTask.getDBState() == ObjectStates.UPDATE_DB) {
                 String whereClause = TTodoTask.COLUMN_ID + "=?";
                 String[] whereArgs = {String.valueOf(todoTask.getId())};
                 db.update(TTodoTask.TABLE_NAME, values, whereClause, whereArgs);
                 returnCode = todoTask.getId();
                 Log.d(TAG, "Todo task " + todoTask.getName() + " was updated (return code: "+returnCode+").");
+
             } else
                 returnCode = NO_CHANGES;
+
 
             todoTask.setUnchanged();
             //todoTask.setDbState(ObjectStates.NO_DB_ACTION);
 
-        } else
-          returnCode = NO_CHANGES;
+        } else if (todoTask.getDBState() == ObjectStates.UPDATE_FROM_POMODORO) {
+            ContentValues values = new ContentValues();
+            values.put(TTodoTask.COLUMN_NAME, todoTask.getName());
+            //values.put(TTodoTask.COLUMN_DESCRIPTION, "Test");
+            values.put(TTodoTask.COLUMN_PROGRESS, todoTask.getProgress());
+            //values.put(TTodoTask.COLUMN_DEADLINE,  "Test");
+            //values.put(TTodoTask.COLUMN_DEADLINE_WARNING_TIME,  "Test");
+            //values.put(TTodoTask.COLUMN_PRIORITY,  "Test");
+            //values.put(TTodoTask.COLUMN_TODO_LIST_ID,  "Test");
+            //values.put(TTodoTask.COLUMN_LIST_POSITION,  "Test");
+            //values.put(TTodoTask.COLUMN_DONE,  "Test");
+            //values.put(TTodoTask.COLUMN_TRASH,  "Test");
 
+            String whereClause = TTodoTask.COLUMN_ID + "=?";
+            String[] whereArgs = {String.valueOf(todoTask.getId())};
+            db.update(TTodoTask.TABLE_NAME, values, whereClause, whereArgs);
+            returnCode = todoTask.getId();
+            Log.d(TAG, "Todo task " + todoTask.getName() + " was updated (return code: "+returnCode+").");
+            Log.v(TAG, "Todo task " + todoTask.getName() + " was updated (return code: "+returnCode+").");
+            todoTask.setUnchanged();
+            //todoTask.setDbState(ObjectStates.NO_DB_ACTION);
+        } else {
+            Log.v("DB", "5");
+            returnCode = NO_CHANGES;
+        }
+        Log.v("DB", "return code:"+returnCode);
         return returnCode;
     }
 
