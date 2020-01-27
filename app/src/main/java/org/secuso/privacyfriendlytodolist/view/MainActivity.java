@@ -313,7 +313,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } */
 
-
+        if (getIntent().getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
+            updateTodoFromPomodoro();
+        }
 
         authAndGuiInit(savedInstanceState);
         TodoList defaultList = new TodoList();
@@ -323,9 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(activeList != -1) {
             showTasksOfList(activeList);
         }
-        if (getIntent().getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
-            updateTodoFromPomodoro();
-        }
+
 
     }
 
@@ -1189,17 +1189,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateTodoFromPomodoro() {
-        Log.v("PFA", "SEND  TO DATABASE 1");
         TodoTask todoRe = new TodoTask();
-        todoRe.setChangedFromPomodoro();
-        todoRe.setPriority(TodoTask.Priority.HIGH);
+        todoRe.setChangedFromPomodoro(); //Change the dbState to UPDATE_FROM_POMODORO
+        //todoRe.setPriority(TodoTask.Priority.HIGH);
         todoRe.setName(getIntent().getStringExtra("todo_name"));
-        Log.v("PFA", "SEND  TO DATABASE 2");
         todoRe.setId(getIntent().getIntExtra("todo_id", -1));
         todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
-        Log.v("PFA",sendToDatabase(todoRe)+"");
-        Log.v("PFA", "SEND  TO DATABASE->"+getIntent().getStringExtra("todo_name")+"<-->"+getIntent().getIntExtra("todo_id", -1)+"<-->"+getIntent().getIntExtra("todo_progress", -1));
-        super.onResume();
+        sendToDatabase(todoRe); //Update the existing entry
+        Log.v("Pomodoro", "Todo received and updated.");
+        //super.onResume();
     }
 
     public void hints() {

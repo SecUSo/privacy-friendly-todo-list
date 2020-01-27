@@ -438,26 +438,18 @@ public class DBQueryHandler {
             //todoTask.setDbState(ObjectStates.NO_DB_ACTION);
 
         } else if (todoTask.getDBState() == ObjectStates.UPDATE_FROM_POMODORO) {
+            //Only update values given by pomodoro
             ContentValues values = new ContentValues();
             values.put(TTodoTask.COLUMN_NAME, todoTask.getName());
-            //values.put(TTodoTask.COLUMN_DESCRIPTION, "Test");
             values.put(TTodoTask.COLUMN_PROGRESS, todoTask.getProgress());
-            //values.put(TTodoTask.COLUMN_DEADLINE,  "Test");
-            //values.put(TTodoTask.COLUMN_DEADLINE_WARNING_TIME,  "Test");
-            //values.put(TTodoTask.COLUMN_PRIORITY,  "Test");
-            //values.put(TTodoTask.COLUMN_TODO_LIST_ID,  "Test");
-            //values.put(TTodoTask.COLUMN_LIST_POSITION,  "Test");
-            //values.put(TTodoTask.COLUMN_DONE,  "Test");
-            //values.put(TTodoTask.COLUMN_TRASH,  "Test");
 
             String whereClause = TTodoTask.COLUMN_ID + "=?";
             String[] whereArgs = {String.valueOf(todoTask.getId())};
             db.update(TTodoTask.TABLE_NAME, values, whereClause, whereArgs);
             returnCode = todoTask.getId();
             Log.d(TAG, "Todo task " + todoTask.getName() + " was updated (return code: "+returnCode+").");
-            Log.v(TAG, "Todo task " + todoTask.getName() + " was updated (return code: "+returnCode+").");
             todoTask.setUnchanged();
-            //todoTask.setDbState(ObjectStates.NO_DB_ACTION);
+
         } else {
             Log.v("DB", "5");
             returnCode = NO_CHANGES;
