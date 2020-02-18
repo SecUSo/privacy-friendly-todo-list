@@ -586,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v("RESUME","resume");
+        Log.d("RESUME","resume");
         // Check if Pomodoro is installed
         pomodoroInstalled = checkIfPomodoroInstalled();
 
@@ -1177,7 +1177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void sendToPomodoro(BaseTodo todo) {
         Intent pomodoro = new Intent(POMODORO_ACTION);
         int todoId = todo.getId();
-        Log.v("TODO", "->"+"<-");
+
         String todoName = todo.getName();
         pomodoro.putExtra("todo_id", todoId)
                 .putExtra("todo_name", todoName)
@@ -1196,7 +1196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         todoRe.setId(getIntent().getIntExtra("todo_id", -1));
         todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
         sendToDatabase(todoRe); //Update the existing entry
-        Log.v("Pomodoro", "Todo received and updated.");
+       
         //super.onResume();
     }
 

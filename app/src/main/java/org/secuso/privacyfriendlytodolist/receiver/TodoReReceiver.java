@@ -36,7 +36,7 @@ public class TodoReReceiver extends BroadcastReceiver {
             return;
         }
 
-        Log.v("MainActivity", "Received ya stuff");
+
 
         Intent runIntent = new Intent(context, MainActivity.class);
         runIntent.putExtra(MainActivity.COMMAND, MainActivity.COMMAND_UPDATE)

@@ -451,10 +451,10 @@ public class DBQueryHandler {
             todoTask.setUnchanged();
 
         } else {
-            Log.v("DB", "5");
+            Log.d("DB", "5");
             returnCode = NO_CHANGES;
         }
-        Log.v("DB", "return code:"+returnCode);
+        Log.d("DB", "return code:"+returnCode);
         return returnCode;
     }
 
