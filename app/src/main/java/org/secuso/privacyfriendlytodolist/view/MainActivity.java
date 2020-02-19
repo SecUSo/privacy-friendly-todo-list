@@ -1177,10 +1177,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void sendToPomodoro(BaseTodo todo) {
         Intent pomodoro = new Intent(POMODORO_ACTION);
         int todoId = todo.getId();
-
+        String todoDescription = todo.getDescription();
         String todoName = todo.getName();
         pomodoro.putExtra("todo_id", todoId)
                 .putExtra("todo_name", todoName)
+                .putExtra("todo_description", todoDescription)
                 .putExtra("todo_progress", todo.getProgress())
                 .setPackage("org.secuso.privacyfriendlyproductivitytimer")
                 .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
@@ -1196,7 +1197,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         todoRe.setId(getIntent().getIntExtra("todo_id", -1));
         todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
         sendToDatabase(todoRe); //Update the existing entry
-       
+
         //super.onResume();
     }
 
