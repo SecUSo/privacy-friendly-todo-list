@@ -1196,6 +1196,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         todoRe.setName(getIntent().getStringExtra("todo_name"));
         todoRe.setId(getIntent().getIntExtra("todo_id", -1));
         todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
+        if (todoRe.getProgress() == 100) {
+            // Set task as done
+            todoRe.setDone(true);
+            //todoRe.doneStatusChanged();
+        }
         sendToDatabase(todoRe); //Update the existing entry
 
         //super.onResume();

@@ -442,7 +442,7 @@ public class DBQueryHandler {
             ContentValues values = new ContentValues();
             values.put(TTodoTask.COLUMN_NAME, todoTask.getName());
             values.put(TTodoTask.COLUMN_PROGRESS, todoTask.getProgress());
-
+            values.put(TTodoTask.COLUMN_DONE, todoTask.getDone());
             String whereClause = TTodoTask.COLUMN_ID + "=?";
             String[] whereArgs = {String.valueOf(todoTask.getId())};
             db.update(TTodoTask.TABLE_NAME, values, whereClause, whereArgs);
