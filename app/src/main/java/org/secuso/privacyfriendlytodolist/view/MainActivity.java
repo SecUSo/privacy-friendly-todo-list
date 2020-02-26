@@ -1177,7 +1177,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void sendToPomodoro(BaseTodo todo) {
         Intent pomodoro = new Intent(POMODORO_ACTION);
         int todoId = todo.getId();
-        String todoDescription = todo.getDescription();
+        String todoDescription;
+        if (todo.getDescription() == null) {
+            todoDescription = "";
+        } else {
+            todoDescription = todo.getDescription();
+        }
+
         String todoName = todo.getName();
         pomodoro.putExtra("todo_id", todoId)
                 .putExtra("todo_name", todoName)
