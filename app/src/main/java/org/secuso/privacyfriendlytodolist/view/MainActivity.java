@@ -1207,7 +1207,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             todoRe.setDone(true);
             //todoRe.doneStatusChanged();
         }
-        sendToDatabase(todoRe); //Update the existing entry
+        if (todoRe.getProgress() != -1) {
+            sendToDatabase(todoRe); //Update the existing entry, if no subtask
+        }
 
         //super.onResume();
     }
