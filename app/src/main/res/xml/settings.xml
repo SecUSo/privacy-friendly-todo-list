@@ -25,7 +25,7 @@
         android:dialogTitle="@string/set_pin"
         android:inputType="numberPassword"
         android:key="pref_pin"
-        android:maxLength="4"
+        android:maxLength="32"
         android:password="true"
         android:title="@string/set_pin" />
 
