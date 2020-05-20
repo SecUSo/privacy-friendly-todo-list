@@ -1049,8 +1049,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
-                        if(b instanceof TodoTask) {
+                        if(b instanceof TodoSubTask) {
                             sendToDatabase(b);
+                            expandableTodoTaskAdapter.notifyDataSetChanged();
                             Log.i(TAG, "subtask altered");
                         }
                     }
@@ -1059,6 +1060,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.delete_subtask:
+
                 affectedRows = DBQueryHandler.deleteTodoSubTask(this.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
                 longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
