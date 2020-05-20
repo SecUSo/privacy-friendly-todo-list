@@ -47,7 +47,7 @@
     <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden. Das Bearbeiten einer Aufgabe ist möglich, indem diese länger angetippt wird.</string>
     <string name="help_group_app">Einstellungen</string>
     <string name="help_pin_title">PIN-Schutz</string>
-    <string name="help_pin">Im Einstellungsmenü kann eine vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem Start der App eingegeben werden.</string>
+    <string name="help_pin">Im Einstellungsmenü kann eine mindestens vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem Start der App eingegeben werden.</string>
     <string name="help_sound">Zudem kann im Einstellungsmenü gewählt werden, ob beim Erscheinen einer Notification ein Benachrichtigungston abgespielt wird.</string>
     <string name="help_group_privacy">Privatsphäre</string>
     <string name="help_permissions_title">Berechtigung RECEIVE_BOOT_COMPLETED</string>
