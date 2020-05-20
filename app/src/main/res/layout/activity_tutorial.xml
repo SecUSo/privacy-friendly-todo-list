@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
         android:background="@null"
         android:text="@string/next"
         android:textColor="@android:color/white" />
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginLeft="5dp"
         android:background="@null"
         android:text="@string/skip"
         android:textColor="@android:color/white" />

@@ -1,0 +1,21 @@
+Die Privacy Friendly To-Do-Liste kann verwendet werden, um unerledigte Aufgaben im Auge zu behalten und einen persönlichen Zeitplan zu erstellen. Diese Anwendung ermöglicht das Erstellen von To-Do Listen, die individuell verwaltet werden können. Jede Liste enthält eine Reihe von Aufgaben. Jede Aufgabe kann einen Termin, eine Erinnerungszeit und Teilaufgaben haben. Durch Setzen einer Erinnerungszeit wird der Benutzer durch eine Benachrichtigung informiert. Es ist möglich Aufgaben, die eine Deadline besitzen in einem Kalender anzuzeigen. Die Anwendung kann mit einem geheimen Pin geschützt und Aufgaben innerhalb einer Liste sortiert und priorisiert werden. Farben kennzeichnen die Dringlichkeit einer Aufgabe (unter Berücksichtigung der Deadline).
+
+Features der Privacy Friendly To-Do Liste
+1. PIN Schutz
+Öffnen Sie die Einstellungen, um einen PIN-Schutz für Ihre Anwendung einzurichten. Die PIN muss eine 4-stellige Zahl sein. Sie werden bei jedem Start der Anwendung / Start der Hauptansicht danach gefragt.
+2. Erinnerung
+Sie können eine Erinnerung an Aufgaben zuweisen, die Sie benachrichtigt, wenn ein Termin bevorsteht. Die Einstellungen bieten Ihnen die Möglichkeit, einen Benachrichtigungston zu aktivieren.
+3. Widget
+Darüber hinaus bietet diese App ein Widget, das Sie dem Startbildschirm Ihres Geräts hinzufügen können. Das Widget zeigt Ihnen Aufgaben, die zu einer ausgewählten Liste gehören. Ein Klick auf eine Aufgabe oder deren Checkbox führt zur Hauptansicht der Privacy Friendly To-Do-Liste. Der Aktualisierungs-Button kann die angezeigten Aufgaben innerhalb des Widgets aktualisieren.
+4. Fortschritt durch Teilaufgaben
+Standardmäßig kann der Fortschritt beim Anlegen oder Bearbeiten einer Aufgabe vom Benutzer frei gewählt werden. Die To-Do-Liste bietet die Möglichkeit, den Fortschritt einer Aufgabe automatisch zu berechnen und anzuzeigen, abhängig von den erledigten Teilaufgaben. Gehen Sie diesbezüglich zu den Einstellungen und aktivieren Sie Fortschritt durch Teilaufgaben.
+
+Unsere Privacy Friendly App unterscheidet sich in zwei Punkten von anderen Anwendungen:
+1) Keine Berechtigungen
+Die Privacy Friendly To-Do Liste verwendet keine Berechtigungen.
+
+2) Keine Werbung
+Die Privacy Friendly To-Do-Liste verzichtet vollständig auf Werbung.
+Viele andere kostenlose Apps im Google Play Store schalten lästige Werbung, die auch die Akkulaufzeit verkürzt.
+
+Die App gehört zur Gruppe der Privacy Friendly Apps, die von der Forschungsgruppe SECUSO der Technischen Universität Darmstadt entwickelt werden. Mehr Informationen unter: https://secuso.org/pfa
