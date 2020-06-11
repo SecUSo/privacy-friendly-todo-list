@@ -72,6 +72,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
+import org.secuso.privacyfriendlytodolist.view.dialog.RenameTodoListDialog;
 
 import java.util.ArrayList;
 
@@ -448,44 +449,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                final EditText input = new EditText(getApplicationContext());
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setView(input);
-                builder.setMessage(R.string.list_name_must_not_be_empty);
-                builder.setCancelable(true);
-                builder.setPositiveButton(R.string.exit_positive, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (!input.getText().toString().isEmpty()) {
-                            String currentTitle = toolbar.getTitle().toString();
-                            toolbar.setTitle(input.getText().toString());
-                            currentItem.setTitle(input.getText().toString());
-
-                            todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-                            TodoList todoList = new TodoList();
-
-                            for (TodoList t: todoLists) {
-                                if (t.getName().equals(currentTitle)) {
-                                    todoList = t;
-                                    break;
-                                }
-                            }
-
-                            todoList.setName(input.getText().toString());
-                            todoList.setDBState(DBQueryHandler.ObjectStates.UPDATE_DB);
-                            DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), todoList);
-                        }
-                    }
-                });
-                builder.setNegativeButton(R.string.exit_negative, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
+                new RenameTodoListDialog(toolbar, dbHelper, currentItem).show(getSupportFragmentManager(), "tag");
                 return false;
             }
         });
