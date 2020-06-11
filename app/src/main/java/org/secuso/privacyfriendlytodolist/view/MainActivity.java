@@ -463,7 +463,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             currentItem.setTitle(input.getText().toString());
 
                             todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-
                             TodoList todoList = new TodoList();
 
                             for (TodoList t: todoLists) {
@@ -475,10 +474,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             todoList.setName(input.getText().toString());
                             todoList.setDBState(DBQueryHandler.ObjectStates.UPDATE_DB);
-
-                            adapter = new TodoListAdapter(MainActivity.this, todoLists);
-                            adapter.updateList(todoLists);
-                            adapter.notifyDataSetChanged();
                             DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), todoList);
                         }
                     }
