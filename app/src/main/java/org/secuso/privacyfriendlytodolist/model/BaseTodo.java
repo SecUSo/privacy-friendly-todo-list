@@ -34,6 +34,10 @@ public abstract class BaseTodo {
         return dbState;
     }
 
+    public void setDBState(DBQueryHandler.ObjectStates newState) {
+        dbState = newState;
+    }
+
     public void setCreated() {
         this.dbState = DBQueryHandler.ObjectStates.INSERT_TO_DB;
     }

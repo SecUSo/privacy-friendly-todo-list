@@ -48,6 +48,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -141,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int affectedRows;
     int notificationDone;
     private int activeList = -1;
+    private MenuItem currentItem;
 
 
     @Override
@@ -443,6 +445,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // toolbar setup
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                final EditText input = new EditText(getApplicationContext());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setView(input);
+                builder.setMessage(R.string.list_name_must_not_be_empty);
+                builder.setCancelable(true);
+                builder.setPositiveButton(R.string.exit_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (!input.getText().toString().isEmpty()) {
+                            String currentTitle = toolbar.getTitle().toString();
+                            toolbar.setTitle(input.getText().toString());
+                            currentItem.setTitle(input.getText().toString());
+
+                            todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+
+                            TodoList todoList = new TodoList();
+
+                            for (TodoList t: todoLists) {
+                                if (t.getName().equals(currentTitle)) {
+                                    todoList = t;
+                                    break;
+                                }
+                            }
+
+                            todoList.setName(input.getText().toString());
+                            todoList.setDBState(DBQueryHandler.ObjectStates.UPDATE_DB);
+
+                            adapter = new TodoListAdapter(MainActivity.this, todoLists);
+                            adapter.updateList(todoLists);
+                            adapter.notifyDataSetChanged();
+                            DBQueryHandler.saveTodoListInDb(dbHelper.getWritableDatabase(), todoList);
+                        }
+                    }
+                });
+                builder.setNegativeButton(R.string.exit_negative, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+                return false;
+            }
+        });
 
         // side menu setup
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -489,6 +540,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
+        currentItem = item;
         int id = item.getItemId();
 
         if (id == R.id.nav_settings) {
@@ -546,7 +598,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
 
     }
-
 
 
     @Override
