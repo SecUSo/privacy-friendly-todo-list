@@ -23,6 +23,12 @@ public abstract class BaseTodo {
 
     protected int id;
 
+    protected int progress;
+
+    public int getProgress(){
+        return progress;
+    }
+
     protected String name, description;
     protected DBQueryHandler.ObjectStates dbState;
 
@@ -43,12 +49,22 @@ public abstract class BaseTodo {
             this.dbState = DBQueryHandler.ObjectStates.UPDATE_DB;
     }
 
+    public void setChangedFromPomodoro() {
+            this.dbState = DBQueryHandler.ObjectStates.UPDATE_FROM_POMODORO;
+    }
+
+
+
     public void setUnchanged() {
         this.dbState = DBQueryHandler.ObjectStates.NO_DB_ACTION;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 
     public void setId(int id) {

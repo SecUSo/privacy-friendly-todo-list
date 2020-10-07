@@ -113,6 +113,8 @@
     <string name="to_choose_list">Liste auswählen!</string>
     <string name="click_to_choose">Klicken zum Wählen!</string>
     <string name="list_colon">Liste:</string>
+    <string name="work_subtask">An Unteraufgabe arbeiten</string>
+    <string name="work_task">An Aufgabe arbeiten</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>
@@ -233,5 +235,9 @@
     <string name="exit_positive">Ja</string>
     <string name="exit_negative">Nein</string>
     <string name="select_no_list">keine Liste</string>
+
+    <!-- TO-DO INTEGRATION -->
+    <string name="permission_todo_name">TODO Integration</string>
+    <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
 
 </resources>

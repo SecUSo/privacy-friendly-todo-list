@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -83,6 +84,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    public static final String COMMAND = "command";
+    public static final int COMMAND_UPDATE = 3;
+    public static final int COMMAND_RUN_TODO = 2;
+
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // Keys
@@ -94,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String KEY_SELECTED_FRAGMENT_BY_NOTIFICATION = "fragment_choice";
     private static final String KEY_FRAGMENT_CONFIG_CHANGE_SAVE = "current_fragment";
     private static final String KEY_ACTIVE_LIST = "KEY_ACTIVE_LIST";
+    private static final String POMODORO_ACTION = "org.secuso.privacyfriendlytodolist.TODO_ACTION";
+
 
 
     // Fragment administration
@@ -141,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     int affectedRows;
     int notificationDone;
     private int activeList = -1;
+
+    //Pomodoro
+    private boolean pomodoroInstalled = false;
 
 
     @Override
@@ -251,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
@@ -296,9 +309,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 TodoTask currentTask = tasks.getTasks().get(taskID);
                 currentTask.setReminderTime(System.currentTimeMillis() + notificationDone);
                 sendToDatabase(currentTask);
+
             }
         } */
 
+        if (getIntent().getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
+            updateTodoFromPomodoro();
+        }
 
         authAndGuiInit(savedInstanceState);
         TodoList defaultList = new TodoList();
@@ -308,6 +325,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(activeList != -1) {
             showTasksOfList(activeList);
         }
+
+
     }
 
 
@@ -567,6 +586,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("RESUME","resume");
+        // Check if Pomodoro is installed
+        pomodoroInstalled = checkIfPomodoroInstalled();
 
         if (this.isInitialized && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             // restart activity to show pin dialog again
@@ -1027,11 +1049,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuInflater inflater = this.getMenuInflater();
         menu.setHeaderView(Helper.getMenuHeader(getBaseContext(), getBaseContext().getString(R.string.select_option)));
 
+        int workItemId;
         // context menu for child items
         if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
             inflater.inflate(R.menu.todo_subtask_long_click, menu);
+            workItemId = R.id.work_subtask;
         } else { // context menu for group items
             inflater.inflate(R.menu.todo_task_long_click, menu);
+            workItemId = R.id.work_task;
+        }
+
+        if (pomodoroInstalled) {
+            menu.findItem(workItemId).setVisible(true);
         }
     }
 
@@ -1129,6 +1158,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 snackbar.show();
                 break;
 
+            case R.id.work_task:
+
+                Log.i(MainActivity.class.getSimpleName(), "START TASK");
+                sendToPomodoro(longClickedTodo.getLeft());
+                break;
+
+            case R.id.work_subtask:
+
+                Log.i(MainActivity.class.getSimpleName(), "START SUBTASK");
+                sendToPomodoro(longClickedTodo.getRight());
+                break;
+
             default:
                 throw new IllegalArgumentException("Invalid menu item selected.");
         }
@@ -1136,7 +1177,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onContextItemSelected(item);
     }
 
+    private void sendToPomodoro(BaseTodo todo) {
+        Intent pomodoro = new Intent(POMODORO_ACTION);
+        int todoId = todo.getId();
+        String todoDescription;
+        if (todo.getDescription() == null) {
+            todoDescription = "";
+        } else {
+            todoDescription = todo.getDescription();
+        }
 
+        String todoName = todo.getName();
+        pomodoro.putExtra("todo_id", todoId)
+                .putExtra("todo_name", todoName)
+                .putExtra("todo_description", todoDescription)
+                .putExtra("todo_progress", todo.getProgress())
+                .setPackage("org.secuso.privacyfriendlyproductivitytimer")
+                .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION");
+        finish();
+    }
+
+    private void updateTodoFromPomodoro() {
+        TodoTask todoRe = new TodoTask();
+        todoRe.setChangedFromPomodoro(); //Change the dbState to UPDATE_FROM_POMODORO
+        //todoRe.setPriority(TodoTask.Priority.HIGH);
+        todoRe.setName(getIntent().getStringExtra("todo_name"));
+        todoRe.setId(getIntent().getIntExtra("todo_id", -1));
+        todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
+        if (todoRe.getProgress() == 100) {
+            // Set task as done
+            todoRe.setDone(true);
+            //todoRe.doneStatusChanged();
+        }
+        if (todoRe.getProgress() != -1) {
+            sendToDatabase(todoRe); //Update the existing entry, if no subtask
+        }
+
+        //super.onResume();
+    }
 
     public void hints() {
 
@@ -1170,5 +1249,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             secondAlert.clearAnimation();
         }
     }
+
+    private boolean checkIfPomodoroInstalled() {
+        try {
+            getPackageManager().getPackageInfo("org.secuso.privacyfriendlyproductivitytimer", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+
 }
 

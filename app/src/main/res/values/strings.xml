@@ -117,6 +117,8 @@
     <string name="to_choose_list">Select a list!</string>
     <string name="click_to_choose">Click to select!</string>
     <string name="list_colon">List:</string>
+    <string name="work_subtask">Work on this subtask</string>
+    <string name="work_task">Work on this task</string>
 
 
     <!-- Select reminder dialog -->
@@ -240,5 +242,9 @@
     <string name="exit_positive">Yes</string>
     <string name="exit_negative">No</string>
     <string name="select_no_list">no list</string>
+
+    <!-- POMODORO INTEGRATION -->
+    <string name="permission_todo_name">TODO Integration</string>
+    <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
 
 </resources>
