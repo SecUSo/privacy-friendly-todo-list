@@ -47,7 +47,7 @@
     <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it. Hold on a task for a while to edit it.</string>
     <string name="help_group_app">Settings</string>
     <string name="help_pin_title">Settings</string>
-    <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with 4 digits. You are asked for it every time you start the application.</string>
+    <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with at least 4 digits. You are asked for it every time you start the application.</string>
     <string name="help_sound">Moreover you can choose if a notification sound should be played by receiving a notification.</string>
     <string name="help_group_privacy">Privacy Info</string>
     <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
@@ -241,6 +241,7 @@
     <string name="exit_app">Exit To-Do List?</string>
     <string name="exit_positive">Yes</string>
     <string name="exit_negative">No</string>
+    <string name="select_no_list">no list</string>
 
     <!-- POMODORO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>

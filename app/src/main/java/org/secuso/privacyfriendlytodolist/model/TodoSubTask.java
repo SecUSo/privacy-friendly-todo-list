@@ -50,8 +50,8 @@ public class TodoSubTask extends BaseTodo implements Parcelable {
         id = parcel.readInt();
         name = parcel.readString();
         done = parcel.readByte() != 0;
-        taskIdForeignKey = parcel.readLong();
         inTrash = parcel.readByte() != 0;
+        taskIdForeignKey = parcel.readLong();
     }
 
     public void setName(String name) {

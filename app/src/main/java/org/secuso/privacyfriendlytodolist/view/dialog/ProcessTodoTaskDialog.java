@@ -294,6 +294,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             case R.id.tv_new_task_listchoose:
                 menu.setHeaderTitle(R.string.select_list);
                 updateLists();
+                menu.add(Menu.NONE, -3,Menu.NONE, R.string.select_no_list);
                 for (TodoList tl : lists){
                     //+3 so that IDs are non-overlapping with prio-IDs
                     menu.add(Menu.NONE, tl.getId()+3, Menu.NONE, tl.getName());
@@ -315,8 +316,9 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             if (item.getItemId()-3 == tl.getId()){
                 this.selectedListID = tl.getId();
                 listSelector.setText(tl.getName());
-            } else if (item.getTitle() == getContext().getString(R.string.to_choose_list)){
+            } else if (item.getTitle() == getContext().getString(R.string.to_choose_list)||item.getTitle() == getContext().getString(R.string.select_no_list)){
                 this.selectedListID = -3;
+                listSelector.setText(item.getTitle());
             }
         }
 

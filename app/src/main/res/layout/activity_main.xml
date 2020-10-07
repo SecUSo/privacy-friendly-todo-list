@@ -69,22 +69,21 @@
         android:layout_gravity="start">
 
             <android.support.design.widget.NavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="top"
+                android:fitsSystemWindows="true"
+                app:headerLayout="@layout/nav_header"
+                app:menu="@menu/nav_content"
+                app:elevation="0pt"/>
+
+            <android.support.design.widget.NavigationView
                 android:id="@+id/nav_view_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 app:menu="@menu/nav_bottom"/>
-
-            <android.support.design.widget.NavigationView
-                android:id="@+id/nav_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:fitsSystemWindows="true"
-                android:layout_above="@id/nav_bottom"
-                app:headerLayout="@layout/nav_header"
-                app:menu="@menu/nav_content"
-                app:elevation="0pt"/>
 
         </RelativeLayout>
 

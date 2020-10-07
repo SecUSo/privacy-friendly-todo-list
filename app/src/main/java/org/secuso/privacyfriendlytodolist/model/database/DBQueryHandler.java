@@ -217,7 +217,7 @@ public class DBQueryHandler {
                         currentTask.setName(taskName);
                         currentTask.setDescription(taskDescription);
                         currentTask.setId(id);
-                        currentTask.setSubTasks(getSubTasksByTaskId(db, id));
+                        currentTask.setSubTasks(getSubTasksByTaskId(db, id,0));
                         currentTask.setProgress(progress);
                         currentTask.setDeadline(deadline);
                         currentTask.setPriority(TodoTask.Priority.fromInt(priority));
@@ -263,7 +263,7 @@ public class DBQueryHandler {
                         currentTask.setName(taskName);
                         currentTask.setDescription(taskDescription);
                         currentTask.setId(id);
-                        currentTask.setSubTasks(getSubTasksByTaskId(db, id));
+                        currentTask.setSubTasks(getSubTasksByTaskId(db, id,1));
                         currentTask.setProgress(progress);
                         currentTask.setDeadline(deadline);
                         currentTask.setPriority(TodoTask.Priority.fromInt(priority));
@@ -325,7 +325,7 @@ public class DBQueryHandler {
 
                     TodoTask currentTask = extractTodoTask(cursor);
                     currentTask.setListName(listName);
-                    currentTask.setSubTasks(getSubTasksByTaskId(db, currentTask.getId()));
+                    currentTask.setSubTasks(getSubTasksByTaskId(db, currentTask.getId(),0));
                     tasks.add(currentTask);
                 } while (cursor.moveToNext());
             }
@@ -337,10 +337,10 @@ public class DBQueryHandler {
         return tasks;
     }
 
-    private static ArrayList<TodoSubTask> getSubTasksByTaskId(SQLiteDatabase db, long taskId) {
+    private static ArrayList<TodoSubTask> getSubTasksByTaskId(SQLiteDatabase db, long taskId, int alsoTrashedOnes) {
 
         ArrayList<TodoSubTask> subTasks = new ArrayList<TodoSubTask>();
-        String where = TTodoSubTask.COLUMN_TASK_ID + " = " + taskId;
+        String where = TTodoSubTask.COLUMN_TASK_ID + " = " + taskId + " AND " + TTodoSubTask.COLUMN_TRASH + "<="+alsoTrashedOnes;
         Cursor cursor = db.query(TTodoSubTask.TABLE_NAME, null, where, null, null, null, null);
         cursor.moveToFirst();
 
