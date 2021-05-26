@@ -23,4 +23,4 @@ Privacy Friendly To-Do List does not use any permissions.
 Privacy Friendly To-Do List completely relinquishes advertisement.
 Many other free apps in the Google Play Store dazzle annoying advertising which also shortens battery life.
 
-Privacy Friendly Checkers is part of the Privacy Friendly Apps group developed by the research group SECUSO at Technische Universität Darmstadt. More information at: https://secuso.org/pfa
+Privacy Friendly Checkers is part of the Privacy Friendly Apps group developed by the research group SECUSO at Karlsruhe Institute of Technology. More information at: https://secuso.org/pfa
