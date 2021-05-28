@@ -8,7 +8,7 @@
     and SwipeDismissBehavior.
 -->
 
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -18,7 +18,7 @@
     tools:openDrawer="start">
 
 
-    <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,25 +26,25 @@
         android:id="@+id/clayout"
         tools:context=".view.MainActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:theme="@style/AppTheme.AppBarOverlay"
             xmlns:android="http://schemas.android.com/apk/res/android">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <include layout="@layout/content_main" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_new_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,11 +53,11 @@
             android:src="@mipmap/plus_white" />
 
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
     <!-- The navigation drawer -->
-    <android.support.design.widget.NavigationView
+    <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_drawer_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -68,7 +68,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start">
 
-            <android.support.design.widget.NavigationView
+            <com.google.android.material.navigation.NavigationView
                 android:id="@+id/nav_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -78,7 +78,7 @@
                 app:menu="@menu/nav_content"
                 app:elevation="0pt"/>
 
-            <android.support.design.widget.NavigationView
+            <com.google.android.material.navigation.NavigationView
                 android:id="@+id/nav_view_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
 
         </RelativeLayout>
 
-    </android.support.design.widget.NavigationView>
+    </com.google.android.material.navigation.NavigationView>
 
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
 

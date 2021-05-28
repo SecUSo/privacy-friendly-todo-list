@@ -18,34 +18,26 @@
 package org.secuso.privacyfriendlytodolist.model;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.view.MainActivity;
-import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

@@ -1,29 +1,21 @@
 package org.secuso.privacyfriendlytodolist.view.calendar;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter;
-import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by sebbi on 07.03.2018.

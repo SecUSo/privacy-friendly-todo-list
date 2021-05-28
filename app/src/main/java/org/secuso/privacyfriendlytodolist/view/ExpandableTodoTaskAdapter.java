@@ -20,8 +20,8 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-import android.support.design.widget.Snackbar;
+
+import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

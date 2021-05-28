@@ -19,12 +19,11 @@ package org.secuso.privacyfriendlytodolist.view;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
-import org.secuso.privacyfriendlytodolist.view.ExpandableListAdapter;
 
 import org.secuso.privacyfriendlytodolist.R;
 
