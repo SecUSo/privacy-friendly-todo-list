@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.preference.PreferenceManager
 import android.util.JsonReader
+import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.readDatabaseContent
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.readPath
@@ -17,22 +18,6 @@ import java.io.InputStreamReader
 class BackupRestorer : IBackupRestorer {
 
     @Throws(IOException::class)
-    private fun readFiles(reader: JsonReader, context: Context) {
-        reader.beginObject()
-        while (reader.hasNext()) {
-            val name = reader.nextName()
-            when (name) {
-                "sketches", "audio_notes" -> {
-                    val f = File(context.filesDir, name)
-                    readPath(reader, f)
-                }
-                else -> throw java.lang.RuntimeException("Unknown folder $name")
-            }
-        }
-        reader.endObject()
-    }
-
-    @Throws(IOException::class)
     private fun readDatabase(reader: JsonReader, context: Context) {
         reader.beginObject()
         val n1 = reader.nextName()
@@ -44,7 +29,7 @@ class BackupRestorer : IBackupRestorer {
         if (n2 != "content") {
             throw java.lang.RuntimeException("Unknown value $n2")
         }
-        val db = SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath("restoreDatabase"), null)
+        val db = DatabaseUtil.getSupportSQLiteOpenHelper(context, "restoreDatabase", version).writableDatabase
         db.beginTransaction()
         db.version = version
         readDatabaseContent(reader, db)
@@ -62,15 +47,16 @@ class BackupRestorer : IBackupRestorer {
     @Throws(IOException::class)
     private fun readPreferences(reader: JsonReader, context: Context) {
         reader.beginObject()
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        val pref = PreferenceManager.getDefaultSharedPreferences(context).edit()
         while (reader.hasNext()) {
-            val name = reader.nextName()
-            when (name) {
-                "settings_use_custom_font_size", "settings_del_notes" -> pref.edit().putBoolean(name, reader.nextBoolean()).apply()
-                "settings_font_size" -> pref.edit().putString(name, reader.nextString()).apply()
+            when (val name = reader.nextName()) {
+                "pref_pin_enabled", "notify", "pref_progress" -> pref.putBoolean(name, reader.nextBoolean())
+                "pref_pin" -> pref.putString(name, reader.nextString()) // TODO maybe leave this out
+                "pref_default_reminder_time" -> pref.putLong(name, reader.nextLong())
                 else -> throw java.lang.RuntimeException("Unknown preference $name")
             }
         }
+        pref.commit()
         reader.endObject()
     }
 
@@ -82,11 +68,9 @@ class BackupRestorer : IBackupRestorer {
             // START
             reader.beginObject()
             while (reader.hasNext()) {
-                val type = reader.nextName()
-                when (type) {
+                when (val type = reader.nextName()) {
                     "database" -> readDatabase(reader, context)
                     "preferences" -> readPreferences(reader, context)
-                    "files" -> readFiles(reader, context)
                     else -> throw RuntimeException("Can not parse type $type")
                 }
             }
