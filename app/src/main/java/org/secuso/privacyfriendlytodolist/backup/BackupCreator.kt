@@ -33,7 +33,7 @@ class BackupCreator : IBackupCreator {
                     // wait for pin
                     PinActivity.result = null
                     context.startActivity(Intent(context, PinActivity::class.java).apply {
-                        flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
+                        flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP or FLAG_ACTIVITY_CLEAR_TASK
                     })
 
                     while(PinActivity.result == null) {
