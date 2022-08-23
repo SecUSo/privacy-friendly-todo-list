@@ -164,7 +164,7 @@ public class ReminderService extends Service {
         alarmIntent.putExtra(ALARM_TRIGGERED, true);
 
         int alarmID = task.getId(); // use database id as unique alarm id
-        PendingIntent pendingAlarmIntent = PendingIntent.getService(this, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingAlarmIntent = PendingIntent.getService(this, alarmID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         Calendar calendar = Calendar.getInstance();
         long reminderTime = task.getReminderTime();
 
@@ -192,7 +192,7 @@ public class ReminderService extends Service {
 
         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, changedTask.getId(),
                 new Intent(this, ReminderService.class),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // check if alarm was set for this task
         if (alarmIntent != null) {
