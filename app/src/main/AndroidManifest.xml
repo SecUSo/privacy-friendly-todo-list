@@ -30,7 +30,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,6 +43,12 @@
             android:parentActivityName="view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".view.PinActivity"
+            android:label="@string/enter_pin"
+            android:autoRemoveFromRecents="true"
+            android:launchMode="singleTop"
+            android:exported="true"/>
         <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name"
@@ -72,12 +79,14 @@
 
         <service android:name=".model.ReminderService" />
 
-        <receiver android:name=".model.AutoStartReceiver">
+        <receiver android:name=".model.AutoStartReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".view.widget.TodoListWidget">
+        <receiver android:name=".view.widget.TodoListWidget"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -87,7 +96,8 @@
                 android:resource="@xml/todo_list_widget_info" />
         </receiver>
 
-        <activity android:name=".view.widget.TodoListWidgetConfigureActivity">
+        <activity android:name=".view.widget.TodoListWidgetConfigureActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

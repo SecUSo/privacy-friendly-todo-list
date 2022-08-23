@@ -67,6 +67,7 @@ import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
 import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.tutorial.PrefManager;
 import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity;
+import org.secuso.privacyfriendlytodolist.util.PinUtil;
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity;
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
@@ -344,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void authAndGuiInit(final Bundle savedInstanceState) {
 
-        if (hasPin() && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
+        if (PinUtil.hasPin(this) && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             final PinDialog dialog = new PinDialog(this);
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
@@ -371,18 +372,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             initActivity(savedInstanceState);
         }
-    }
-
-
-
-    private boolean hasPin() {
-        // pin activated?
-        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin_enabled", false))
-            return false;
-        // pin valid?
-        if (PreferenceManager.getDefaultSharedPreferences(this).getString("pref_pin", null) == null || PreferenceManager.getDefaultSharedPreferences(this).getString("pref_pin", "").length() < 4)
-            return false;
-        return true;
     }
 
     @Override
