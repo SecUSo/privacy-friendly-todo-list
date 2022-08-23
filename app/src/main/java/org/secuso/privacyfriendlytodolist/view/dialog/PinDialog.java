@@ -34,6 +34,7 @@ public class PinDialog extends FullScreenDialog {
     private PinCallback callback = null;
 
     private int wrongCounter = 0;
+    private boolean disallowReset = false;
 
     public PinDialog(final Context context) {
         super(context, R.layout.pin_dialog);
@@ -55,7 +56,7 @@ public class PinDialog extends FullScreenDialog {
                     textEditPin.setText("");
                     textEditPin.setActivated(true);
 
-                    if (wrongCounter >= 3) {
+                    if (wrongCounter >= 3 && !disallowReset) {
                         Button buttonResetApp = (Button)findViewById(R.id.bt_reset_application);
                         buttonResetApp.setVisibility(View.VISIBLE);
                     }
@@ -113,5 +114,6 @@ public class PinDialog extends FullScreenDialog {
     public void setCallback(PinCallback callback) {
         this.callback = callback;
     }
+    public void setDisallowReset(Boolean disallow) { this.disallowReset = disallow; }
 
 }
