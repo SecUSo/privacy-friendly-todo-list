@@ -24,3 +24,8 @@ Privacy Friendly To-Do List completely relinquishes advertisement.
 Many other free apps in the Google Play Store dazzle annoying advertising which also shortens battery life.
 
 Privacy Friendly Checkers is part of the Privacy Friendly Apps group developed by the research group SECUSO at Karlsruhe Institute of Technology. More information at: https://secuso.org/pfa
+
+You can reach us via
+Twitter - @SECUSOResearch https://twitter.com/secusoresearch
+Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
+Job opening - https://secuso.aifb.kit.edu/english/Job_Offers_1557.php

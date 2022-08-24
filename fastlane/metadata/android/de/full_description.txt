@@ -19,3 +19,8 @@ Die Privacy Friendly To-Do-Liste verzichtet vollständig auf Werbung.
 Viele andere kostenlose Apps im Google Play Store schalten lästige Werbung, die auch die Akkulaufzeit verkürzt.
 
 Die App gehört zur Gruppe der Privacy Friendly Apps, die von der Forschungsgruppe SECUSO am Karlsruher Institut für Technologie entwickelt werden. Mehr Informationen unter: https://secuso.org/pfa
+
+Kontaktieren Sie uns gerne über:
+Twitter - @SECUSOResearch https://twitter.com/secusoresearc)
+Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
+Offene Stellen - https://secuso.aifb.kit.edu/83_1557.php
