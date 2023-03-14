@@ -30,6 +30,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -39,10 +40,9 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
- *
+ * <p>
  * Creates and manages notifications based on the SDK version.
  * If SDK >= 26 NotificationChannels will be created.
- *
  */
 
 public class NotificationHelper extends ContextWrapper {
@@ -87,10 +87,11 @@ public class NotificationHelper extends ContextWrapper {
                 .setContentTitle(title)
                 .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
                 .setAutoCancel(true)
-                .setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);;
-        if(task.hasDeadline())
+                .setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500);
+        ;
+        if (task.hasDeadline())
             builder.setContentText(message);
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)){
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)) {
             Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             builder.setSound(uri);
         }
@@ -101,7 +102,7 @@ public class NotificationHelper extends ContextWrapper {
                         this,
                         0,
                         snooze,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         snooze.putExtra("snooze", 900000);
         snooze.putExtra("taskId", task.getId());
         Intent resultIntent = new Intent(this, MainActivity.class);
@@ -112,7 +113,7 @@ public class NotificationHelper extends ContextWrapper {
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         stackBuilder.addNextIntent(snooze);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         builder.addAction(R.drawable.snooze, "Snooze", pendingSnooze);
         builder.addAction(R.drawable.done, "Set done", resultPendingIntent);
@@ -120,7 +121,6 @@ public class NotificationHelper extends ContextWrapper {
 
         return builder;
     }
-
 
 
 }
