@@ -23,15 +23,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 /**
@@ -40,7 +35,6 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity;
  *
  * @author Sebastian Lutz
  * @version 1.0
- *
  */
 
 public class TodoListWidget extends AppWidgetProvider {
@@ -55,7 +49,6 @@ public class TodoListWidget extends AppWidgetProvider {
     }
 
 
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
@@ -67,7 +60,6 @@ public class TodoListWidget extends AppWidgetProvider {
     }
 
 
-
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
@@ -77,19 +69,16 @@ public class TodoListWidget extends AppWidgetProvider {
     }
 
 
-
     @Override
     public void onEnabled(Context context) {
         // Enter relevant functionality for when the first widget is created
     }
 
 
-
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
-
 
 
     @Override
@@ -99,14 +88,13 @@ public class TodoListWidget extends AppWidgetProvider {
 
 
     // returns a PendingIntent to update the widget's contents.
-    public PendingIntent refreshWidget(Context context, int appWidgetId){
+    public PendingIntent refreshWidget(Context context, int appWidgetId) {
         Intent update = new Intent(context, TodoListWidget.class);
         update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingUpdate = PendingIntent.getBroadcast(context, 0, update, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         return pendingUpdate;
     }
-
 
 
     public void updateHelper(Context context) {
@@ -118,19 +106,18 @@ public class TodoListWidget extends AppWidgetProvider {
     }
 
 
-
     public void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         if (views == null)
-        views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
+            views = new RemoteViews(context.getPackageName(), R.layout.todo_list_widget);
 
         //Intent to call the Service adding the tasks to the ListView
-        Intent intent = new Intent (context, ListViewWidgetService.class);
+        Intent intent = new Intent(context, ListViewWidgetService.class);
 
         //Intents to open the App by clicking on an elements of the LinearLayout
         Intent templateIntent = new Intent(context, MainActivity.class);
         templateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent templatePendingIntent = PendingIntent.getActivity(
-                context, 0, templateIntent, 0);
+                context, 0, templateIntent, PendingIntent.FLAG_IMMUTABLE);
 
         views.setTextViewText(R.id.widget_title, context.getString(R.string.app_name));
         views.setRemoteAdapter(R.id.listview_widget, intent);
