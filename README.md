@@ -35,6 +35,10 @@ Further development requires Android Studio, we recommend to use the latest vers
 Mininum SDK: 17
 Target SDK: 32 
 
+## Application Data Import & Export
+
+This application does not natively have a data import and export feature. Please install and use the [SECUSO Privacy Friendly Backup](https://github.com/SecUSo/privacy-friendly-backup) to backup and restore this application's data. This feature is required when a user migrates their data to a new phone.
+
 ## License
 
 Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright SECUSO (2022).
