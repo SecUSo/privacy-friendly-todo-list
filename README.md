@@ -35,6 +35,10 @@ Further development requires Android Studio, we recommend to use the latest vers
 Mininum SDK: 17
 Target SDK: 32 
 
+## Data Backup
+
+You can use the [Privacy Friendly Backup app](https://github.com/SecUSo/privacy-friendly-backup) to backup and restore this application's data. This can also be used to migrate your data to a new phone.
+
 ## License
 
 Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright SECUSO (2022).
