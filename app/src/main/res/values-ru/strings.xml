@@ -1,0 +1,250 @@
+<resources>
+    <!-- Application Specific -->
+    <string name="app_name">Список Задач</string>
+    <string name="app_name_long">Приватный Список Задач</string>
+    <string name="initial_alert">НАЖМИТЕ + ДЛЯ НОВОГО СПИСКА</string>
+    <string name="second_alert">ДОБАВИТЬ НОВУЮ ЗАДАЧУ ></string>
+
+    <!-- Menu -->
+    <string name="nav_header_app_name">Список задач</string>
+    <string name="toolbar_title_main">Список задач</string>
+    <string name="todos">Задачи/string>
+    <string name="home">Все задачи</string>
+    <string name="calendar_view">Календарь/string>
+    <string name="show_all_tasks">Показать все задачи</string>
+    <string name="settings">Настройки</string>
+    <string name="other">Другое</string>
+    <string name="help">Помощь</string>
+    <string name="menu_about">О нас</string>
+    <string name="search">Поиск</string>
+
+
+    <!-- Common UI strings -->
+    <string name="navigation_drawer_open">Открыть меню</string>
+    <string name="navigation_drawer_close">Закрыть меню</string>
+    <string name="name">Имя</string>
+    <string name="todo_list_description_hint">Описание</string>
+    <string name="ok">Готово</string>
+
+    <!-- Common model strings -->
+    <string name="select_option">Выберите настройку/string>
+    <string name="high_priority">Высокий</string>
+    <string name="medium_priority">Средний</string>
+    <string name="low_priority">Низкий</string>
+    <string name="unknown_priority">Неизвестный приоритет</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <!-- Help -->
+    <string name="help_overview_heading">Основная информация</string>
+    <string name="help_intro">Приватный Список Задач может быть использован для того, чтобы не забыть о важных задачах и для организации личного расписания.</string>
+    <string name="help_group_lists">Управление задачами</string>
+    <string name="help_todo_lists_title">Списки задач</string>
+    <string name="help_todo_lists">Списки задач — это группы задач, которые могут быть созданы используя кнопку + в панели инструментов. Эти списки появится в навигационном меню и могут быть открыты оттуда. Задачи внутри списков задач могут быть отмечены, отредактированы и удалены.</string>
+    <string name="help_subtasks_title">Подзадачи/string>
+    <string name="help_subtasks">Подзадачи могут быть прикреплены к задаче, чтобы показать маленькие шаги для её выполнения. Они могут быть созданы нажатием на задачу, при просмотре списка задач.</string>
+    <string name="help_deadline_reminder_title">Крайние сроки и напоминания/string>
+    <string name="help_deadline_reminder">Крайние сроки и напоминания могут быть созданы только для задач. Вы можете задать их либо при создании задачи, либо при её редактировании. Зажмите палец на задаче и подождите немного, чтобы отредактировать её.</string>
+    <string name="help_group_app">Настройки</string>
+    <string name="help_pin_title">Настройки</string>
+    <string name="help_pin">Откройте меню настроек чтобы включить защиту приложения ПИН-кодом. ПИН-код должен состоять как минимум из четырёх цифр. Вам потребуется вводить его при каждом запуске приложения.</string>
+    <string name="help_sound">Более того, вы можете выбрать, будет ли воспроизводиться звук уведомления при его получении.</string>
+    <string name="help_group_privacy">Информация, связанная с приватностью</string>
+    <string name="help_permissions_title">Разрешение RECEIVE_BOOT_COMPLETED</string>
+    <string name="help_permissions">Разрешение RECEIVE_BOOT_COMPLETED: Это разрешение позволяет приложению производить проверку сразу после включения устройства, если пользователь хочет быть оповещён о приближающихся крайних сроках задач. В приложении нет отслеживания, рекламы или других разрешений.</string>
+    <string name="help_widget">Дополнительно, это приложение предоставляет виджет, который вы можете добавить на домашний экран. Виджет покажет вам задачи, которые относятся к выбранному списку задач. Нажатие на задачу откроет для вас само приложение. Кнопка синхронизации может обновить показанный список задач.</string>
+
+
+    <!-- About -->
+    <string name="about">О нас</string>
+    <string name="version_number">Версия v%s</string>
+    <string name="about_author">Авторы:</string>
+    <string name="about_author_names" translatable="false">Sebastian Lutz, Dominik Püllen, Simon Breitfelder</string>
+    <string name="about_author_contributors">и люди из сообщества.</string>
+    <string name="about_affiliation">В партнёрстве с</string>
+    <string name="privacy_friendly">Это приложение относится к группе Приватных Приложений (Privacy Friendly Apps) разработанных Техническим университетом Дармштадта (Technische Universität Darmstadt). Исходный код лицензирован под лицензией Apache. Копирайт изображений принадлежит TU Darmstadt и Google Inc.</string>
+    <string name="more_info">Больше информации может быть найдено здесь:</string>
+    <string name="github" translatable="false"><a href="https://github.com/SecUSo/privacy-friendly-todo-list">Github-Repo</a></string>
+    <string name="url" translatable="false"><a href="https://www.secuso.org/pfa">SECUSO-Website</a></string>
+
+    <!-- To-Do list overview -->
+    <string name="done">готово</string>
+    <string name="no_todo_lists_available">Нет доступных списков задач.</string>
+    <string name="next_deadline_dd">Следующий крайний срок: %1$s</string>
+    <string name="no_next_deadline">Нет приближающегося крайнего срока</string>
+    <string name="add_list_feedback">%1$s добавлен</string>
+    <string name="edit_todo_list">Редактировать список дел</string>
+    <string name="delete_list">Удалить список дел</string>
+    <string name="delete_list_feedback">%1$s удалён</string>
+
+    <!-- Create/Edit To-Do list dialog -->
+    <string name="new_todo_list">Новый список дел</string>
+    <string name="list_name_must_not_be_empty">Пожалуйста, введите название списка.</string>
+    <string name="show_description">Показать описание</string>
+    <string name="no_description_available">Описания нет.</string>
+
+    <!-- To-Do tasks overview -->
+    <string name="empty_todo_list">Нет доступных задач</string>
+    <string name="all_tasks">Все задачи</string>
+    <string name="open_tasks">Открыть задачи</string>
+    <string name="completed_tasks">Выполненные задачи</string>
+    <string name="group_by_priority">Сортировать по приоритету</string>
+    <string name="sort_by_deadline">Сортировать по крайнему сроку</string>
+    <string name="add_subtask">Добавить подзадачу</string>
+
+    <!-- Create/Edit To-Do task dialog -->
+    <string name="new_todo_task">Новая задача</string>
+    <string name="edit_todo_task">Редактировать задачу</string>
+    <string name="deadline_dd">Крайний срок:</string>
+    <string name="no_deadline">Нет крайнего срока</string>
+    <string name="edit_task">Редактировать задачу</string>
+    <string name="delete_task">Удалить задачу</string>
+    <string name="task_removed">Задача перемещена в корзину</string>
+    <string name="deadline">Крайний срок</string>
+    <string name="reminder">Напоминание</string>
+    <string name="deadline_smaller_reminder">Крайний срок не может быть раньше чем время напоминания.</string>
+    <string name="set_deadline_before_reminder">Пожалуйста, укажите крайний срок до установки времени напоминания.</string>
+    <string name="progress_colon">Прогресс:</string>
+    <string name="priority_colon">Приоритет:</string>
+    <string name="zero_percent">0%</string>
+    <string name="select_priority">Выберите приоритет:</string>
+    <string name="select_list">Выберите список:</string>
+    <string name="new_todo_subtask">Новая подзадача</string>
+    <string name="todo_name_must_not_be_empty">Пожалуйста, введите название задачи.</string>
+    <string name="edit_subtask">Редактировать подзадачу</string>
+    <string name="delete_subtask">Удалить подзадачу</string>
+    <string name="subtask_removed">Подзадача успешно удалена.</string>
+    <string name="to_choose_list">Выберите список!</string>
+    <string name="click_to_choose">Нажмите, чтобы выбрать!</string>
+    <string name="list_colon">Список:</string>
+    <string name="work_subtask">Работа над этой подзадачей</string>
+    <string name="work_task">Работа над этой задачей</string>
+
+
+    <!-- Select reminder dialog -->
+    <string name="date">Дата</string>
+    <string name="time">Время</string>
+    <string name="no_reminder">Без напоминания</string>
+
+    <!-- Calendar view -->
+    <string name="calendar">Календарь</string>
+    <string name="no_deadline_today">В этом дне нет крайних сроков.</string>
+
+    <!-- PIN -->
+    <string name="enter_pin">Введите ПИН-код</string>
+    <string name="wrong_pin">Неверный ПИН-код</string>
+    <string name="reset_application_button">Сбросить приложение</string>
+    <string name="invalid_pin">Пожалуйста, введите ПИН-код с четырьмя цифрами.</string>
+    <string name="reset_application_msg">Вы действительно хотите сбросить приложение? Это удалит защиту ПИН-кодом и удалит все списки задач.</string>
+    <string name="add_pin">Введите ПИН-код чтобы войти в приложение. ПИН-код должен содержать как минимум 4 цифры.</string>
+
+    <!-- Settings -->
+    <string name="default_reminder_time">Стандартное время напоминания</string>
+    <string-array name="default_reminder_times_human">
+        <item>В день крайнего срока</item>
+        <item>За 0.5 дня до него</item>
+        <item>За 1 день до него</item>
+        <item>За 1.5 дня до него</item>
+        <item>За 2 дня до него</item>
+        <item>За 2.5 дня до него</item>
+        <item>За 3 дня до него</item>
+    </string-array>
+    <string name="pin_enabled">ПИН-код необходим при запуске</string>
+    <string name="set_pin">Установить ПИН-код</string>
+    <string name="auto_progress">Увеличение прогресса через подзадачи</string>
+    <string name="notify">Включить звук уведомлений</string>
+
+    <!-- Reminder service -->
+    <string name="deadline_approaching">Приближается крайний срок: %1$s</string>
+
+    <!-- Date and Time -->
+    <string name="sunday_abbr">ВС</string>
+    <string name="monday_abbr">ПН</string>
+    <string name="tuesday_abbr">ВТ</string>
+    <string name="wednesday_abbr">СР</string>
+    <string name="thursday_abbr">ЧТ</string>
+    <string name="friday_abbr">ПТ</string>
+    <string name="saturday_abbr">СБ</string>
+    <string name="january">Январь</string>
+    <string name="february">Февраль</string>
+    <string name="march">Март</string>
+    <string name="april">Апрель</string>
+    <string name="may">Май</string>
+    <string name="june">Июнь</string>
+    <string name="july">Июль</string>
+    <string name="august">Август</string>
+    <string name="september">Сентябрь</string>
+    <string name="october">Октябрь</string>
+    <string name="november">Ноябрь</string>
+    <string name="december">Декабрь</string>
+
+    <!-- Error messages -->
+    <string name="error_removing_subtask">Подзадача не может быть удалена из базы данных.</string>
+    <string name="error_removing_task">Задача не может быть удалена из базы данных.</string>
+    <string name="list_to_db_error">Произошла ошибка при создании нового списка задач.</string>
+    <string name="task_to_db_error">Произошла ошибка при добавлении новой задачи в базу данных.</string>
+    <string name="subtask_to_db_error">Произошла ошибка при добавлении новой подзадачи в базу данных.</string>
+
+    <!-- ### TUTORIAL DIALOG ### -->
+    <string name="tutorial">Руководство</string>
+
+    <string name="slide1_heading">Добро пожаловать!</string>
+    <string name="slide1_text">Добро пожаловать в ваш Приватный Список Задач! Это приложение не требует никаких разрешений.</string>
+
+    <string name="slide2_heading">Списки</string>
+    <string name="slide2_text">Вы можете управлять вашими задачами в добавленных списках задач.</string>
+
+    <string name="slide3_heading">Напоминания</string>
+    <string name="slide3_text">Вы можете указать крайние сроки и напоминания для ваших задач.</string>
+
+    <string name="slide4_heading">Всё имеет значение</string>
+    <string name="slide4_text">Вы можете добавить подзадачи и прогресс выполнения привязанной к ним задачи. Прогресс может устанавливаться вручную или автоматически, по числу выполненных подзадач.</string>
+
+    <string name="slide5_heading">Безопасность</string>
+    <string name="slide5_text">Вы можете добавить защиту ПИН-кодом в настройках.</string>
+
+    <string name="okay">Готово</string>
+    <string name="next">Далее</string>
+    <string name="skip">Пропустить</string>
+
+    <!-- ### RECYCLE ACTIVITY ### -->
+    <string name="toast_del">Корзина очищена.</string>
+    <string name="bin">Корзина</string>
+    <string name="bin_toolbar">Мусорная корзина</string>
+    <string name="btn_clear">Очистить корзину</string>
+    <string name="bin_empty">Корзина пуста</string>
+    <string name="restore">Восстановить задачу</string>
+
+
+    <!-- ### TodoTask ACTIVITY ### -->
+    <string name="todo_activity">Задачи</string>
+
+    <!-- ### Delete AlertDialog ### -->
+    <string name="alert_listdelete">Вы действительно хотите удалить этот список?</string>
+    <string name="alert_clear">Вы действительно хотите произвести очистку?</string>
+    <string name="alert_delete_yes">Удалить</string>
+    <string name="alert_delete_no">Отмена</string>
+
+    <!-- ### WIDGET ### -->
+    <string name="add_widget">Добавить виджет</string>
+    <string name="appwidget_text">ПРИМЕР</string>
+    <string name="configure">Настроить</string>
+    <string name="widget_list">Выберите список:</string>
+
+
+    <!-- ### Snackbar Messages ### -->
+    <string name="snack_check">Статус задачи изменён</string>
+    <string name="snack_undo">действие отменено</string>
+    <string name="snack_clear">Корзина была очищена</string>
+
+    <!-- ### EXIT ### -->
+    <string name="exit_app">Выйти из Списка Задач?</string>
+    <string name="exit_positive">Да</string>
+    <string name="exit_negative">Нет</string>
+    <string name="select_no_list">нет списка</string>
+
+    <!-- POMODORO INTEGRATION -->
+    <string name="permission_todo_name">Интеграция со Списком Задач</string>
+    <string name="permission_todo_description">Включает запуск приложения Список Задач с таймером привязанным к заданной задаче</string>
+
+</resources>
