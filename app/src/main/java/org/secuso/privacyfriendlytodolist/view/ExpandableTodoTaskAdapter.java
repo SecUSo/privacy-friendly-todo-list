@@ -656,8 +656,9 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
             double computedProgress = ((double)help/(double)t.getSubTasks().size())*100;
             progress = (int) computedProgress;
             t.setProgress(progress);
-        } else
-        t.setProgress(t.getProgress());
+        } else {
+            t.setProgress(t.getProgress());
+        }
     }
 
     public class GroupTaskViewHolder {
