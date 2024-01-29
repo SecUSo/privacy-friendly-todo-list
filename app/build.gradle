@@ -54,6 +54,7 @@ android {
     lint {
         checkReleaseBuilds false
     }
+    namespace 'org.secuso.privacyfriendlytodolist'
 
 }
 
