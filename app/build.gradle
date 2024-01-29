@@ -1,5 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
+}
 
 def pfaFile = rootProject.file('pfa.properties')
 
@@ -19,19 +23,20 @@ android {
         }
     }
 
-    compileSdkVersion 32
-
     defaultConfig {
         applicationId "org.secuso.privacyfriendlytodolist"
         minSdkVersion 17
-        targetSdkVersion 32
+        targetSdkVersion 34
+        compileSdk 34
         versionCode 9
         versionName "2.4.2"
+        multiDexEnabled true
     }
 
-    applicationVariants.all { variant ->
+    android.applicationVariants.configureEach { variant ->
         variant.outputs.all {
-            outputFileName = "pfa-todo-list-${variant.name}-v${variant.versionName}.apk"
+            def appName = "pfa-todo-list"
+            outputFileName = appName + "-${variant.name}-v${variant.versionName}.apk"
         }
     }
 
@@ -39,9 +44,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            lintOptions {
-                disable 'MissingTranslation'
-            }
         }
 
         debug {
@@ -52,8 +54,22 @@ android {
         }
     }
     lint {
-        checkReleaseBuilds false
+        warning 'MissingTranslation'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+    namespace 'org.secuso.privacyfriendlytodolist'
 
 }
 
@@ -61,19 +77,20 @@ dependencies {
     implementation project(path: ':backup-api')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.13.2'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation "androidx.multidex:multidex:2.0.1"
 
-    def work_version = "2.7.1"
+    def work_version = "2.9.0"
     implementation "androidx.work:work-runtime:$work_version"
     implementation "androidx.work:work-runtime-ktx:$work_version"
     androidTestImplementation "androidx.work:work-testing:$work_version"
 
-    implementation "androidx.core:core-ktx:1.8.0"
+    implementation "androidx.core:core-ktx:1.12.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    implementation "androidx.sqlite:sqlite-ktx:2.2.0"
+    implementation "androidx.sqlite:sqlite-ktx:2.4.0"
 }
 repositories {
     mavenCentral()

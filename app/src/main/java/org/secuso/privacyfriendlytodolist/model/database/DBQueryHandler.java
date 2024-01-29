@@ -125,17 +125,17 @@ public class DBQueryHandler {
 
     private static TodoTask extractTodoTask(Cursor cursor) {
 
-        int id = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_ID));
-        int listPosition = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_LIST_POSITION));
-        String title = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_NAME));
-        String description = cursor.getString(cursor.getColumnIndex(TTodoTask.COLUMN_DESCRIPTION));
-        boolean done = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DONE)) > 0;
-        int progress = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
-        int deadline = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
-        int reminderTime = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
-        int priority = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
-        int listID = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_TODO_LIST_ID));
-        boolean inTrash = cursor.getInt(cursor.getColumnIndex(TTodoTask.COLUMN_TRASH)) > 0;
+        int id = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_ID));
+        int listPosition = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_LIST_POSITION));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_NAME));
+        String description = cursor.getString(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_DESCRIPTION));
+        boolean done = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_DONE)) > 0;
+        int progress = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_PROGRESS));
+        int deadline = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_DEADLINE));
+        int reminderTime = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
+        int priority = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_PRIORITY));
+        int listID = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_TODO_LIST_ID));
+        boolean inTrash = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoTask.COLUMN_TRASH)) > 0;
 
         TodoTask task = new TodoTask();
         task.setName(title);
@@ -201,16 +201,16 @@ public class DBQueryHandler {
             try {
                 if (c.moveToFirst()) {
                     do {
-                        int id = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_ID));
-                        int listId = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_TODO_LIST_ID));
-                        String taskName = c.getString(c.getColumnIndex(TTodoTask.COLUMN_NAME));
-                        String taskDescription = c.getString(c.getColumnIndex(TTodoTask.COLUMN_DESCRIPTION));
-                        int progress = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
-                        long deadline = c.getLong(c.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
-                        int priority = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
-                        boolean done = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_DONE)) > 0;
-                        int reminderTime = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
-                        boolean inTrash = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_TRASH)) > 0;
+                        int id = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_ID));
+                        int listId = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_TODO_LIST_ID));
+                        String taskName = c.getString(c.getColumnIndexOrThrow(TTodoTask.COLUMN_NAME));
+                        String taskDescription = c.getString(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DESCRIPTION));
+                        int progress = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_PROGRESS));
+                        long deadline = c.getLong(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DEADLINE));
+                        int priority = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_PRIORITY));
+                        boolean done = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DONE)) > 0;
+                        int reminderTime = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
+                        boolean inTrash = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_TRASH)) > 0;
 
 
                         TodoTask currentTask = new TodoTask();
@@ -247,16 +247,16 @@ public class DBQueryHandler {
             try {
                 if (c.moveToFirst()) {
                     do {
-                        int id = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_ID));
-                        int listId = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_TODO_LIST_ID));
-                        String taskName = c.getString(c.getColumnIndex(TTodoTask.COLUMN_NAME));
-                        String taskDescription = c.getString(c.getColumnIndex(TTodoTask.COLUMN_DESCRIPTION));
-                        int progress = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_PROGRESS));
-                        long deadline = c.getLong(c.getColumnIndex(TTodoTask.COLUMN_DEADLINE));
-                        int priority = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_PRIORITY));
-                        boolean done = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_DONE)) > 0;
-                        int reminderTime = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
-                        boolean inTrash = c.getInt(c.getColumnIndex(TTodoTask.COLUMN_TRASH)) > 0;
+                        int id = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_ID));
+                        int listId = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_TODO_LIST_ID));
+                        String taskName = c.getString(c.getColumnIndexOrThrow(TTodoTask.COLUMN_NAME));
+                        String taskDescription = c.getString(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DESCRIPTION));
+                        int progress = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_PROGRESS));
+                        long deadline = c.getLong(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DEADLINE));
+                        int priority = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_PRIORITY));
+                        boolean done = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DONE)) > 0;
+                        int reminderTime = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_DEADLINE_WARNING_TIME));
+                        boolean inTrash = c.getInt(c.getColumnIndexOrThrow(TTodoTask.COLUMN_TRASH)) > 0;
 
 
                         TodoTask currentTask = new TodoTask();
@@ -294,8 +294,8 @@ public class DBQueryHandler {
             try {
                 if (cursor.moveToFirst()) {
                     do {
-                        int id = cursor.getInt(cursor.getColumnIndex(TTodoList.COLUMN_ID));
-                        String listName = cursor.getString(cursor.getColumnIndex(TTodoList.COLUMN_NAME));
+                        int id = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoList.COLUMN_ID));
+                        String listName = cursor.getString(cursor.getColumnIndexOrThrow(TTodoList.COLUMN_NAME));
 
                         TodoList currentList = new TodoList();
                         currentList.setName(listName);
@@ -347,10 +347,10 @@ public class DBQueryHandler {
         try {
             if(cursor.moveToFirst()) {
                 do {
-                    int id = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_ID));
-                    String title = cursor.getString(cursor.getColumnIndex(TTodoSubTask.COLUMN_TITLE));
-                    boolean done = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_DONE)) > 0;
-                    boolean trash = cursor.getInt(cursor.getColumnIndex(TTodoSubTask.COLUMN_TRASH)) > 0;
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoSubTask.COLUMN_ID));
+                    String title = cursor.getString(cursor.getColumnIndexOrThrow(TTodoSubTask.COLUMN_TITLE));
+                    boolean done = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoSubTask.COLUMN_DONE)) > 0;
+                    boolean trash = cursor.getInt(cursor.getColumnIndexOrThrow(TTodoSubTask.COLUMN_TRASH)) > 0;
 
                     TodoSubTask currentSubTask = new TodoSubTask();
                     currentSubTask.setId(id);

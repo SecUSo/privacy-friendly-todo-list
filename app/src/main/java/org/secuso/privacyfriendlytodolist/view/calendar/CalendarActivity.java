@@ -17,17 +17,19 @@
 
 package org.secuso.privacyfriendlytodolist.view.calendar;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
@@ -45,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Sebastian Lutz on 31.01.2018.
- *
+ * <p>
  * This Activity creates a calendar using CalendarGripAdapter to show deadlines of a task.
  */
 
@@ -68,7 +70,7 @@ public class CalendarActivity extends AppCompatActivity {
 
         setContentView(R.layout.fragment_calendar);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_calendar);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_calendar);
 
         if (toolbar != null) {
             toolbar.setTitle(R.string.calendar);
@@ -115,9 +117,9 @@ public class CalendarActivity extends AppCompatActivity {
                 //todaysTasks.clear();
                 updateDeadlines();
                 Date selectedDate = calendarGridAdapter.getItem(position);
-                String key = absSecondsToDate(selectedDate.getTime()/1000);
+                String key = absSecondsToDate(selectedDate.getTime() / 1000);
                 todaysTasks = tasksPerDay.get(key);
-                if(todaysTasks == null) {
+                if (todaysTasks == null) {
                     Toast.makeText(getApplicationContext(), getString(R.string.no_deadline_today), Toast.LENGTH_SHORT).show();
                 } else {
                     showDeadlineTasks(todaysTasks);
@@ -128,19 +130,18 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
 
-
-    private void updateDeadlines(){
+    private void updateDeadlines() {
         ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
         ArrayList<TodoTask> todoTasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
         tasksPerDay.clear();
         //for (TodoList list : todoLists){
-            for (TodoTask task : todoTasks){
-                long deadline = task.getDeadline();
-                String key = absSecondsToDate(deadline);
-                if (!tasksPerDay.containsKey(key)){
-                    tasksPerDay.put(key, new ArrayList<TodoTask>());
-                }
-                tasksPerDay.get(key).add(task);
+        for (TodoTask task : todoTasks) {
+            long deadline = task.getDeadline();
+            String key = absSecondsToDate(deadline);
+            if (!tasksPerDay.containsKey(key)) {
+                tasksPerDay.put(key, new ArrayList<TodoTask>());
+            }
+            tasksPerDay.get(key).add(task);
             //}
         }
         calendarGridAdapter.setTodoTasks(tasksPerDay);
@@ -154,7 +155,7 @@ public class CalendarActivity extends AppCompatActivity {
         return DateFormat.format(Helper.DATE_FORMAT, cal).toString();
     }
 
-    private void showDeadlineTasks(ArrayList<TodoTask> tasks){
+    private void showDeadlineTasks(ArrayList<TodoTask> tasks) {
         Intent intent = new Intent(this, CalendarPopup.class);
         Bundle b = new Bundle();
         b.putParcelableArrayList("Deadlines", tasks);

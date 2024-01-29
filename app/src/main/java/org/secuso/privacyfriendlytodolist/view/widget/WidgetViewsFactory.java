@@ -17,6 +17,7 @@
 
 package org.secuso.privacyfriendlytodolist.view.widget;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ClipData.Item;
@@ -109,6 +110,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
 
 
+    @SuppressLint("ResourceType")
     @Override
     public RemoteViews getViewAt(int position) {
         if (position == AdapterView.INVALID_POSITION){

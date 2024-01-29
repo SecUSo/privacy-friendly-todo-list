@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.secuso.privacyfriendlytodolist">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"/>
     <uses-permission android:name="org.secuso.privacyfriendlyproductivitytimer.TODO_RE_PERMISSION"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Permission for TodoReceiver: -->
     <permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION"
@@ -123,6 +123,10 @@
                     android:name="org.secuso.privacyfriendlybackup.api.pfa.PFAAuthService" />
             </intent-filter>
         </service>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
     </application>
 
 </manifest>
