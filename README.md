@@ -20,7 +20,7 @@ This application allows to create lists of tasks which can be individually manag
 
 The application requires the permission "RECEIVE_ON_BOOT_COMPLETE" in order to start a background service which triggers notifications. 
 
-This app belongs to the group of Privacy Friendly Apps developed by the Technische Universität Darmstadt. 
+This app belongs to the group of Privacy Friendly Apps developed by the Karlsruhe Institute of Technology. 
 
 ## Motivation
 
@@ -41,7 +41,7 @@ You can use the [Privacy Friendly Backup app](https://github.com/SecUSo/privacy-
 
 ## License
 
-Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright SECUSO (2022).
+Privacy Friendly App Todo is licensed under the Apache License Version 2.0.  The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright [SECUSO](www.secuso.org) (2022).
 
 ## Contributors
 
