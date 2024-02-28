@@ -25,16 +25,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The configuration screen for the {@link TodoListWidget TodoListWidget} AppWidget.
@@ -48,7 +48,6 @@ public class TodoListWidgetConfigureActivity extends Activity {
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Spinner spinner;
     private String selected;
-    private DatabaseHelper dbHelper;
     private ArrayAdapter<String> lists;
 
 
@@ -154,12 +153,12 @@ public class TodoListWidgetConfigureActivity extends Activity {
 
     //updates the lists array and prepare adapter for spinner
     public void updateLists(){
-        dbHelper = DatabaseHelper.getInstance(this);
-        ArrayList<TodoList> tl = new ArrayList<TodoList>();
-        tl = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        ArrayList<String> help = new ArrayList<>();
-        for (int i=0; i<tl.size(); i++){
-            help.add(tl.get(i).getName());
+        ModelServices modelServices = Model.getServices(this);
+        List<TodoList> todoLists = new ArrayList<TodoList>();
+        todoLists = modelServices.getAllToDoLists();
+        List<String> help = new ArrayList<>();
+        for (TodoList todoList : todoLists) {
+            help.add(todoList.getName());
         }
         lists = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, help);
         lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

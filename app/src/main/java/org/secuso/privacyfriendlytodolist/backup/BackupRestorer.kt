@@ -7,7 +7,7 @@ import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.readDatabaseContent
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupRestorer
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper.DATABASE_NAME
+import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -37,7 +37,7 @@ class BackupRestorer : IBackupRestorer {
 
         // copy file to correct location
         val databaseFile = context.getDatabasePath("restoreDatabase")
-        copyFile(databaseFile, context.getDatabasePath(DATABASE_NAME))
+        copyFile(databaseFile, context.getDatabasePath(TodoListDatabase.DATABASE_NAME))
         databaseFile.delete()
     }
 

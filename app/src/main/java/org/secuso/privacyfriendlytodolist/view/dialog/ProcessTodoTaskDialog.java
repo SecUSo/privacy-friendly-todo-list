@@ -19,7 +19,6 @@ package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,10 +32,10 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private TodoTask.Priority taskPriority = null;
     private int selectedListID;
     private List<TodoList> lists = new ArrayList<>();
-    private DatabaseHelper dbHelper;
+    private ModelServices modelServices;
     private int taskProgress = 0;
     private String name, description;
     private long deadline = -1;
@@ -79,7 +78,8 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         super(context, R.layout.add_task_dialog);
 
         initGui();
-        task = new TodoTask();
+        modelServices = Model.getServices(context);
+        task = modelServices.createTodoTask();
         task.setCreated();
         //task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
@@ -89,6 +89,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         super(context, R.layout.add_task_dialog);
 
         initGui();
+        modelServices = Model.getServices(context);
         task.setChanged();
         //task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
         deadline = task.getDeadline();
@@ -283,7 +284,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             case R.id.tv_new_task_priority:
                 menu.setHeaderTitle(R.string.select_priority);
                 for (TodoTask.Priority prio : TodoTask.Priority.values()) {
-                    menu.add(Menu.NONE, prio.getValue(), Menu.NONE, Helper.priority2String(getContext(), prio));
+                    menu.add(Menu.NONE, prio.ordinal(), Menu.NONE, Helper.priority2String(getContext(), prio));
 
                 }
                 break;
@@ -325,8 +326,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     //updates the lists array
     public void updateLists(){
-        dbHelper = DatabaseHelper.getInstance(getContext());
-        lists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
+        lists = modelServices.getAllToDoLists();
     }
 
 
@@ -368,7 +368,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     }
 
     private void autoProgress() {
-        int size = task.getSubTasks().size();
+        int size = task.getSubtasks().size();
         int i = 5;
         int j = 3;
         double computedProgress = ((double)j/(double)i)*100;

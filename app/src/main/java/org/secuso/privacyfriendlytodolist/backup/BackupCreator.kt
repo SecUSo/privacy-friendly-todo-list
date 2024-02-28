@@ -3,8 +3,6 @@ package org.secuso.privacyfriendlytodolist.backup
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.*
-import android.database.sqlite.SQLiteDatabase
-import android.os.Looper
 import android.preference.PreferenceManager
 import android.util.JsonWriter
 import android.util.Log
@@ -15,10 +13,9 @@ import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.writeDatabase
 import org.secuso.privacyfriendlybackup.api.backup.PreferenceUtil.writePreferences
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupCreator
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper.DATABASE_NAME
+import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
 import org.secuso.privacyfriendlytodolist.view.PinActivity
-import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.nio.charset.Charset
@@ -61,7 +58,7 @@ class BackupCreator : IBackupCreator {
 
         try {
             writer.beginObject()
-            val dataBase = DatabaseUtil.getSupportSQLiteOpenHelper(context, DATABASE_NAME).readableDatabase
+            val dataBase = DatabaseUtil.getSupportSQLiteOpenHelper(context, TodoListDatabase.DATABASE_NAME).readableDatabase
             writer.name("database")
             writeDatabase(writer, dataBase)
             dataBase.close()

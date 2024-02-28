@@ -29,18 +29,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.TaskStackBuilder;
-import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -62,10 +58,11 @@ import java.util.concurrent.TimeUnit;
 
 public class ReminderService extends Service {
 
-    private DatabaseHelper dbHelper;
+    private ModelServices modelServices;
+
     private static final String TAG = ReminderService.class.getSimpleName();
 
-    public static final String ALARM_TRIGGERED = "ALARM_TRIGGERD";
+    public static final String ALARM_TRIGGERED = "ALARM_TRIGGERED";
 
     private boolean alreadyRunning = false;
     private final IBinder mBinder = new ReminderServiceBinder();
@@ -90,17 +87,11 @@ public class ReminderService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        dbHelper.close();
-    }
-
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Log.i(TAG, "onStartCommand()");
 
-        dbHelper = DatabaseHelper.getInstance(this);
+        modelServices = Model.getServices(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = AlarmManagerHolder.getAlarmManager(this);
         helper = new NotificationHelper(this);
@@ -115,7 +106,7 @@ public class ReminderService extends Service {
             handleAlarm(task);
 
             // get next alarm
-            TodoTask nextDueTask = DBQueryHandler.getNextDueTask(dbHelper.getReadableDatabase(), Helper.getCurrentTimestamp());
+            TodoTask nextDueTask = modelServices.getNextDueTask(Helper.getCurrentTimestamp());
             if(nextDueTask != null)
                 setAlarmForTask(nextDueTask);
         } else {
@@ -145,7 +136,7 @@ public class ReminderService extends Service {
     public void reloadAlarmsFromDB() {
         mNotificationManager.cancelAll(); // cancel all alarms
 
-        ArrayList<TodoTask> tasksToRemind = DBQueryHandler.getTasksToRemind(dbHelper.getReadableDatabase(), Helper.getCurrentTimestamp(), null);
+        List<TodoTask> tasksToRemind = modelServices.getTasksToRemind(Helper.getCurrentTimestamp(), null);
 
         // set alarms
         for (TodoTask currentTask : tasksToRemind) {

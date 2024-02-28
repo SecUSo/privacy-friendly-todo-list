@@ -39,15 +39,17 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
-import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
+import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubTaskDialog;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
+import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTextListener {
 
@@ -68,7 +70,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
 
     private TodoList currentList;
-    private ArrayList<TodoTask> todoTasks = new ArrayList<>();
+    private List<TodoTask> todoTasks = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -164,7 +166,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 
                     int childPosition = ExpandableListView.getPackedPositionChild(id);
-                    taskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+                    taskAdapter.setLongClickedSubtaskByPos(groupPosition, childPosition);
                 } else {
                     taskAdapter.setLongClickedTaskByPos(groupPosition);
                 }
@@ -229,13 +231,13 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        final Tuple<TodoTask, TodoSubTask> longClickedTodo = taskAdapter.getLongClickedTodo();
+        final Tuple<TodoTask, TodoSubtask> longClickedTodo = taskAdapter.getLongClickedTodo();
         int affectedRows;
 
         switch(item.getItemId()) {
             case R.id.change_subtask:
 
-                ProcessTodoSubTaskDialog dialog = new ProcessTodoSubTaskDialog(containingActivity, longClickedTodo.getRight());
+                ProcessTodoSubtaskDialog dialog = new ProcessTodoSubtaskDialog(containingActivity, longClickedTodo.getRight());
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
@@ -249,8 +251,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 break;
 
             case R.id.delete_subtask:
-                affectedRows = DBQueryHandler.putSubtaskInTrash(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getRight());
-                longClickedTodo.getLeft().getSubTasks().remove(longClickedTodo.getRight());
+                affectedRows = containingActivity.getModelServices().setSubtaskInTrash(longClickedTodo.getRight(), true);
+                longClickedTodo.getLeft().getSubtasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
                 else
@@ -271,7 +273,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                affectedRows = DBQueryHandler.putTaskInTrash(containingActivity.getDbHelper().getWritableDatabase(), longClickedTodo.getLeft());
+                affectedRows = containingActivity.getModelServices().setTaskInTrash(longClickedTodo.getLeft(), true);
                 todoTasks.remove(longClickedTodo.getLeft());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
@@ -405,9 +407,9 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 containingActivity.notifyReminderService(currentTask);
 
             // write subtasks to the database
-            for(TodoSubTask subTask : currentTask.getSubTasks()) {
-                subTask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
-                containingActivity.sendToDatabase(subTask);
+            for(TodoSubtask subtask : currentTask.getSubtasks()) {
+                subtask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
+                containingActivity.sendToDatabase(subtask);
             }
         }
 

@@ -34,6 +34,7 @@ import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewHolder>  {
 
@@ -41,12 +42,12 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     private MainActivity contextActivity;
     private SharedPreferences prefs;
 
-    private ArrayList<TodoList> allLists;
+    private List<TodoList> allLists;
     private String queryString;
-    private ArrayList<TodoList> filteredLists;
+    private List<TodoList> filteredLists;
     private int position;
 
-    public TodoListAdapter(Activity ac, ArrayList<TodoList> data) {
+    public TodoListAdapter(Activity ac, List<TodoList> data) {
         this.queryString = null;
         updateList(data);
         this.contextActivity = (MainActivity) ac;
@@ -108,7 +109,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
         super.onViewRecycled(holder);
     }
 
-    public void updateList(ArrayList<TodoList> todoLists) {
+    public void updateList(List<TodoList> todoLists) {
         this.allLists = todoLists;
         applyFilter();
     }
@@ -120,7 +121,7 @@ public class TodoListAdapter extends  RecyclerView.Adapter<TodoListAdapter.ViewH
     }
 
     private void applyFilter() {
-        this.filteredLists = new ArrayList<TodoList>(this.allLists.size());
+        this.filteredLists = new ArrayList<>(this.allLists.size());
         for (int i = 0; i < this.allLists.size(); i++) {
             if (this.allLists.get(i).checkQueryMatch(this.queryString)) {
                 this.filteredLists.add(this.allLists.get(i));

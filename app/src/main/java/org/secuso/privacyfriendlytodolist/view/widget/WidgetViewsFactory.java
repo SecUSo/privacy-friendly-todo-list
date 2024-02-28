@@ -18,31 +18,21 @@
 package org.secuso.privacyfriendlytodolist.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.Binder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
-import org.secuso.privacyfriendlytodolist.view.MainActivity;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sebastian Lutz on 15.02.2018.
@@ -54,10 +44,10 @@ import java.util.ArrayList;
 
 public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private ArrayList<TodoList> lists;
+    private List<TodoList> lists;
     private Context mContext;
     private static final int ID_CONSTANT = 0x0101010;
-    private ArrayList<TodoTask> listTasks;
+    private List<TodoTask> listTasks;
     private String listChosen;
     private static Context c;
     private static int id;
@@ -66,15 +56,15 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 
     public WidgetViewsFactory(Context context, Intent intent){
         mContext = context;
-        lists = new ArrayList<TodoList>();
-        listTasks = new ArrayList<TodoTask>();
+        lists = new ArrayList<>();
+        listTasks = new ArrayList<>();
     }
 
 
     @Override
     public void onCreate() {
         listChosen = getListName(c, id);
-            lists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+            lists = Model.getServices(mContext).getAllToDoLists();
             for (int i=0; i < lists.size(); i++){
                 if (lists.get(i).getName().equals(this.listChosen))
                     listTasks = lists.get(i).getTasks();
@@ -94,7 +84,7 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
     @Override
     public void onDataSetChanged() {
         listChosen = getListName(c, id);
-            lists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mContext).getReadableDatabase());
+            lists = Model.getServices(mContext).getAllToDoLists();
             for (int i=0; i < lists.size(); i++){
                 if (lists.get(i).getName().equals(this.listChosen))
                     listTasks = lists.get(i).getTasks();
@@ -120,10 +110,10 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         TodoTask todo = listTasks.get(position);
 
         RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.widget_tasks);
-        if (todo.getDone()){
+        if (todo.isDone()){
             itemView.setViewVisibility(R.id.widget_done, View.VISIBLE);
             itemView.setViewVisibility(R.id.widget_undone, View.INVISIBLE);
-        } else if (!todo.getDone()) {
+        } else if (!todo.isDone()) {
             itemView.setViewVisibility(R.id.widget_done, View.INVISIBLE);
             itemView.setViewVisibility(R.id.widget_undone, View.VISIBLE);
         }

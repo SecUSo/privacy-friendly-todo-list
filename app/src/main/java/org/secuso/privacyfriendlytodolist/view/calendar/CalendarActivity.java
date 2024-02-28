@@ -33,16 +33,16 @@ import androidx.core.content.ContextCompat;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,7 +57,6 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarGridAdapter calendarGridAdapter;
     protected MainActivity containerActivity;
     private HashMap<String, ArrayList<TodoTask>> tasksPerDay = new HashMap<>();
-    private DatabaseHelper dbHelper;
     private ArrayList<TodoTask> todaysTasks;
 
   /*  private ExpandableListView expandableListView;
@@ -90,7 +89,6 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView.setGridAdapter(calendarGridAdapter);
         //expandableListView = (ExpandableListView) findViewById(R.id.exlv_tasks);
 
-        dbHelper = DatabaseHelper.getInstance(this);
         todaysTasks = new ArrayList<>();
 
         updateDeadlines();
@@ -131,8 +129,8 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     private void updateDeadlines() {
-        ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        ArrayList<TodoTask> todoTasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
+        List<TodoList> todoLists = Model.getServices(this).getAllToDoLists();
+        List<TodoTask> todoTasks = Model.getServices(this).getAllToDoTasks();
         tasksPerDay.clear();
         //for (TodoList list : todoLists){
         for (TodoTask task : todoTasks) {

@@ -15,28 +15,17 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.model;
+package org.secuso.privacyfriendlytodolist.model.database.entities
 
-public interface BaseTodo {
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-    void setId(int id);
-
-    int getId();
-
-    void setName(String name);
-
-    String getName();
-
-    void setDescription(String description);
-
-    String getDescription();
-
-    void setCreated();
-
-    void setChanged();
-
-    void setChangedFromPomodoro();
-
-    void setUnchanged();
-
-}
+@Entity(tableName = "todo_subtask")
+data class TodoSubtaskData(
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0,
+    var name: String? = null,
+    var taskId: Int = 0,
+    var isDone: Boolean = false,
+    var isInTrash: Boolean = false
+)

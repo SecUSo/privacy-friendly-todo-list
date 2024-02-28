@@ -15,26 +15,23 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.model.database.tables;
+package org.secuso.privacyfriendlytodolist.model;
 
-/**
- * Created by Sebastian Lutz on 19.12.2017.
- *
- * This class is responsible to define sql table of To-Do lists.
- *
- */
+import android.os.Parcelable;
 
-public final class TTodoList {
+public interface TodoSubtask extends BaseTodo, Parcelable {
 
-	private static final String TAG = TTodoList.class.getSimpleName();
+    void setTaskId(int taskIdForeignKey);
 
-	// columns + tablename
-	public static final String TABLE_NAME = "todo_list";
-	public static final String COLUMN_ID = "_id";
-	public static final String COLUMN_NAME = "name";
+    int getTaskId();
 
-	// sql table creation
-	public static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID +
-	 	" INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " TEXT NOT NULL);";
+    void setDone(boolean isDone);
 
+    boolean isDone();
+
+    void setInTrash(boolean isInTrash);
+
+    boolean isInTrash();
+
+    boolean checkQueryMatch(String query);
 }

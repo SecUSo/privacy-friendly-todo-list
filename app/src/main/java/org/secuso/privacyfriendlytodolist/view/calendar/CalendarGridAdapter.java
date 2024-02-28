@@ -102,7 +102,7 @@ public class CalendarGridAdapter extends ArrayAdapter<Date>{
         if(tasksToday != null) {
             Drawable border = ContextCompat.getDrawable(getContext(), R.drawable.border_green);
             for(TodoTask t : tasksToday) {
-                if(!t.getDone())
+                if(!t.isDone())
                     border = ContextCompat.getDrawable(getContext(), R.drawable.border_blue);
             }
             dayViewHolder.dayText.setBackground(border);

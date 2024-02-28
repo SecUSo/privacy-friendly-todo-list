@@ -37,11 +37,11 @@ import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
+import org.secuso.privacyfriendlytodolist.model.Model;
+import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ import java.util.List;
  */
 public class RecyclerActivity extends AppCompatActivity{
 
-    private DatabaseHelper dbhelper;
+    private ModelServices modelServices;
     private TextView tv;
     private ExpandableListView lv;
     RelativeLayout rl;
@@ -78,14 +78,14 @@ public class RecyclerActivity extends AppCompatActivity{
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        final Tuple<TodoTask, TodoSubTask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
+        final Tuple<TodoTask, TodoSubtask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
 
        switch(item.getItemId()){
            case R.id.restore:
-               DBQueryHandler.recoverTasks(dbhelper.getWritableDatabase(), longClickedTodo.getLeft());
-               ArrayList<TodoSubTask> subTasks = longClickedTodo.getLeft().getSubTasks();
-               for (TodoSubTask ts : subTasks){
-                   DBQueryHandler.recoverSubtasks(dbhelper.getWritableDatabase(), ts);
+               modelServices.setTaskInTrash(longClickedTodo.getLeft(), false);
+               List<TodoSubtask> subtasks = longClickedTodo.getLeft().getSubtasks();
+               for (TodoSubtask ts : subtasks){
+                   modelServices.setSubtaskInTrash(ts, false);
                }
                updateAdapter();
                break;
@@ -106,9 +106,9 @@ public class RecyclerActivity extends AppCompatActivity{
                 finish();
                 return true;
             case R.id.btn_clear:
-                dbhelper = DatabaseHelper.getInstance(this);
-                final ArrayList<TodoTask> tasks;
-                tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
+                modelServices = Model.getServices(this);
+                final List<TodoTask> tasks;
+                tasks = modelServices.getBin();
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                 builder1.setMessage(R.string.alert_clear);
                 builder1.setCancelable(true);
@@ -116,8 +116,8 @@ public class RecyclerActivity extends AppCompatActivity{
                 builder1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for ( TodoTask t : tasks){
-                            DBQueryHandler.deleteTodoTask(DatabaseHelper.getInstance(getBaseContext()).getReadableDatabase(), t);
+                        for (TodoTask t : tasks) {
+                            modelServices.deleteTodoTask(t);
                         }
                         dialog.cancel();
                         updateAdapter();
@@ -186,9 +186,9 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     public void updateAdapter() {
-        dbhelper = DatabaseHelper.getInstance(this);
-        ArrayList<TodoTask> tasks;
-        tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
+        modelServices = Model.getServices(this);
+        List<TodoTask> tasks;
+        tasks = modelServices.getBin();
         expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
@@ -200,7 +200,7 @@ public class RecyclerActivity extends AppCompatActivity{
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 
                     int childPosition = ExpandableListView.getPackedPositionChild(id);
-                    expandableTodoTaskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+                    expandableTodoTaskAdapter.setLongClickedSubtaskByPos(groupPosition, childPosition);
                 } else {
                     expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
                 }
@@ -210,8 +210,8 @@ public class RecyclerActivity extends AppCompatActivity{
         });
     }
 
-    public ArrayList<TodoTask> getTasksInTrash() {
-       ArrayList<TodoTask> backup = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
+    public List<TodoTask> getTasksInTrash() {
+       List<TodoTask> backup = modelServices.getBin();
        return backup;
     }
 

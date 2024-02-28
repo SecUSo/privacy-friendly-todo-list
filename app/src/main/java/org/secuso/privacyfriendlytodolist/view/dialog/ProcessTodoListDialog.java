@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 
@@ -48,7 +49,7 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
         initGui();
 
-        todoList = new TodoList();
+        todoList = Model.getServices(context).createTodoList();
         todoList.setCreated();
         //todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
@@ -85,7 +86,7 @@ public class ProcessTodoListDialog extends FullScreenDialog {
             // prepare list data
             String listName = etName.getText().toString();
 
-            if (listName.equals("") || listName == null) {
+            if (listName.equals("")) {
                 Toast.makeText(getContext(), getContext().getString(R.string.list_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
             } else {
 

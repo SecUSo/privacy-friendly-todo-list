@@ -1,7 +1,7 @@
 package org.secuso.privacyfriendlytodolist.view.calendar;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
+
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 
 public class CalendarPopup extends AppCompatActivity {
 
-    private DatabaseHelper dbhelper;
     private ExpandableListView lv;
     RelativeLayout rl;
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;

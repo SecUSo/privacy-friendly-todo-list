@@ -9,6 +9,10 @@ def pfaFile = rootProject.file('pfa.properties')
 
 android {
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     signingConfigs {
         if (pfaFile.exists()) {
             'pfa-key' {
@@ -31,6 +35,14 @@ android {
         versionCode 9
         versionName "2.4.2"
         multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                    "room.schemaLocation":"$projectDir/schemas".toString()
+                ]
+            }
+        }
     }
 
     android.applicationVariants.configureEach { variant ->
@@ -53,6 +65,7 @@ android {
             }
         }
     }
+
     lint {
         warning 'MissingTranslation'
     }
@@ -69,8 +82,8 @@ android {
     kotlin {
         jvmToolchain(17)
     }
-    namespace 'org.secuso.privacyfriendlytodolist'
 
+    namespace 'org.secuso.privacyfriendlytodolist'
 }
 
 dependencies {
@@ -91,7 +104,19 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation "androidx.sqlite:sqlite-ktx:2.4.0"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-common:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
 repositories {
     mavenCentral()
 }
