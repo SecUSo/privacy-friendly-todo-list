@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [34, 19, "${{ needs.check-if-tests-exist.outputs.target-sdk-version }}"]
+        api-level: [34, 21, "${{ needs.check-if-tests-exist.outputs.target-sdk-version }}"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
