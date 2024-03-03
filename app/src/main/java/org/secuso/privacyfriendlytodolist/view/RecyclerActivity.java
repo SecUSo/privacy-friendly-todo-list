@@ -53,7 +53,7 @@ import java.util.List;
  */
 public class RecyclerActivity extends AppCompatActivity{
 
-    private ModelServices modelServices;
+    private ModelServices model;
     private TextView tv;
     private ExpandableListView lv;
     RelativeLayout rl;
@@ -82,10 +82,10 @@ public class RecyclerActivity extends AppCompatActivity{
 
        switch(item.getItemId()){
            case R.id.restore:
-               modelServices.setTaskInTrash(longClickedTodo.getLeft(), false);
+               model.setTaskInTrash(longClickedTodo.getLeft(), false);
                List<TodoSubtask> subtasks = longClickedTodo.getLeft().getSubtasks();
                for (TodoSubtask ts : subtasks){
-                   modelServices.setSubtaskInTrash(ts, false);
+                   model.setSubtaskInTrash(ts, false);
                }
                updateAdapter();
                break;
@@ -106,9 +106,9 @@ public class RecyclerActivity extends AppCompatActivity{
                 finish();
                 return true;
             case R.id.btn_clear:
-                modelServices = Model.getServices(this);
+                model = Model.getServices(this);
                 final List<TodoTask> tasks;
-                tasks = modelServices.getBin();
+                tasks = model.getBin();
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                 builder1.setMessage(R.string.alert_clear);
                 builder1.setCancelable(true);
@@ -117,7 +117,7 @@ public class RecyclerActivity extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         for (TodoTask t : tasks) {
-                            modelServices.deleteTodoTask(t);
+                            model.deleteTodoTask(t);
                         }
                         dialog.cancel();
                         updateAdapter();
@@ -186,9 +186,9 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     public void updateAdapter() {
-        modelServices = Model.getServices(this);
+        model = Model.getServices(this);
         List<TodoTask> tasks;
-        tasks = modelServices.getBin();
+        tasks = model.getBin();
         expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         lv.setAdapter(expandableTodoTaskAdapter);
         lv.setEmptyView(tv);
@@ -211,7 +211,7 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     public List<TodoTask> getTasksInTrash() {
-       List<TodoTask> backup = modelServices.getBin();
+       List<TodoTask> backup = model.getBin();
        return backup;
     }
 

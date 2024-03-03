@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ReminderService extends Service {
 
-    private ModelServices modelServices;
+    private ModelServices model;
 
     private static final String TAG = ReminderService.class.getSimpleName();
 
@@ -91,7 +91,7 @@ public class ReminderService extends Service {
 
         Log.i(TAG, "onStartCommand()");
 
-        modelServices = Model.getServices(this);
+        model = Model.getServices(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         alarmManager = AlarmManagerHolder.getAlarmManager(this);
         helper = new NotificationHelper(this);
@@ -106,7 +106,7 @@ public class ReminderService extends Service {
             handleAlarm(task);
 
             // get next alarm
-            TodoTask nextDueTask = modelServices.getNextDueTask(Helper.getCurrentTimestamp());
+            TodoTask nextDueTask = model.getNextDueTask(Helper.getCurrentTimestamp());
             if(nextDueTask != null)
                 setAlarmForTask(nextDueTask);
         } else {
@@ -136,7 +136,7 @@ public class ReminderService extends Service {
     public void reloadAlarmsFromDB() {
         mNotificationManager.cancelAll(); // cancel all alarms
 
-        List<TodoTask> tasksToRemind = modelServices.getTasksToRemind(Helper.getCurrentTimestamp(), null);
+        List<TodoTask> tasksToRemind = model.getTasksToRemind(Helper.getCurrentTimestamp(), null);
 
         // set alarms
         for (TodoTask currentTask : tasksToRemind) {

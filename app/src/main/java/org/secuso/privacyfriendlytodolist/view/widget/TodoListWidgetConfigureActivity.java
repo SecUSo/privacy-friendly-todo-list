@@ -153,9 +153,9 @@ public class TodoListWidgetConfigureActivity extends Activity {
 
     //updates the lists array and prepare adapter for spinner
     public void updateLists(){
-        ModelServices modelServices = Model.getServices(this);
+        ModelServices model = Model.getServices(this);
         List<TodoList> todoLists = new ArrayList<TodoList>();
-        todoLists = modelServices.getAllToDoLists();
+        todoLists = model.getAllToDoLists();
         List<String> help = new ArrayList<>();
         for (TodoList todoList : todoLists) {
             help.add(todoList.getName());

@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     // Database administration
-    private ModelServices modelServices;
+    private ModelServices model;
 
     private SharedPreferences mPref;
 
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         hints();
 
-        modelServices = Model.getServices(this);
+        model = Model.getServices(this);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Try to snooze the task by notification
@@ -320,9 +320,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         authAndGuiInit(savedInstanceState);
-        TodoList defaultList = modelServices.createTodoList();
+        TodoList defaultList = model.createTodoList();
         defaultList.setDummyList();
-        modelServices.saveTodoListInDb(defaultList);
+        model.saveTodoListInDb(defaultList);
 
         if(activeList != -1) {
             showTasksOfList(activeList);
@@ -365,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void resetApp() {
                     PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().clear().commit();
-                    modelServices.deleteAllData();
+                    model.deleteAllData();
                     Intent intent = new Intent(MainActivity.this, MainActivity.class);
                     dialog.dismiss();
                     startActivity(intent);
@@ -680,8 +680,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public List<TodoList> getTodoLists(boolean reload) {
         if (reload) {
-            if (modelServices != null)
-                todoLists = modelServices.getAllToDoLists();
+            if (model != null)
+                todoLists = model.getAllToDoLists();
         }
         return todoLists;
     }
@@ -689,8 +689,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public TodoList getTodoTasks() {
         List<TodoTask> tasks = new ArrayList<>();
-        if (modelServices != null) {
-            tasks = modelServices.getAllToDoTasks();
+        if (model != null) {
+            tasks = model.getAllToDoTasks();
             for (int i = 0; i < tasks.size(); i++) {
                 dummyList.setDummyList();
                 dummyList.setName("All tasks");
@@ -703,7 +703,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public ModelServices getModelServices() {
-        return modelServices;
+        return model;
     }
 
 
@@ -769,14 +769,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // call appropriate method depending on type
         if (todo instanceof TodoList) {
-            databaseID = modelServices.saveTodoListInDb((TodoList) todo);
+            databaseID = model.saveTodoListInDb((TodoList) todo);
             errorMessage = getString(R.string.list_to_db_error);
         } else if (todo instanceof TodoTask) {
-            databaseID = modelServices.saveTodoTaskInDb((TodoTask) todo);
+            databaseID = model.saveTodoTaskInDb((TodoTask) todo);
             notifyReminderService((TodoTask) todo);
             errorMessage = getString(R.string.task_to_db_error);
         } else if (todo instanceof TodoSubtask) {
-            databaseID = modelServices.saveTodoSubtaskInDb((TodoSubtask) todo);
+            databaseID = model.saveTodoSubtaskInDb((TodoSubtask) todo);
             errorMessage = getString(R.string.subtask_to_db_error);
         } else {
             throw new IllegalArgumentException("Cannot save unknown descendant of BaseTodo in the database.");
@@ -837,8 +837,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Method to add a new To do-List
     private void startListDialog() {
-        modelServices = Model.getServices(this);
-        todoLists = modelServices.getAllToDoLists();
+        model = Model.getServices(this);
+        todoLists = model.getAllToDoLists();
         adapter = new TodoListAdapter(this, todoLists);
 
         ProcessTodoListDialog pl = new ProcessTodoListDialog(this);
@@ -894,10 +894,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     R.string.alert_delete_yes,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int setId) {
-                            List<TodoList> todoLists = modelServices.getAllToDoLists();
+                            List<TodoList> todoLists = model.getAllToDoLists();
                             for (TodoList t : todoLists) {
                                 if (t.getId() == id) {
-                                    modelServices.deleteTodoList(t);
+                                    model.deleteTodoList(t);
                                 }
                             }
                             dialog.cancel();
@@ -925,9 +925,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void showAllTasks() {
-        modelServices = Model.getServices(this);
+        model = Model.getServices(this);
         List<TodoTask> tasks;
-        tasks = modelServices.getAllToDoTasks();
+        tasks = model.getAllToDoTasks();
         expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
 
         exLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -971,10 +971,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "Navigation entries unchecked.");
         }
 
-        modelServices = Model.getServices(this);
+        model = Model.getServices(this);
         List<TodoList> lists;
         List<TodoTask> help = new ArrayList<>();
-        lists = modelServices.getAllToDoLists();
+        lists = model.getAllToDoLists();
 
         activeList = id;
 
@@ -994,8 +994,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //idExists describes if id is given from list (true) or new task is created in all-tasks (false)
     private void initFab(boolean showFab, int id, boolean idExists) {
-        modelServices = Model.getServices(this);
-        final List<TodoTask> tasks = modelServices.getAllToDoTasks();
+        model = Model.getServices(this);
+        final List<TodoTask> tasks = model.getAllToDoTasks();
         //final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
         final int helpId = id;
         final boolean helpExists = idExists;
@@ -1078,7 +1078,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.delete_subtask:
 
-                affectedRows = modelServices.deleteTodoSubtask(longClickedTodo.getRight());
+                affectedRows = model.deleteTodoSubtask(longClickedTodo.getRight());
                 longClickedTodo.getLeft().getSubtasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
                     Toast.makeText(getBaseContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
@@ -1112,9 +1112,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Snackbar snackbar = Snackbar.make(optionFab, R.string.task_removed, Snackbar.LENGTH_LONG);
                 List<TodoSubtask> subtasks = longClickedTodo.getLeft().getSubtasks();
                 for (TodoSubtask ts : subtasks){
-                    modelServices.setSubtaskInTrash(ts, true);
+                    model.setSubtaskInTrash(ts, true);
                 }
-                affectedRows = modelServices.setTaskInTrash(longClickedTodo.getLeft(), true);
+                affectedRows = model.setTaskInTrash(longClickedTodo.getLeft(), true);
                 if(affectedRows == 1) {
                     hints();
                 }else
@@ -1131,9 +1131,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                      public void onClick(View v) {
                         List<TodoSubtask> subtasks = longClickedTodo.getLeft().getSubtasks();
-                         modelServices.setTaskInTrash(longClickedTodo.getLeft(), false);
+                         model.setTaskInTrash(longClickedTodo.getLeft(), false);
                         for (TodoSubtask ts : subtasks){
-                            modelServices.setSubtaskInTrash(ts, false);
+                            model.setSubtaskInTrash(ts, false);
                         }
                         if (inList && longClickedTodo.getLeft().getListId() != -3) {
                             showTasksOfList(longClickedTodo.getLeft().getListId());
@@ -1183,7 +1183,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void updateTodoFromPomodoro() {
-        TodoTask todoRe = modelServices.createTodoTask();
+        TodoTask todoRe = model.createTodoTask();
         todoRe.setChangedFromPomodoro(); //Change the dbState to UPDATE_FROM_POMODORO
         //todoRe.setPriority(TodoTask.Priority.HIGH);
         todoRe.setName(getIntent().getStringExtra("todo_name"));
@@ -1204,9 +1204,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void hints() {
 
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
-        modelServices = Model.getServices(this);
-        if (modelServices.getAllToDoTasks().size() == 0 &&
-                modelServices.getAllToDoLists().size() == 0) {
+        model = Model.getServices(this);
+        if (model.getAllToDoTasks().size() == 0 &&
+                model.getAllToDoLists().size() == 0) {
 
             initialAlert.setVisibility(View.VISIBLE);
             anim.setDuration(1500);
@@ -1215,13 +1215,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             anim.setRepeatCount(Animation.INFINITE);
             initialAlert.startAnimation(anim);
 
-        } else /*if (modelServices.getAllToDoTasks().size() > 0 ||
-                modelServices.getAllToDoLists().size() > 0) */ {
+        } else /*if (model.getAllToDoTasks().size() > 0 ||
+                model.getAllToDoLists().size() > 0) */ {
             initialAlert.setVisibility(View.GONE);
             initialAlert.clearAnimation();
         }
 
-        if (modelServices.getAllToDoTasks().size() == 0) {
+        if (model.getAllToDoTasks().size() == 0) {
             secondAlert.setVisibility(View.VISIBLE);
             anim.setDuration(1500);
             anim.setStartOffset(20);

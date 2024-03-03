@@ -63,7 +63,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private TodoTask.Priority taskPriority = null;
     private int selectedListID;
     private List<TodoList> lists = new ArrayList<>();
-    private ModelServices modelServices;
+    private ModelServices model;
     private int taskProgress = 0;
     private String name, description;
     private long deadline = -1;
@@ -78,8 +78,8 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         super(context, R.layout.add_task_dialog);
 
         initGui();
-        modelServices = Model.getServices(context);
-        task = modelServices.createTodoTask();
+        model = Model.getServices(context);
+        task = model.createTodoTask();
         task.setCreated();
         //task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
@@ -89,7 +89,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         super(context, R.layout.add_task_dialog);
 
         initGui();
-        modelServices = Model.getServices(context);
+        model = Model.getServices(context);
         task.setChanged();
         //task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
         deadline = task.getDeadline();
@@ -326,7 +326,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     //updates the lists array
     public void updateLists(){
-        lists = modelServices.getAllToDoLists();
+        lists = model.getAllToDoLists();
     }
 
 
