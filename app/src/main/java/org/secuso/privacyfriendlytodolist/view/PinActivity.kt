@@ -20,7 +20,7 @@ class PinActivity : AppCompatActivity() {
 
     private fun startDialog() {
         PinDialog(this).apply {
-            setCallback(object : PinDialog.PinCallback {
+            setDialogCallback(object : PinDialog.PinCallback {
                 override fun accepted() {
                     result = true
                     this@PinActivity.finish()

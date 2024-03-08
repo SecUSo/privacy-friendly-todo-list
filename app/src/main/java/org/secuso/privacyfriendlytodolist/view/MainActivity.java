@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (PinUtil.hasPin(this) && !this.isUnlocked && (this.unlockUntil == -1 || System.currentTimeMillis() > this.unlockUntil)) {
             final PinDialog dialog = new PinDialog(this);
-            dialog.setCallback(new PinDialog.PinCallback() {
+            dialog.setDialogCallback(new PinDialog.PinCallback() {
                 @Override
                 public void accepted() {
                     initActivityStage1(savedInstanceState);
@@ -783,19 +783,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter = new TodoListAdapter(this, todoLists);
 
         ProcessTodoListDialog pl = new ProcessTodoListDialog(this);
-        pl.setDialogResult(new TodoCallback() {
-            @Override
-            public void finish(BaseTodo baseTodo) {
-                if (baseTodo instanceof TodoList todoList) {
-                    todoLists.add(todoList);
-                    adapter.updateList(todoLists); // run filter again
-                    adapter.notifyDataSetChanged();
-                    model.saveTodoListInDb(todoList);
-                    hints();
-                    addListToNav();
-                    Log.i(TAG, "list added");
-                }
-            }
+        pl.setDialogCallback(todoList -> {
+            todoLists.add(todoList);
+            adapter.updateList(todoLists); // run filter again
+            adapter.notifyDataSetChanged();
+            model.saveTodoListInDb(todoList);
+            hints();
+            addListToNav();
+            Log.i(TAG, "list added");
         });
         pl.show();
     }
@@ -940,18 +935,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         optionFab.setOnClickListener(v -> {
             ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(MainActivity.this);
             pt.setListSelector(id, idExists);
-            pt.setDialogResult(b -> {
-                if (b instanceof TodoTask todoTask) {
-                    //todoTask.setListId(id);
-                    model.saveTodoTaskInDb(todoTask);
-                    notifyReminderService(todoTask);
-                    hints();
-                    // show List if created in certain list, else show all tasks
-                    if (idExists) {
-                        showTasksOfList(id);
-                    } else {
-                        showAllTasks();
-                    }
+            pt.setDialogCallback(todoTask -> {
+                //todoTask.setListId(id);
+                model.saveTodoTaskInDb(todoTask);
+                notifyReminderService(todoTask);
+                hints();
+                // show List if created in certain list, else show all tasks
+                if (idExists) {
+                    showTasksOfList(id);
+                } else {
+                    showAllTasks();
                 }
             });
             pt.show();
@@ -993,24 +986,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch(item.getItemId()) {
             case R.id.change_subtask:
-
                 final ProcessTodoSubtaskDialog dialog = new ProcessTodoSubtaskDialog(this, longClickedTodo.getRight());
                 dialog.titleEdit();
-                dialog.setDialogResult(new TodoCallback() {
-                    @Override
-                    public void finish(BaseTodo b) {
-                        if(b instanceof TodoSubtask todoSubtask) {
-                            model.saveTodoSubtaskInDb(todoSubtask);
-                            expandableTodoTaskAdapter.notifyDataSetChanged();
-                            Log.i(TAG, "subtask altered");
-                        }
-                    }
+                dialog.setDialogCallback(todoSubtask -> {
+                    model.saveTodoSubtaskInDb(todoSubtask);
+                    expandableTodoTaskAdapter.notifyDataSetChanged();
+                    Log.i(TAG, "subtask altered");
                 });
                 dialog.show();
                 break;
 
             case R.id.delete_subtask:
-
                 affectedRows = model.deleteTodoSubtask(longClickedTodo.getRight());
                 longClickedTodo.getLeft().getSubtasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
@@ -1019,26 +1005,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
                 expandableTodoTaskAdapter.notifyDataSetChanged();
                 break;
+
             case R.id.change_task:
                 final int listIDold=longClickedTodo.getLeft().getListId();
                 final ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(this, longClickedTodo.getLeft());
                 editTaskDialog.titleEdit();
                 editTaskDialog.setListSelector(longClickedTodo.getLeft().getListId(), true);
-
-                editTaskDialog.setDialogResult(b -> {
-                    if(b instanceof TodoTask alteredTask) {
-                        model.saveTodoTaskInDb(alteredTask);
-                        notifyReminderService(alteredTask);
-                        expandableTodoTaskAdapter.notifyDataSetChanged();
-                        if (inList && listIDold != -3) {
-                            showTasksOfList(listIDold);
-                        } else {
-                            showAllTasks();
-                        }
+                editTaskDialog.setDialogCallback(todoTask -> {
+                    model.saveTodoTaskInDb(todoTask);
+                    notifyReminderService(todoTask);
+                    expandableTodoTaskAdapter.notifyDataSetChanged();
+                    if (inList && listIDold != -3) {
+                        showTasksOfList(listIDold);
+                    } else {
+                        showAllTasks();
                     }
                 });
                 editTaskDialog.show();
                 break;
+
             case R.id.delete_task:
                 Snackbar snackbar = Snackbar.make(optionFab, R.string.task_removed, Snackbar.LENGTH_LONG);
                 List<TodoSubtask> subtasks = longClickedTodo.getLeft().getSubtasks();
@@ -1078,13 +1063,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.work_task:
-
                 Log.i(MainActivity.class.getSimpleName(), "START TASK");
                 sendToPomodoro(longClickedTodo.getLeft());
                 break;
 
             case R.id.work_subtask:
-
                 Log.i(MainActivity.class.getSimpleName(), "START SUBTASK");
                 sendToPomodoro(longClickedTodo.getRight());
                 break;

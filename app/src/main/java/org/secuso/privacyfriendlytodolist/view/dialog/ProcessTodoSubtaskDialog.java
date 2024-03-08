@@ -33,7 +33,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
  */
 
 
-public class ProcessTodoSubtaskDialog extends FullScreenDialog {
+public class ProcessTodoSubtaskDialog extends FullScreenDialog<ResultCallback<TodoSubtask>> {
 
     private EditText etSubtaskName;
     private Button cancelButton;
@@ -81,7 +81,7 @@ public class ProcessTodoSubtaskDialog extends FullScreenDialog {
                 } else {
 
                     subtask.setName(name);
-                    callback.finish(subtask);
+                    callback.onFinish(subtask);
                     ProcessTodoSubtaskDialog.this.dismiss();
                 }
             }

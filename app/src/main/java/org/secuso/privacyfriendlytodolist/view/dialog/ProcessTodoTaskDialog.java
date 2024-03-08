@@ -46,7 +46,7 @@ import java.util.List;
  * This class creates a dialog that lets the user create/edit a task.
  */
 
-public class ProcessTodoTaskDialog extends FullScreenDialog {
+public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoTask>> {
 
     private TextView prioritySelector;
     private TextView deadlineTextView;
@@ -200,7 +200,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                     task.setListId(selectedListID);
                     task.setProgress(taskProgress);
                     task.setReminderTime(reminderTime);
-                    callback.finish(task);
+                    callback.onFinish(task);
                     ProcessTodoTaskDialog.this.dismiss();
                 }
             }
@@ -222,7 +222,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             @Override
             public void onClick(View v) {
                 DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), deadline);
-                deadlineDialog.setCallback(new DeadlineDialog.DeadlineCallback() {
+                deadlineDialog.setDialogCallback(new DeadlineDialog.DeadlineCallback() {
                     @Override
                     public void setDeadline(long d) {
                         deadline = d;
@@ -245,7 +245,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             @Override
             public void onClick(View v) {
                 ReminderDialog reminderDialog = new ReminderDialog(getContext(), reminderTime, deadline);
-                reminderDialog.setCallback(new ReminderDialog.ReminderCallback() {
+                reminderDialog.setDialogCallback(new ReminderDialog.ReminderCallback() {
                     @Override
                     public void setReminder(long r) {
 

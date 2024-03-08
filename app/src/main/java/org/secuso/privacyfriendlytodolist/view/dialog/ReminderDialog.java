@@ -31,9 +31,12 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 
-public class ReminderDialog extends FullScreenDialog {
+public class ReminderDialog extends FullScreenDialog<ReminderDialog.ReminderCallback> {
 
-    private ReminderCallback callback;
+    public interface ReminderCallback {
+        void setReminder(long deadline);
+        void removeReminder();
+    }
 
     public ReminderDialog(Context context, long reminderTime, long deadline) {
         super(context, R.layout.reminder_dialog);
@@ -104,15 +107,6 @@ public class ReminderDialog extends FullScreenDialog {
             }
         });
 
-    }
-
-    public interface ReminderCallback {
-        void setReminder(long deadline);
-        void removeReminder();
-    }
-
-    public void setCallback(ReminderCallback callback) {
-        this.callback = callback;
     }
 
 }

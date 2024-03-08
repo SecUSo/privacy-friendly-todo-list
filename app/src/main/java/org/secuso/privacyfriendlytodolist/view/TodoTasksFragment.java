@@ -125,24 +125,22 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
         FloatingActionButton optionFab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_task);
 
-        if(showFab) {
+        if (showFab) {
             optionFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                ProcessTodoTaskDialog addListDialog = new ProcessTodoTaskDialog(getActivity());
-                addListDialog.setDialogResult(b -> {
-                if (b instanceof TodoTask) {
-                    todoTasks.add((TodoTask) b);
-                    saveNewTasks();
-                    taskAdapter.notifyDataSetChanged();
-                }
-                });
-                addListDialog.show();
-
+                    ProcessTodoTaskDialog dialog = new ProcessTodoTaskDialog(getActivity());
+                    dialog.setDialogCallback(todoTask -> {
+                        todoTasks.add(todoTask);
+                        saveNewTasks();
+                        taskAdapter.notifyDataSetChanged();
+                    });
+                    dialog.show();
                 }
             });
-        } else
+        } else {
             optionFab.setVisibility(View.GONE);
+        }
     }
 
     private void initExListViewGUI(View v) {
@@ -231,14 +229,9 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
             case R.id.change_subtask:
 
                 ProcessTodoSubtaskDialog dialog = new ProcessTodoSubtaskDialog(containingActivity, longClickedTodo.getRight());
-                dialog.setDialogResult(new TodoCallback() {
-                    @Override
-                    public void finish(BaseTodo b) {
-                    if(b instanceof TodoTask) {
-                        taskAdapter.notifyDataSetChanged();
-                        Log.i(TAG, "subtask altered");
-                    }
-                    }
+                dialog.setDialogCallback(todoSubtask -> {
+                    taskAdapter.notifyDataSetChanged();
+                    Log.i(TAG, "subtask altered");
                 });
                 dialog.show();
                 break;
@@ -253,13 +246,11 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 taskAdapter.notifyDataSetChanged();
                 break;
             case R.id.change_task:
-                ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
-                editTaskDialog.setDialogResult(alteredTask -> {
-                    if(alteredTask instanceof TodoTask) {
-                        taskAdapter.notifyDataSetChanged();
-                    }
+                ProcessTodoTaskDialog changeTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
+                changeTaskDialog.setDialogCallback(todoTask -> {
+                    taskAdapter.notifyDataSetChanged();
                 });
-                editTaskDialog.show();
+                changeTaskDialog.show();
                 break;
             case R.id.delete_task:
                 affectedRows = model.setTaskInTrash(longClickedTodo.getLeft(), true);
@@ -383,7 +374,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     // write new tasks to the database
-    public void saveNewTasks() {
+    private void saveNewTasks() {
         for (TodoTask todoTask : todoTasks) {
             // If a dummy list is displayed, its id must not be assigned to the task.
             if (!currentList.isDummyList()) {

@@ -583,19 +583,14 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 vh2.addSubtaskButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    ProcessTodoSubtaskDialog dialog = new ProcessTodoSubtaskDialog(context);
-                    dialog.setDialogResult(new TodoCallback() {
-                        @Override
-                        public void finish(BaseTodo b) {
-                            if (b instanceof TodoSubtask newSubtask) {
-                                currentTask.getSubtasks().add(newSubtask);
-                                newSubtask.setTaskId(currentTask.getId());
-                                Model.getServices(context).saveTodoSubtaskInDb(newSubtask);
-                                notifyDataSetChanged();
-                            }
-                        }
-                    });
-                    dialog.show();
+                        ProcessTodoSubtaskDialog newSubtaskDialog = new ProcessTodoSubtaskDialog(context);
+                        newSubtaskDialog.setDialogCallback(todoSubtask -> {
+                            currentTask.getSubtasks().add(todoSubtask);
+                            todoSubtask.setTaskId(currentTask.getId());
+                            Model.getServices(context).saveTodoSubtaskInDb(todoSubtask);
+                            notifyDataSetChanged();
+                        });
+                        newSubtaskDialog.show();
                     }
                 });
                 vh2.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, currentTask.getDeadlineColor(getDefaultReminderTime())));

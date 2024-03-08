@@ -32,9 +32,9 @@ import androidx.appcompat.app.AppCompatActivity;
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
-            SplashActivity.this.startActivity(mainIntent);
-            SplashActivity.this.finish();
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            startActivity(mainIntent);
+            finish();
 
         }
 

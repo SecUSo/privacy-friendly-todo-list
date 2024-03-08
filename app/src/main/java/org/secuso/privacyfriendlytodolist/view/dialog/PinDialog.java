@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import androidx.appcompat.app.AlertDialog;
 import android.view.View;
@@ -29,9 +30,13 @@ import android.widget.Toast;
 import org.secuso.privacyfriendlytodolist.R;
 
 
-public class PinDialog extends FullScreenDialog {
+public class PinDialog extends FullScreenDialog<PinDialog.PinCallback> {
 
-    private PinCallback callback = null;
+    public interface PinCallback {
+        void accepted();
+        void declined();
+        void resetApp();
+    }
 
     private int wrongCounter = 0;
     private boolean disallowReset = false;
@@ -77,10 +82,12 @@ public class PinDialog extends FullScreenDialog {
                     }
                 };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(PinDialog.this.getContext());
-                builder.setMessage(PinDialog.this.getContext().getResources().getString(R.string.reset_application_msg));
-                builder.setPositiveButton(PinDialog.this.getContext().getResources().getString(R.string.yes), resetDialogListener);
-                builder.setNegativeButton(PinDialog.this.getContext().getResources().getString(R.string.no), resetDialogListener);
+                Context context = PinDialog.this.getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                Resources resources = context.getResources();
+                builder.setMessage(resources.getString(R.string.reset_application_msg));
+                builder.setPositiveButton(resources.getString(R.string.yes), resetDialogListener);
+                builder.setNegativeButton(resources.getString(R.string.no), resetDialogListener);
                 builder.show();
             }
         });
@@ -105,15 +112,8 @@ public class PinDialog extends FullScreenDialog {
         textEditPin.setActivated(true);
     }
 
-    public interface PinCallback {
-        void accepted();
-        void declined();
-        void resetApp();
+    public void setDisallowReset(Boolean disallow) {
+        this.disallowReset = disallow;
     }
-
-    public void setCallback(PinCallback callback) {
-        this.callback = callback;
-    }
-    public void setDisallowReset(Boolean disallow) { this.disallowReset = disallow; }
 
 }

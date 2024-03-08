@@ -34,10 +34,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
  * Defines the dialog that lets the user create a list
  */
 
+public class ProcessTodoListDialog extends FullScreenDialog<ResultCallback<TodoList>> {
 
-public class ProcessTodoListDialog extends FullScreenDialog {
-
-    private ProcessTodoListDialog self = this;
     private Button buttonOkay;
     private Button buttonCancel;
     private EditText etName, etDescription;
@@ -92,22 +90,15 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
                 if (changesMade(listName)) {
                     todoList.setName(listName);
-                    callback.finish(todoList);
+                    callback.onFinish(todoList);
                 }
-                self.dismiss();
+                ProcessTodoListDialog.this.dismiss();
             }
         }
     }
 
     private boolean changesMade(String listName) {
-
         // check if real changes were made
-        if (listName.equals(todoList.getName())) {
-            return false;
-        }
-
-        return true;
+        return ! listName.equals(todoList.getName());
     }
-
-
 }

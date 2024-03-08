@@ -15,11 +15,8 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.view;
+package org.secuso.privacyfriendlytodolist.view.dialog;
 
-import org.secuso.privacyfriendlytodolist.model.BaseTodo;
-
-
-public interface TodoCallback {
-    void finish(BaseTodo b);
+public interface ResultCallback<T> {
+    void onFinish(T item);
 }

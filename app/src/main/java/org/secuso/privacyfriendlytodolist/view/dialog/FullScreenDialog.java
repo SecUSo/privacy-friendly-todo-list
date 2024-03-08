@@ -22,11 +22,9 @@ import android.content.Context;
 import android.view.Window;
 import android.view.WindowManager;
 
-import org.secuso.privacyfriendlytodolist.view.TodoCallback;
+abstract public class FullScreenDialog<T> extends Dialog {
 
-abstract public class FullScreenDialog extends Dialog {
-
-    protected TodoCallback callback;
+    protected T callback;
 
     public FullScreenDialog(Context context, int layoutId) {
         super(context);
@@ -42,8 +40,8 @@ abstract public class FullScreenDialog extends Dialog {
         window.setAttributes(lp);
     }
 
-    public void setDialogResult(TodoCallback resultCallback) {
-        callback = resultCallback;
+    public void setDialogCallback(T callback) {
+        this.callback = callback;
     }
 
 }
