@@ -36,6 +36,9 @@ interface TodoTaskDao {
     @Delete
     fun delete(todoTaskData: TodoTaskData): Int
 
+    @Query("SELECT * FROM todo_task WHERE id = :todoTaskId")
+    fun getTaskById(todoTaskId: Int): TodoTaskData?
+
     @Query("SELECT * FROM todo_task WHERE isDone = 0 AND reminderTime > 0 AND isInTrash = 0 AND reminderTime - :today > 0 ORDER BY ABS(reminderTime - :today) LIMIT 1;")
     fun getNextDueTask(today: Long): TodoTaskData?
 

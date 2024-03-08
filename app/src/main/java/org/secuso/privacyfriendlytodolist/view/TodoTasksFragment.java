@@ -38,13 +38,13 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
-import org.secuso.privacyfriendlytodolist.model.Helper;
 import org.secuso.privacyfriendlytodolist.model.Model;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
-import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
 
@@ -60,14 +60,10 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     public static final String SHOW_FLOATING_BUTTON = "SHOW_FAB";
     public static final String KEY = "fragment_selector_key";
 
+    private MainActivity containingActivity;
+    private ModelServices model;
     private ExpandableListView expandableListView;
     private ExpandableTodoTaskAdapter taskAdapter;
-
-
-
-    private MainActivity containingActivity;
-
-
 
     private TodoList currentList;
     private List<TodoTask> todoTasks = new ArrayList<>();
@@ -77,11 +73,11 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                              Bundle savedInstanceState) {
 
         containingActivity = (MainActivity) getActivity();
-
         if(containingActivity == null) {
             throw new RuntimeException("TodoTasksFragment could not find containing activity.");
         }
 
+        model = Model.getServices(containingActivity);
 
         boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
 
@@ -134,15 +130,12 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 @Override
                 public void onClick(View v) {
                 ProcessTodoTaskDialog addListDialog = new ProcessTodoTaskDialog(getActivity());
-                addListDialog.setDialogResult(new TodoCallback() {
-                    @Override
-                    public void finish(BaseTodo b) {
-                    if (b instanceof TodoTask) {
-                        todoTasks.add((TodoTask) b);
-                        saveNewTasks();
-                        taskAdapter.notifyDataSetChanged();
-                    }
-                    }
+                addListDialog.setDialogResult(b -> {
+                if (b instanceof TodoTask) {
+                    todoTasks.add((TodoTask) b);
+                    saveNewTasks();
+                    taskAdapter.notifyDataSetChanged();
+                }
                 });
                 addListDialog.show();
 
@@ -251,7 +244,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 break;
 
             case R.id.delete_subtask:
-                affectedRows = containingActivity.getModelServices().setSubtaskInTrash(longClickedTodo.getRight(), true);
+                affectedRows = model.setSubtaskInTrash(longClickedTodo.getRight(), true);
                 longClickedTodo.getLeft().getSubtasks().remove(longClickedTodo.getRight());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
@@ -261,19 +254,15 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 break;
             case R.id.change_task:
                 ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
-                editTaskDialog.setDialogResult(new TodoCallback() {
-
-                    @Override
-                    public void finish(BaseTodo alteredTask) {
+                editTaskDialog.setDialogResult(alteredTask -> {
                     if(alteredTask instanceof TodoTask) {
                         taskAdapter.notifyDataSetChanged();
-                    }
                     }
                 });
                 editTaskDialog.show();
                 break;
             case R.id.delete_task:
-                affectedRows = containingActivity.getModelServices().setTaskInTrash(longClickedTodo.getLeft(), true);
+                affectedRows = model.setTaskInTrash(longClickedTodo.getLeft(), true);
                 todoTasks.remove(longClickedTodo.getLeft());
                 if(affectedRows == 1)
                     Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
@@ -395,24 +384,20 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
     // write new tasks to the database
     public void saveNewTasks() {
-        for(int i=0; i<todoTasks.size(); i++) {
-            TodoTask currentTask = todoTasks.get(i);
-
+        for (TodoTask todoTask : todoTasks) {
             // If a dummy list is displayed, its id must not be assigned to the task.
-            if(!currentList.isDummyList())
-                currentTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
-
-            boolean dbChanged = containingActivity.sendToDatabase(currentTask);
-            if(dbChanged)
-                containingActivity.notifyReminderService(currentTask);
-
-            // write subtasks to the database
-            for(TodoSubtask subtask : currentTask.getSubtasks()) {
-                subtask.setTaskId(currentTask.getId()); // crucial step to not lose the connection to the task
-                containingActivity.sendToDatabase(subtask);
+            if (!currentList.isDummyList()) {
+                todoTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
             }
+
+            model.saveTodoTaskInDb(todoTask);
+
+            for (TodoSubtask todoSubtask : todoTask.getSubtasks()) {
+                todoSubtask.setTaskId(todoTask.getId()); // crucial step to not lose the connection to the task
+                model.saveTodoSubtaskInDb(todoSubtask);
+            }
+
+            containingActivity.notifyReminderService(todoTask);
         }
-
     }
-
 }

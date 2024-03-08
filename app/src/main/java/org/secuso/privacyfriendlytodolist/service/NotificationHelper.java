@@ -15,7 +15,7 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.model;
+package org.secuso.privacyfriendlytodolist.service;
 
 import android.annotation.TargetApi;
 import android.app.Notification;

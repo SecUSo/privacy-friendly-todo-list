@@ -66,6 +66,16 @@ public class ModelServicesImpl implements ModelServices {
     }
 
     @Override
+    public TodoTask getTaskById(int todoTaskId) {
+        TodoTaskData todoTaskData = db.getTodoTaskDao().getTaskById(todoTaskId);
+        TodoTask todoTask = null;
+        if (null != todoTaskData) {
+            todoTask = new TodoTaskImpl(todoTaskData);
+        }
+        return todoTask;
+    }
+
+    @Override
     public TodoTask getNextDueTask(long today) {
         TodoTaskData nextDueTaskData = db.getTodoTaskDao().getNextDueTask(today);
         TodoTask nextDueTask = null;
@@ -159,6 +169,11 @@ public class ModelServicesImpl implements ModelServices {
     }
 
     @Override
+    public int getNumberOfAllToDoTasks() {
+        return 0;
+    }
+
+    @Override
     public List<TodoTask> getAllToDoTasks() {
         TodoTaskData[] dataArray = db.getTodoTaskDao().getAllNotInTrash();
         return createTasks(dataArray, false);
@@ -168,6 +183,11 @@ public class ModelServicesImpl implements ModelServices {
     public List<TodoTask> getBin() {
         TodoTaskData[] dataArray = db.getTodoTaskDao().getAllInTrash();
         return createTasks(dataArray, true);
+    }
+
+    @Override
+    public int getNumberOfAllToDoLists() {
+        return 0;
     }
 
     @Override
@@ -222,6 +242,7 @@ public class ModelServicesImpl implements ModelServices {
         TodoListData data = todoListImpl.getData();
         int todoListId;
 
+        // TODO check if db-state can be replaced by @Insert(onConflict = OnConflictStrategy.REPLACE)
         switch (todoListImpl.getDBState()) {
             case INSERT_TO_DB:
                 todoListId = (int) db.getTodoListDao().insert(data);
@@ -250,6 +271,7 @@ public class ModelServicesImpl implements ModelServices {
         int todoTaskId;
         int counter;
 
+        // TODO check if db-state can be replaced by @Insert(onConflict = OnConflictStrategy.REPLACE)
         switch (todoTaskImpl.getDBState()) {
             case INSERT_TO_DB:
                 todoTaskId = (int) db.getTodoTaskDao().insert(data);
@@ -287,6 +309,7 @@ public class ModelServicesImpl implements ModelServices {
         TodoSubtaskData data = todoSubtaskImpl.getData();
         int todoSubtaskId;
 
+        // TODO check if db-state can be replaced by @Insert(onConflict = OnConflictStrategy.REPLACE)
         switch (todoSubtaskImpl.getDBState()) {
             case INSERT_TO_DB:
                 todoSubtaskId = (int) db.getTodoSubtaskDao().insert(data);

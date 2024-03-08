@@ -34,7 +34,7 @@ import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
-import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
@@ -587,8 +587,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                     dialog.setDialogResult(new TodoCallback() {
                         @Override
                         public void finish(BaseTodo b) {
-                            if(b instanceof TodoSubtask) {
-                                TodoSubtask newSubtask = (TodoSubtask) b;
+                            if (b instanceof TodoSubtask newSubtask) {
                                 currentTask.getSubtasks().add(newSubtask);
                                 newSubtask.setTaskId(currentTask.getId());
                                 Model.getServices(context).saveTodoSubtaskInDb(newSubtask);

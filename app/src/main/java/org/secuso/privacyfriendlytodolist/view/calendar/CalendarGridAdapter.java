@@ -29,7 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 
 import java.text.SimpleDateFormat;

@@ -20,9 +20,7 @@ package org.secuso.privacyfriendlytodolist.model.impl;
 import android.os.Parcel;
 import android.util.Log;
 
-import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.Model;
-import org.secuso.privacyfriendlytodolist.model.ModelServices;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;

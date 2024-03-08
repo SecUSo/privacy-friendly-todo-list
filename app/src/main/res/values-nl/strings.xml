@@ -159,11 +159,4 @@
 	<string name="october">october</string>
 	<string name="november">november</string>
 	<string name="december">december</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">Ondertaak kon niet verwijderd worden uit de database.</string>
-    <string name="error_removing_task">Kon de taak niet verwijderen uit de database.</string>
-    <string name="list_to_db_error">Fout tijdens het maken van een nieuwe takenlijst.</string>
-    <string name="task_to_db_error">Fout tijdens het invoegen van een taak in de database.</string>
-    <string name="subtask_to_db_error">Fout tijdens het invoegen van een ondertaak in de database.</string>
 </resources>

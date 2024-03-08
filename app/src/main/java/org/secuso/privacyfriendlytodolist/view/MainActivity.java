@@ -30,6 +30,8 @@ import android.preference.PreferenceManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.view.GravityCompat;
@@ -40,6 +42,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -57,9 +62,9 @@ import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.BaseTodo;
-import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.Model;
-import org.secuso.privacyfriendlytodolist.model.ReminderService;
+import org.secuso.privacyfriendlytodolist.service.ReminderService;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
@@ -73,6 +78,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
+import org.secuso.privacyfriendlytodolist.viewmodel.ViewModelServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,11 +92,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
     public static final String COMMAND = "command";
     public static final int COMMAND_UPDATE = 3;
     public static final int COMMAND_RUN_TODO = 2;
-
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Database administration
     private ModelServices model;
+    private ViewModelServices viewModel;
 
     private SharedPreferences mPref;
 
@@ -299,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         hints();
 
         model = Model.getServices(this);
+        viewModel = new ViewModelProvider(this).get(ViewModelServices.class);
         mPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Try to snooze the task by notification
@@ -327,11 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(activeList != -1) {
             showTasksOfList(activeList);
         }
-
-
     }
-
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -354,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             dialog.setCallback(new PinDialog.PinCallback() {
                 @Override
                 public void accepted() {
-                    initActivity(savedInstanceState);
+                    initActivityStage1(savedInstanceState);
                 }
 
                 @Override
@@ -373,12 +375,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
             dialog.show();
         } else {
-            initActivity(savedInstanceState);
+            initActivityStage1(savedInstanceState);
         }
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
         restore(savedInstanceState);
@@ -393,10 +395,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         activeList = savedInstanceState.getInt(KEY_ACTIVE_LIST);
     }
 
-    public void initActivity(Bundle savedInstanceState) {
+    private void initActivityStage1(Bundle savedInstanceState) {
         this.isUnlocked = true;
-        getTodoLists(true);
 
+        LiveData<List<TodoList>> todoListsLive = viewModel.getAllToDoLists();
+        todoListsLive.observe(this, todoLists -> {
+            this.todoLists = todoLists;
+            initActivityStage2(savedInstanceState);
+        });
+    }
+
+    private void initActivityStage2(Bundle savedInstanceState) {
         Bundle extras = getIntent().getExtras();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         showAllTasks();
@@ -476,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void uncheckNavigationEntries() {
-        // uncheck all navigtion entries
+        // uncheck all navigation entries
         if (navigationView != null) {
             int size = navigationView.getMenu().size();
             for (int i = 0; i < size; i++) {
@@ -677,42 +686,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-    public List<TodoList> getTodoLists(boolean reload) {
-        if (reload) {
-            if (model != null)
-                todoLists = model.getAllToDoLists();
-        }
-        return todoLists;
-    }
-
-
-    public TodoList getTodoTasks() {
-        List<TodoTask> tasks = new ArrayList<>();
-        if (model != null) {
-            tasks = model.getAllToDoTasks();
-            for (int i = 0; i < tasks.size(); i++) {
-                dummyList.setDummyList();
-                dummyList.setName("All tasks");
-                dummyList.setTasks(tasks);
-            }
-        }
-        return dummyList;
-    }
-
-
-
-    public ModelServices getModelServices() {
-        return model;
-    }
-
-
     public void setDummyList(TodoList dummyList) {
         this.dummyList = dummyList;
     }
 
 
-    private ServiceConnection reminderServiceConnection = new ServiceConnection() {
+    private final ServiceConnection reminderServiceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
             Log.d("ServiceConnection", "connected");
             reminderService = ((ReminderService.ReminderServiceBinder) binder).getService();
@@ -748,7 +727,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
             if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline())  && !currentTask.isDone()) {
-                reminderService.processTask(currentTask);
+                reminderService.processTodoTask(currentTask.getId());
                 Log.i(TAG, "Reminder is set!");
             } else {
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName());
@@ -758,43 +737,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i(TAG, "Service is null. Cannot update alarms");
         }
     }
-
-
-
-    // returns true if object was created in the database
-    public boolean sendToDatabase(BaseTodo todo) {
-
-        int databaseID = -5;
-        String errorMessage = "";
-
-        // call appropriate method depending on type
-        if (todo instanceof TodoList) {
-            databaseID = model.saveTodoListInDb((TodoList) todo);
-            errorMessage = getString(R.string.list_to_db_error);
-        } else if (todo instanceof TodoTask) {
-            databaseID = model.saveTodoTaskInDb((TodoTask) todo);
-            notifyReminderService((TodoTask) todo);
-            errorMessage = getString(R.string.task_to_db_error);
-        } else if (todo instanceof TodoSubtask) {
-            databaseID = model.saveTodoSubtaskInDb((TodoSubtask) todo);
-            errorMessage = getString(R.string.subtask_to_db_error);
-        } else {
-            throw new IllegalArgumentException("Cannot save unknown descendant of BaseTodo in the database.");
-        }
-
-        // set unique database id (primary key) to the current object
-        if (databaseID == -1) {
-            Log.e(TAG, errorMessage);
-            return false;
-        } else if (databaseID != ModelServices.NO_CHANGES) {
-            todo.setId(databaseID);
-            return true;
-        }
-
-        return false;
-    }
-
-
 
     public TodoList getListByID(int id) {
         for (TodoList currentList : todoLists) {
@@ -837,19 +779,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Method to add a new To do-List
     private void startListDialog() {
-        model = Model.getServices(this);
         todoLists = model.getAllToDoLists();
         adapter = new TodoListAdapter(this, todoLists);
 
         ProcessTodoListDialog pl = new ProcessTodoListDialog(this);
         pl.setDialogResult(new TodoCallback() {
             @Override
-            public void finish(BaseTodo b) {
-                if (b instanceof TodoList) {
-                    todoLists.add((TodoList) b);
+            public void finish(BaseTodo baseTodo) {
+                if (baseTodo instanceof TodoList todoList) {
+                    todoLists.add(todoList);
                     adapter.updateList(todoLists); // run filter again
                     adapter.notifyDataSetChanged();
-                    sendToDatabase(b);
+                    model.saveTodoListInDb(todoList);
                     hints();
                     addListToNav();
                     Log.i(TAG, "list added");
@@ -925,35 +866,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void showAllTasks() {
-        model = Model.getServices(this);
-        List<TodoTask> tasks;
-        tasks = model.getAllToDoTasks();
-        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+        LiveData<List<TodoTask>> todoTasksLive = viewModel.getAllToDoTasks();
+        todoTasksLive.observe(this, todoTasks -> {
+            expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, todoTasks);
 
-        exLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+            exLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                    if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 
-                    int childPosition = ExpandableListView.getPackedPositionChild(id);
-                    expandableTodoTaskAdapter.setLongClickedSubtaskByPos(groupPosition, childPosition);
-                } else {
-                    expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
+                        int childPosition = ExpandableListView.getPackedPositionChild(id);
+                        expandableTodoTaskAdapter.setLongClickedSubtaskByPos(groupPosition, childPosition);
+                    } else {
+                        expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
+                    }
+                    registerForContextMenu(exLv);
+                    return false;
                 }
-                registerForContextMenu(exLv);
-                return false;
-            }
+            });
+            exLv.setAdapter(expandableTodoTaskAdapter);
+            exLv.setEmptyView(tv);
+            optionFab.setVisibility(View.VISIBLE);
+            initFab(true, 0, false);
+            hints();
         });
-        exLv.setAdapter(expandableTodoTaskAdapter);
-        exLv.setEmptyView(tv);
-        optionFab.setVisibility(View.VISIBLE);
-        initFab(true, 0, false);
-        hints();
     }
-
-
 
     private void showTasksOfList(int id) {
 
@@ -994,34 +933,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //idExists describes if id is given from list (true) or new task is created in all-tasks (false)
     private void initFab(boolean showFab, int id, boolean idExists) {
-        model = Model.getServices(this);
-        final List<TodoTask> tasks = model.getAllToDoTasks();
+        //model = Model.getServices(this);
+        //final List<TodoTask> tasks = model.getAllToDoTasks();
         //final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        final int helpId = id;
-        final boolean helpExists = idExists;
 
-        optionFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(MainActivity.this);
-                pt.setListSelector(helpId, helpExists);
-                pt.setDialogResult(new TodoCallback() {
-                    @Override
-                    public void finish(BaseTodo b) {
-                        if (b instanceof TodoTask) {
-                            //((TodoTask) b).setListId(helpId);
-                            sendToDatabase(b);
-                            hints();
-                            //show List if created in certain list, else show all tasks
-                            if (helpExists){
-                                showTasksOfList(helpId);
-                            } else
-                                showAllTasks();
-                        }
+        optionFab.setOnClickListener(v -> {
+            ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(MainActivity.this);
+            pt.setListSelector(id, idExists);
+            pt.setDialogResult(b -> {
+                if (b instanceof TodoTask todoTask) {
+                    //todoTask.setListId(id);
+                    model.saveTodoTaskInDb(todoTask);
+                    notifyReminderService(todoTask);
+                    hints();
+                    // show List if created in certain list, else show all tasks
+                    if (idExists) {
+                        showTasksOfList(id);
+                    } else {
+                        showAllTasks();
                     }
-                });
-                pt.show();
-            }
+                }
+            });
+            pt.show();
         });
     }
 
@@ -1066,8 +999,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setDialogResult(new TodoCallback() {
                     @Override
                     public void finish(BaseTodo b) {
-                        if(b instanceof TodoSubtask) {
-                            sendToDatabase(b);
+                        if(b instanceof TodoSubtask todoSubtask) {
+                            model.saveTodoSubtaskInDb(todoSubtask);
                             expandableTodoTaskAdapter.notifyDataSetChanged();
                             Log.i(TAG, "subtask altered");
                         }
@@ -1092,17 +1025,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 editTaskDialog.titleEdit();
                 editTaskDialog.setListSelector(longClickedTodo.getLeft().getListId(), true);
 
-                editTaskDialog.setDialogResult(new TodoCallback() {
-                    @Override
-                    public void finish(BaseTodo alteredTask) {
-                        if(alteredTask instanceof TodoTask) {
-                            sendToDatabase(alteredTask);
-                            expandableTodoTaskAdapter.notifyDataSetChanged();
-                            if (inList && listIDold != -3) {
-                                showTasksOfList(listIDold);
-                            } else {
-                                showAllTasks();
-                            }
+                editTaskDialog.setDialogResult(b -> {
+                    if(b instanceof TodoTask alteredTask) {
+                        model.saveTodoTaskInDb(alteredTask);
+                        notifyReminderService(alteredTask);
+                        expandableTodoTaskAdapter.notifyDataSetChanged();
+                        if (inList && listIDold != -3) {
+                            showTasksOfList(listIDold);
+                        } else {
+                            showAllTasks();
                         }
                     }
                 });
@@ -1195,7 +1126,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //todoRe.doneStatusChanged();
         }
         if (todoRe.getProgress() != -1) {
-            sendToDatabase(todoRe); //Update the existing entry, if no subtask
+            // Update the existing entry, if no subtask
+            model.saveTodoTaskInDb(todoRe);
+            notifyReminderService(todoRe);
         }
 
         //super.onResume();
@@ -1205,8 +1138,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
         model = Model.getServices(this);
-        if (model.getAllToDoTasks().size() == 0 &&
-                model.getAllToDoLists().size() == 0) {
+        if (   model.getNumberOfAllToDoTasks() == 0
+            && model.getNumberOfAllToDoLists() == 0) {
 
             initialAlert.setVisibility(View.VISIBLE);
             anim.setDuration(1500);
@@ -1215,13 +1148,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             anim.setRepeatCount(Animation.INFINITE);
             initialAlert.startAnimation(anim);
 
-        } else /*if (model.getAllToDoTasks().size() > 0 ||
-                model.getAllToDoLists().size() > 0) */ {
+        } else /* if number of AllToDoTasks != 0 || number of AllToDoLists != 0 */ {
             initialAlert.setVisibility(View.GONE);
             initialAlert.clearAnimation();
         }
 
-        if (model.getAllToDoTasks().size() == 0) {
+        if (model.getNumberOfAllToDoTasks() == 0) {
             secondAlert.setVisibility(View.VISIBLE);
             anim.setDuration(1500);
             anim.setStartOffset(20);
@@ -1242,7 +1174,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return false;
         }
     }
-
-
 }
 

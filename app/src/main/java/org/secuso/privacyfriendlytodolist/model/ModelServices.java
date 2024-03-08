@@ -40,6 +40,8 @@ public interface ModelServices {
 
     TodoSubtask createTodoSubtask();
 
+    TodoTask getTaskById(int todoTaskId);
+
     TodoTask getNextDueTask(long today);
 
     /**
@@ -60,11 +62,15 @@ public interface ModelServices {
 
     int setSubtaskInTrash(TodoSubtask subtask, boolean inTrash);
 
-    List<TodoTask> getAllToDoTasks ();
+    int getNumberOfAllToDoTasks();
 
-    List<TodoTask> getBin ();
+    List<TodoTask> getAllToDoTasks();
 
-    List<TodoList> getAllToDoLists ();
+    List<TodoTask> getBin();
+
+    int getNumberOfAllToDoLists();
+
+    List<TodoList> getAllToDoLists();
 
     int saveTodoSubtaskInDb(TodoSubtask subtask);
 

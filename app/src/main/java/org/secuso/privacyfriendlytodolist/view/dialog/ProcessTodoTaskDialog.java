@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
@@ -330,7 +330,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     }
 
 
-    //change the dialogtitle from "new task" to "edit task"
+    //change the dialog title from "new task" to "edit task"
     public void titleEdit(){
         dialogTitleNew.setVisibility(View.GONE);
         dialogTitleEdit.setVisibility(View.VISIBLE);
