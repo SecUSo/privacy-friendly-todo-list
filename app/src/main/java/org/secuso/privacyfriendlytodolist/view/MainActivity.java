@@ -17,6 +17,8 @@
 
 package org.secuso.privacyfriendlytodolist.view;
 
+import static org.secuso.privacyfriendlytodolist.model.TodoList.DUMMY_LIST_ID;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -884,7 +886,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             exLv.setAdapter(expandableTodoTaskAdapter);
             exLv.setEmptyView(tv);
             optionFab.setVisibility(View.VISIBLE);
-            initFab(true, 0, false);
+            initFab(0, null);
             hints();
         });
     }
@@ -912,37 +914,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         activeList = id;
 
-        for (int i = 0; i < lists.size(); i++) {
-            if (id == lists.get(i).getId()) {
-                help.addAll(lists.get(i).getTasks());
+        String todoListName = null;
+        for (TodoList todoList : lists) {
+            if (id == todoList.getId()) {
+                todoListName = todoList.getName();
+                help.addAll(todoList.getTasks());
+                break;
             }
         }
         expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, help);
         exLv.setAdapter(expandableTodoTaskAdapter);
         exLv.setEmptyView(tv);
         optionFab.setVisibility(View.VISIBLE);
-        initFab(true, id , true);
+        initFab(id, todoListName);
     }
 
 
 
     //idExists describes if id is given from list (true) or new task is created in all-tasks (false)
-    private void initFab(boolean showFab, int id, boolean idExists) {
+    private void initFab(int todoListId, String todoListName) {
         //model = Model.getServices(this);
         //final List<TodoTask> tasks = model.getAllToDoTasks();
         //final ExpandableTodoTaskAdapter taskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
 
         optionFab.setOnClickListener(v -> {
             ProcessTodoTaskDialog pt = new ProcessTodoTaskDialog(MainActivity.this);
-            pt.setListSelector(id, idExists);
+            pt.setListSelector(todoListId, todoListName);
             pt.setDialogCallback(todoTask -> {
                 //todoTask.setListId(id);
                 model.saveTodoTaskInDb(todoTask);
                 notifyReminderService(todoTask);
                 hints();
                 // show List if created in certain list, else show all tasks
-                if (idExists) {
-                    showTasksOfList(id);
+                if (0 != todoListId) {
+                    showTasksOfList(todoListId);
                 } else {
                     showAllTasks();
                 }
@@ -1007,15 +1012,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.change_task:
-                final int listIDold=longClickedTodo.getLeft().getListId();
+                TodoTask selectedTodoTask = longClickedTodo.getLeft();
+                final int listIDold = selectedTodoTask.getListId();
                 final ProcessTodoTaskDialog editTaskDialog = new ProcessTodoTaskDialog(this, longClickedTodo.getLeft());
                 editTaskDialog.titleEdit();
-                editTaskDialog.setListSelector(longClickedTodo.getLeft().getListId(), true);
+                editTaskDialog.setListSelector(selectedTodoTask.getListId(), selectedTodoTask.getName());
                 editTaskDialog.setDialogCallback(todoTask -> {
                     model.saveTodoTaskInDb(todoTask);
                     notifyReminderService(todoTask);
                     expandableTodoTaskAdapter.notifyDataSetChanged();
-                    if (inList && listIDold != -3) {
+                    if (inList && listIDold != DUMMY_LIST_ID) {
                         showTasksOfList(listIDold);
                     } else {
                         showAllTasks();
@@ -1037,7 +1043,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
 
                 // Dependent on the current View, update All-tasks or a certain List
-                if (this.inList && longClickedTodo.getLeft().getListId() != -3) {
+                if (this.inList && longClickedTodo.getLeft().getListId() != DUMMY_LIST_ID) {
                     showTasksOfList(longClickedTodo.getLeft().getListId());
                 } else {
                     showAllTasks();
@@ -1051,7 +1057,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         for (TodoSubtask ts : subtasks){
                             model.setSubtaskInTrash(ts, false);
                         }
-                        if (inList && longClickedTodo.getLeft().getListId() != -3) {
+                        if (inList && longClickedTodo.getLeft().getListId() != DUMMY_LIST_ID) {
                             showTasksOfList(longClickedTodo.getLeft().getListId());
                         } else {
                             showAllTasks();

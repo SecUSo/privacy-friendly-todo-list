@@ -17,7 +17,8 @@
 
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
-import android.content.Context;
+import static org.secuso.privacyfriendlytodolist.model.TodoList.DUMMY_LIST_ID;
+
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -30,12 +31,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.ModelServices;
+import org.secuso.privacyfriendlytodolist.viewmodel.ViewModelServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +53,7 @@ import java.util.List;
  */
 
 public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoTask>> {
+    private static final TodoTask.Priority DEFAULT_PRIORITY = TodoTask.Priority.MEDIUM;
 
     private TextView prioritySelector;
     private TextView deadlineTextView;
@@ -63,33 +70,43 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
     private TodoTask.Priority taskPriority = null;
     private int selectedListID;
     private List<TodoList> lists = new ArrayList<>();
-    private ModelServices model;
+    private final ViewModelServices viewModel;
+    private final LifecycleOwner lifecycleOwner;
     private int taskProgress = 0;
     private String name, description;
     private long deadline = -1;
     private long reminderTime = -1;
 
-    private TodoTask.Priority defaultPriority = TodoTask.Priority.MEDIUM;
+    private final TodoTask task;
 
-    private TodoTask task;
-
-
-    public ProcessTodoTaskDialog(final Context context) {
+    /**
+     * @param context Gets used as context, ViewModelStoreOwner and LifecycleOwner.
+     */
+    public ProcessTodoTaskDialog(FragmentActivity context) {
         super(context, R.layout.add_task_dialog);
 
         initGui();
-        model = Model.getServices(context);
-        task = model.createTodoTask();
+
+        viewModel = new ViewModelProvider(context).get(ViewModelServices.class);
+        lifecycleOwner = context;
+
+        task = Model.getServices(context).createTodoTask();
         task.setCreated();
         //task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
 
-
-    public ProcessTodoTaskDialog(Context context, TodoTask task) {
+    /**
+     * @param context Gets used as context, ViewModelStoreOwner and LifecycleOwner.
+     */
+    public ProcessTodoTaskDialog(FragmentActivity context, TodoTask todoTask) {
         super(context, R.layout.add_task_dialog);
 
         initGui();
-        model = Model.getServices(context);
+
+        viewModel = new ViewModelProvider(context).get(ViewModelServices.class);
+        lifecycleOwner = context;
+
+        task = todoTask;
         task.setChanged();
         //task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
         deadline = task.getDeadline();
@@ -99,16 +116,14 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
         prioritySelector.setText(Helper.priority2String(context, task.getPriority()));
         taskPriority = task.getPriority();
         progressSelector.setProgress(task.getProgress());
-        if(task.getDeadline() <= 0)
+        if (task.getDeadline() <= 0)
             deadlineTextView.setText(context.getString(R.string.no_deadline));
         else
             deadlineTextView.setText(Helper.getDate(deadline));
-        if(task.getReminderTime() <= 0)
+        if (task.getReminderTime() <= 0)
             reminderTextView.setText(context.getString(R.string.reminder));
         else
             reminderTextView.setText(Helper.getDateTime(reminderTime));
-
-        this.task = task;
     }
 
     private void initGui() {
@@ -123,7 +138,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
             }
         });
         prioritySelector.setOnCreateContextMenuListener(this);
-        taskPriority = defaultPriority;
+        taskPriority = DEFAULT_PRIORITY;
         prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
 
         //initialize titles of the dialog
@@ -283,20 +298,24 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
         switch (v.getId()){
             case R.id.tv_new_task_priority:
                 menu.setHeaderTitle(R.string.select_priority);
-                for (TodoTask.Priority prio : TodoTask.Priority.values()) {
-                    menu.add(Menu.NONE, prio.ordinal(), Menu.NONE, Helper.priority2String(getContext(), prio));
-
+                for (TodoTask.Priority priority : TodoTask.Priority.values()) {
+                    menu.add(Menu.NONE, priority.ordinal(), Menu.NONE, Helper.priority2String(getContext(), priority));
                 }
                 break;
 
             case R.id.tv_new_task_listchoose:
                 menu.setHeaderTitle(R.string.select_list);
-                updateLists();
-                menu.add(Menu.NONE, -3,Menu.NONE, R.string.select_no_list);
-                for (TodoList tl : lists){
-                    //+3 so that IDs are non-overlapping with prio-IDs
-                    menu.add(Menu.NONE, tl.getId()+3, Menu.NONE, tl.getName());
-                }
+                LiveData<List<TodoList>> todoListsLive = viewModel.getAllToDoLists();
+                todoListsLive.observe(lifecycleOwner, todoLists -> {
+                    lists = todoLists;
+                    menu.add(Menu.NONE, -1, Menu.NONE, R.string.select_no_list);
+                    final int itemIdOffset = TodoTask.Priority.values().length;
+                    for (int i = 0; i < lists.size(); ++i) {
+                        TodoList todoList = lists.get(i);
+                        // Add offset so that IDs are non-overlapping with priority-IDs
+                        menu.add(Menu.NONE, itemIdOffset + i, Menu.NONE, todoList.getName());
+                    }
+                });
             break;
         }
     }
@@ -304,18 +323,18 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        int numValues = TodoTask.Priority.values().length;
-        if (item != null && item.getItemId() < numValues && item.getItemId() >= 0 ) {
+        int prioritiesCount = TodoTask.Priority.values().length;
+        if (item.getItemId() >= 0 && item.getItemId() < prioritiesCount) {
             taskPriority = TodoTask.Priority.values()[item.getItemId()];
             prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
-        }
-
-        for (TodoList tl : lists){
-            if (item.getItemId()-3 == tl.getId()){
-                this.selectedListID = tl.getId();
-                listSelector.setText(tl.getName());
-            } else if (item.getTitle() == getContext().getString(R.string.to_choose_list)||item.getTitle() == getContext().getString(R.string.select_no_list)){
-                this.selectedListID = -3;
+        } else {
+            final int todoListIndex = item.getItemId() - prioritiesCount;
+            if (todoListIndex >= 0 && todoListIndex < lists.size()) {
+                TodoList todoList = lists.get(todoListIndex);
+                this.selectedListID = todoList.getId();
+                listSelector.setText(todoList.getName());
+            } else {
+                this.selectedListID = DUMMY_LIST_ID;
                 listSelector.setText(item.getTitle());
             }
         }
@@ -323,33 +342,21 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
         return super.onMenuItemSelected(featureId, item);
     }
 
-
-    //updates the lists array
-    public void updateLists(){
-        lists = model.getAllToDoLists();
-    }
-
-
     //change the dialog title from "new task" to "edit task"
     public void titleEdit(){
         dialogTitleNew.setVisibility(View.GONE);
         dialogTitleEdit.setVisibility(View.VISIBLE);
-
     }
 
     //sets the textview either to listname in context or if no context to default
-    public void setListSelector(int id, boolean idExists){
-        updateLists();
-        for (TodoList tl : lists){
-            if (id == tl.getId() && idExists == true){
-                listSelector.setText(tl.getName());
-                selectedListID = tl.getId();
-            }else if (!idExists){
-                listSelector.setText(getContext().getString(R.string.click_to_choose));
-                selectedListID = -3;
-            }
+    public void setListSelector(int todoListId, String name) {
+        if (0 != todoListId && null != name) {
+            listSelector.setText(name);
+            selectedListID = todoListId;
+        } else {
+            listSelector.setText(getContext().getString(R.string.click_to_choose));
+            selectedListID = DUMMY_LIST_ID;
         }
-
     }
 
     private boolean hasAutoProgress() {

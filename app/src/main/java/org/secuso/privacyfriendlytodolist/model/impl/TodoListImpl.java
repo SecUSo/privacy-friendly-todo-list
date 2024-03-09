@@ -37,7 +37,6 @@ class TodoListImpl extends BaseTodoImpl implements TodoList {
 
     public static final String PARCELABLE_KEY = "PARCELABLE_KEY_FOR_TODO_LIST";
     public static final String UNIQUE_DATABASE_ID = "CURRENT_TODO_LIST_ID";
-    public static final int DUMMY_LIST_ID = -3; // -1 is often used for error codes
 
     private final TodoListData data;
     private List<TodoTask> tasks = new ArrayList<TodoTask>();
