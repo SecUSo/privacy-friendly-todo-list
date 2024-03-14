@@ -211,8 +211,7 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     public List<TodoTask> getTasksInTrash() {
-       List<TodoTask> backup = model.getBin();
-       return backup;
+        return model.getBin();
     }
 
     @Override

@@ -35,7 +35,7 @@ class ViewModelServices(application: Application) : AndroidViewModel(application
     fun getAllToDoLists(): LiveData<List<TodoList>> {
         val liveData = MutableLiveData<List<TodoList>>()
         viewModelScope.launch(Dispatchers.IO) {
-            liveData.postValue(model.allToDoLists)
+            liveData.postValue(model.getAllToDoLists())
         }
         return liveData
     }
@@ -43,7 +43,7 @@ class ViewModelServices(application: Application) : AndroidViewModel(application
     fun getAllToDoTasks(): LiveData<List<TodoTask>> {
         val liveData = MutableLiveData<List<TodoTask>>()
         viewModelScope.launch(Dispatchers.IO) {
-            liveData.postValue(model.allToDoTasks)
+            liveData.postValue(model.getAllToDoTasks())
         }
         return liveData
     }
