@@ -290,7 +290,7 @@ class ModelServicesImpl(
                 counter = db.getTodoTaskDao().updateValuesFromPomodoro(
                     todoTaskImpl.id,
                     todoTaskImpl.name,
-                    todoTaskImpl.progress,
+                    todoTaskImpl.getProgress(false),
                     todoTaskImpl.isDone
                 )
                 Log.d(TAG, "Todo task was updated in DB by values from pomodoro (return code $counter): $data")
