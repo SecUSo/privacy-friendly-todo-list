@@ -71,7 +71,16 @@ public interface TodoTask extends BaseTodo, Parcelable {
 
     void setProgress(int progress);
 
-    int getProgress();
+    /**
+     *
+     * @param computeProgress If true, the progress of the task gets computed depending on the
+     *                        subtasks done-state. This progress also gets stored so that a further
+     *                        call with 'false' will return the same value (until next computation
+     *                        or {@link #setProgress(int)} gets called).
+     *                        If false, the last stored value gets returned.
+     * @return The progress of the task in percent (values in range 0 - 100).
+     */
+    int getProgress(boolean computeProgress);
 
     void setListId(int listId);
 

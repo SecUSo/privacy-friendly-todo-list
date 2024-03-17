@@ -483,8 +483,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 }
 
                 vh2.name.setText(currentTask.getName());
-                getProgressDone(currentTask, hasAutoProgress());
-                vh2.progressBar.setProgress(currentTask.getProgress());
+                vh2.progressBar.setProgress(currentTask.getProgress(hasAutoProgress()));
                 String deadline;
                 if (currentTask.getDeadline() <= 0)
                     deadline = context.getResources().getString(R.string.no_deadline);
@@ -514,7 +513,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                                     buttonView.setChecked(inverted);
                                     currentTask.setDone(buttonView.isChecked());
                                     currentTask.setAllSubtasksDone(inverted);
-                                    getProgressDone(currentTask, hasAutoProgress());
+                                    currentTask.getProgress(hasAutoProgress());
                                     currentTask.setChanged();
                                     notifyDataSetChanged();
                                     for (TodoSubtask subtask : currentTask.getSubtasks()) {
@@ -526,7 +525,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             snackbar.show();
                             currentTask.setDone(buttonView.isChecked());
                             currentTask.setAllSubtasksDone(buttonView.isChecked());
-                            getProgressDone(currentTask, hasAutoProgress());
+                            currentTask.getProgress(hasAutoProgress());
                             currentTask.setChanged();
                             notifyDataSetChanged();
                             for (TodoSubtask subtask : currentTask.getSubtasks()) {
@@ -636,7 +635,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
                             currentSubtask.setChanged();
                             model.saveTodoSubtaskInDb(currentSubtask, counter1 -> {
-                                getProgressDone(currentTask, hasAutoProgress());
+                                currentTask.getProgress(hasAutoProgress());
                                 model.saveTodoTaskInDb(currentTask, counter2 -> {
                                     notifyDataSetChanged();
                                 });
@@ -655,24 +654,6 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         TodoTask todoTask = getTaskByPosition(groupPosition);
         return null != todoTask && childPosition > 0 && childPosition < todoTask.getSubtasks().size() + 1;
-    }
-
-    public void getProgressDone(TodoTask t, boolean autoProgress) {
-        if (autoProgress) {
-            int progress = 0;
-            int help = 0;
-            List<TodoSubtask> subs = t.getSubtasks();
-            for (TodoSubtask st : subs){
-                if (st.isDone()){
-                    help++;
-                }
-            }
-            double computedProgress = ((double)help/(double)t.getSubtasks().size())*100;
-            progress = (int) computedProgress;
-            t.setProgress(progress);
-        } else {
-            t.setProgress(t.getProgress());
-        }
     }
 
     public class GroupTaskViewHolder {

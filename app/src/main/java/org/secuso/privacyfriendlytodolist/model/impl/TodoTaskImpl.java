@@ -47,7 +47,6 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     private boolean reminderTimeChanged = false;
     private boolean reminderTimeWasInitialized = false;
     private TodoList list;
-    private int progress;
     private List<TodoSubtask> subtasks = new ArrayList<>();
 
     public TodoTaskImpl() {
@@ -66,7 +65,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         description = parcel.readString();
         data.setDone(parcel.readByte() != 0);
         data.setInTrash(parcel.readByte() != 0);
-        progress = parcel.readInt();
+        data.setProgress(parcel.readInt());
         data.setDeadline(parcel.readLong());
         data.setReminderTime(parcel.readLong());
         data.setListPosition(parcel.readInt());
@@ -82,7 +81,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         dest.writeString(description);
         dest.writeByte((byte)(data.isDone() ? 1 : 0));
         dest.writeByte((byte)(data.isInTrash() ? 1 : 0));
-        dest.writeInt(progress);
+        dest.writeInt(data.getProgress());
         dest.writeLong(data.getDeadline());
         dest.writeLong(data.getReminderTime());
         dest.writeInt(data.getListPosition());
@@ -162,6 +161,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         // The default reminder time is a relative value in seconds (e.g. 86400s == 1 day)
         // The user specified reminder time is an absolute timestamp
 
+        DeadlineColors dDeadlineColor = DeadlineColors.BLUE;
         final long deadline = data.getDeadline();
         final long reminderTime = data.getReminderTime();
         if (!data.isDone() && deadline > 0) {
@@ -169,14 +169,15 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
             long currentTimeStamp = Helper.getCurrentTimestamp();
             long remTimeToCalc = reminderTime > 0 ? deadline-reminderTime : defaultReminderTime;
 
-            if ((currentTimeStamp >= (deadline - remTimeToCalc)) && (deadline > currentTimeStamp))
-                return DeadlineColors.ORANGE;
-
-            if ((currentTimeStamp > deadline) && (deadline > 0))
-                return DeadlineColors.RED;
+            if ((currentTimeStamp >= (deadline - remTimeToCalc)) && (deadline > currentTimeStamp)) {
+                dDeadlineColor = DeadlineColors.ORANGE;
+            }
+            else if (currentTimeStamp > deadline) {
+                dDeadlineColor = DeadlineColors.RED;
+            }
         }
 
-        return DeadlineColors.BLUE;
+        return dDeadlineColor;
     }
 
     @Override
@@ -195,8 +196,24 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     }
 
     @Override
-    public int getProgress() {
-        return progress;
+    public int getProgress(boolean computeProgress) {
+        if (computeProgress) {
+            int progress;
+            if (0 == subtasks.size()) {
+                progress = isDone() ? 100 : 0;
+            } else {
+                int doneSubtasks = 0;
+                for (TodoSubtask todoSubtask : subtasks) {
+                    if (todoSubtask.isDone()) {
+                        ++doneSubtasks;
+                    }
+                }
+                progress = (doneSubtasks * 100) / subtasks.size();
+            }
+            setProgress(progress);
+        }
+
+        return data.getProgress();
     }
 
     public static final Creator<TodoTaskImpl> CREATOR =

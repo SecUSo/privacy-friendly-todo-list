@@ -1062,7 +1062,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent pomodoro = new Intent(POMODORO_ACTION);
         int todoId = todo.getId();
         String todoDescription = todo.getDescription() != null ? todo.getDescription() : "";
-        int progress = todo instanceof TodoTask ? ((TodoTask)todo).getProgress() : -1;
+        int progress = todo instanceof TodoTask ? ((TodoTask)todo).getProgress(false) : -1;
 
         String todoName = todo.getName();
         pomodoro.putExtra("todo_id", todoId)
@@ -1082,12 +1082,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         todoRe.setName(getIntent().getStringExtra("todo_name"));
         todoRe.setId(getIntent().getIntExtra("todo_id", -1));
         todoRe.setProgress(getIntent().getIntExtra("todo_progress", -1));
-        if (todoRe.getProgress() == 100) {
+        if (todoRe.getProgress(false) == 100) {
             // Set task as done
             todoRe.setDone(true);
             //todoRe.doneStatusChanged();
         }
-        if (todoRe.getProgress() != -1) {
+        if (todoRe.getProgress(false) != -1) {
             // Update the existing entry, if no subtask
             model.saveTodoTaskInDb(todoRe, counter -> {
                 notifyReminderService(todoRe);
