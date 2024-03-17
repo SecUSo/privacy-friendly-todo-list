@@ -30,19 +30,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.util.Helper;
-import org.secuso.privacyfriendlytodolist.model.Model;
-import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CalendarActivity extends AppCompatActivity {
 
+    private ModelServices model;
     private CalendarView calendarView;
     private CalendarGridAdapter calendarGridAdapter;
     protected MainActivity containerActivity;
@@ -66,6 +67,9 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
 
         setContentView(R.layout.fragment_calendar);
 
@@ -129,22 +133,22 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     private void updateDeadlines() {
-        List<TodoList> todoLists = Model.getServices(this).getAllToDoLists();
-        List<TodoTask> todoTasks = Model.getServices(this).getAllToDoTasks();
-        tasksPerDay.clear();
-        //for (TodoList list : todoLists){
-        for (TodoTask task : todoTasks) {
-            long deadline = task.getDeadline();
-            String key = absSecondsToDate(deadline);
-            if (!tasksPerDay.containsKey(key)) {
-                tasksPerDay.put(key, new ArrayList<TodoTask>());
+        model.getAllToDoTasks(todoTasks -> {
+            tasksPerDay.clear();
+            for (TodoTask todoTask : todoTasks) {
+                final long deadline = todoTask.getDeadline();
+                final String key = absSecondsToDate(deadline);
+                ArrayList<TodoTask> tasksOfDay = tasksPerDay.get(key);
+                if (null == tasksOfDay) {
+                    tasksOfDay = new ArrayList<>();
+                    tasksPerDay.put(key, tasksOfDay);
+                }
+                tasksOfDay.add(todoTask);
             }
-            tasksPerDay.get(key).add(task);
-            //}
-        }
-        calendarGridAdapter.setTodoTasks(tasksPerDay);
-        calendarGridAdapter.notifyDataSetChanged();
-        //containerActivity.getSupportActionBar().setTitle(R.string.calendar);
+            calendarGridAdapter.setTodoTasks(tasksPerDay);
+            calendarGridAdapter.notifyDataSetChanged();
+            //containerActivity.getSupportActionBar().setTitle(R.string.calendar);
+        });
     }
 
     private String absSecondsToDate(long seconds) {

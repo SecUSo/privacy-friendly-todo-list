@@ -36,7 +36,7 @@ import java.util.List;
  * Class to set up To-Do Tasks and its parameters.
  */
 
-class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
+public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
 
     private static final String TAG = TodoTaskImpl.class.getSimpleName();
 

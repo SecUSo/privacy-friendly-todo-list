@@ -108,7 +108,7 @@ public class NotificationHelper extends ContextWrapper {
         snooze.putExtra("taskId", task.getId());
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
-        resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
+        resultIntent.putExtra(MainActivity.PARCELABLE_KEY_FOR_TODO_TASK, task);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);

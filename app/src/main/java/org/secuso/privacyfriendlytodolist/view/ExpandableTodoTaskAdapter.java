@@ -20,8 +20,7 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +31,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.BaseTodo;
-import org.secuso.privacyfriendlytodolist.util.Helper;
-import org.secuso.privacyfriendlytodolist.model.Model;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog;
 
 import java.util.ArrayList;
@@ -57,12 +57,15 @@ import java.util.Map;
 
 public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
+    private static final String TAG = ExpandableTodoTaskAdapter.class.getSimpleName();
+
     private SharedPreferences prefs;
 
     // left item: task that was long clicked
     // right item: subtask that was long clicked
     private Tuple<TodoTask, TodoSubtask> longClickedTodo;
 
+    private ModelServices model;
 
     public enum Filter {
         ALL_TASKS,
@@ -108,8 +111,9 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     // Normally the toolbar title contains the list name. However, it all tasks are displayed in a dummy list it is not obvious to what list a tasks belongs. This missing information is then added to each task in an additional text view.
     private boolean showListName = false;
 
-    public ExpandableTodoTaskAdapter(Context context, List<TodoTask> tasks) {
+    public ExpandableTodoTaskAdapter(Context context, ModelServices model, List<TodoTask> tasks) {
         this.context = context;
+        this.model = model;
 
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -140,7 +144,13 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     public void setLongClickedTaskByPos(int position) {
-        longClickedTodo = Tuple.makePair(getTaskByPosition(position), null);
+        longClickedTodo = null;
+        TodoTask todoTask = getTaskByPosition(position);
+        if (null != todoTask) {
+            longClickedTodo = Tuple.makePair(todoTask, null);
+        } else {
+            Log.w(TAG, "Unable to get task by position " + position);
+        }
     }
 
     public void setListNames(boolean flag) {
@@ -148,10 +158,17 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     }
 
     public void setLongClickedSubtaskByPos(int groupPosition, int childPosition) {
-        TodoTask task = getTaskByPosition(groupPosition);
-        if(task!=null) {
-            TodoSubtask subtask = task.getSubtasks().get(childPosition - 1);
-            longClickedTodo = Tuple.makePair(task, subtask);
+        longClickedTodo = null;
+        TodoTask todoTask = getTaskByPosition(groupPosition);
+        if (null != todoTask) {
+            List<TodoSubtask> subtasks = todoTask.getSubtasks();
+            final int index = childPosition - 1;
+            if (index >= 0 && index < subtasks.size()) {
+                longClickedTodo = Tuple.makePair(todoTask, subtasks.get(index));
+            }
+        }
+        if (null == longClickedTodo) {
+            Log.w(TAG, "Unable to get subtask by position " + groupPosition + ", " + childPosition);
         }
     }
 
@@ -299,19 +316,21 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
         int seenPrioBars = 0;
         if (isPriorityGroupingEnabled()) {
             for (TodoTask.Priority priority : TodoTask.Priority.values()) {
-                if (prioBarPositions.containsKey(priority)) {
-                    if (groupPosition < prioBarPositions.get(priority))
+                final Integer prioPos = prioBarPositions.get(priority);
+                if (null != prioPos) {
+                    if (groupPosition < prioPos)
                         break;
-                    seenPrioBars++;
+                    ++seenPrioBars;
                 }
             }
         }
 
-        int pos = groupPosition - seenPrioBars;
-
-        if (pos < filteredTasks.size() && pos >= 0)
+        final int pos = groupPosition - seenPrioBars;
+        if (pos >= 0 && pos < filteredTasks.size()) {
             return filteredTasks.get(pos);
+        }
 
+        Log.w(TAG, "Unable to get task by group position " + groupPosition);
         return null; // should never be the case
     }
 
@@ -325,10 +344,12 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        TodoTask task = getTaskByPosition(groupPosition);
-        if(task == null)
-            return 0;
-        return task.getSubtasks().size() + 2;
+        int count = 0;
+        TodoTask todoTask = getTaskByPosition(groupPosition);
+        if (null != todoTask) {
+            count = todoTask.getSubtasks().size() + 2;
+        }
+        return count;
     }
 
     @Override
@@ -348,8 +369,11 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
     public int getChildType(int groupPosition, int childPosition) {
         if (childPosition == 0)
             return CH_TASK_DESCRIPTION_ROW;
-        else if (childPosition == getTaskByPosition(groupPosition).getSubtasks().size() + 1)
+
+        TodoTask todoTask = getTaskByPosition(groupPosition);
+        if (null != todoTask && childPosition == (todoTask.getSubtasks().size() + 1))
             return CH_SETTING_ROW;
+
         return CH_SUBTASK_ROW;
     }
 
@@ -431,8 +455,11 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
             case GR_TASK_ROW:
 
                 final TodoTask currentTask = getTaskByPosition(groupPosition);
-                final TodoSubtask currentSubtask;
                 final GroupTaskViewHolder vh2;
+
+                if (null == currentTask) {
+                    break;
+                }
 
                 if (convertView == null) {
 
@@ -483,32 +510,17 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             snackbar.setAction(R.string.snack_undo, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (isChecked){
-                                        buttonView.setChecked(false);
-                                        currentTask.setDone(buttonView.isChecked());
-                                        currentTask.setAllSubtasksDone(false);
-                                        getProgressDone(currentTask, hasAutoProgress());
-                                        currentTask.setChanged();
-                                        notifyDataSetChanged();
-                                        Model.getServices(context).saveTodoTaskInDb(currentTask);
-                                        for (TodoSubtask st : currentTask.getSubtasks()){
-                                            st.setDone(false);
-                                            Model.getServices(context).saveTodoSubtaskInDb(st);
-                                        }
-                                    } else {
-                                        buttonView.setChecked(true);
-                                        currentTask.setDone(buttonView.isChecked());
-                                        currentTask.setAllSubtasksDone(true);
-                                        getProgressDone(currentTask, hasAutoProgress());
-                                        currentTask.setChanged();
-                                        notifyDataSetChanged();
-                                        Model.getServices(context).saveTodoTaskInDb(currentTask);
-                                        for (TodoSubtask st : currentTask.getSubtasks()){
-                                            st.setDone(true);
-                                            Model.getServices(context).saveTodoSubtaskInDb(st);
-                                        }
+                                    final boolean inverted = !isChecked;
+                                    buttonView.setChecked(inverted);
+                                    currentTask.setDone(buttonView.isChecked());
+                                    currentTask.setAllSubtasksDone(inverted);
+                                    getProgressDone(currentTask, hasAutoProgress());
+                                    currentTask.setChanged();
+                                    notifyDataSetChanged();
+                                    for (TodoSubtask subtask : currentTask.getSubtasks()) {
+                                        subtask.setDone(inverted);
                                     }
-
+                                    model.saveTodoTaskAndSubtasksInDb(currentTask, null);
                                 }
                             });
                             snackbar.show();
@@ -517,16 +529,16 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             getProgressDone(currentTask, hasAutoProgress());
                             currentTask.setChanged();
                             notifyDataSetChanged();
-                            Model.getServices(context).saveTodoTaskInDb(currentTask);
-                            for (int i=0; i < currentTask.getSubtasks().size(); i++) {
-                                currentTask.getSubtasks().get(i).setChanged();
+                            for (TodoSubtask subtask : currentTask.getSubtasks()) {
+                                subtask.setChanged();
                                 notifyDataSetChanged();
                             }
+                            model.saveTodoTaskInDb(currentTask, null);
                         }
                     }
                 });
-
                 break;
+
             default:
                 // TODO Exception
         }
@@ -539,6 +551,10 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
         int type = getChildType(groupPosition, childPosition);
         final TodoTask currentTask = getTaskByPosition(groupPosition);
+
+        if (null == currentTask) {
+            return convertView;
+        }
 
         switch (type) {
             case CH_TASK_DESCRIPTION_ROW:
@@ -587,8 +603,9 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                         newSubtaskDialog.setDialogCallback(todoSubtask -> {
                             currentTask.getSubtasks().add(todoSubtask);
                             todoSubtask.setTaskId(currentTask.getId());
-                            Model.getServices(context).saveTodoSubtaskInDb(todoSubtask);
-                            notifyDataSetChanged();
+                            model.saveTodoSubtaskInDb(todoSubtask, counter -> {
+                                notifyDataSetChanged();
+                            });
                         });
                         newSubtaskDialog.show();
                     }
@@ -618,10 +635,12 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                             currentSubtask.setDone(buttonView.isChecked());
                             currentTask.doneStatusChanged(); // check if entire task is now (when all subtasks are done)
                             currentSubtask.setChanged();
-                            Model.getServices(context).saveTodoSubtaskInDb(currentSubtask);
-                            getProgressDone(currentTask, hasAutoProgress());
-                            Model.getServices(context).saveTodoTaskInDb(currentTask);
-                            notifyDataSetChanged();
+                            model.saveTodoSubtaskInDb(currentSubtask, counter1 -> {
+                                getProgressDone(currentTask, hasAutoProgress());
+                                model.saveTodoTaskInDb(currentTask, counter2 -> {
+                                    notifyDataSetChanged();
+                                });
+                            });
                         }
                     }
                 });
@@ -634,7 +653,8 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return childPosition > 0 && childPosition < getTaskByPosition(groupPosition).getSubtasks().size() + 1;
+        TodoTask todoTask = getTaskByPosition(groupPosition);
+        return null != todoTask && childPosition > 0 && childPosition < todoTask.getSubtasks().size() + 1;
     }
 
     public void getProgressDone(TodoTask t, boolean autoProgress) {

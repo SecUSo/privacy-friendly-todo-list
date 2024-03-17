@@ -28,20 +28,15 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskDat
 @Dao
 interface TodoSubtaskDao {
     @Insert
-    fun insert(todoSubtaskData: TodoSubtaskData): Long
-
+    suspend fun insert(todoSubtaskData: TodoSubtaskData): Long
     @Update
-    fun update(todoSubtaskData: TodoSubtaskData): Int
-
+    suspend fun update(todoSubtaskData: TodoSubtaskData): Int
     @Delete
-    fun delete(todoSubtaskData: TodoSubtaskData): Int
-
+    suspend fun delete(todoSubtaskData: TodoSubtaskData): Int
     @Query("SELECT * FROM todo_subtask WHERE taskId = :taskId")
-    fun getAllOfTask(taskId: Int): Array<TodoSubtaskData>
-
+    suspend fun getAllOfTask(taskId: Int): Array<TodoSubtaskData>
     @Query("SELECT * FROM todo_subtask WHERE taskId = :taskId AND isInTrash = 0")
-    fun getAllOfTaskNotInTrash(taskId: Int): Array<TodoSubtaskData>
-
+    suspend fun getAllOfTaskNotInTrash(taskId: Int): Array<TodoSubtaskData>
     @Query("DELETE FROM todo_subtask")
-    fun deleteAll()
+    suspend fun deleteAll(): Int
 }

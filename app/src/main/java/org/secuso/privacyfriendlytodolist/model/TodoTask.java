@@ -23,18 +23,18 @@ import java.util.List;
 
 public interface TodoTask extends BaseTodo, Parcelable {
 
-    String PARCELABLE_KEY = "PARCELABLE_KEY_FOR_TODO_TASK";
-
     enum Priority {
         HIGH, MEDIUM, LOW; // Priority steps must be sorted in the same way like they will be displayed
 
+        public static final int length = values().length;
+
         public static Priority fromInt(int i) {
-            for (Priority p : Priority.values()) {
+            for (Priority p : values()) {
                 if (p.ordinal() == i) {
                     return p;
                 }
             }
-            throw new IllegalArgumentException("No such priority defined.");
+            throw new IllegalArgumentException(i + " is no ordinal of a priority.");
         }
     }
 

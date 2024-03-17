@@ -29,8 +29,6 @@ import java.util.List;
 
 public interface TodoList extends BaseTodo, Parcelable {
 
-    String PARCELABLE_KEY = "PARCELABLE_KEY_FOR_TODO_LIST";
-    String UNIQUE_DATABASE_ID = "CURRENT_TODO_LIST_ID";
     int DUMMY_LIST_ID = -3; // -1 is often used for error codes
 
     void setId(int id);

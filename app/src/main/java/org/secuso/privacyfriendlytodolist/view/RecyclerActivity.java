@@ -20,31 +20,31 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.util.Helper;
-import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.model.ModelServices;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 /**
  * Created by Sebastian Lutz on 20.12.2017.
@@ -56,10 +56,37 @@ public class RecyclerActivity extends AppCompatActivity{
     private ModelServices model;
     private TextView tv;
     private ExpandableListView lv;
-    RelativeLayout rl;
-    private List<TodoTask> backupTasks = new ArrayList<TodoTask>();
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
+
+        setContentView(R.layout.activity_recycle);
+
+        lv = (ExpandableListView) findViewById(R.id.trash_tasks);
+        tv = (TextView) findViewById(R.id.bin_empty);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trash);
+
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.bin_toolbar);
+            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        }
+        updateAdapter();
+    }
 
    @Override
     protected void onResume() {
@@ -77,20 +104,19 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         final Tuple<TodoTask, TodoSubtask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
+        if (null != longClickedTodo) {
+            final TodoTask todoTask = longClickedTodo.getLeft();
 
-       switch(item.getItemId()){
-           case R.id.restore:
-               model.setTaskInTrash(longClickedTodo.getLeft(), false);
-               List<TodoSubtask> subtasks = longClickedTodo.getLeft().getSubtasks();
-               for (TodoSubtask ts : subtasks){
-                   model.setSubtaskInTrash(ts, false);
-               }
-               updateAdapter();
-               break;
-
-       }
+            switch (item.getItemId()) {
+                case R.id.restore:
+                    model.setTaskAndSubtasksInTrash(todoTask, false, counter -> {
+                        updateAdapter();
+                    });
+                    break;
+            }
+        }
        return super.onContextItemSelected(item);
     }
 
@@ -106,9 +132,6 @@ public class RecyclerActivity extends AppCompatActivity{
                 finish();
                 return true;
             case R.id.btn_clear:
-                model = Model.getServices(this);
-                final List<TodoTask> tasks;
-                tasks = model.getBin();
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                 builder1.setMessage(R.string.alert_clear);
                 builder1.setCancelable(true);
@@ -116,11 +139,10 @@ public class RecyclerActivity extends AppCompatActivity{
                 builder1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for (TodoTask t : tasks) {
-                            model.deleteTodoTask(t);
-                        }
-                        dialog.cancel();
-                        updateAdapter();
+                        model.clearBin(counter -> {
+                            dialog.cancel();
+                            updateAdapter();
+                        });
                     }
                 });
 
@@ -151,50 +173,18 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycle);
-
-        rl = (RelativeLayout) findViewById(R.id.relative_recycle);
-        lv = (ExpandableListView) findViewById(R.id.trash_tasks);
-        tv = (TextView) findViewById(R.id.bin_empty);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trash);
-
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.bin_toolbar);
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
-        }
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        }
-        updateAdapter();
-        backupTasks = getTasksInTrash();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.trash_clear, menu);
         return true;
     }
 
-    public void updateAdapter() {
-        model = Model.getServices(this);
-        List<TodoTask> tasks;
-        tasks = model.getBin();
-        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        lv.setAdapter(expandableTodoTaskAdapter);
-        lv.setEmptyView(tv);
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+    private void updateAdapter() {
+        model.getBin(todoTasks -> {
+            expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, model, todoTasks);
+            lv.setAdapter(expandableTodoTaskAdapter);
+            lv.setEmptyView(tv);
+            lv.setOnItemLongClickListener((parent, view, position, id) -> {
                 int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
@@ -206,12 +196,8 @@ public class RecyclerActivity extends AppCompatActivity{
                 }
                 registerForContextMenu(lv);
                 return false;
-            }
+            });
         });
-    }
-
-    public List<TodoTask> getTasksInTrash() {
-        return model.getBin();
     }
 
     @Override

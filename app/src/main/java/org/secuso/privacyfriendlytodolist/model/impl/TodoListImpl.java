@@ -33,10 +33,7 @@ import java.util.List;
  * Class to set up a To-Do List and its parameters.
  */
 
-class TodoListImpl extends BaseTodoImpl implements TodoList {
-
-    public static final String PARCELABLE_KEY = "PARCELABLE_KEY_FOR_TODO_LIST";
-    public static final String UNIQUE_DATABASE_ID = "CURRENT_TODO_LIST_ID";
+public class TodoListImpl extends BaseTodoImpl implements TodoList {
 
     private final TodoListData data;
     private List<TodoTask> tasks = new ArrayList<TodoTask>();

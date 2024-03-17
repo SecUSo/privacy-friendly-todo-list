@@ -36,10 +36,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 public class ProcessTodoListDialog extends FullScreenDialog<ResultCallback<TodoList>> {
 
-    private Button buttonOkay;
-    private Button buttonCancel;
     private EditText etName, etDescription;
-    private TodoList todoList;
+    private final TodoList todoList;
 
 
     public ProcessTodoListDialog(Context context) {
@@ -47,7 +45,7 @@ public class ProcessTodoListDialog extends FullScreenDialog<ResultCallback<TodoL
 
         initGui();
 
-        todoList = Model.getServices(context).createTodoList();
+        todoList = Model.createNewTodoList();
         todoList.setCreated();
         //todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
@@ -65,9 +63,9 @@ public class ProcessTodoListDialog extends FullScreenDialog<ResultCallback<TodoL
 
 
     private void initGui() {
-        buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
+        Button buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
         buttonOkay.setOnClickListener(new OkayButtonListener());
-        buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
+        Button buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

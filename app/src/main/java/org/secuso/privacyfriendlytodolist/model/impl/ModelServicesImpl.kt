@@ -18,7 +18,11 @@
 package org.secuso.privacyfriendlytodolist.model.impl
 
 import android.content.Context
+import android.os.Handler
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
@@ -29,8 +33,13 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.ObjectStates
+import org.secuso.privacyfriendlytodolist.model.ResultConsumer
+import org.secuso.privacyfriendlytodolist.model.Tuple
 
-class ModelServicesImpl(private val context: Context) : ModelServices {
+class ModelServicesImpl(
+    context: Context,
+    private val coroutineScope: CoroutineScope,
+    private val resultHandler: Handler): ModelServices {
 
     companion object {
         private val TAG: String = ModelServicesImpl::class.java.simpleName
@@ -38,32 +47,25 @@ class ModelServicesImpl(private val context: Context) : ModelServices {
 
     private var db: TodoListDatabase = getInstance(context)
 
-    override fun getContext(): Context {
-        return context
-    }
-
-    override fun createTodoList(): TodoList {
-        return TodoListImpl()
-    }
-
-    override fun createTodoTask(): TodoTask {
-        return TodoTaskImpl()
-    }
-
-    override fun createTodoSubtask(): TodoSubtask {
-        return TodoSubtaskImpl()
-    }
-
-    override fun getTaskById(todoTaskId: Int): TodoTask? {
-        val todoTaskData = db.getTodoTaskDao().getTaskById(todoTaskId)
-        var todoTask: TodoTask? = null
-        if (null != todoTaskData) {
-            todoTask = TodoTaskImpl(todoTaskData)
+    override fun getTaskById(todoTaskId: Int, resultConsumer: ResultConsumer<TodoTask?>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val todoTaskData = db.getTodoTaskDao().getTaskById(todoTaskId)
+            var todoTask: TodoTask? = null
+            if (null != todoTaskData) {
+                todoTask = TodoTaskImpl(todoTaskData)
+            }
+            dispatchResult(resultConsumer, todoTask)
         }
-        return todoTask
     }
 
-    override fun getNextDueTask(today: Long): TodoTask? {
+    override fun getNextDueTask(today: Long, resultConsumer: ResultConsumer<TodoTask?>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = getNextDueTaskBlocking(today)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun getNextDueTaskBlocking(today: Long): TodoTask? {
         val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(today)
         var nextDueTask: TodoTask? = null
         if (null != nextDueTaskData) {
@@ -82,34 +84,48 @@ class ModelServicesImpl(private val context: Context) : ModelServices {
      * @param lockedIds Tasks for which the user was just notified (these tasks are locked).
      * They will be excluded.
      */
-    override fun getTasksToRemind(today: Long, lockedIds: Set<Int>?): List<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getTasksToRemind(today, lockedIds)
-        val tasksToRemind = createTasks(dataArray, false)
+    override fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<List<TodoTask>>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoTaskDao().getTasksToRemind(today, lockedIds)
+            val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
-        // get task that is next due
-        val nextDueTask = getNextDueTask(today)
-        if (nextDueTask != null) {
-            tasksToRemind.add(nextDueTask)
+            // get task that is next due
+            val nextDueTask = getNextDueTaskBlocking(today)
+            if (nextDueTask != null) {
+                tasksToRemind.add(nextDueTask as TodoTaskImpl)
+            }
+            dispatchResult(resultConsumer, tasksToRemind)
         }
-        return tasksToRemind
     }
 
-    override fun deleteTodoList(todoList: TodoList): Int {
-        var counter = 0
-        for (task in todoList.tasks) {
-            counter += setTaskInTrash(task, true)
+    override fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            var counter = 0
+            val todoListData = db.getTodoListDao().getById(todoListId)
+            if (null != todoListData) {
+                val todoList = loadListsTasksSubtasks(todoListData)[0]
+                for (task in todoList.tasks) {
+                    counter += setTaskAndSubtasksInTrashBlocking(task, true)
+                }
+                Log.i(TAG, "$counter tasks put into trash while removing list")
+                counter = db.getTodoListDao().delete(todoList.data)
+            }
+            Log.i(TAG, "$counter lists removed from database")
+            dispatchResult(resultConsumer, counter)
         }
-        Log.i(TAG, "$counter tasks put into trash while removing list")
-        val todoListImpl = todoList as TodoListImpl
-        counter = db.getTodoListDao().delete(todoListImpl.data)
-        Log.i(TAG, "$counter lists removed from database")
-        return counter
     }
 
-    override fun deleteTodoTask(todoTask: TodoTask): Int {
+    override fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = deleteTodoTaskBlocking(todoTask)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun deleteTodoTaskBlocking(todoTask: TodoTask): Int {
         var counter = 0
         for (subtask in todoTask.subtasks) {
-            counter += deleteTodoSubtask(subtask)
+            counter += deleteTodoSubtaskBlocking(subtask)
         }
         Log.i(TAG, "$counter subtasks removed from database while removing task")
         val todoTaskImpl = todoTask as TodoTaskImpl
@@ -118,17 +134,31 @@ class ModelServicesImpl(private val context: Context) : ModelServices {
         return counter
     }
 
-    override fun deleteTodoSubtask(subtask: TodoSubtask): Int {
+    override fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = deleteTodoSubtaskBlocking(subtask)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun deleteTodoSubtaskBlocking(subtask: TodoSubtask): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
         val counter = db.getTodoSubtaskDao().delete(todoSubtaskImpl.data)
         Log.i(TAG, "$counter subtasks removed from database")
         return counter
     }
 
-    override fun setTaskInTrash(todoTask: TodoTask, inTrash: Boolean): Int {
+    override fun setTaskAndSubtasksInTrash(todoTask: TodoTask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = setTaskAndSubtasksInTrashBlocking(todoTask, inTrash)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun setTaskAndSubtasksInTrashBlocking(todoTask: TodoTask, inTrash: Boolean): Int {
         var counter = 0
         for (subtask in todoTask.subtasks) {
-            counter += setSubtaskInTrash(subtask, inTrash)
+            counter += setSubtaskInTrashBlocking(subtask, inTrash)
         }
         Log.i(TAG, "$counter subtasks put into trash while putting task into trash")
         val todoTaskImpl = todoTask as TodoTaskImpl
@@ -138,7 +168,14 @@ class ModelServicesImpl(private val context: Context) : ModelServices {
         return counter
     }
 
-    override fun setSubtaskInTrash(subtask: TodoSubtask, inTrash: Boolean): Int {
+    override fun setSubtaskInTrash(subtask: TodoSubtask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = setSubtaskInTrashBlocking(subtask, inTrash)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun setSubtaskInTrashBlocking(subtask: TodoSubtask, inTrash: Boolean): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
         todoSubtaskImpl.isInTrash = inTrash
         val counter = db.getTodoSubtaskDao().update(todoSubtaskImpl.data)
@@ -146,106 +183,106 @@ class ModelServicesImpl(private val context: Context) : ModelServices {
         return counter
     }
 
-    override fun getNumberOfAllToDoTasks(): Int {
-        return 0
+    override fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val numberOfLists = db.getTodoListDao().getCount()
+            val numberOfTasksNotInTrash = db.getTodoTaskDao().getCountNotInTrash()
+            dispatchResult(resultConsumer, Tuple(numberOfLists, numberOfTasksNotInTrash))
+        }
     }
 
-    override fun getAllToDoTasks(): List<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getAllNotInTrash()
-        return createTasks(dataArray, false)
+    override fun getAllToDoTasks(resultConsumer: ResultConsumer<List<TodoTask>>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoTaskDao().getAllNotInTrash()
+            val data = loadTasksSubtasks(false, *dataArray)
+            dispatchResult(resultConsumer, data)
+        }
     }
 
-    override fun getBin(): List<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getAllInTrash()
-        return createTasks(dataArray, true)
+    override fun getBin(resultConsumer: ResultConsumer<List<TodoTask>>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoTaskDao().getAllInTrash()
+            val data = loadTasksSubtasks(true, *dataArray)
+            dispatchResult(resultConsumer, data)
+        }
     }
 
-    override fun getNumberOfAllToDoLists(): Int {
-        return 0
-    }
-
-    override fun getAllToDoLists(): List<TodoList> {
-        val dataArray = db.getTodoListDao().getAll()
-        return createLists(dataArray)
-    }
-
-    private fun createLists(dataArray: Array<TodoListData>): ArrayList<TodoList> {
-        val lists = ArrayList<TodoList>()
-        for (data in dataArray) {
-            val list = TodoListImpl(data)
-            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInTrash(list.id)
-            val tasks: List<TodoTask> = createTasks(dataArray2, false)
-            for (task in tasks) {
-                task.list = list
+    override fun clearBin(resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoTaskDao().getAllInTrash()
+            val todoTasks = loadTasksSubtasks(true, *dataArray)
+            var counter = 0
+            for (todoTask in todoTasks) {
+                counter += deleteTodoTaskBlocking(todoTask)
             }
-            list.tasks = tasks
-            lists.add(list)
+            dispatchResult(resultConsumer, counter)
         }
-        return lists
     }
 
-    private fun createTasks(
-        dataArray: Array<TodoTaskData>,
-        subtasksFromTrashToo: Boolean
-    ): ArrayList<TodoTask> {
-        val tasks = ArrayList<TodoTask>()
-        for (data in dataArray) {
-            val task = TodoTaskImpl(data)
-            val dataArray2 = if (subtasksFromTrashToo) db.getTodoSubtaskDao()
-                .getAllOfTask(task.id) else db.getTodoSubtaskDao().getAllOfTaskNotInTrash(task.id)
-            val subtasks: List<TodoSubtask> = createSubtasks(dataArray2)
-            task.subtasks = subtasks
-            tasks.add(task)
+    override fun getAllToDoLists(resultConsumer: ResultConsumer<List<TodoList>>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoListDao().getAll()
+            val todoLists = loadListsTasksSubtasks(*dataArray)
+            dispatchResult(resultConsumer, todoLists)
         }
-        return tasks
-    }
-
-    private fun createSubtasks(dataArray: Array<TodoSubtaskData>): ArrayList<TodoSubtask> {
-        val subtasks = ArrayList<TodoSubtask>()
-        for (data in dataArray) {
-            val subtask = TodoSubtaskImpl(data)
-            subtasks.add(subtask)
-        }
-        return subtasks
     }
 
     // returns the id of the todolist
-    override fun saveTodoListInDb(todoList: TodoList): Int {
-        val todoListImpl = todoList as TodoListImpl
-        val data = todoListImpl.data
-        val todoListId: Int
-        when (todoListImpl.getDBState()) {
-            ObjectStates.INSERT_TO_DB -> {
-                todoListId = db.getTodoListDao().insert(data).toInt()
-                Log.d(TAG, "Todo list was inserted into DB: $data")
-            }
+    override fun saveTodoListInDb(todoList: TodoList, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val todoListImpl = todoList as TodoListImpl
+            val data = todoListImpl.data
+            var counter = 0
+            when (todoListImpl.getDBState()) {
+                ObjectStates.INSERT_TO_DB -> {
+                    db.getTodoListDao().insert(data)
+                    counter = 1
+                    Log.d(TAG, "Todo list was inserted into DB: $data")
+                }
 
-            ObjectStates.UPDATE_DB -> {
-                val counter = db.getTodoListDao().update(data)
-                todoListId = todoListImpl.id
-                Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
-            }
+                ObjectStates.UPDATE_DB -> {
+                    counter = db.getTodoListDao().update(data)
+                    todoListImpl.id
+                    Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
+                }
 
-            else -> todoListId = ModelServices.NO_CHANGES
+                else -> {}
+            }
+            todoListImpl.setUnchanged()
+            dispatchResult(resultConsumer, counter)
         }
-        todoListImpl.setUnchanged()
-        return todoListId
     }
 
-    override fun saveTodoTaskInDb(todoTask: TodoTask): Int {
+    override fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = saveTodoTaskInDbBlocking(todoTask)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    override fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = saveTodoTaskInDbBlocking(todoTask)
+            for (subtask in todoTask.subtasks) {
+                saveTodoSubtaskInDbBlocking(subtask)
+            }
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun saveTodoTaskInDbBlocking(todoTask: TodoTask): Int {
         val todoTaskImpl = todoTask as TodoTaskImpl
         val data = todoTaskImpl.data
-        val todoTaskId: Int
-        val counter: Int
+        var counter = 0
         when (todoTaskImpl.getDBState()) {
             ObjectStates.INSERT_TO_DB -> {
-                todoTaskId = db.getTodoTaskDao().insert(data).toInt()
+                db.getTodoTaskDao().insert(data)
+                counter = 1
                 Log.d(TAG, "Todo task was inserted into DB: $data")
             }
 
             ObjectStates.UPDATE_DB -> {
                 counter = db.getTodoTaskDao().update(data)
-                todoTaskId = todoTaskImpl.id
                 Log.d(TAG, "Todo task was updated in DB (return code $counter): $data")
             }
 
@@ -256,44 +293,98 @@ class ModelServicesImpl(private val context: Context) : ModelServices {
                     todoTaskImpl.progress,
                     todoTaskImpl.isDone
                 )
-                todoTaskId = todoTaskImpl.id
-                Log.d(
-                    TAG,
-                    "Todo task was updated in DB by values from pomodoro (return code $counter): $data"
-                )
+                Log.d(TAG, "Todo task was updated in DB by values from pomodoro (return code $counter): $data")
             }
 
-            else -> todoTaskId = ModelServices.NO_CHANGES
+            else -> {}
         }
         todoTaskImpl.setUnchanged()
-        return todoTaskId
+        return counter
     }
 
-    override fun saveTodoSubtaskInDb(subtask: TodoSubtask): Int {
-        val todoSubtaskImpl = subtask as TodoSubtaskImpl
+    override fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val data = saveTodoSubtaskInDbBlocking(todoSubtask)
+            dispatchResult(resultConsumer, data)
+        }
+    }
+
+    private suspend fun saveTodoSubtaskInDbBlocking(todoSubtask: TodoSubtask): Int {
+        val todoSubtaskImpl = todoSubtask as TodoSubtaskImpl
         val data = todoSubtaskImpl.data
-        val todoSubtaskId: Int
+        var counter = 0
         when (todoSubtaskImpl.getDBState()) {
             ObjectStates.INSERT_TO_DB -> {
-                todoSubtaskId = db.getTodoSubtaskDao().insert(data).toInt()
+                db.getTodoSubtaskDao().insert(data)
+                counter = 1
                 Log.d(TAG, "Todo subtask was inserted into DB: $data")
             }
 
             ObjectStates.UPDATE_DB -> {
-                val counter = db.getTodoSubtaskDao().update(data)
-                todoSubtaskId = todoSubtaskImpl.id
+                counter = db.getTodoSubtaskDao().update(data)
                 Log.d(TAG, "Todo subtask was updated in DB (return code $counter): $data")
             }
 
-            else -> todoSubtaskId = ModelServices.NO_CHANGES
+            else -> {}
         }
         todoSubtaskImpl.setUnchanged()
-        return todoSubtaskId
+        return counter
     }
 
-    override fun deleteAllData() {
-        db.getTodoSubtaskDao().deleteAll()
-        db.getTodoTaskDao().deleteAll()
-        db.getTodoListDao().deleteAll()
+    override fun deleteAllData(resultConsumer: ResultConsumer<Int>?) {
+        coroutineScope.launch(Dispatchers.IO) {
+            var counter = db.getTodoSubtaskDao().deleteAll()
+            counter += db.getTodoTaskDao().deleteAll()
+            counter += db.getTodoListDao().deleteAll()
+            dispatchResult(resultConsumer, counter)
+        }
+    }
+
+    private suspend fun loadListsTasksSubtasks(vararg dataArray: TodoListData): MutableList<TodoListImpl> {
+        val lists = ArrayList<TodoListImpl>()
+        for (data in dataArray) {
+            val list = TodoListImpl(data)
+            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInTrash(list.id)
+            val tasks: List<TodoTaskImpl> = loadTasksSubtasks(false, *dataArray2)
+            for (task in tasks) {
+                task.list = list
+            }
+            list.tasks = tasks
+            lists.add(list)
+        }
+        return lists
+    }
+
+    private suspend fun loadTasksSubtasks(
+        subtasksFromTrashToo: Boolean,
+        vararg dataArray: TodoTaskData
+    ): MutableList<TodoTaskImpl> {
+        val tasks = ArrayList<TodoTaskImpl>()
+        for (data in dataArray) {
+            val task = TodoTaskImpl(data)
+            val dataArray2 = if (subtasksFromTrashToo) db.getTodoSubtaskDao()
+                .getAllOfTask(task.id) else db.getTodoSubtaskDao().getAllOfTaskNotInTrash(task.id)
+            val subtasks: List<TodoSubtaskImpl> = loadSubtasks(*dataArray2)
+            task.subtasks = subtasks
+            tasks.add(task)
+        }
+        return tasks
+    }
+
+    private fun loadSubtasks(vararg dataArray: TodoSubtaskData): MutableList<TodoSubtaskImpl> {
+        val subtasks = ArrayList<TodoSubtaskImpl>()
+        for (data in dataArray) {
+            val subtask = TodoSubtaskImpl(data)
+            subtasks.add(subtask)
+        }
+        return subtasks
+    }
+
+    private inline fun <reified T>dispatchResult(resultConsumer: ResultConsumer<T>?, result: T) {
+        if (null != resultConsumer) {
+            if (!resultHandler.post { resultConsumer.consume(result) }) {
+                Log.e(TAG, "Failed to post data model result of type " + T::class.java.simpleName)
+            }
+        }
     }
 }

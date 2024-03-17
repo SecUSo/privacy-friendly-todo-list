@@ -28,17 +28,17 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 @Dao
 interface TodoListDao {
     @Insert
-    fun insert(todoListData: TodoListData): Long
-
+    suspend fun insert(todoListData: TodoListData): Long
     @Update
-    fun update(todoListData: TodoListData): Int
-
+    suspend fun update(todoListData: TodoListData): Int
     @Delete
-    fun delete(todoListData: TodoListData): Int
-
+    suspend fun delete(todoListData: TodoListData): Int
+    @Query("SELECT COUNT(id) FROM todo_list")
+    suspend fun getCount(): Int
     @Query("SELECT * FROM todo_list")
-    fun getAll(): Array<TodoListData>
-
+    suspend fun getAll(): Array<TodoListData>
+    @Query("SELECT * FROM todo_list WHERE id = :todoListId LIMIT 1")
+    suspend fun getById(todoListId: Int): TodoListData?
     @Query("DELETE FROM todo_list")
-    fun deleteAll()
+    suspend fun deleteAll(): Int
 }

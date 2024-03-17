@@ -15,28 +15,14 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.view.widget;
+package org.secuso.privacyfriendlytodolist.viewmodel
 
-import android.content.Intent;
-import android.widget.RemoteViewsService;
+import android.app.Application
+import android.os.Handler
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import org.secuso.privacyfriendlytodolist.model.Model
 
-/**
- * Created by Sebastian Lutz on 15.02.2018.
- *
- * Service that gives data to AppWidgetProvider (TodoListWidget) class
- *
- */
-
-public class ListViewWidgetService extends RemoteViewsService {
-
-    @Override
-    public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new WidgetViewsFactory(getApplicationContext());
-
-    }
-
-
-
-
-
+class LifecycleViewModel(application: Application) : AndroidViewModel(application) {
+    val model = Model.createServices(application, viewModelScope, Handler(application.mainLooper))
 }

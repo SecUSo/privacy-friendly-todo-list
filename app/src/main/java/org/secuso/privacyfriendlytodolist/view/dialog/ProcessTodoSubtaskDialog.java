@@ -45,17 +45,17 @@ public class ProcessTodoSubtaskDialog extends FullScreenDialog<ResultCallback<To
         super(context, R.layout.add_subtask_dialog);
 
         initGui();
-        this.subtask = Model.getServices(context).createTodoSubtask();
-        this.subtask.setCreated();
+        subtask = Model.createNewTodoSubtask();
+        subtask.setCreated();
         //this.subtask.setDbState(ObjectStates.INSERT_TO_DB);
     }
 
-    public ProcessTodoSubtaskDialog(Context context, TodoSubtask subtask) {
+    public ProcessTodoSubtaskDialog(Context context, TodoSubtask todoSubtask) {
         super(context, R.layout.add_subtask_dialog);
 
         initGui();
-        this.subtask = subtask;
-        this.subtask.setChanged();
+        subtask = todoSubtask;
+        subtask.setChanged();
         //this.subtask.setDbState(ObjectStates.UPDATE_DB);
 
         etSubtaskName.setText(subtask.getName());

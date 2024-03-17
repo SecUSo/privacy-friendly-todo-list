@@ -17,20 +17,14 @@
 
 package org.secuso.privacyfriendlytodolist.model
 
-import android.content.Context
-
 /**
  * Created by Christian Adams on 17.02.2024.
  *
  * This class provides an interface to the database services.
  */
 interface ModelServices {
-    fun getContext(): Context
-    fun createTodoList(): TodoList
-    fun createTodoTask(): TodoTask
-    fun createTodoSubtask(): TodoSubtask
-    fun getTaskById(todoTaskId: Int): TodoTask?
-    fun getNextDueTask(today: Long): TodoTask?
+    fun getTaskById(todoTaskId: Int, resultConsumer: ResultConsumer<TodoTask?>)
+    fun getNextDueTask(today: Long, resultConsumer: ResultConsumer<TodoTask?>)
 
     /**
      * returns a list of tasks
@@ -38,25 +32,24 @@ interface ModelServices {
      * -   which are not fulfilled and whose reminder time is prior to the current time
      * -   the task which is next due
      */
-    fun getTasksToRemind(today: Long, lockedIds: Set<Int>?): List<TodoTask>
-    fun deleteTodoList(todoList: TodoList): Int
-    fun deleteTodoTask(todoTask: TodoTask): Int
-    fun deleteTodoSubtask(subtask: TodoSubtask): Int
-    fun setTaskInTrash(todoTask: TodoTask, inTrash: Boolean): Int
-    fun setSubtaskInTrash(subtask: TodoSubtask, inTrash: Boolean): Int
-    fun getNumberOfAllToDoTasks(): Int
-    fun getAllToDoTasks(): List<TodoTask>
-    fun getBin(): List<TodoTask>
-    fun getNumberOfAllToDoLists(): Int
-    fun getAllToDoLists(): List<TodoList>
-    fun saveTodoSubtaskInDb(subtask: TodoSubtask): Int
-    fun saveTodoTaskInDb(todoTask: TodoTask): Int
+    fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<List<TodoTask>>)
+    fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?)
+    fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
+    fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
+    fun setTaskAndSubtasksInTrash(todoTask: TodoTask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?)
+    fun setSubtaskInTrash(subtask: TodoSubtask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?)
 
-    // returns the id of the todolist
-    fun saveTodoListInDb(todoList: TodoList): Int
-    fun deleteAllData()
-
-    companion object {
-        const val NO_CHANGES = -2
-    }
+    /**
+     * Returns the number of all ToDo lists (left in tuple) and all ToDo tasks that are not in trash (right in tuple).
+     */
+    fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>)
+    fun getAllToDoTasks(resultConsumer: ResultConsumer<List<TodoTask>>)
+    fun getBin(resultConsumer: ResultConsumer<List<TodoTask>>)
+    fun clearBin(resultConsumer: ResultConsumer<Int>?)
+    fun getAllToDoLists(resultConsumer: ResultConsumer<List<TodoList>>)
+    fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
+    fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
+    fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
+    fun saveTodoListInDb(todoList: TodoList, resultConsumer: ResultConsumer<Int>?)
+    fun deleteAllData(resultConsumer: ResultConsumer<Int>?)
 }

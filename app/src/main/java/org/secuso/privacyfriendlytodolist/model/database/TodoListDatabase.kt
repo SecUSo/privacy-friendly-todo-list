@@ -21,13 +21,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-
-import org.secuso.privacyfriendlytodolist.model.database.dao.*
-import org.secuso.privacyfriendlytodolist.model.database.entities.*
-import org.secuso.privacyfriendlytodolist.model.database.utils.Converters
+import org.secuso.privacyfriendlytodolist.model.database.dao.TodoListDao
+import org.secuso.privacyfriendlytodolist.model.database.dao.TodoSubtaskDao
+import org.secuso.privacyfriendlytodolist.model.database.dao.TodoTaskDao
+import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
+import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
+import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 
 /**
  * @TODO Change foreign keys from Long to Room ForeignKey.
@@ -38,7 +39,6 @@ import org.secuso.privacyfriendlytodolist.model.database.utils.Converters
     version = TodoListDatabase.DATABASE_VERSION,
     exportSchema = true
 )
-@TypeConverters(Converters::class)
 abstract class TodoListDatabase : RoomDatabase() {
     abstract fun getTodoListDao(): TodoListDao
 

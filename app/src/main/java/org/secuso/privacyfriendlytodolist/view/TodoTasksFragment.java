@@ -19,10 +19,14 @@ package org.secuso.privacyfriendlytodolist.view;
 
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.core.view.MenuItemCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -37,8 +41,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.BaseTodo;
-import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
@@ -47,6 +49,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog;
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,14 +80,15 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
             throw new RuntimeException("TodoTasksFragment could not find containing activity.");
         }
 
-        model = Model.getServices(containingActivity);
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
 
         boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
 
         // This argument is only set if a dummy list is displayed (a mixture of tasks of different lists) or if
         // a list was selected by clicking on a notification. If the the user selects a list explicitly by clicking on it
         // the list object is instantly available and can be obtained using the method "getClickedList()"
-        int selectedListID = getArguments().getInt(TodoList.UNIQUE_DATABASE_ID, -1);
+        int selectedListID = getArguments().getInt(MainActivity.KEY_SELECTED_LIST_ID_BY_NOTIFICATION, -1);
         boolean showListNamesOfTasks = false;
         if(selectedListID >= 0) {
             currentList = containingActivity.getListByID(selectedListID); // MainActivity was started after a notification click
@@ -145,7 +149,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
 
     private void initExListViewGUI(View v) {
 
-        taskAdapter = new ExpandableTodoTaskAdapter(getActivity(), todoTasks);
+        taskAdapter = new ExpandableTodoTaskAdapter(getActivity(), model, todoTasks);
         TextView emptyView = (TextView) v.findViewById(R.id.tv_empty_view_no_tasks);
         expandableListView = (ExpandableListView) v.findViewById(R.id.exlv_tasks);
         expandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -220,52 +224,55 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
         final Tuple<TodoTask, TodoSubtask> longClickedTodo = taskAdapter.getLongClickedTodo();
-        int affectedRows;
+        if (null != longClickedTodo) {
+            final TodoTask todoTask = longClickedTodo.getLeft();
+            final TodoSubtask todoSubtask = longClickedTodo.getRight();
 
-        switch(item.getItemId()) {
-            case R.id.change_subtask:
+            switch(item.getItemId()) {
+                case R.id.change_subtask:
 
-                ProcessTodoSubtaskDialog dialog = new ProcessTodoSubtaskDialog(containingActivity, longClickedTodo.getRight());
-                dialog.setDialogCallback(todoSubtask -> {
-                    taskAdapter.notifyDataSetChanged();
-                    Log.i(TAG, "subtask altered");
-                });
-                dialog.show();
-                break;
+                    ProcessTodoSubtaskDialog dialog = new ProcessTodoSubtaskDialog(containingActivity, todoSubtask);
+                    dialog.setDialogCallback(todoSubtask2 -> {
+                        taskAdapter.notifyDataSetChanged();
+                        Log.i(TAG, "subtask altered");
+                    });
+                    dialog.show();
+                    break;
 
-            case R.id.delete_subtask:
-                affectedRows = model.setSubtaskInTrash(longClickedTodo.getRight(), true);
-                longClickedTodo.getLeft().getSubtasks().remove(longClickedTodo.getRight());
-                if(affectedRows == 1)
-                    Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
-                else
-                    Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
-                taskAdapter.notifyDataSetChanged();
-                break;
-            case R.id.change_task:
-                ProcessTodoTaskDialog changeTaskDialog = new ProcessTodoTaskDialog(getActivity(), longClickedTodo.getLeft());
-                changeTaskDialog.setDialogCallback(todoTask -> {
-                    taskAdapter.notifyDataSetChanged();
-                });
-                changeTaskDialog.show();
-                break;
-            case R.id.delete_task:
-                affectedRows = model.setTaskInTrash(longClickedTodo.getLeft(), true);
-                todoTasks.remove(longClickedTodo.getLeft());
-                if(affectedRows == 1)
-                    Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+                case R.id.delete_subtask:
+                    model.setSubtaskInTrash(todoSubtask, true, counter -> {
+                        todoTask.getSubtasks().remove(todoSubtask);
+                        if (counter == 1)
+                            Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
+                        else
+                            Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                        taskAdapter.notifyDataSetChanged();
+                    });
+                    break;
 
-                else
-                    Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
-                taskAdapter.notifyDataSetChanged();
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid menu item selected.");
+                case R.id.change_task:
+                    ProcessTodoTaskDialog changeTaskDialog = new ProcessTodoTaskDialog(getActivity(), todoTask);
+                    changeTaskDialog.setDialogCallback(todoTask2 -> {
+                        taskAdapter.notifyDataSetChanged();
+                    });
+                    changeTaskDialog.show();
+                    break;
+                case R.id.delete_task:
+                    model.setTaskAndSubtasksInTrash(todoTask, true, counter -> {
+                        todoTasks.remove(todoTask);
+                        if (counter == 1)
+                            Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();
+                        else
+                            Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?");
+                        taskAdapter.notifyDataSetChanged();
+                    });
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid menu item selected.");
+            }
         }
-
         return super.onContextItemSelected(item);
     }
 
@@ -381,14 +388,13 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                 todoTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
             }
 
-            model.saveTodoTaskInDb(todoTask);
-
             for (TodoSubtask todoSubtask : todoTask.getSubtasks()) {
                 todoSubtask.setTaskId(todoTask.getId()); // crucial step to not lose the connection to the task
-                model.saveTodoSubtaskInDb(todoSubtask);
             }
 
-            containingActivity.notifyReminderService(todoTask);
+            model.saveTodoTaskAndSubtasksInDb(todoTask, counter -> {
+                containingActivity.notifyReminderService(todoTask);
+            });
         }
     }
 }

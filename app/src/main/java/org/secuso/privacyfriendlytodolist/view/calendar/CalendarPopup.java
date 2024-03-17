@@ -5,14 +5,17 @@ import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 import java.util.ArrayList;
 
@@ -25,18 +28,19 @@ import java.util.ArrayList;
 public class CalendarPopup extends AppCompatActivity {
 
     private ExpandableListView lv;
-    RelativeLayout rl;
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
     private ArrayList<TodoTask> tasks = new ArrayList<>();
-
+    private ModelServices model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
+
         setContentView(R.layout.calendar_popup);
 
-        rl = (RelativeLayout) findViewById(R.id.relative_deadline);
         lv = (ExpandableListView) findViewById(R.id.deadline_tasks);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_deadlineTasks);
@@ -61,7 +65,7 @@ public class CalendarPopup extends AppCompatActivity {
 
     }
 
-
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -73,17 +77,8 @@ public class CalendarPopup extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void updateAdapter() {
-
-        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+    private void updateAdapter() {
+        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, model, tasks);
         lv.setAdapter(expandableTodoTaskAdapter);
-
     }
-
-
 }
-
-
-
-

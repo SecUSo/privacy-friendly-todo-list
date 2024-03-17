@@ -28,7 +28,7 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskDat
  * Class to set up To-Do subtasks and its parameters.
  */
 
-class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
+public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
 
     /** Container for data that gets stored in the database. */
     private final TodoSubtaskData data;
