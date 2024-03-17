@@ -18,9 +18,10 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by dominik on 24.05.16.

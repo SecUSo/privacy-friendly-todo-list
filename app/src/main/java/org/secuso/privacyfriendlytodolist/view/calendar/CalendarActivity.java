@@ -34,8 +34,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.ModelServices;
-import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 

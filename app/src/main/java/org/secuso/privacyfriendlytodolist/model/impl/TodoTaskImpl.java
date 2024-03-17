@@ -20,11 +20,11 @@ package org.secuso.privacyfriendlytodolist.model.impl;
 import android.os.Parcel;
 import android.util.Log;
 
-import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 
 import java.util.ArrayList;
 import java.util.List;

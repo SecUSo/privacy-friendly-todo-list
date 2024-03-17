@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 /**

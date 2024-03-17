@@ -20,12 +20,13 @@ package org.secuso.privacyfriendlytodolist.view;
 
 
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import org.secuso.privacyfriendlytodolist.BuildConfig;
 import org.secuso.privacyfriendlytodolist.R;

@@ -24,17 +24,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.model.ResultConsumer
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase.Companion.getInstance
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.ObjectStates
-import org.secuso.privacyfriendlytodolist.model.ResultConsumer
-import org.secuso.privacyfriendlytodolist.model.Tuple
 
 class ModelServicesImpl(
     context: Context,
