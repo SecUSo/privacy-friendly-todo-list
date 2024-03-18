@@ -36,16 +36,16 @@ interface ModelServices {
     fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?)
     fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
     fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
-    fun setTaskAndSubtasksInTrash(todoTask: TodoTask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?)
-    fun setSubtaskInTrash(subtask: TodoSubtask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?)
+    fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?)
+    fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?)
 
     /**
-     * Returns the number of all ToDo lists (left in tuple) and all ToDo tasks that are not in trash (right in tuple).
+     * Returns the number of all to-do-lists (left in tuple) and all to-do-tasks that are not in recycle bin (right in tuple).
      */
     fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>)
     fun getAllToDoTasks(resultConsumer: ResultConsumer<List<TodoTask>>)
-    fun getBin(resultConsumer: ResultConsumer<List<TodoTask>>)
-    fun clearBin(resultConsumer: ResultConsumer<Int>?)
+    fun getRecycleBin(resultConsumer: ResultConsumer<List<TodoTask>>)
+    fun clearRecycleBin(resultConsumer: ResultConsumer<Int>?)
     fun getAllToDoLists(resultConsumer: ResultConsumer<List<TodoList>>)
     fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
     fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)

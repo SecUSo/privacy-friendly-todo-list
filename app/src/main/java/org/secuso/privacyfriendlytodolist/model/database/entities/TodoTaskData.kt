@@ -35,5 +35,5 @@ data class TodoTaskData(
     var progress: Int = 0,
     var numberSubtasks: Int = 0,
     var isDone: Boolean = false,
-    var isInTrash: Boolean = false
+    var isInRecycleBin: Boolean = false
 )

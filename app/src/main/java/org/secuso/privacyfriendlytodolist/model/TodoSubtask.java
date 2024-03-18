@@ -29,9 +29,9 @@ public interface TodoSubtask extends BaseTodo, Parcelable {
 
     boolean isDone();
 
-    void setInTrash(boolean isInTrash);
+    void setInRecycleBin(boolean isInRecycleBin);
 
-    boolean isInTrash();
+    boolean isInRecycleBin();
 
     boolean checkQueryMatch(String query);
 }

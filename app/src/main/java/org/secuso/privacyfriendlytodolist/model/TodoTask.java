@@ -106,9 +106,9 @@ public interface TodoTask extends BaseTodo, Parcelable {
      */
     void doneStatusChanged();
 
-    void setInTrash(boolean isInTrash);
+    void setInRecycleBin(boolean isInRecycleBin);
 
-    boolean isInTrash ();
+    boolean isInRecycleBin ();
 
     boolean checkQueryMatch(String query, boolean recursive);
 

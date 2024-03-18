@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "4cd0e419c0f40c695fc1101c4e624395",
+    "identityHash": "4e39dacb1b1d7ca3e060c061cf930b3b",
     "entities": [
       {
         "tableName": "todo_list",
@@ -32,7 +32,7 @@
       },
       {
         "tableName": "todo_task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `listId` INTEGER NOT NULL, `listPosition` INTEGER NOT NULL, `description` TEXT, `priority` TEXT NOT NULL, `deadline` INTEGER NOT NULL, `reminderTime` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `numberSubtasks` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `isInTrash` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `listId` INTEGER NOT NULL, `listPosition` INTEGER NOT NULL, `description` TEXT, `priority` TEXT NOT NULL, `deadline` INTEGER NOT NULL, `reminderTime` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `numberSubtasks` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `isInRecycleBin` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -101,8 +101,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "isInTrash",
-            "columnName": "isInTrash",
+            "fieldPath": "isInRecycleBin",
+            "columnName": "isInRecycleBin",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -118,7 +118,7 @@
       },
       {
         "tableName": "todo_subtask",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `taskId` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `isInTrash` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `taskId` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `isInRecycleBin` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -145,8 +145,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "isInTrash",
-            "columnName": "isInTrash",
+            "fieldPath": "isInRecycleBin",
+            "columnName": "isInRecycleBin",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -164,7 +164,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4cd0e419c0f40c695fc1101c4e624395')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4e39dacb1b1d7ca3e060c061cf930b3b')"
     ]
   }
 }

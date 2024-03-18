@@ -15,7 +15,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_trash"
+            android:id="@+id/toolbar_recycle_bin"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -36,7 +36,7 @@
         android:id="@+id/relative_recycle">
 
         <ExpandableListView
-            android:id="@+id/trash_tasks"
+            android:id="@+id/recycle_bin_tasks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"

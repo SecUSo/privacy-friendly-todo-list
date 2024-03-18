@@ -105,9 +105,9 @@ class ModelServicesImpl(
             if (null != todoListData) {
                 val todoList = loadListsTasksSubtasks(todoListData)[0]
                 for (task in todoList.tasks) {
-                    counter += setTaskAndSubtasksInTrashBlocking(task, true)
+                    counter += setTaskAndSubtasksInRecycleBinBlocking(task, true)
                 }
-                Log.i(TAG, "$counter tasks put into trash while removing list")
+                Log.i(TAG, "$counter tasks put into recycle bin while removing list")
                 counter = db.getTodoListDao().delete(todoList.data)
             }
             Log.i(TAG, "$counter lists removed from database")
@@ -148,68 +148,68 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun setTaskAndSubtasksInTrash(todoTask: TodoTask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?) {
+    override fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?) {
         coroutineScope.launch(Dispatchers.IO) {
-            val data = setTaskAndSubtasksInTrashBlocking(todoTask, inTrash)
+            val data = setTaskAndSubtasksInRecycleBinBlocking(todoTask, inRecycleBin)
             dispatchResult(resultConsumer, data)
         }
     }
 
-    private suspend fun setTaskAndSubtasksInTrashBlocking(todoTask: TodoTask, inTrash: Boolean): Int {
+    private suspend fun setTaskAndSubtasksInRecycleBinBlocking(todoTask: TodoTask, inRecycleBin: Boolean): Int {
         var counter = 0
         for (subtask in todoTask.subtasks) {
-            counter += setSubtaskInTrashBlocking(subtask, inTrash)
+            counter += setSubtaskInRecycleBinBlocking(subtask, inRecycleBin)
         }
-        Log.i(TAG, "$counter subtasks put into trash while putting task into trash")
+        Log.i(TAG, "$counter subtasks put into recycle bin while putting task into recycle bin")
         val todoTaskImpl = todoTask as TodoTaskImpl
-        todoTaskImpl.isInTrash = inTrash
+        todoTaskImpl.isInRecycleBin = inRecycleBin
         counter = db.getTodoTaskDao().update(todoTaskImpl.data)
-        Log.i(TAG, "$counter tasks put into trash")
+        Log.i(TAG, "$counter tasks put into recycle bin")
         return counter
     }
 
-    override fun setSubtaskInTrash(subtask: TodoSubtask, inTrash: Boolean, resultConsumer: ResultConsumer<Int>?) {
+    override fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?) {
         coroutineScope.launch(Dispatchers.IO) {
-            val data = setSubtaskInTrashBlocking(subtask, inTrash)
+            val data = setSubtaskInRecycleBinBlocking(subtask, inRecycleBin)
             dispatchResult(resultConsumer, data)
         }
     }
 
-    private suspend fun setSubtaskInTrashBlocking(subtask: TodoSubtask, inTrash: Boolean): Int {
+    private suspend fun setSubtaskInRecycleBinBlocking(subtask: TodoSubtask, inRecycleBin: Boolean): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
-        todoSubtaskImpl.isInTrash = inTrash
+        todoSubtaskImpl.isInRecycleBin = inRecycleBin
         val counter = db.getTodoSubtaskDao().update(todoSubtaskImpl.data)
-        Log.i(TAG, "$counter subtasks put into trash")
+        Log.i(TAG, "$counter subtasks put into recycle bin")
         return counter
     }
 
     override fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>) {
         coroutineScope.launch(Dispatchers.IO) {
             val numberOfLists = db.getTodoListDao().getCount()
-            val numberOfTasksNotInTrash = db.getTodoTaskDao().getCountNotInTrash()
-            dispatchResult(resultConsumer, Tuple(numberOfLists, numberOfTasksNotInTrash))
+            val numberOfTasksNotInRecycleBin = db.getTodoTaskDao().getCountNotInRecycleBin()
+            dispatchResult(resultConsumer, Tuple(numberOfLists, numberOfTasksNotInRecycleBin))
         }
     }
 
     override fun getAllToDoTasks(resultConsumer: ResultConsumer<List<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoTaskDao().getAllNotInTrash()
+            val dataArray = db.getTodoTaskDao().getAllNotInRecycleBin()
             val data = loadTasksSubtasks(false, *dataArray)
             dispatchResult(resultConsumer, data)
         }
     }
 
-    override fun getBin(resultConsumer: ResultConsumer<List<TodoTask>>) {
+    override fun getRecycleBin(resultConsumer: ResultConsumer<List<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoTaskDao().getAllInTrash()
+            val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
             val data = loadTasksSubtasks(true, *dataArray)
             dispatchResult(resultConsumer, data)
         }
     }
 
-    override fun clearBin(resultConsumer: ResultConsumer<Int>?) {
+    override fun clearRecycleBin(resultConsumer: ResultConsumer<Int>?) {
         coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoTaskDao().getAllInTrash()
+            val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
             val todoTasks = loadTasksSubtasks(true, *dataArray)
             var counter = 0
             for (todoTask in todoTasks) {
@@ -344,7 +344,7 @@ class ModelServicesImpl(
         val lists = ArrayList<TodoListImpl>()
         for (data in dataArray) {
             val list = TodoListImpl(data)
-            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInTrash(list.id)
+            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInRecycleBin(list.id)
             val tasks: List<TodoTaskImpl> = loadTasksSubtasks(false, *dataArray2)
             for (task in tasks) {
                 task.list = list
@@ -356,14 +356,14 @@ class ModelServicesImpl(
     }
 
     private suspend fun loadTasksSubtasks(
-        subtasksFromTrashToo: Boolean,
+        subtasksFromRecycleBinToo: Boolean,
         vararg dataArray: TodoTaskData
     ): MutableList<TodoTaskImpl> {
         val tasks = ArrayList<TodoTaskImpl>()
         for (data in dataArray) {
             val task = TodoTaskImpl(data)
-            val dataArray2 = if (subtasksFromTrashToo) db.getTodoSubtaskDao()
-                .getAllOfTask(task.id) else db.getTodoSubtaskDao().getAllOfTaskNotInTrash(task.id)
+            val dataArray2 = if (subtasksFromRecycleBinToo) db.getTodoSubtaskDao()
+                .getAllOfTask(task.id) else db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.id)
             val subtasks: List<TodoSubtaskImpl> = loadSubtasks(*dataArray2)
             task.subtasks = subtasks
             tasks.add(task)

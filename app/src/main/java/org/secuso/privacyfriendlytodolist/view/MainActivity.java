@@ -521,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, CalendarActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
             startActivity(intent);
-        } else if (id == R.id.nav_trash) {
+        } else if (id == R.id.nav_recycle_bin) {
             uncheckNavigationEntries();
             Intent intent = new Intent(this, RecyclerActivity.class);
             this.unlockUntil = System.currentTimeMillis() + UnlockPeriod;
@@ -1012,7 +1012,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Snackbar snackbar = Snackbar.make(optionFab, R.string.task_removed, Snackbar.LENGTH_LONG);
 
                     snackbar.setAction(R.string.snack_undo, v -> {
-                        model.setTaskAndSubtasksInTrash(todoTask, false, counter -> {
+                        model.setTaskAndSubtasksInRecycleBin(todoTask, false, counter -> {
                             if (inList && todoTask.getListId() != DUMMY_LIST_ID) {
                                 showTasksOfList(todoTask.getListId());
                             } else {
@@ -1022,7 +1022,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         });
                     });
 
-                    model.setTaskAndSubtasksInTrash(todoTask, true, counter -> {
+                    model.setTaskAndSubtasksInRecycleBin(todoTask, true, counter -> {
                         if (counter == 1) {
                             hints();
                         } else {
@@ -1099,28 +1099,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void hints() {
         model.getNumberOfAllListsAndTasks(tuple -> {
             final int numberOfLists = tuple.getLeft();
-            final int numberOfTasksNotInTrash = tuple.getRight();
+            final int numberOfTasksNotInRecycleBin = tuple.getRight();
             Animation anim = new AlphaAnimation(0.0f, 1.0f);
-            if (numberOfLists == 0 && numberOfTasksNotInTrash == 0) {
+            if (numberOfLists == 0 && numberOfTasksNotInRecycleBin == 0) {
                 initialAlert.setVisibility(View.VISIBLE);
                 anim.setDuration(1500);
                 anim.setStartOffset(20);
                 anim.setRepeatMode(Animation.REVERSE);
                 anim.setRepeatCount(Animation.INFINITE);
                 initialAlert.startAnimation(anim);
-            } else /* if numberOfLists != 0 || numberOfTasksNotInTrash != 0 */ {
+            } else /* if numberOfLists != 0 || numberOfTasksNotInRecycleBin != 0 */ {
                 initialAlert.setVisibility(View.GONE);
                 initialAlert.clearAnimation();
             }
 
-            if (numberOfTasksNotInTrash == 0) {
+            if (numberOfTasksNotInRecycleBin == 0) {
                 secondAlert.setVisibility(View.VISIBLE);
                 anim.setDuration(1500);
                 anim.setStartOffset(20);
                 anim.setRepeatMode(Animation.REVERSE);
                 anim.setRepeatCount(Animation.INFINITE);
                 secondAlert.startAnimation(anim);
-            } else /* if numberOfTasksNotInTrash != 0 */ {
+            } else /* if numberOfTasksNotInRecycleBin != 0 */ {
                 secondAlert.setVisibility(View.GONE);
                 secondAlert.clearAnimation();
             }

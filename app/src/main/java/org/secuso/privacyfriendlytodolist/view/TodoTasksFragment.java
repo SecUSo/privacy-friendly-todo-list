@@ -242,7 +242,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                     break;
 
                 case R.id.delete_subtask:
-                    model.setSubtaskInTrash(todoSubtask, true, counter -> {
+                    model.setSubtaskInRecycleBin(todoSubtask, true, counter -> {
                         todoTask.getSubtasks().remove(todoSubtask);
                         if (counter == 1)
                             Toast.makeText(getContext(), getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show();
@@ -260,7 +260,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                     changeTaskDialog.show();
                     break;
                 case R.id.delete_task:
-                    model.setTaskAndSubtasksInTrash(todoTask, true, counter -> {
+                    model.setTaskAndSubtasksInRecycleBin(todoTask, true, counter -> {
                         todoTasks.remove(todoTask);
                         if (counter == 1)
                             Toast.makeText(getContext(), getString(R.string.task_removed), Toast.LENGTH_SHORT).show();

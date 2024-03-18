@@ -46,7 +46,7 @@ public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
         data.setId(parcel.readInt());
         data.setName(parcel.readString());
         data.setDone(parcel.readByte() != 0);
-        data.setInTrash(parcel.readByte() != 0);
+        data.setInRecycleBin(parcel.readByte() != 0);
         data.setTaskId(parcel.readInt());
     }
 
@@ -55,7 +55,7 @@ public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
         dest.writeInt(data.getId());
         dest.writeString(data.getName());
         dest.writeByte((byte) (data.isDone() ? 1 : 0));
-        dest.writeByte((byte) (data.isInTrash() ? 1 : 0));
+        dest.writeByte((byte) (data.isInRecycleBin() ? 1 : 0));
         dest.writeInt(data.getTaskId());
     }
 
@@ -100,13 +100,13 @@ public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
     }
 
     @Override
-    public void setInTrash(boolean isInTrash) {
-        data.setInTrash(isInTrash);
+    public void setInRecycleBin(boolean isInRecycleBin) {
+        data.setInRecycleBin(isInRecycleBin);
     }
 
     @Override
-    public boolean isInTrash() {
-        return data.isInTrash();
+    public boolean isInRecycleBin() {
+        return data.isInRecycleBin();
     }
 
     public static final Creator<TodoSubtaskImpl> CREATOR =

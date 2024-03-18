@@ -65,11 +65,11 @@ public class RecyclerActivity extends AppCompatActivity{
 
         setContentView(R.layout.activity_recycle);
 
-        lv = (ExpandableListView) findViewById(R.id.trash_tasks);
+        lv = (ExpandableListView) findViewById(R.id.recycle_bin_tasks);
         tv = (TextView) findViewById(R.id.bin_empty);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trash);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_recycle_bin);
 
         if (toolbar != null) {
             toolbar.setTitle(R.string.bin_toolbar);
@@ -109,7 +109,7 @@ public class RecyclerActivity extends AppCompatActivity{
 
             switch (item.getItemId()) {
                 case R.id.restore:
-                    model.setTaskAndSubtasksInTrash(todoTask, false, counter -> {
+                    model.setTaskAndSubtasksInRecycleBin(todoTask, false, counter -> {
                         updateAdapter();
                     });
                     break;
@@ -137,7 +137,7 @@ public class RecyclerActivity extends AppCompatActivity{
                 builder1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        model.clearBin(counter -> {
+                        model.clearRecycleBin(counter -> {
                             dialog.cancel();
                             updateAdapter();
                         });
@@ -173,12 +173,12 @@ public class RecyclerActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.trash_clear, menu);
+        getMenuInflater().inflate(R.menu.recycle_bin_clear, menu);
         return true;
     }
 
     private void updateAdapter() {
-        model.getBin(todoTasks -> {
+        model.getRecycleBin(todoTasks -> {
             expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, model, todoTasks);
             lv.setAdapter(expandableTodoTaskAdapter);
             lv.setEmptyView(tv);
