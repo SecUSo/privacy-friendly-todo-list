@@ -12,7 +12,7 @@
             "fieldPath": "_id",
             "columnName": "_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -44,7 +44,7 @@
             "fieldPath": "_id",
             "columnName": "_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "todo_list_id",
@@ -74,37 +74,43 @@
             "fieldPath": "priority",
             "columnName": "priority",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "deadline",
             "columnName": "deadline",
             "affinity": "DATETIME",
-            "notNull": true
+            "notNull": false,
+            "defaultValue": "NULL"
           },
           {
             "fieldPath": "done",
             "columnName": "done",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "progress",
             "columnName": "progress",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "num_subtasks",
             "columnName": "num_subtasks",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "0"
           },
           {
             "fieldPath": "deadline_warning_time",
             "columnName": "deadline_warning_time",
             "affinity": "NUMERIC",
-            "notNull": true
+            "notNull": false,
+            "defaultValue": "NULL"
           }
         ],
         "primaryKey": {
@@ -117,6 +123,8 @@
         "foreignKeys": [
           {
             "table": "todo_list",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
             "columns": [
               "todo_list_id"
             ],
@@ -134,7 +142,7 @@
             "fieldPath": "_id",
             "columnName": "_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "todo_task_id",
@@ -165,6 +173,8 @@
         "foreignKeys": [
           {
             "table": "todo_task",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
             "columns": [
               "todo_task_id"
             ],
