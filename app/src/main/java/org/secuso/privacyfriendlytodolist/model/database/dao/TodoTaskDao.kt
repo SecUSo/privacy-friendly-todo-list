@@ -36,22 +36,22 @@ interface TodoTaskDao {
     suspend fun insertOrUpdate(todoTaskData: TodoTaskData)
     @Delete
     suspend fun delete(todoTaskData: TodoTaskData): Int
-    @Query("DELETE FROM todo_task")
+    @Query("DELETE FROM todoTasks")
     suspend fun deleteAll(): Int
-    @Query("SELECT COUNT(id) FROM todo_task WHERE isInRecycleBin = 0")
+    @Query("SELECT COUNT(id) FROM todoTasks WHERE isInRecycleBin = 0")
     suspend fun getCountNotInRecycleBin(): Int
-    @Query("SELECT * FROM todo_task WHERE id = :todoTaskId LIMIT 1")
+    @Query("SELECT * FROM todoTasks WHERE id = :todoTaskId LIMIT 1")
     suspend fun getTaskById(todoTaskId: Int): TodoTaskData?
-    @Query("SELECT * FROM todo_task WHERE isDone = 0 AND reminderTime > 0 AND isInRecycleBin = 0 AND reminderTime - :today > 0 ORDER BY ABS(reminderTime - :today) LIMIT 1")
+    @Query("SELECT * FROM todoTasks WHERE isDone = 0 AND reminderTime > 0 AND isInRecycleBin = 0 AND reminderTime - :today > 0 ORDER BY ABS(reminderTime - :today) LIMIT 1")
     suspend fun getNextDueTask(today: Long): TodoTaskData?
-    @Query("SELECT * FROM todo_task WHERE isDone = 0 AND isInRecycleBin = 0 AND reminderTime > 0 AND reminderTime <= :today AND id NOT IN (:lockedIds)")
+    @Query("SELECT * FROM todoTasks WHERE isDone = 0 AND isInRecycleBin = 0 AND reminderTime > 0 AND reminderTime <= :today AND id NOT IN (:lockedIds)")
     suspend fun getTasksToRemind(today: Long, lockedIds: Set<Int>?): Array<TodoTaskData>
-    @Query("SELECT * FROM todo_task WHERE isInRecycleBin = 0")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0")
     suspend fun getAllNotInRecycleBin(): Array<TodoTaskData>
-    @Query("SELECT * FROM todo_task WHERE isInRecycleBin <> 0")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin <> 0")
     suspend fun getAllInRecycleBin(): Array<TodoTaskData>
-    @Query("SELECT * FROM todo_task WHERE listId = :listId AND isInRecycleBin = 0")
+    @Query("SELECT * FROM todoTasks WHERE listId = :listId AND isInRecycleBin = 0")
     suspend fun getAllOfListNotInRecycleBin(listId: Int): Array<TodoTaskData>
-    @Query("UPDATE todo_task SET name = :name, progress = :progress, isDone = :isDone WHERE id = :id")
+    @Query("UPDATE todoTasks SET name = :name, progress = :progress, isDone = :isDone WHERE id = :id")
     suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, isDone: Boolean): Int
 }

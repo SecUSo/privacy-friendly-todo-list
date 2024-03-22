@@ -804,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-    //ClickListener to delete a Todo-List
+    // ClickListener to delete a To-Do list
     public class OnCustomMenuItemClickListener implements View.OnClickListener {
         private final int id;
         private final Context context;

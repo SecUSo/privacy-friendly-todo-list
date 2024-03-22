@@ -28,6 +28,7 @@ import org.secuso.privacyfriendlytodolist.util.Helper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -61,7 +62,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         data = new TodoTaskData();
         data.setId(parcel.readInt());
         data.setListId(parcel.readInt());
-        data.setName(parcel.readString());
+        data.setName(Objects.toString(parcel.readString(), ""));
         description = parcel.readString();
         data.setDone(parcel.readByte() != 0);
         data.setInRecycleBin(parcel.readByte() != 0);
@@ -69,7 +70,8 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         data.setDeadline(parcel.readLong());
         data.setReminderTime(parcel.readLong());
         data.setListPosition(parcel.readInt());
-        data.setPriority(Priority.fromInt(parcel.readInt()));
+        Priority priority = Priority.fromOrdinal(parcel.readInt());
+        data.setPriority(null != priority ? priority : Priority.MEDIUM);
         parcel.readList(subtasks, TodoSubtaskImpl.class.getClassLoader());
     }
 
@@ -330,10 +332,10 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
             return true;
         }
         String queryLowerCase = query.toLowerCase();
-        if (null != data.getName() && data.getName().toLowerCase().contains(queryLowerCase)) {
+        if (data.getName().toLowerCase().contains(queryLowerCase)) {
             return true;
         }
-        if (null != data.getDescription() && data.getDescription().toLowerCase().contains(queryLowerCase)) {
+        if (data.getDescription().toLowerCase().contains(queryLowerCase)) {
             return true;
         }
         if (recursive) {

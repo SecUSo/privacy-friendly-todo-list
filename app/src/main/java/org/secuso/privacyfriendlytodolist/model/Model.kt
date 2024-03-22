@@ -27,7 +27,7 @@ import org.secuso.privacyfriendlytodolist.model.impl.TodoTaskImpl
 /**
  * Created by Christian Adams on 25.02.2024.
  *
- * This class creates instances of the data model of the ToDo List App.
+ * This class creates instances of the data model of the To-Do List App.
  */
 object Model {
     /**

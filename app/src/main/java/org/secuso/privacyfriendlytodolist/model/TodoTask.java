@@ -28,13 +28,14 @@ public interface TodoTask extends BaseTodo, Parcelable {
 
         public static final int length = values().length;
 
-        public static Priority fromInt(int i) {
-            for (Priority p : values()) {
-                if (p.ordinal() == i) {
-                    return p;
-                }
-            }
-            throw new IllegalArgumentException(i + " is no ordinal of a priority.");
+        /**
+         * Provides the priority enumeration value that matches the given ordinal number.
+         *
+         * @param ordinal The ordinal number of the requested priority enumeration value.
+         * @return The requested priority enumeration value if the given ordinal is valid. Otherwise null.
+         */
+        public static Priority fromOrdinal(int ordinal) {
+            return (ordinal >= 0 && ordinal < length) ? values()[ordinal] : null;
         }
     }
 

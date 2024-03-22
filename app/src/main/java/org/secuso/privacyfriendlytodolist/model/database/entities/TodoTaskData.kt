@@ -18,22 +18,34 @@
 package org.secuso.privacyfriendlytodolist.model.database.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 
-@Entity(tableName = "todo_task")
+@Entity(
+    tableName = "todoTasks",
+    indices = [
+        Index("listId")
+    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = TodoListData::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("listId"))
+    ]
+)
 data class TodoTaskData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
-    var name: String? = null,
     var listId: Int = 0,
     var listPosition: Int = 0,
-    var description: String? = null,
+    var name: String = "",
+    var description: String = "",
     var priority: Priority = Priority.MEDIUM,
     var deadline: Long = 0,
     var reminderTime: Long = -1,
     var progress: Int = 0,
-    var numberSubtasks: Int = 0,
     var isDone: Boolean = false,
     var isInRecycleBin: Boolean = false
 )

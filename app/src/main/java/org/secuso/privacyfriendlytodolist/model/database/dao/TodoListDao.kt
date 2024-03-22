@@ -33,12 +33,12 @@ interface TodoListDao {
     suspend fun update(todoListData: TodoListData): Int
     @Delete
     suspend fun delete(todoListData: TodoListData): Int
-    @Query("SELECT COUNT(id) FROM todo_list")
+    @Query("SELECT COUNT(id) FROM todoLists")
     suspend fun getCount(): Int
-    @Query("SELECT * FROM todo_list")
+    @Query("SELECT * FROM todoLists")
     suspend fun getAll(): Array<TodoListData>
-    @Query("SELECT * FROM todo_list WHERE id = :todoListId LIMIT 1")
+    @Query("SELECT * FROM todoLists WHERE id = :todoListId LIMIT 1")
     suspend fun getById(todoListId: Int): TodoListData?
-    @Query("DELETE FROM todo_list")
+    @Query("DELETE FROM todoLists")
     suspend fun deleteAll(): Int
 }
