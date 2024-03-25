@@ -83,25 +83,38 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
         LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
         model = viewModel.getModel();
 
-        boolean showFab = getArguments().getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
-
-        // This argument is only set if a dummy list is displayed (a mixture of tasks of different lists) or if
-        // a list was selected by clicking on a notification. If the the user selects a list explicitly by clicking on it
-        // the list object is instantly available and can be obtained using the method "getClickedList()"
-        int selectedListID = getArguments().getInt(MainActivity.KEY_SELECTED_LIST_ID_BY_NOTIFICATION, -1);
+        boolean showFab = false;
         boolean showListNamesOfTasks = false;
-        if(selectedListID >= 0) {
-            currentList = containingActivity.getListByID(selectedListID); // MainActivity was started after a notification click
-            Log.i(TAG, "List was loaded that was requested by a click on a notification.");
-        } else if(selectedListID == TodoList.DUMMY_LIST_ID) {
-            currentList = containingActivity.getDummyList();
-            showListNamesOfTasks = true;
-            Log.i(TAG, "Dummy list was loaded.");
-        } else {
-            currentList = containingActivity.getClickedList(); // get clicked list
-            Log.i(TAG, "Clicked list was loaded.");
-        }
+        Bundle arguments = getArguments();
+        if (null != arguments) {
+            showFab = arguments.getBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON);
 
+            // KEY_SELECTED_LIST_ID_BY_NOTIFICATION argument is set if a list was selected by clicking on a notification.
+            // KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION is set if a dummy list is displayed (a mixture of tasks of different lists).
+            // If the the user selects a list explicitly by clicking on it the list object is
+            // instantly available and can be obtained using the method "getClickedList()"
+            if (arguments.containsKey(MainActivity.KEY_SELECTED_LIST_ID_BY_NOTIFICATION)) {
+                // MainActivity was started after a notification click
+                final int selectedListID = arguments.getInt(MainActivity.KEY_SELECTED_LIST_ID_BY_NOTIFICATION);
+                currentList = null;
+                for (TodoList todoList : containingActivity.getTodoLists()) {
+                    if (todoList.getId() == selectedListID) {
+                        currentList = todoList;
+                        break;
+                    }
+                }
+                Log.i(TAG, "List was loaded that was requested by a click on a notification.");
+            } else if (arguments.containsKey(MainActivity.KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION)) {
+                currentList = containingActivity.getDummyList();
+                showListNamesOfTasks = true;
+                Log.i(TAG, "Dummy list was loaded.");
+            } else {
+                currentList = containingActivity.getClickedList(); // get clicked list
+                Log.i(TAG, "Clicked list was loaded.");
+            }
+        } else {
+            Log.e(TAG, "Expected arguments but got none.");
+        }
 
         View v = inflater.inflate(R.layout.fragment_todo_tasks, container, false);
 
@@ -133,7 +146,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
             optionFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ProcessTodoTaskDialog dialog = new ProcessTodoTaskDialog(getActivity());
+                    ProcessTodoTaskDialog dialog = new ProcessTodoTaskDialog(
+                            containingActivity, containingActivity.getTodoLists());
                     dialog.setDialogCallback(todoTask -> {
                         todoTasks.add(todoTask);
                         saveNewTasks();
@@ -253,7 +267,8 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
                     break;
 
                 case R.id.change_task:
-                    ProcessTodoTaskDialog changeTaskDialog = new ProcessTodoTaskDialog(getActivity(), todoTask);
+                    ProcessTodoTaskDialog changeTaskDialog = new ProcessTodoTaskDialog(
+                            containingActivity, containingActivity.getTodoLists(), todoTask);
                     changeTaskDialog.setDialogCallback(todoTask2 -> {
                         taskAdapter.notifyDataSetChanged();
                     });
@@ -383,8 +398,9 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     // write new tasks to the database
     private void saveNewTasks() {
         for (TodoTask todoTask : todoTasks) {
-            // If a dummy list is displayed, its id must not be assigned to the task.
-            if (!currentList.isDummyList()) {
+            if (currentList.isDummyList()) {
+                todoTask.setListId(TodoList.DUMMY_LIST_ID);
+            } else {
                 todoTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
             }
 

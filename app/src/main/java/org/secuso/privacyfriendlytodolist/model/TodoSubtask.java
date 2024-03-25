@@ -21,6 +21,14 @@ import android.os.Parcelable;
 
 public interface TodoSubtask extends BaseTodo, Parcelable {
 
+    void setId(int id);
+
+    int getId();
+
+    void setName(String name);
+
+    String getName();
+
     void setTaskId(int taskIdForeignKey);
 
     int getTaskId();

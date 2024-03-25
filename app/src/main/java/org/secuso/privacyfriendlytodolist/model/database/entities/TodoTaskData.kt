@@ -32,13 +32,15 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
         ForeignKey(
             entity = TodoListData::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("listId"))
+            childColumns = arrayOf("listId"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.SET_NULL)
     ]
 )
 data class TodoTaskData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
-    var listId: Int = 0,
+    var listId: Int? = null,
     var listPosition: Int = 0,
     var name: String = "",
     var description: String = "",

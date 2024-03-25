@@ -47,6 +47,7 @@ interface ModelServices {
     fun getRecycleBin(resultConsumer: ResultConsumer<List<TodoTask>>)
     fun clearRecycleBin(resultConsumer: ResultConsumer<Int>?)
     fun getAllToDoLists(resultConsumer: ResultConsumer<List<TodoList>>)
+    fun getToDoListById(todoListId: Int, resultConsumer: ResultConsumer<TodoList?>)
     fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
     fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
     fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)

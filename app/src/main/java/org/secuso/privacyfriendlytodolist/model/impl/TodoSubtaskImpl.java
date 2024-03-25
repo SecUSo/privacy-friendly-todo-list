@@ -22,9 +22,11 @@ import android.os.Parcel;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData;
 
+import java.util.Objects;
+
 /**
  * Created by Sebastian Lutz on 12.03.2018.
- *
+ * <p>
  * Class to set up To-Do subtasks and its parameters.
  */
 
@@ -44,7 +46,7 @@ public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
     public TodoSubtaskImpl(Parcel parcel) {
         data = new TodoSubtaskData();
         data.setId(parcel.readInt());
-        data.setName(parcel.readString());
+        data.setName(Objects.requireNonNullElse(parcel.readString(), ""));
         data.setDone(parcel.readByte() != 0);
         data.setInRecycleBin(parcel.readByte() != 0);
         data.setTaskId(parcel.readInt());
@@ -110,7 +112,7 @@ public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
     }
 
     public static final Creator<TodoSubtaskImpl> CREATOR =
-            new Creator<TodoSubtaskImpl>() {
+            new Creator<>() {
                 @Override
                 public TodoSubtaskImpl createFromParcel(Parcel source) {
                     return new TodoSubtaskImpl(source);
@@ -131,11 +133,12 @@ public class TodoSubtaskImpl extends BaseTodoImpl implements TodoSubtask {
     public boolean checkQueryMatch(String query)
     {
         // no query? always match!
-        if(query == null || query.isEmpty())
+        if (query == null || query.isEmpty()) {
             return true;
+        }
 
         String queryLowerCase = query.toLowerCase();
-        return (null != data.getName() && data.getName().toLowerCase().contains(queryLowerCase));
+        return (data.getName().toLowerCase().contains(queryLowerCase));
     }
 
     TodoSubtaskData getData() {

@@ -29,19 +29,17 @@ import java.util.List;
 
 public interface TodoList extends BaseTodo, Parcelable {
 
-    int DUMMY_LIST_ID = -3; // -1 is often used for error codes
+    Integer DUMMY_LIST_ID = null;
 
     void setId(int id);
 
     int getId();
 
+    boolean isDummyList();
+
     void setName(String name);
 
     String getName();
-
-    void setDummyList();
-
-    boolean isDummyList();
 
     int getSize();
 

@@ -26,7 +26,10 @@ public interface TodoTask extends BaseTodo, Parcelable {
     enum Priority {
         HIGH, MEDIUM, LOW; // Priority steps must be sorted in the same way like they will be displayed
 
-        public static final int length = values().length;
+        public static final Priority DEFAULT_VALUE = MEDIUM;
+
+        /** Number of priorities. */
+        public static final int LENGTH = values().length;
 
         /**
          * Provides the priority enumeration value that matches the given ordinal number.
@@ -35,7 +38,7 @@ public interface TodoTask extends BaseTodo, Parcelable {
          * @return The requested priority enumeration value if the given ordinal is valid. Otherwise null.
          */
         public static Priority fromOrdinal(int ordinal) {
-            return (ordinal >= 0 && ordinal < length) ? values()[ordinal] : null;
+            return (ordinal >= 0 && ordinal < LENGTH) ? values()[ordinal] : null;
         }
     }
 
@@ -45,9 +48,27 @@ public interface TodoTask extends BaseTodo, Parcelable {
         RED
     }
 
-    void setList(TodoList list);
+    void setId(int id);
 
-    TodoList getList();
+    int getId();
+
+    void setName(String name);
+
+    String getName();
+
+    void setDescription(String description);
+
+    String getDescription();
+
+    /**
+     * @param listId The ID of the associated list or {@link TodoList#DUMMY_LIST_ID} if no list is associated.
+     */
+    void setListId(Integer listId);
+
+    /**
+     * @return The ID of the associated list or {@link TodoList#DUMMY_LIST_ID} if no list is associated.
+     */
+    Integer getListId();
 
     void setDeadline(long deadline);
 
@@ -82,10 +103,6 @@ public interface TodoTask extends BaseTodo, Parcelable {
      * @return The progress of the task in percent (values in range 0 - 100).
      */
     int getProgress(boolean computeProgress);
-
-    void setListId(int listId);
-
-    int getListId();
 
     void setReminderTime(long reminderTime);
 

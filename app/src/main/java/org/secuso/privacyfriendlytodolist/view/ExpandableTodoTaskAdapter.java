@@ -35,6 +35,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.ModelServices;
+import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
@@ -490,11 +491,14 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                 else
                     deadline = context.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(currentTask.getDeadline());
 
-                if(showListName) {
-                    vh2.listName.setVisibility(View.VISIBLE);
-                    vh2.listName.setText(currentTask.getList().getName());
-                } else {
-                    vh2.listName.setVisibility(View.GONE);
+                vh2.listName.setVisibility(View.GONE);
+                if (showListName && currentTask.getListId() != TodoList.DUMMY_LIST_ID) {
+                    model.getToDoListById(currentTask.getListId(), todoList -> {
+                        if (null != todoList) {
+                            vh2.listName.setText(todoList.getName());
+                            vh2.listName.setVisibility(View.VISIBLE);
+                        }
+                    });
                 }
 
                 vh2.deadline.setText(deadline);

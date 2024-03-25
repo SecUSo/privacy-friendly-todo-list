@@ -31,9 +31,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
  * Created by Sebastian Lutz on 12.03.2018.
- *
+ * <p>
  * Class to set up To-Do Tasks and its parameters.
  */
 
@@ -47,7 +46,6 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     /** Important for the reminder service. */
     private boolean reminderTimeChanged = false;
     private boolean reminderTimeWasInitialized = false;
-    private TodoList list;
     private List<TodoSubtask> subtasks = new ArrayList<>();
 
     public TodoTaskImpl() {
@@ -61,9 +59,14 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     public TodoTaskImpl(Parcel parcel) {
         data = new TodoTaskData();
         data.setId(parcel.readInt());
-        data.setListId(parcel.readInt());
-        data.setName(Objects.toString(parcel.readString(), ""));
-        description = parcel.readString();
+        if (0 != parcel.readByte()) {
+            data.setListId(parcel.readInt());
+        } else {
+            parcel.readInt();
+            data.setListId(TodoList.DUMMY_LIST_ID);
+        }
+        data.setName(Objects.requireNonNullElse(parcel.readString(), ""));
+        data.setDescription(Objects.requireNonNullElse(parcel.readString(), ""));
         data.setDone(parcel.readByte() != 0);
         data.setInRecycleBin(parcel.readByte() != 0);
         data.setProgress(parcel.readInt());
@@ -71,16 +74,22 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         data.setReminderTime(parcel.readLong());
         data.setListPosition(parcel.readInt());
         Priority priority = Priority.fromOrdinal(parcel.readInt());
-        data.setPriority(null != priority ? priority : Priority.MEDIUM);
+        data.setPriority(Objects.requireNonNullElse(priority, Priority.DEFAULT_VALUE));
         parcel.readList(subtasks, TodoSubtaskImpl.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(data.getId());
-        dest.writeInt(data.getListId());
+        if (null != data.getListId()) {
+            dest.writeByte((byte)1);
+            dest.writeInt(data.getListId());
+        } else {
+            dest.writeByte((byte)0);
+            dest.writeInt(0);
+        }
         dest.writeString(data.getName());
-        dest.writeString(description);
+        dest.writeString(data.getDescription());
         dest.writeByte((byte)(data.isDone() ? 1 : 0));
         dest.writeByte((byte)(data.isInRecycleBin() ? 1 : 0));
         dest.writeInt(data.getProgress());
@@ -112,13 +121,23 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     }
 
     @Override
-    public void setList(TodoList list) {
-        this.list = list;
+    public void setDescription(String description) {
+        data.setDescription(description);
     }
 
     @Override
-    public TodoList getList() {
-        return list;
+    public String getDescription() {
+        return data.getDescription();
+    }
+
+    @Override
+    public void setListId(Integer listId) {
+        data.setListId(listId);
+    }
+
+    @Override
+    public Integer getListId() {
+        return data.getListId();
     }
 
     @Override
@@ -219,7 +238,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     }
 
     public static final Creator<TodoTaskImpl> CREATOR =
-        new Creator<TodoTaskImpl>() {
+        new Creator<>() {
             @Override
             public TodoTaskImpl createFromParcel(Parcel source) {
                 return new TodoTaskImpl(source);
@@ -234,16 +253,6 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void setListId(int listId) {
-        data.setListId(listId);
-    }
-
-    @Override
-    public int getListId() {
-        return data.getListId();
     }
 
     @Override
@@ -295,7 +304,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         return data.isDone();
     }
 
-    // A task is done if the user manually sets it done or when all subtaks are done.
+    // A task is done if the user manually sets it done or when all subtasks are done.
     // If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
     @Override
     public void doneStatusChanged() {
@@ -326,6 +335,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         return data.isInRecycleBin();
     }
 
+    @Override
     public boolean checkQueryMatch(String query, boolean recursive) {
         // no query? always match!
         if (query == null || query.isEmpty()) {
@@ -348,6 +358,7 @@ public class TodoTaskImpl extends BaseTodoImpl implements TodoTask {
         return false;
     }
 
+    @Override
     public boolean checkQueryMatch(String query) {
         return checkQueryMatch(query, true);
     }

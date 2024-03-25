@@ -26,6 +26,7 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -36,26 +37,31 @@ import java.util.List;
 public class TodoListImpl extends BaseTodoImpl implements TodoList {
 
     private final TodoListData data;
-    private List<TodoTask> tasks = new ArrayList<TodoTask>();
+    private List<TodoTask> tasks = new ArrayList<>();
+    private boolean isDummyList;
 
     public TodoListImpl() {
         data = new TodoListData();
+        isDummyList = true;
     }
 
     public TodoListImpl(TodoListData data) {
         this.data = data;
+        isDummyList = false;
     }
 
     public TodoListImpl(Parcel parcel) {
         data = new TodoListData();
         data.setId(parcel.readInt());
-        data.setName(parcel.readString());
+        isDummyList = parcel.readByte() != 0;
+        data.setName(Objects.requireNonNullElse(parcel.readString(), ""));
         parcel.readList(tasks, TodoTask.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(data.getId());
+        dest.writeByte((byte) (isDummyList ? 1 : 0));
         dest.writeString(data.getName());
         dest.writeList(tasks);
     }
@@ -63,11 +69,17 @@ public class TodoListImpl extends BaseTodoImpl implements TodoList {
     @Override
     public void setId(int id) {
         data.setId(id);
+        isDummyList = false;
     }
 
     @Override
     public int getId() {
         return data.getId();
+    }
+
+    @Override
+    public boolean isDummyList() {
+        return isDummyList;
     }
 
     @Override
@@ -80,30 +92,27 @@ public class TodoListImpl extends BaseTodoImpl implements TodoList {
         return data.getName();
     }
 
-    public boolean isDummyList() {
-        return getId() == DUMMY_LIST_ID;
-    }
-
-    public void setDummyList() {
-        setId(DUMMY_LIST_ID);
-    }
-
+    @Override
     public int getSize() {
         return tasks.size();
     }
 
+    @Override
     public void setTasks(List<TodoTask> tasks) {
         this.tasks = tasks;
     }
 
+    @Override
     public List<TodoTask> getTasks() {
         return tasks;
     }
 
+    @Override
     public int getColor() {
         return Color.BLACK;
     }
 
+    @Override
     public int getDoneTodos() {
         int counter = 0;
         for(TodoTask task : tasks) {
@@ -132,6 +141,7 @@ public class TodoListImpl extends BaseTodoImpl implements TodoList {
         return 0;
     }
 
+    @Override
     public long getNextDeadline() {
 
         long minDeadLine = -1;
@@ -169,6 +179,7 @@ public class TodoListImpl extends BaseTodoImpl implements TodoList {
         return minDeadLine;
     }
 
+    @Override
     public TodoTask.DeadlineColors getDeadlineColor(long defaultReminderTime) {
         TodoTask.DeadlineColors result = TodoTask.DeadlineColors.BLUE;
         for(TodoTask currentTask : tasks) {
@@ -189,13 +200,14 @@ public class TodoListImpl extends BaseTodoImpl implements TodoList {
     }
 
 
+    @Override
     public boolean checkQueryMatch(String query, boolean recursive) {
         // no query? always match!
         if (query == null || query.isEmpty())
             return true;
 
         String queryLowerCase = query.toLowerCase();
-        if (null != data.getName() && data.getName().toLowerCase().contains(queryLowerCase)) {
+        if (data.getName().toLowerCase().contains(queryLowerCase)) {
             return true;
         }
         if (recursive) {
@@ -208,6 +220,7 @@ public class TodoListImpl extends BaseTodoImpl implements TodoList {
         return false;
     }
 
+    @Override
     public boolean checkQueryMatch(String query) {
         return checkQueryMatch(query, true);
     }

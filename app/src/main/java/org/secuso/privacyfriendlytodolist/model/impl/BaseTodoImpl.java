@@ -27,8 +27,6 @@ abstract class BaseTodoImpl implements BaseTodo {
         UPDATE_FROM_POMODORO,
         NO_DB_ACTION
     }
-
-    protected String description;
     protected ObjectStates dbState;
 
     public BaseTodoImpl() {
@@ -36,34 +34,25 @@ abstract class BaseTodoImpl implements BaseTodo {
     }
 
     @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
     public void setCreated() {
-        this.dbState = ObjectStates.INSERT_TO_DB;
+        dbState = ObjectStates.INSERT_TO_DB;
     }
 
     @Override
     public void setChanged() {
-        if(this.dbState == ObjectStates.NO_DB_ACTION)
-            this.dbState = ObjectStates.UPDATE_DB;
+        if(dbState == ObjectStates.NO_DB_ACTION) {
+            dbState = ObjectStates.UPDATE_DB;
+        }
     }
 
     @Override
     public void setChangedFromPomodoro() {
-            this.dbState = ObjectStates.UPDATE_FROM_POMODORO;
+            dbState = ObjectStates.UPDATE_FROM_POMODORO;
     }
 
     @Override
     public void setUnchanged() {
-        this.dbState = ObjectStates.NO_DB_ACTION;
+        dbState = ObjectStates.NO_DB_ACTION;
     }
 
     public ObjectStates getDBState() {

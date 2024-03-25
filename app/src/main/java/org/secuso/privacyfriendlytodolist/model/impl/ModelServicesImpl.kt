@@ -49,10 +49,10 @@ class ModelServicesImpl(
 
     override fun getTaskById(todoTaskId: Int, resultConsumer: ResultConsumer<TodoTask?>) {
         coroutineScope.launch(Dispatchers.IO) {
-            val todoTaskData = db.getTodoTaskDao().getTaskById(todoTaskId)
+            val todoTaskData = db.getTodoTaskDao().getById(todoTaskId)
             var todoTask: TodoTask? = null
             if (null != todoTaskData) {
-                todoTask = TodoTaskImpl(todoTaskData)
+                todoTask = loadTasksSubtasks(false, todoTaskData)[0]
             }
             dispatchResult(resultConsumer, todoTask)
         }
@@ -69,7 +69,7 @@ class ModelServicesImpl(
         val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(today)
         var nextDueTask: TodoTask? = null
         if (null != nextDueTaskData) {
-            nextDueTask = TodoTaskImpl(nextDueTaskData)
+            nextDueTask = loadTasksSubtasks(false, nextDueTaskData)[0]
         }
         return nextDueTask
     }
@@ -86,7 +86,7 @@ class ModelServicesImpl(
      */
     override fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<List<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoTaskDao().getTasksToRemind(today, lockedIds)
+            val dataArray = db.getTodoTaskDao().getAllToRemind(today, lockedIds)
             val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
             // get task that is next due
@@ -227,6 +227,17 @@ class ModelServicesImpl(
         }
     }
 
+    override fun getToDoListById(todoListId: Int, resultConsumer: ResultConsumer<TodoList?>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val todoListData = db.getTodoListDao().getById(todoListId)
+            var todoList: TodoList? = null
+            if (null != todoListData) {
+                todoList = loadListsTasksSubtasks(todoListData)[0]
+            }
+            dispatchResult(resultConsumer, todoList)
+        }
+    }
+
     // returns the id of the todolist
     override fun saveTodoListInDb(todoList: TodoList, resultConsumer: ResultConsumer<Int>?) {
         coroutineScope.launch(Dispatchers.IO) {
@@ -235,7 +246,7 @@ class ModelServicesImpl(
             var counter = 0
             when (todoListImpl.getDBState()) {
                 ObjectStates.INSERT_TO_DB -> {
-                    db.getTodoListDao().insert(data)
+                    todoListImpl.id = db.getTodoListDao().insert(data).toInt()
                     counter = 1
                     Log.d(TAG, "Todo list was inserted into DB: $data")
                 }
@@ -276,7 +287,7 @@ class ModelServicesImpl(
         var counter = 0
         when (todoTaskImpl.getDBState()) {
             ObjectStates.INSERT_TO_DB -> {
-                db.getTodoTaskDao().insert(data)
+                todoTaskImpl.id = db.getTodoTaskDao().insert(data).toInt()
                 counter = 1
                 Log.d(TAG, "Todo task was inserted into DB: $data")
             }
@@ -315,7 +326,7 @@ class ModelServicesImpl(
         var counter = 0
         when (todoSubtaskImpl.getDBState()) {
             ObjectStates.INSERT_TO_DB -> {
-                db.getTodoSubtaskDao().insert(data)
+                todoSubtaskImpl.id = db.getTodoSubtaskDao().insert(data).toInt()
                 counter = 1
                 Log.d(TAG, "Todo subtask was inserted into DB: $data")
             }
@@ -347,7 +358,7 @@ class ModelServicesImpl(
             val dataArray2 = db.getTodoTaskDao().getAllOfListNotInRecycleBin(list.id)
             val tasks: List<TodoTaskImpl> = loadTasksSubtasks(false, *dataArray2)
             for (task in tasks) {
-                task.list = list
+                task.listId = list.id
             }
             list.tasks = tasks
             lists.add(list)
@@ -362,8 +373,9 @@ class ModelServicesImpl(
         val tasks = ArrayList<TodoTaskImpl>()
         for (data in dataArray) {
             val task = TodoTaskImpl(data)
-            val dataArray2 = if (subtasksFromRecycleBinToo) db.getTodoSubtaskDao()
-                .getAllOfTask(task.id) else db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.id)
+            val dataArray2 = if (subtasksFromRecycleBinToo)
+                db.getTodoSubtaskDao().getAllOfTask(task.id) else
+                db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.id)
             val subtasks: List<TodoSubtaskImpl> = loadSubtasks(*dataArray2)
             task.subtasks = subtasks
             tasks.add(task)

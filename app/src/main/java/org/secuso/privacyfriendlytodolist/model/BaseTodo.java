@@ -19,18 +19,6 @@ package org.secuso.privacyfriendlytodolist.model;
 
 public interface BaseTodo {
 
-    void setId(int id);
-
-    int getId();
-
-    void setName(String name);
-
-    String getName();
-
-    void setDescription(String description);
-
-    String getDescription();
-
     void setCreated();
 
     void setChanged();

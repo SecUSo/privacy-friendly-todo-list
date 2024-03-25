@@ -30,7 +30,9 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = TodoTaskData::class,
             parentColumns = arrayOf("id"),
-            childColumns = arrayOf("taskId"))
+            childColumns = arrayOf("taskId"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE)
     ]
 )
 data class TodoSubtaskData(
