@@ -56,7 +56,7 @@
     <string name="about_author">Auteurs:</string>
     <string name="about_author_contributors">en medewerkers.</string>
     <string name="about_affiliation">In samenwerking met</string>
-    <string name="privacy_friendly">Deze applicatie behoort tot de Privacy Friendly Apps ontwikkeld door de Technische Universiteit Darmstadt. De broncode is gelicentieerd onder de Apache license. De afbeeldingen staan onder copyright van TU Darmstadt en Google Inc.</string>
+    <string name="privacy_friendly">Deze applicatie behoort tot de Privacy Friendly Apps ontwikkeld door de Technische Universiteit Darmstadt. De broncode is gelicentieerd onder de Apache license. De afbeeldingen staan onder copyright van KIT en Google Inc.</string>
     <string name="more_info">Meer informatie kan gevonden worden op:</string>
 
     <!-- To-Do list overview -->
