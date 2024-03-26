@@ -47,7 +47,7 @@ abstract class TodoListDatabase : RoomDatabase() {
 
     companion object {
 
-        const val DATABASE_NAME = "todo_list"
+        const val DATABASE_NAME = "TodoDatabase.db"
         const val DATABASE_VERSION = 3
         private var instance: TodoListDatabase? = null
 
@@ -126,12 +126,11 @@ abstract class TodoListDatabase : RoomDatabase() {
         }
 
         private fun createDatabase(context: Context): TodoListDatabase {
-            return Room.databaseBuilder(context.applicationContext,
-                TodoListDatabase::class.java, DATABASE_NAME
-            )
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_3)
-                .build()
+            val builder = Room.databaseBuilder(context.applicationContext,
+                TodoListDatabase::class.java, DATABASE_NAME)
+            builder.addMigrations(MIGRATION_1_2)
+            builder.addMigrations(MIGRATION_2_3)
+            return builder.build()
         }
     }
 }
