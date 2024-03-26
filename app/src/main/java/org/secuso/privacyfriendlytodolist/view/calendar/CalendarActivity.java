@@ -30,14 +30,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.TodoList;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,11 +53,11 @@ import java.util.concurrent.TimeUnit;
 
 public class CalendarActivity extends AppCompatActivity {
 
+    private ModelServices model;
     private CalendarView calendarView;
     private CalendarGridAdapter calendarGridAdapter;
     protected MainActivity containerActivity;
     private HashMap<String, ArrayList<TodoTask>> tasksPerDay = new HashMap<>();
-    private DatabaseHelper dbHelper;
     private ArrayList<TodoTask> todaysTasks;
 
   /*  private ExpandableListView expandableListView;
@@ -67,6 +67,9 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
 
         setContentView(R.layout.fragment_calendar);
 
@@ -90,7 +93,6 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView.setGridAdapter(calendarGridAdapter);
         //expandableListView = (ExpandableListView) findViewById(R.id.exlv_tasks);
 
-        dbHelper = DatabaseHelper.getInstance(this);
         todaysTasks = new ArrayList<>();
 
         updateDeadlines();
@@ -131,22 +133,22 @@ public class CalendarActivity extends AppCompatActivity {
 
 
     private void updateDeadlines() {
-        ArrayList<TodoList> todoLists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        ArrayList<TodoTask> todoTasks = DBQueryHandler.getAllToDoTasks(dbHelper.getReadableDatabase());
-        tasksPerDay.clear();
-        //for (TodoList list : todoLists){
-        for (TodoTask task : todoTasks) {
-            long deadline = task.getDeadline();
-            String key = absSecondsToDate(deadline);
-            if (!tasksPerDay.containsKey(key)) {
-                tasksPerDay.put(key, new ArrayList<TodoTask>());
+        model.getAllToDoTasks(todoTasks -> {
+            tasksPerDay.clear();
+            for (TodoTask todoTask : todoTasks) {
+                final long deadline = todoTask.getDeadline();
+                final String key = absSecondsToDate(deadline);
+                ArrayList<TodoTask> tasksOfDay = tasksPerDay.get(key);
+                if (null == tasksOfDay) {
+                    tasksOfDay = new ArrayList<>();
+                    tasksPerDay.put(key, tasksOfDay);
+                }
+                tasksOfDay.add(todoTask);
             }
-            tasksPerDay.get(key).add(task);
-            //}
-        }
-        calendarGridAdapter.setTodoTasks(tasksPerDay);
-        calendarGridAdapter.notifyDataSetChanged();
-        //containerActivity.getSupportActionBar().setTitle(R.string.calendar);
+            calendarGridAdapter.setTodoTasks(tasksPerDay);
+            calendarGridAdapter.notifyDataSetChanged();
+            //containerActivity.getSupportActionBar().setTitle(R.string.calendar);
+        });
     }
 
     private String absSecondsToDate(long seconds) {

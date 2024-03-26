@@ -29,9 +29,12 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 
-public class DeadlineDialog extends FullScreenDialog {
+public class DeadlineDialog extends FullScreenDialog<DeadlineDialog.DeadlineCallback> {
 
-    private DeadlineCallback callback;
+    public interface DeadlineCallback {
+        void setDeadline(long deadline);
+        void removeDeadline();
+    }
 
     public DeadlineDialog(Context context, long deadline) {
         super(context, R.layout.deadline_dialog);
@@ -64,15 +67,6 @@ public class DeadlineDialog extends FullScreenDialog {
             }
         });
 
-    }
-
-    public interface DeadlineCallback {
-        void setDeadline(long deadline);
-        void removeDeadline();
-    }
-
-    public void setCallback(DeadlineCallback callback) {
-        this.callback = callback;
     }
 
 }

@@ -159,11 +159,4 @@
 	<string name="october">10 月</string>
 	<string name="november">11 月</string>
 	<string name="december">12 月</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">サブタスクをデータベースから削除できませんでした。</string>
-    <string name="error_removing_task">To-Do タスクをデータベースから削除できませんでした。</string>
-    <string name="list_to_db_error">新しい To-Do リストの作成中にエラーが発生しました。</string>
-    <string name="task_to_db_error">データベースに新しいタスクを挿入中にエラーが発生しました。</string>
-    <string name="subtask_to_db_error">データベースに新しいサブタスクを挿入中にエラーが発生しました。</string>
 </resources>

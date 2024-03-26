@@ -159,11 +159,4 @@
 	<string name="october">Octobre</string>
 	<string name="november">Novembre</string>
 	<string name="december">Décembre</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">La sous-tâche n\'a pas été supprimée.</string>
-    <string name="error_removing_task">La tâche a été supprimée.</string>
-    <string name="list_to_db_error">La liste de tâches n\'a pas été enregistée dans la base de données.</string>
-    <string name="task_to_db_error">La tâche n\'a pas été enregistrée dans la base de données.</string>
-    <string name="subtask_to_db_error">La sous-tâche n\'a pas été enregistrée dans la base de données.</string>
 </resources>

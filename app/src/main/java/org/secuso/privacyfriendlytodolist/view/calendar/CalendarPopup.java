@@ -1,19 +1,36 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.view.calendar;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
-import android.widget.RelativeLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 import java.util.ArrayList;
 
@@ -25,20 +42,20 @@ import java.util.ArrayList;
 
 public class CalendarPopup extends AppCompatActivity {
 
-    private DatabaseHelper dbhelper;
     private ExpandableListView lv;
-    RelativeLayout rl;
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
     private ArrayList<TodoTask> tasks = new ArrayList<>();
-
+    private ModelServices model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
+
         setContentView(R.layout.calendar_popup);
 
-        rl = (RelativeLayout) findViewById(R.id.relative_deadline);
         lv = (ExpandableListView) findViewById(R.id.deadline_tasks);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_deadlineTasks);
@@ -63,7 +80,7 @@ public class CalendarPopup extends AppCompatActivity {
 
     }
 
-
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -75,17 +92,8 @@ public class CalendarPopup extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void updateAdapter() {
-
-        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
+    private void updateAdapter() {
+        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, model, tasks);
         lv.setAdapter(expandableTodoTaskAdapter);
-
     }
-
-
 }
-
-
-
-

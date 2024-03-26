@@ -77,9 +77,9 @@
             android:permission="android.permission.BIND_REMOTEVIEWS"
              />
 
-        <service android:name=".model.ReminderService" />
+        <service android:name=".service.ReminderService" />
 
-        <receiver android:name=".model.AutoStartReceiver"
+        <receiver android:name=".service.AutoStartReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

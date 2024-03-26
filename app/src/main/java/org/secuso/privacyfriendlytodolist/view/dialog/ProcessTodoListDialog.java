@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 
 
@@ -33,14 +34,10 @@ import org.secuso.privacyfriendlytodolist.model.TodoList;
  * Defines the dialog that lets the user create a list
  */
 
+public class ProcessTodoListDialog extends FullScreenDialog<ResultCallback<TodoList>> {
 
-public class ProcessTodoListDialog extends FullScreenDialog {
-
-    private ProcessTodoListDialog self = this;
-    private Button buttonOkay;
-    private Button buttonCancel;
     private EditText etName, etDescription;
-    private TodoList todoList;
+    private final TodoList todoList;
 
 
     public ProcessTodoListDialog(Context context) {
@@ -48,7 +45,7 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
         initGui();
 
-        todoList = new TodoList();
+        todoList = Model.createNewTodoList();
         todoList.setCreated();
         //todoList.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
     }
@@ -66,9 +63,9 @@ public class ProcessTodoListDialog extends FullScreenDialog {
 
 
     private void initGui() {
-        buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
+        Button buttonOkay = (Button) findViewById(R.id.bt_newtodolist_ok);
         buttonOkay.setOnClickListener(new OkayButtonListener());
-        buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
+        Button buttonCancel = (Button) findViewById(R.id.bt_newtodolist_cancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,28 +82,21 @@ public class ProcessTodoListDialog extends FullScreenDialog {
             // prepare list data
             String listName = etName.getText().toString();
 
-            if (listName.equals("") || listName == null) {
+            if (listName.equals("")) {
                 Toast.makeText(getContext(), getContext().getString(R.string.list_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
             } else {
 
                 if (changesMade(listName)) {
                     todoList.setName(listName);
-                    callback.finish(todoList);
+                    callback.onFinish(todoList);
                 }
-                self.dismiss();
+                ProcessTodoListDialog.this.dismiss();
             }
         }
     }
 
     private boolean changesMade(String listName) {
-
         // check if real changes were made
-        if (listName.equals(todoList.getName())) {
-            return false;
-        }
-
-        return true;
+        return ! listName.equals(todoList.getName());
     }
-
-
 }

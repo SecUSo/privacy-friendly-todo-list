@@ -17,9 +17,7 @@
 
 package org.secuso.privacyfriendlytodolist.view.dialog;
 
-import android.content.Context;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,14 +29,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.Helper;
+import org.secuso.privacyfriendlytodolist.model.Model;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.util.Helper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,8 +45,7 @@ import java.util.List;
  * This class creates a dialog that lets the user create/edit a task.
  */
 
-public class ProcessTodoTaskDialog extends FullScreenDialog {
-
+public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoTask>> {
     private TextView prioritySelector;
     private TextView deadlineTextView;
     private TextView reminderTextView;
@@ -62,52 +59,55 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
     private EditText taskName;
     private EditText taskDescription;
     private TodoTask.Priority taskPriority = null;
-    private int selectedListID;
-    private List<TodoList> lists = new ArrayList<>();
-    private DatabaseHelper dbHelper;
+    private Integer selectedListID = TodoList.DUMMY_LIST_ID;
+    private final List<TodoList> lists;
     private int taskProgress = 0;
     private String name, description;
     private long deadline = -1;
     private long reminderTime = -1;
 
-    private TodoTask.Priority defaultPriority = TodoTask.Priority.MEDIUM;
+    private final TodoTask task;
 
-    private TodoTask task;
-
-
-    public ProcessTodoTaskDialog(final Context context) {
-        super(context, R.layout.add_task_dialog);
-
-        initGui();
-        task = new TodoTask();
-        task.setCreated();
-        //task.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
+    /**
+     * @param context Gets used as context, ViewModelStoreOwner and LifecycleOwner.
+     */
+    public ProcessTodoTaskDialog(FragmentActivity context, List<TodoList> todoLists) {
+        this(context, todoLists, null);
     }
 
-
-    public ProcessTodoTaskDialog(Context context, TodoTask task) {
+    /**
+     * @param context Gets used as context, ViewModelStoreOwner and LifecycleOwner.
+     */
+    public ProcessTodoTaskDialog(FragmentActivity context, List<TodoList> todoLists, TodoTask todoTask) {
         super(context, R.layout.add_task_dialog);
 
-        initGui();
-        task.setChanged();
-        //task.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
-        deadline = task.getDeadline();
-        reminderTime = task.getReminderTime();
-        taskName.setText(task.getName());
-        taskDescription.setText(task.getDescription());
-        prioritySelector.setText(Helper.priority2String(context, task.getPriority()));
-        taskPriority = task.getPriority();
-        progressSelector.setProgress(task.getProgress());
-        if(task.getDeadline() <= 0)
-            deadlineTextView.setText(context.getString(R.string.no_deadline));
-        else
-            deadlineTextView.setText(Helper.getDate(deadline));
-        if(task.getReminderTime() <= 0)
-            reminderTextView.setText(context.getString(R.string.reminder));
-        else
-            reminderTextView.setText(Helper.getDateTime(reminderTime));
+        lists = todoLists;
 
-        this.task = task;
+        initGui();
+
+        if (null == todoTask){
+            task = Model.createNewTodoTask();
+            task.setCreated();
+        } else {
+            task = todoTask;
+            task.setChanged();
+
+            deadline = task.getDeadline();
+            reminderTime = task.getReminderTime();
+            taskName.setText(task.getName());
+            taskDescription.setText(task.getDescription());
+            prioritySelector.setText(Helper.priority2String(context, task.getPriority()));
+            taskPriority = task.getPriority();
+            progressSelector.setProgress(task.getProgress(false));
+            if (task.getDeadline() <= 0)
+                deadlineTextView.setText(context.getString(R.string.no_deadline));
+            else
+                deadlineTextView.setText(Helper.getDate(deadline));
+            if (task.getReminderTime() <= 0)
+                reminderTextView.setText(context.getString(R.string.reminder));
+            else
+                reminderTextView.setText(Helper.getDateTime(reminderTime));
+        }
     }
 
     private void initGui() {
@@ -122,32 +122,28 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             }
         });
         prioritySelector.setOnCreateContextMenuListener(this);
-        taskPriority = defaultPriority;
+        taskPriority = TodoTask.Priority.DEFAULT_VALUE;
         prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
 
         //initialize titles of the dialog
-        dialogTitleNew = (TextView) findViewById(R.id.dialog_title);
-        dialogTitleEdit = (TextView) findViewById(R.id.dialog_edit);
+        dialogTitleNew = findViewById(R.id.dialog_title);
+        dialogTitleEdit = findViewById(R.id.dialog_edit);
 
 
         //initialize textview that displays selected list
-        listSelector = (TextView) findViewById (R.id.tv_new_task_listchoose);
-        listSelector.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerForContextMenu(listSelector);
-                openContextMenu(listSelector);
-            }
+        listSelector = findViewById(R.id.tv_new_task_listchoose);
+        listSelector.setOnClickListener(v -> {
+            registerForContextMenu(listSelector);
+            openContextMenu(listSelector);
         });
         listSelector.setOnCreateContextMenuListener(this);
 
 
-        progressText = (TextView) findViewById(R.id.tv_task_progress);
-        progressPercent = (TextView) findViewById(R.id.new_task_progress);
-        progress_layout = (RelativeLayout) findViewById(R.id.progress_relative);
+        progressText = findViewById(R.id.tv_task_progress);
+        progressPercent = findViewById(R.id.new_task_progress);
+        progress_layout = findViewById(R.id.progress_relative);
 
         // initialize seekbar that allows to select the progress
-        final TextView selectedProgress = (TextView) findViewById(R.id.new_task_progress);
         progressSelector = (SeekBar) findViewById(R.id.sb_new_task_progress);
 
         if (!hasAutoProgress()) {
@@ -156,17 +152,15 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     taskProgress = progress;
-                    selectedProgress.setText(String.valueOf(progress) + "%");
+                    progressPercent.setText(progress + "%");
                 }
 
                 @Override
                 public void onStartTrackingTouch(SeekBar seekBar) {
-
                 }
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-
                 }
             });
         } else {
@@ -176,32 +170,25 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
         // initialize buttons
         Button okayButton = (Button) findViewById(R.id.bt_new_task_ok);
-        okayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        okayButton.setOnClickListener(v -> {
+            String name = taskName.getText().toString();
+            String description = taskDescription.getText().toString();
 
-                String name = taskName.getText().toString();
-                String description = taskDescription.getText().toString();
-
-                String listName = listSelector.getText().toString();
-
-                if(name.equals("")) {
-                    Toast.makeText(getContext(), getContext().getString(R.string.todo_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
-                } /* else if (listName.equals(getContext().getString(R.string.click_to_choose))) {
-                    Toast.makeText(getContext(), getContext().getString(R.string.to_choose_list), Toast.LENGTH_SHORT).show();
-                } */
-                else {
-
-                    task.setName(name);
-                    task.setDescription(description);
-                    task.setDeadline(deadline);
-                    task.setPriority(taskPriority);
-                    task.setListId(selectedListID);
-                    task.setProgress(taskProgress);
-                    task.setReminderTime(reminderTime);
-                    callback.finish(task);
-                    ProcessTodoTaskDialog.this.dismiss();
-                }
+            if (name.equals("")) {
+                Toast.makeText(getContext(), getContext().getString(R.string.todo_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
+            } /* else if (listName.equals(getContext().getString(R.string.click_to_choose))) {
+                Toast.makeText(getContext(), getContext().getString(R.string.to_choose_list), Toast.LENGTH_SHORT).show();
+            } */
+            else {
+                task.setName(name);
+                task.setDescription(description);
+                task.setDeadline(deadline);
+                task.setPriority(taskPriority);
+                task.setListId(selectedListID);
+                task.setProgress(taskProgress);
+                task.setReminderTime(reminderTime);
+                callback.onFinish(task);
+                ProcessTodoTaskDialog.this.dismiss();
             }
         });
 
@@ -221,7 +208,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             @Override
             public void onClick(View v) {
                 DeadlineDialog deadlineDialog = new DeadlineDialog(getContext(), deadline);
-                deadlineDialog.setCallback(new DeadlineDialog.DeadlineCallback() {
+                deadlineDialog.setDialogCallback(new DeadlineDialog.DeadlineCallback() {
                     @Override
                     public void setDeadline(long d) {
                         deadline = d;
@@ -244,7 +231,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             @Override
             public void onClick(View v) {
                 ReminderDialog reminderDialog = new ReminderDialog(getContext(), reminderTime, deadline);
-                reminderDialog.setCallback(new ReminderDialog.ReminderCallback() {
+                reminderDialog.setDialogCallback(new ReminderDialog.ReminderCallback() {
                     @Override
                     public void setReminder(long r) {
 
@@ -282,19 +269,18 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
         switch (v.getId()){
             case R.id.tv_new_task_priority:
                 menu.setHeaderTitle(R.string.select_priority);
-                for (TodoTask.Priority prio : TodoTask.Priority.values()) {
-                    menu.add(Menu.NONE, prio.getValue(), Menu.NONE, Helper.priority2String(getContext(), prio));
-
+                for (TodoTask.Priority priority : TodoTask.Priority.values()) {
+                    menu.add(Menu.NONE, priority.ordinal(), Menu.NONE, Helper.priority2String(getContext(), priority));
                 }
                 break;
 
             case R.id.tv_new_task_listchoose:
                 menu.setHeaderTitle(R.string.select_list);
-                updateLists();
-                menu.add(Menu.NONE, -3,Menu.NONE, R.string.select_no_list);
-                for (TodoList tl : lists){
-                    //+3 so that IDs are non-overlapping with prio-IDs
-                    menu.add(Menu.NONE, tl.getId()+3, Menu.NONE, tl.getName());
+                menu.add(Menu.NONE, -1, Menu.NONE, R.string.select_no_list);
+                for (int i = 0; i < lists.size(); ++i) {
+                    TodoList todoList = lists.get(i);
+                    // Add offset so that IDs are non-overlapping with priority-IDs
+                    menu.add(Menu.NONE, TodoTask.Priority.LENGTH + i, Menu.NONE, todoList.getName());
                 }
             break;
         }
@@ -303,53 +289,49 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        int numValues = TodoTask.Priority.values().length;
-        if (item != null && item.getItemId() < numValues && item.getItemId() >= 0 ) {
+        if (item.getItemId() >= 0 && item.getItemId() < TodoTask.Priority.LENGTH) {
             taskPriority = TodoTask.Priority.values()[item.getItemId()];
             prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
-        }
-
-        for (TodoList tl : lists){
-            if (item.getItemId()-3 == tl.getId()){
-                this.selectedListID = tl.getId();
-                listSelector.setText(tl.getName());
-            } else if (item.getTitle() == getContext().getString(R.string.to_choose_list)||item.getTitle() == getContext().getString(R.string.select_no_list)){
-                this.selectedListID = -3;
-                listSelector.setText(item.getTitle());
+        } else {
+            final int todoListIndex = item.getItemId() - TodoTask.Priority.LENGTH;
+            TodoList todoList = null;
+            if (todoListIndex >= 0 && todoListIndex < lists.size()) {
+                todoList = lists.get(todoListIndex);
             }
+            setListSelector(todoList);
         }
 
         return super.onMenuItemSelected(featureId, item);
     }
 
-
-    //updates the lists array
-    public void updateLists(){
-        dbHelper = DatabaseHelper.getInstance(getContext());
-        lists = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-    }
-
-
-    //change the dialogtitle from "new task" to "edit task"
+    //change the dialog title from "new task" to "edit task"
     public void titleEdit(){
         dialogTitleNew.setVisibility(View.GONE);
         dialogTitleEdit.setVisibility(View.VISIBLE);
-
     }
 
-    //sets the textview either to listname in context or if no context to default
-    public void setListSelector(int id, boolean idExists){
-        updateLists();
-        for (TodoList tl : lists){
-            if (id == tl.getId() && idExists == true){
-                listSelector.setText(tl.getName());
-                selectedListID = tl.getId();
-            }else if (!idExists){
-                listSelector.setText(getContext().getString(R.string.click_to_choose));
-                selectedListID = -3;
+    //sets the textview either to list name in context or if no context to default
+    public void setListSelector(Integer todoListId) {
+        TodoList todoList = null;
+        if (TodoList.DUMMY_LIST_ID != todoListId) {
+            for (TodoList currentTodoList : lists) {
+                if (currentTodoList.getId() == todoListId) {
+                    todoList = currentTodoList;
+                    break;
+                }
             }
         }
+        setListSelector(todoList);
+    }
 
+    private void setListSelector(TodoList todoList) {
+        if (null != todoList) {
+            selectedListID = todoList.getId();
+            listSelector.setText(todoList.getName());
+        } else {
+            selectedListID = TodoList.DUMMY_LIST_ID;
+            listSelector.setText(getContext().getString(R.string.click_to_choose));
+        }
     }
 
     private boolean hasAutoProgress() {
@@ -366,15 +348,4 @@ public class ProcessTodoTaskDialog extends FullScreenDialog {
             progressPercent.setVisibility(View.INVISIBLE);
             progressText.setVisibility(View.INVISIBLE); */
     }
-
-    private void autoProgress() {
-        int size = task.getSubTasks().size();
-        int i = 5;
-        int j = 3;
-        double computedProgress = ((double)j/(double)i)*100;
-        taskProgress = (int) computedProgress;
-        progressPercent.setText(String.valueOf(computedProgress) + "%");
-    }
-
-
 }

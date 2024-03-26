@@ -1,3 +1,20 @@
+/*
+ This file is part of Privacy Friendly To-Do List.
+
+ Privacy Friendly To-Do List is free software:
+ you can redistribute it and/or modify it under the terms of the
+ GNU General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or any later version.
+
+ Privacy Friendly To-Do List is distributed in the hope
+ that it will be useful, but WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.secuso.privacyfriendlytodolist.backup
 
 import android.content.Context
@@ -7,7 +24,7 @@ import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.readDatabaseContent
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupRestorer
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper.DATABASE_NAME
+import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -37,7 +54,7 @@ class BackupRestorer : IBackupRestorer {
 
         // copy file to correct location
         val databaseFile = context.getDatabasePath("restoreDatabase")
-        copyFile(databaseFile, context.getDatabasePath(DATABASE_NAME))
+        copyFile(databaseFile, context.getDatabasePath(TodoListDatabase.DATABASE_NAME))
         databaseFile.delete()
     }
 

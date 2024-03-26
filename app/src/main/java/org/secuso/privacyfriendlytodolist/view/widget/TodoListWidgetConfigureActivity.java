@@ -23,18 +23,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
+import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The configuration screen for the {@link TodoListWidget TodoListWidget} AppWidget.
@@ -45,47 +44,8 @@ public class TodoListWidgetConfigureActivity extends Activity {
 
     private static final String PREFS_NAME = "org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
-    int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    private Spinner spinner;
-    private String selected;
-    private DatabaseHelper dbHelper;
-    private ArrayAdapter<String> lists;
 
-
-    View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            final Context context = TodoListWidgetConfigureActivity.this;
-
-            // When the button is clicked, store the string locally
-            if (!lists.isEmpty()) {
-                String listTitle = getSelectedItem();
-                saveTitlePref(context, mAppWidgetId, listTitle);
-
-                // It is the responsibility of the configuration activity to update the app widget
-                //AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                WidgetViewsFactory.getListName(context, mAppWidgetId);
-                TodoListWidget.getListName(context, mAppWidgetId);
-
-                // Make sure we pass back the original appWidgetId
-                Intent resultValue = new Intent();
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-                setResult(RESULT_OK, resultValue);
-                finish();
-            } else
-                Toast.makeText(context, "No list available", Toast.LENGTH_SHORT).show();
-
-        }
-    };
-
-
-
-    public TodoListWidgetConfigureActivity() {
-        super();
-    }
-
-
-
-    // Write the prefix to the SharedPreferences object for this widget
+   // Write the prefix to the SharedPreferences object for this widget
     static void saveTitlePref(Context context, int appWidgetId, String text) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
@@ -115,19 +75,50 @@ public class TodoListWidgetConfigureActivity extends Activity {
     }
 
 
+    private CustomViewModel viewModel;
+    private ModelServices model;
+    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private Spinner spinner;
+    private ArrayAdapter<String> lists;
+
+    public TodoListWidgetConfigureActivity() {
+        super();
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        updateLists();
-
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
 
+        viewModel = new CustomViewModel(this);
+        model = viewModel.getModel();
+
         setContentView(R.layout.todo_list_widget_configure);
-        findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
+        findViewById(R.id.add_button).setOnClickListener(view -> {
+            // When the button is clicked, store the string locally
+            if (null != lists && !lists.isEmpty()) {
+                String listTitle = spinner.getSelectedItem().toString();
+                saveTitlePref(this, mAppWidgetId, listTitle);
+
+                // It is the responsibility of the configuration activity to update the app widget
+                //AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                WidgetViewsFactory.getListName(this, mAppWidgetId);
+                TodoListWidget.getListName(this, mAppWidgetId);
+
+                // Make sure we pass back the original appWidgetId
+                Intent resultValue = new Intent();
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+                setResult(RESULT_OK, resultValue);
+                finish();
+            } else {
+                Toast.makeText(this, "No list available", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        updateLists();
 
         //initialize spinner dropdown
         spinner = (Spinner) findViewById(R.id.spinner1);
@@ -150,28 +141,25 @@ public class TodoListWidgetConfigureActivity extends Activity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        model = null;
+        viewModel.destroy();
+        viewModel = null;
+    }
 
     //updates the lists array and prepare adapter for spinner
-    public void updateLists(){
-        dbHelper = DatabaseHelper.getInstance(this);
-        ArrayList<TodoList> tl = new ArrayList<TodoList>();
-        tl = DBQueryHandler.getAllToDoLists(dbHelper.getReadableDatabase());
-        ArrayList<String> help = new ArrayList<>();
-        for (int i=0; i<tl.size(); i++){
-            help.add(tl.get(i).getName());
-        }
-        lists = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, help);
-        lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    private void updateLists(){
+        model.getAllToDoLists(todoLists -> {
+            List<String> help = new ArrayList<>();
+            for (TodoList todoList : todoLists) {
+                help.add(todoList.getName());
+            }
+            lists = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, help);
+            lists.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        });
     }
-
-
-
-    public String getSelectedItem(){
-        selected = spinner.getSelectedItem().toString();
-        return selected;
-    }
-
-
 }
 

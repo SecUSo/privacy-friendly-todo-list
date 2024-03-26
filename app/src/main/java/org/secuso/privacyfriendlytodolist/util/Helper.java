@@ -15,16 +15,17 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.model;
+package org.secuso.privacyfriendlytodolist.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.core.content.ContextCompat;
 import android.text.format.DateFormat;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import org.secuso.privacyfriendlytodolist.R;
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors;

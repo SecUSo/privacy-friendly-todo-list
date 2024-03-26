@@ -18,31 +18,20 @@
 package org.secuso.privacyfriendlytodolist.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.net.Uri;
-import android.opengl.Visibility;
-import android.os.Binder;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
 import org.secuso.privacyfriendlytodolist.model.TodoList;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-import org.secuso.privacyfriendlytodolist.model.database.tables.TTodoTask;
-import org.secuso.privacyfriendlytodolist.view.MainActivity;
+import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sebastian Lutz on 15.02.2018.
@@ -54,124 +43,16 @@ import java.util.ArrayList;
 
 public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private ArrayList<TodoList> lists;
-    private Context mContext;
     private static final int ID_CONSTANT = 0x0101010;
-    private ArrayList<TodoTask> listTasks;
-    private String listChosen;
+
     private static Context c;
     private static int id;
 
-
-
-    public WidgetViewsFactory(Context context, Intent intent){
-        mContext = context;
-        lists = new ArrayList<TodoList>();
-        listTasks = new ArrayList<TodoTask>();
-    }
-
-
-    @Override
-    public void onCreate() {
-        listChosen = getListName(c, id);
-            lists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mContext).getReadableDatabase());
-            for (int i=0; i < lists.size(); i++){
-                if (lists.get(i).getName().equals(this.listChosen))
-                    listTasks = lists.get(i).getTasks();
-
-            }
-
-
-    }
-
-    @Override
-    public int getCount() {
-        return listTasks.size();
-    }
-
-
-
-    @Override
-    public void onDataSetChanged() {
-        listChosen = getListName(c, id);
-            lists = DBQueryHandler.getAllToDoLists(DatabaseHelper.getInstance(mContext).getReadableDatabase());
-            for (int i=0; i < lists.size(); i++){
-                if (lists.get(i).getName().equals(this.listChosen))
-                    listTasks = lists.get(i).getTasks();
-            }
-    }
-
-
-
-    @Override
-    public int getViewTypeCount() {
-        return 1;
-    }
-
-
-
-    @SuppressLint("ResourceType")
-    @Override
-    public RemoteViews getViewAt(int position) {
-        if (position == AdapterView.INVALID_POSITION){
-            return null;
-        }
-
-        TodoTask todo = listTasks.get(position);
-
-        RemoteViews itemView = new RemoteViews(mContext.getPackageName(), R.layout.widget_tasks);
-        if (todo.getDone()){
-            itemView.setViewVisibility(R.id.widget_done, View.VISIBLE);
-            itemView.setViewVisibility(R.id.widget_undone, View.INVISIBLE);
-        } else if (!todo.getDone()) {
-            itemView.setViewVisibility(R.id.widget_done, View.INVISIBLE);
-            itemView.setViewVisibility(R.id.widget_undone, View.VISIBLE);
-        }
-
-        itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
-        itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
-
-        Intent fillInIntent = new Intent();
-        itemView.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent);
-        itemView.setOnClickFillInIntent(R.id.widget_undone, fillInIntent);
-        itemView.setOnClickFillInIntent(R.id.widget_done, fillInIntent);
-
-
-
-
-        return itemView;
-    }
-
-
-
-    @Override
-    public long getItemId(int position) {
-
-        return ID_CONSTANT + position;
-    }
-
-
-
-    @Override
-    public void onDestroy() {
-        lists.clear();
-    }
-
-
-
-    @Override
-    public RemoteViews getLoadingView() {
-        return null;
-    }
-
-
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-
+    private final Context context;
+    private CustomViewModel viewModel;
+    private ModelServices model;
+    private List<TodoTask> todoTasks;
+    private String listChosen;
 
     public static String getListName(Context context, int AppWidgetId) {
         c = context;
@@ -179,7 +60,89 @@ public class WidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
         return TodoListWidgetConfigureActivity.loadTitlePref(context, AppWidgetId);
     }
 
+    public WidgetViewsFactory(Context context) {
+        this.context = context;
+        todoTasks = new ArrayList<>();
+    }
 
+    @Override
+    public void onCreate() {
+        viewModel = new CustomViewModel(context);
+        model = viewModel.getModel();
+
+        onDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy() {
+        model = null;
+        viewModel.destroy();
+        viewModel = null;
+    }
+
+    @Override
+    public int getCount() {
+        return todoTasks.size();
+    }
+
+    @Override
+    public void onDataSetChanged() {
+        listChosen = getListName(c, id);
+        model.getAllToDoLists(todoLists -> {
+            for (TodoList todoList : todoLists){
+                if (todoList.getName().equals(listChosen)) {
+                    todoTasks = todoList.getTasks();
+                    break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 1;
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public RemoteViews getViewAt(int position) {
+        RemoteViews itemView = null;
+        if (position >= 0 && position < todoTasks.size()) {
+            TodoTask todo = todoTasks.get(position);
+            itemView = new RemoteViews(context.getPackageName(), R.layout.widget_tasks);
+            if (todo.isDone()){
+                itemView.setViewVisibility(R.id.widget_done, View.VISIBLE);
+                itemView.setViewVisibility(R.id.widget_undone, View.INVISIBLE);
+            } else if (!todo.isDone()) {
+                itemView.setViewVisibility(R.id.widget_done, View.INVISIBLE);
+                itemView.setViewVisibility(R.id.widget_undone, View.VISIBLE);
+            }
+
+            itemView.setTextViewText(R.id.tv_widget_task_name, todo.getName());
+            itemView.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list);
+
+            Intent fillInIntent = new Intent();
+            itemView.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent);
+            itemView.setOnClickFillInIntent(R.id.widget_undone, fillInIntent);
+            itemView.setOnClickFillInIntent(R.id.widget_done, fillInIntent);
+        }
+        return itemView;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return ID_CONSTANT + position;
+    }
+
+    @Override
+    public RemoteViews getLoadingView() {
+        return null;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
 }
 
 

@@ -25,39 +25,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
+import org.secuso.privacyfriendlytodolist.model.Model;
+import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 
 /**
  * This class shows a dialog that lets the user create/edit a subtask.
  */
 
 
-public class ProcessTodoSubTaskDialog extends FullScreenDialog {
+public class ProcessTodoSubtaskDialog extends FullScreenDialog<ResultCallback<TodoSubtask>> {
 
     private EditText etSubtaskName;
     private Button cancelButton;
-    private TodoSubTask subtask;
+    private TodoSubtask subtask;
     private TextView dialogTitleNew;
     private TextView dialogTitleEdit;
 
-    public ProcessTodoSubTaskDialog(Context context) {
+    public ProcessTodoSubtaskDialog(Context context) {
         super(context, R.layout.add_subtask_dialog);
 
         initGui();
-        this.subtask = new TodoSubTask();
-        this.subtask.setCreated();
-        //this.subtask.setDbState(DBQueryHandler.ObjectStates.INSERT_TO_DB);
+        subtask = Model.createNewTodoSubtask();
+        subtask.setCreated();
+        //this.subtask.setDbState(ObjectStates.INSERT_TO_DB);
     }
 
-    public ProcessTodoSubTaskDialog(Context context, TodoSubTask subTask) {
+    public ProcessTodoSubtaskDialog(Context context, TodoSubtask todoSubtask) {
         super(context, R.layout.add_subtask_dialog);
 
         initGui();
-        this.subtask = subTask;
-        this.subtask.setChanged();
-        //this.subtask.setDbState(DBQueryHandler.ObjectStates.UPDATE_DB);
+        subtask = todoSubtask;
+        subtask.setChanged();
+        //this.subtask.setDbState(ObjectStates.UPDATE_DB);
 
-        etSubtaskName.setText(subTask.getName());
+        etSubtaskName.setText(subtask.getName());
     }
 
     private void initGui() {
@@ -80,8 +81,8 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
                 } else {
 
                     subtask.setName(name);
-                    callback.finish(subtask);
-                    ProcessTodoSubTaskDialog.this.dismiss();
+                    callback.onFinish(subtask);
+                    ProcessTodoSubtaskDialog.this.dismiss();
                 }
             }
         });
@@ -91,7 +92,7 @@ public class ProcessTodoSubTaskDialog extends FullScreenDialog {
 
             @Override
             public void onClick(View v) {
-                ProcessTodoSubTaskDialog.this.dismiss();
+                ProcessTodoSubtaskDialog.this.dismiss();
             }
         });
     }

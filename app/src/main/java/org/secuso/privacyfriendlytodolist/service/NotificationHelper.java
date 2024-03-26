@@ -15,7 +15,7 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.model;
+package org.secuso.privacyfriendlytodolist.service;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -35,6 +35,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.secuso.privacyfriendlytodolist.R;
+import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.view.MainActivity;
 import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment;
 
@@ -107,7 +108,7 @@ public class NotificationHelper extends ContextWrapper {
         snooze.putExtra("taskId", task.getId());
         Intent resultIntent = new Intent(this, MainActivity.class);
         resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY);
-        resultIntent.putExtra(TodoTask.PARCELABLE_KEY, task);
+        resultIntent.putExtra(MainActivity.PARCELABLE_KEY_FOR_TODO_TASK, task);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);

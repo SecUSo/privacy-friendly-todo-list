@@ -20,31 +20,29 @@ package org.secuso.privacyfriendlytodolist.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+
 import org.secuso.privacyfriendlytodolist.R;
-import org.secuso.privacyfriendlytodolist.model.Helper;
-import org.secuso.privacyfriendlytodolist.model.TodoSubTask;
+import org.secuso.privacyfriendlytodolist.model.ModelServices;
+import org.secuso.privacyfriendlytodolist.model.TodoSubtask;
 import org.secuso.privacyfriendlytodolist.model.TodoTask;
 import org.secuso.privacyfriendlytodolist.model.Tuple;
-import org.secuso.privacyfriendlytodolist.model.database.DBQueryHandler;
-import org.secuso.privacyfriendlytodolist.model.database.DatabaseHelper;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.secuso.privacyfriendlytodolist.util.Helper;
+import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 /**
  * Created by Sebastian Lutz on 20.12.2017.
@@ -53,13 +51,40 @@ import java.util.List;
  */
 public class RecyclerActivity extends AppCompatActivity{
 
-    private DatabaseHelper dbhelper;
+    private ModelServices model;
     private TextView tv;
     private ExpandableListView lv;
-    RelativeLayout rl;
-    private List<TodoTask> backupTasks = new ArrayList<TodoTask>();
     private ExpandableTodoTaskAdapter expandableTodoTaskAdapter;
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        LifecycleViewModel viewModel = new ViewModelProvider(this).get(LifecycleViewModel.class);
+        model = viewModel.getModel();
+
+        setContentView(R.layout.activity_recycle);
+
+        lv = (ExpandableListView) findViewById(R.id.recycle_bin_tasks);
+        tv = (TextView) findViewById(R.id.bin_empty);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_recycle_bin);
+
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.bin_toolbar);
+            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        }
+        updateAdapter();
+    }
 
    @Override
     protected void onResume() {
@@ -77,20 +102,19 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        final Tuple<TodoTask, TodoSubTask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        final Tuple<TodoTask, TodoSubtask> longClickedTodo = expandableTodoTaskAdapter.getLongClickedTodo();
+        if (null != longClickedTodo) {
+            final TodoTask todoTask = longClickedTodo.getLeft();
 
-       switch(item.getItemId()){
-           case R.id.restore:
-               DBQueryHandler.recoverTasks(dbhelper.getWritableDatabase(), longClickedTodo.getLeft());
-               ArrayList<TodoSubTask> subTasks = longClickedTodo.getLeft().getSubTasks();
-               for (TodoSubTask ts : subTasks){
-                   DBQueryHandler.recoverSubtasks(dbhelper.getWritableDatabase(), ts);
-               }
-               updateAdapter();
-               break;
-
-       }
+            switch (item.getItemId()) {
+                case R.id.restore:
+                    model.setTaskAndSubtasksInRecycleBin(todoTask, false, counter -> {
+                        updateAdapter();
+                    });
+                    break;
+            }
+        }
        return super.onContextItemSelected(item);
     }
 
@@ -106,9 +130,6 @@ public class RecyclerActivity extends AppCompatActivity{
                 finish();
                 return true;
             case R.id.btn_clear:
-                dbhelper = DatabaseHelper.getInstance(this);
-                final ArrayList<TodoTask> tasks;
-                tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                 builder1.setMessage(R.string.alert_clear);
                 builder1.setCancelable(true);
@@ -116,11 +137,10 @@ public class RecyclerActivity extends AppCompatActivity{
                 builder1.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for ( TodoTask t : tasks){
-                            DBQueryHandler.deleteTodoTask(DatabaseHelper.getInstance(getBaseContext()).getReadableDatabase(), t);
-                        }
-                        dialog.cancel();
-                        updateAdapter();
+                        model.clearRecycleBin(counter -> {
+                            dialog.cancel();
+                            updateAdapter();
+                        });
                     }
                 });
 
@@ -151,68 +171,31 @@ public class RecyclerActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycle);
-
-        rl = (RelativeLayout) findViewById(R.id.relative_recycle);
-        lv = (ExpandableListView) findViewById(R.id.trash_tasks);
-        tv = (TextView) findViewById(R.id.bin_empty);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_trash);
-
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.bin_toolbar);
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white));
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.arrow);
-        }
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        }
-        updateAdapter();
-        backupTasks = getTasksInTrash();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.trash_clear, menu);
+        getMenuInflater().inflate(R.menu.recycle_bin_clear, menu);
         return true;
     }
 
-    public void updateAdapter() {
-        dbhelper = DatabaseHelper.getInstance(this);
-        ArrayList<TodoTask> tasks;
-        tasks = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-        expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, tasks);
-        lv.setAdapter(expandableTodoTaskAdapter);
-        lv.setEmptyView(tv);
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+    private void updateAdapter() {
+        model.getRecycleBin(todoTasks -> {
+            expandableTodoTaskAdapter = new ExpandableTodoTaskAdapter(this, model, todoTasks);
+            lv.setAdapter(expandableTodoTaskAdapter);
+            lv.setEmptyView(tv);
+            lv.setOnItemLongClickListener((parent, view, position, id) -> {
                 int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 
                     int childPosition = ExpandableListView.getPackedPositionChild(id);
-                    expandableTodoTaskAdapter.setLongClickedSubTaskByPos(groupPosition, childPosition);
+                    expandableTodoTaskAdapter.setLongClickedSubtaskByPos(groupPosition, childPosition);
                 } else {
                     expandableTodoTaskAdapter.setLongClickedTaskByPos(groupPosition);
                 }
                 registerForContextMenu(lv);
                 return false;
-            }
+            });
         });
-    }
-
-    public ArrayList<TodoTask> getTasksInTrash() {
-       ArrayList<TodoTask> backup = DBQueryHandler.getBin(dbhelper.getReadableDatabase());
-       return backup;
     }
 
     @Override

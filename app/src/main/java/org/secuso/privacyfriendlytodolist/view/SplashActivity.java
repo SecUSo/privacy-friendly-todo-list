@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -32,9 +33,9 @@ import androidx.appcompat.app.AppCompatActivity;
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
-            SplashActivity.this.startActivity(mainIntent);
-            SplashActivity.this.finish();
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            startActivity(mainIntent);
+            finish();
 
         }
 

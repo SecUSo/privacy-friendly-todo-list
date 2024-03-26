@@ -159,11 +159,4 @@
 	<string name="october">Październik</string>
 	<string name="november">Listopad</string>
 	<string name="december">Grudzień</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">Podzadanie nie zostało usunięte.</string>
-    <string name="error_removing_task">Zadanie nie zostało usunięte.</string>
-    <string name="list_to_db_error">Lista zadań nie została zapisana w bazie danych.</string>
-    <string name="task_to_db_error">Zadanie nie zostało zapisane w bazie danych.</string>
-    <string name="subtask_to_db_error">Podzadanie nie zostało zapisane w bazie danych.</string>
 </resources>
