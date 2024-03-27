@@ -18,8 +18,8 @@
 package org.secuso.privacyfriendlytodolist.backup
 
 import android.content.Context
-import android.preference.PreferenceManager
 import android.util.JsonReader
+import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.readDatabaseContent
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
@@ -70,7 +70,7 @@ class BackupRestorer : IBackupRestorer {
                 else -> throw java.lang.RuntimeException("Unknown preference $name")
             }
         }
-        pref.commit()
+        pref.apply()
         reader.endObject()
     }
 

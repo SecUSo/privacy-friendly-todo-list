@@ -26,7 +26,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -51,6 +50,7 @@ import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -77,7 +77,6 @@ import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -382,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void resetApp() {
-                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().clear().commit();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit().clear().apply();
                     model.deleteAllData(null);
                     Intent intent = new Intent(MainActivity.this, MainActivity.class);
                     dialog.dismiss();

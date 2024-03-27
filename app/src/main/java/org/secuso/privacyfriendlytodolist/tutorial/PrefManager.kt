@@ -18,7 +18,7 @@ package org.secuso.privacyfriendlytodolist.tutorial
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 
 /**
@@ -42,7 +42,7 @@ class PrefManager(context: Context) {
             editor.commit()
         }
 
-    fun setFirstTimeValues(context: Context?) {
+    fun setFirstTimeValues(context: Context) {
         PreferenceManager.setDefaultValues(context, R.xml.settings, false)
     }
 

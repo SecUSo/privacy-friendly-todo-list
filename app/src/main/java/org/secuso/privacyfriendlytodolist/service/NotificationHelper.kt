@@ -27,9 +27,9 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
-import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.view.MainActivity

@@ -18,13 +18,14 @@
 package org.secuso.privacyfriendlytodolist.view;
 
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceFragmentCompat;
 
 import org.secuso.privacyfriendlytodolist.R;
 
@@ -85,13 +86,9 @@ public class HelpActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public static class HelpFragment extends PreferenceFragment {
-
+    public static class HelpFragment extends PreferenceFragmentCompat {
         @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-
+        public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.help);
         }
     }

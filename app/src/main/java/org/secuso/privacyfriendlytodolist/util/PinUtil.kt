@@ -18,7 +18,7 @@
 package org.secuso.privacyfriendlytodolist.util
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
 object PinUtil {
     @JvmStatic
