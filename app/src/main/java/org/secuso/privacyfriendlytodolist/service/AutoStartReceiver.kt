@@ -14,24 +14,21 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.service
 
-package org.secuso.privacyfriendlytodolist.service;
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.util.Log
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+class AutoStartReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val reminderServiceIntent = Intent(context, ReminderService::class.java)
+        context.startService(reminderServiceIntent)
+        Log.i(TAG, ReminderService::class.java.getSimpleName() + " started.")
+    }
 
-
-public class AutoStartReceiver extends BroadcastReceiver {
-
-    private static final String TAG = AutoStartReceiver.class.getSimpleName();
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-
-        Intent reminderServiceIntent = new Intent(context, ReminderService.class);
-        context.startService(reminderServiceIntent);
-        Log.i(TAG, ReminderService.class.getSimpleName() + " started.");
+    companion object {
+        private val TAG = AutoStartReceiver::class.java.getSimpleName()
     }
 }

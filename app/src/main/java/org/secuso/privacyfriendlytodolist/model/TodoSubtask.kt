@@ -14,32 +14,20 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.model;
+import android.os.Parcelable
 
-import android.os.Parcelable;
-
-public interface TodoSubtask extends BaseTodo, Parcelable {
-
-    void setId(int id);
-
-    int getId();
-
-    void setName(String name);
-
-    String getName();
-
-    void setTaskId(int taskIdForeignKey);
-
-    int getTaskId();
-
-    void setDone(boolean isDone);
-
-    boolean isDone();
-
-    void setInRecycleBin(boolean isInRecycleBin);
-
-    boolean isInRecycleBin();
-
-    boolean checkQueryMatch(String query);
+interface TodoSubtask : BaseTodo, Parcelable {
+    fun setId(id: Int)
+    fun getId(): Int
+    fun setName(name: String)
+    fun getName(): String
+    fun setTaskId(taskIdForeignKey: Int)
+    fun getTaskId(): Int
+    fun setDone(isDone: Boolean)
+    fun isDone(): Boolean
+    fun setInRecycleBin(isInRecycleBin: Boolean)
+    fun isInRecycleBin(): Boolean
+    fun checkQueryMatch(query: String?): Boolean
 }

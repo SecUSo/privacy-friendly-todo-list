@@ -492,7 +492,7 @@ public class ExpandableTodoTaskAdapter extends BaseExpandableListAdapter {
                     deadline = context.getResources().getString(R.string.deadline_dd) + " " + Helper.getDate(currentTask.getDeadline());
 
                 vh2.listName.setVisibility(View.GONE);
-                if (showListName && currentTask.getListId() != TodoList.DUMMY_LIST_ID) {
+                if (showListName && currentTask.getListId() != null) {
                     model.getToDoListById(currentTask.getListId(), todoList -> {
                         if (null != todoList) {
                             vh2.listName.setText(todoList.getName());

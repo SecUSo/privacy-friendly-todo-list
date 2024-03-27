@@ -14,23 +14,18 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.model;
+import android.app.AlarmManager
+import android.content.Context
 
+object AlarmManagerHolder {
+    private var alarmManager: AlarmManager? = null
 
-import android.app.AlarmManager;
-import android.content.Context;
-
-public class AlarmManagerHolder {
-
-    private static AlarmManager alarmManager = null;
-
-    public static AlarmManager getAlarmManager(Context context) {
-        if(alarmManager == null) {
-            alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    fun getAlarmManager(context: Context): AlarmManager? {
+        if (alarmManager == null) {
+            alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         }
-
-        return alarmManager;
+        return alarmManager
     }
-
 }

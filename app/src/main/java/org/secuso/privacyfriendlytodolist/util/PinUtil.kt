@@ -24,9 +24,9 @@ object PinUtil {
     @JvmStatic
     fun hasPin(context: Context): Boolean {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
+        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
+        val prefPin: String? = pref.getString("pref_pin", null)
         // pin activated and valid?
-        return pref.getBoolean("pref_pin_enabled", false)
-            && pref.getString("pref_pin", null) != null
-            && pref.getString("pref_pin", "")!!.length >= 4
+        return prefPinEnabled && prefPin != null && prefPin.length >= 4
     }
 }

@@ -104,7 +104,7 @@ class ModelServicesImpl(
             val todoListData = db.getTodoListDao().getById(todoListId)
             if (null != todoListData) {
                 val todoList = loadListsTasksSubtasks(todoListData)[0]
-                for (task in todoList.tasks) {
+                for (task in todoList.getTasks()) {
                     counter += setTaskAndSubtasksInRecycleBinBlocking(task, true)
                 }
                 Log.i(TAG, "$counter tasks put into recycle bin while removing list")
@@ -124,7 +124,7 @@ class ModelServicesImpl(
 
     private suspend fun deleteTodoTaskBlocking(todoTask: TodoTask): Int {
         var counter = 0
-        for (subtask in todoTask.subtasks) {
+        for (subtask in todoTask.getSubtasks()) {
             counter += deleteTodoSubtaskBlocking(subtask)
         }
         Log.i(TAG, "$counter subtasks removed from database while removing task")
@@ -157,12 +157,12 @@ class ModelServicesImpl(
 
     private suspend fun setTaskAndSubtasksInRecycleBinBlocking(todoTask: TodoTask, inRecycleBin: Boolean): Int {
         var counter = 0
-        for (subtask in todoTask.subtasks) {
+        for (subtask in todoTask.getSubtasks()) {
             counter += setSubtaskInRecycleBinBlocking(subtask, inRecycleBin)
         }
         Log.i(TAG, "$counter subtasks put into recycle bin while putting task into recycle bin")
         val todoTaskImpl = todoTask as TodoTaskImpl
-        todoTaskImpl.isInRecycleBin = inRecycleBin
+        todoTaskImpl.setInRecycleBin(inRecycleBin)
         counter = db.getTodoTaskDao().update(todoTaskImpl.data)
         Log.i(TAG, "$counter tasks put into recycle bin")
         return counter
@@ -177,7 +177,7 @@ class ModelServicesImpl(
 
     private suspend fun setSubtaskInRecycleBinBlocking(subtask: TodoSubtask, inRecycleBin: Boolean): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
-        todoSubtaskImpl.isInRecycleBin = inRecycleBin
+        todoSubtaskImpl.setInRecycleBin(inRecycleBin)
         val counter = db.getTodoSubtaskDao().update(todoSubtaskImpl.data)
         Log.i(TAG, "$counter subtasks put into recycle bin")
         return counter
@@ -244,16 +244,15 @@ class ModelServicesImpl(
             val todoListImpl = todoList as TodoListImpl
             val data = todoListImpl.data
             var counter = 0
-            when (todoListImpl.getDBState()) {
+            when (todoListImpl.dbState) {
                 ObjectStates.INSERT_TO_DB -> {
-                    todoListImpl.id = db.getTodoListDao().insert(data).toInt()
+                    todoListImpl.setId(db.getTodoListDao().insert(data).toInt())
                     counter = 1
                     Log.d(TAG, "Todo list was inserted into DB: $data")
                 }
 
                 ObjectStates.UPDATE_DB -> {
                     counter = db.getTodoListDao().update(data)
-                    todoListImpl.id
                     Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
                 }
 
@@ -274,7 +273,7 @@ class ModelServicesImpl(
     override fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
         coroutineScope.launch(Dispatchers.IO) {
             val data = saveTodoTaskInDbBlocking(todoTask)
-            for (subtask in todoTask.subtasks) {
+            for (subtask in todoTask.getSubtasks()) {
                 saveTodoSubtaskInDbBlocking(subtask)
             }
             dispatchResult(resultConsumer, data)
@@ -285,9 +284,9 @@ class ModelServicesImpl(
         val todoTaskImpl = todoTask as TodoTaskImpl
         val data = todoTaskImpl.data
         var counter = 0
-        when (todoTaskImpl.getDBState()) {
+        when (todoTaskImpl.dbState) {
             ObjectStates.INSERT_TO_DB -> {
-                todoTaskImpl.id = db.getTodoTaskDao().insert(data).toInt()
+                todoTaskImpl.setId(db.getTodoTaskDao().insert(data).toInt())
                 counter = 1
                 Log.d(TAG, "Todo task was inserted into DB: $data")
             }
@@ -299,10 +298,10 @@ class ModelServicesImpl(
 
             ObjectStates.UPDATE_FROM_POMODORO -> {
                 counter = db.getTodoTaskDao().updateValuesFromPomodoro(
-                    todoTaskImpl.id,
-                    todoTaskImpl.name,
+                    todoTaskImpl.getId(),
+                    todoTaskImpl.getName(),
                     todoTaskImpl.getProgress(false),
-                    todoTaskImpl.isDone
+                    todoTaskImpl.isDone()
                 )
                 Log.d(TAG, "Todo task was updated in DB by values from pomodoro (return code $counter): $data")
             }
@@ -324,9 +323,9 @@ class ModelServicesImpl(
         val todoSubtaskImpl = todoSubtask as TodoSubtaskImpl
         val data = todoSubtaskImpl.data
         var counter = 0
-        when (todoSubtaskImpl.getDBState()) {
+        when (todoSubtaskImpl.dbState) {
             ObjectStates.INSERT_TO_DB -> {
-                todoSubtaskImpl.id = db.getTodoSubtaskDao().insert(data).toInt()
+                todoSubtaskImpl.setId(db.getTodoSubtaskDao().insert(data).toInt())
                 counter = 1
                 Log.d(TAG, "Todo subtask was inserted into DB: $data")
             }
@@ -355,12 +354,12 @@ class ModelServicesImpl(
         val lists = ArrayList<TodoListImpl>()
         for (data in dataArray) {
             val list = TodoListImpl(data)
-            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInRecycleBin(list.id)
+            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInRecycleBin(list.getId())
             val tasks: List<TodoTaskImpl> = loadTasksSubtasks(false, *dataArray2)
             for (task in tasks) {
-                task.listId = list.id
+                task.setListId(list.getId())
             }
-            list.tasks = tasks
+            list.setTasks(tasks)
             lists.add(list)
         }
         return lists
@@ -374,10 +373,10 @@ class ModelServicesImpl(
         for (data in dataArray) {
             val task = TodoTaskImpl(data)
             val dataArray2 = if (subtasksFromRecycleBinToo)
-                db.getTodoSubtaskDao().getAllOfTask(task.id) else
-                db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.id)
-            val subtasks: List<TodoSubtaskImpl> = loadSubtasks(*dataArray2)
-            task.subtasks = subtasks
+                db.getTodoSubtaskDao().getAllOfTask(task.getId()) else
+                db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.getId())
+            val subtasks = loadSubtasks(*dataArray2)
+            task.setSubtasks(subtasks)
             tasks.add(task)
         }
         return tasks

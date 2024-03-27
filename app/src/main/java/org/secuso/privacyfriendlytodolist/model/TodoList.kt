@@ -14,48 +14,29 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.model;
-
-import android.os.Parcelable;
-
-import java.util.List;
+import android.os.Parcelable
+import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
  *
  * Class to set up a To-Do List and its parameters.
  */
-
-public interface TodoList extends BaseTodo, Parcelable {
-
-    Integer DUMMY_LIST_ID = null;
-
-    void setId(int id);
-
-    int getId();
-
-    boolean isDummyList();
-
-    void setName(String name);
-
-    String getName();
-
-    int getSize();
-
-    void setTasks(List<TodoTask> tasks);
-
-    List<TodoTask> getTasks();
-
-    int getColor();
-
-    int getDoneTodos();
-
-    long getNextDeadline();
-
-    TodoTask.DeadlineColors getDeadlineColor(long defaultReminderTime);
-
-    boolean checkQueryMatch(String query, boolean recursive);
-
-    boolean checkQueryMatch(String query);
+interface TodoList : BaseTodo, Parcelable {
+    fun setId(id: Int)
+    fun getId(): Int
+    fun isDummyList(): Boolean
+    fun setName(name: String)
+    fun getName(): String
+    fun getSize(): Int
+    fun setTasks(tasks: List<TodoTask>)
+    fun getTasks(): List<TodoTask>
+    fun getColor(): Int
+    fun getDoneTodos(): Int
+    fun getNextDeadline(): Long
+    fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors
+    fun checkQueryMatch(query: String?, recursive: Boolean): Boolean
+    fun checkQueryMatch(query: String?): Boolean
 }

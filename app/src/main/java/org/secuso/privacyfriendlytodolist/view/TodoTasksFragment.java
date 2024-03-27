@@ -399,7 +399,7 @@ public class TodoTasksFragment extends Fragment implements SearchView.OnQueryTex
     private void saveNewTasks() {
         for (TodoTask todoTask : todoTasks) {
             if (currentList.isDummyList()) {
-                todoTask.setListId(TodoList.DUMMY_LIST_ID);
+                todoTask.setListId(null);
             } else {
                 todoTask.setListId(currentList.getId()); // crucial step to not lose the connection to the list
             }

@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     long unlockUntil = -1;
     private static final long UnlockPeriod = 30000; // keep the app unlocked for 30 seconds after switching to another activity (settings/help/about)
     int notificationDone;
-    private Integer activeListId = TodoList.DUMMY_LIST_ID;
+    private Integer activeListId = null;
 
     //Pomodoro
     private boolean pomodoroInstalled = false;
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         authAndGuiInit(savedInstanceState);
-        if(activeListId != TodoList.DUMMY_LIST_ID) {
+        if(activeListId != null) {
             showTasksOfList(activeListId);
         }
     }
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         outState.putParcelable(KEY_DUMMY_LIST, dummyList);
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked);
         outState.putLong(KEY_UNLOCK_UNTIL, unlockUntil);
-        if (activeListId != TodoList.DUMMY_LIST_ID) {
+        if (activeListId != null) {
             outState.putByte(KEY_ACTIVE_LIST_IS_DUMMY, (byte) 0);
             outState.putInt(KEY_ACTIVE_LIST, activeListId);
         } else {
@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED);
         unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL);
         if (savedInstanceState.getByte(KEY_ACTIVE_LIST_IS_DUMMY) != 0) {
-            activeListId = TodoList.DUMMY_LIST_ID;
+            activeListId = null;
         } else {
             activeListId = savedInstanceState.getInt(KEY_ACTIVE_LIST);
         }
@@ -418,10 +418,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (null != dueTask) {
                 listId = dueTask.getListId();
             } else {
-                listId = TodoList.DUMMY_LIST_ID;
+                listId = null;
                 Log.e(TAG, "Failed to get todo task from parcelable after click on reminding notification.");
             }
-            if (TodoList.DUMMY_LIST_ID != listId) {
+            if (listId != null) {
                 bundle.putInt(KEY_SELECTED_LIST_ID_BY_NOTIFICATION, listId);
             } else {
                 bundle.putByte(KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION, (byte) 0);
@@ -604,10 +604,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //Intent intent = new Intent(this, MainActivity.class);
             //finish();
             //startActivity(intent);
-            if (reminderService == null)
+            if (reminderService == null) {
                 bindToReminderService();
+            }
             guiSetup();
-            if (activeListId != TodoList.DUMMY_LIST_ID) {
+            if (activeListId != null) {
                 showTasksOfList(activeListId);
             } else {
                 showAllTasks();
@@ -875,7 +876,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             exLv.setAdapter(expandableTodoTaskAdapter);
             exLv.setEmptyView(tv);
             optionFab.setVisibility(View.VISIBLE);
-            initFAB(TodoList.DUMMY_LIST_ID);
+            initFAB(null);
             hints();
         });
     }
@@ -917,7 +918,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     notifyReminderService(todoTask);
                     hints();
                     // show List if created in certain list, else show all tasks
-                    if (TodoList.DUMMY_LIST_ID != todoListId) {
+                    if (null != todoListId) {
                         showTasksOfList(todoListId);
                     } else {
                         showAllTasks();
@@ -996,7 +997,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         model.saveTodoTaskInDb(todoTask2, counter -> {
                             notifyReminderService(todoTask2);
                             expandableTodoTaskAdapter.notifyDataSetChanged();
-                            if (inList && oldListId != TodoList.DUMMY_LIST_ID) {
+                            if (inList && oldListId != null) {
                                 showTasksOfList(oldListId);
                             } else {
                                 showAllTasks();
@@ -1011,7 +1012,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     snackbar.setAction(R.string.snack_undo, v -> {
                         model.setTaskAndSubtasksInRecycleBin(todoTask, false, counter -> {
-                            if (inList && todoTask.getListId() != TodoList.DUMMY_LIST_ID) {
+                            if (inList && todoTask.getListId() != null) {
                                 showTasksOfList(todoTask.getListId());
                             } else {
                                 showAllTasks();
@@ -1028,7 +1029,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         // Dependent on the current View, update All-tasks or a certain List
-                        if (this.inList && todoTask.getListId() != TodoList.DUMMY_LIST_ID) {
+                        if (this.inList && todoTask.getListId() != null) {
                             showTasksOfList(todoTask.getListId());
                         } else {
                             showAllTasks();

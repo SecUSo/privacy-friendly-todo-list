@@ -59,7 +59,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
     private EditText taskName;
     private EditText taskDescription;
     private TodoTask.Priority taskPriority = null;
-    private Integer selectedListID = TodoList.DUMMY_LIST_ID;
+    private Integer selectedListID = null;
     private final List<TodoList> lists;
     private int taskProgress = 0;
     private String name, description;
@@ -174,7 +174,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
             String name = taskName.getText().toString();
             String description = taskDescription.getText().toString();
 
-            if (name.equals("")) {
+            if (name.isEmpty()) {
                 Toast.makeText(getContext(), getContext().getString(R.string.todo_name_must_not_be_empty), Toast.LENGTH_SHORT).show();
             } /* else if (listName.equals(getContext().getString(R.string.click_to_choose))) {
                 Toast.makeText(getContext(), getContext().getString(R.string.to_choose_list), Toast.LENGTH_SHORT).show();
@@ -269,7 +269,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
         switch (v.getId()){
             case R.id.tv_new_task_priority:
                 menu.setHeaderTitle(R.string.select_priority);
-                for (TodoTask.Priority priority : TodoTask.Priority.values()) {
+                for (TodoTask.Priority priority : TodoTask.Priority.getEntries()) {
                     menu.add(Menu.NONE, priority.ordinal(), Menu.NONE, Helper.priority2String(getContext(), priority));
                 }
                 break;
@@ -290,7 +290,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         if (item.getItemId() >= 0 && item.getItemId() < TodoTask.Priority.LENGTH) {
-            taskPriority = TodoTask.Priority.values()[item.getItemId()];
+            taskPriority = TodoTask.Priority.getEntries().get(item.getItemId());
             prioritySelector.setText(Helper.priority2String(getContext(), taskPriority));
         } else {
             final int todoListIndex = item.getItemId() - TodoTask.Priority.LENGTH;
@@ -313,7 +313,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
     //sets the textview either to list name in context or if no context to default
     public void setListSelector(Integer todoListId) {
         TodoList todoList = null;
-        if (TodoList.DUMMY_LIST_ID != todoListId) {
+        if (null != todoListId) {
             for (TodoList currentTodoList : lists) {
                 if (currentTodoList.getId() == todoListId) {
                     todoList = currentTodoList;
@@ -329,7 +329,7 @@ public class ProcessTodoTaskDialog extends FullScreenDialog<ResultCallback<TodoT
             selectedListID = todoList.getId();
             listSelector.setText(todoList.getName());
         } else {
-            selectedListID = TodoList.DUMMY_LIST_ID;
+            selectedListID = null;
             listSelector.setText(getContext().getString(R.string.click_to_choose));
         }
     }

@@ -14,30 +14,13 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.model;
-
-
-public class Tuple<A, B> {
-
-    public static <P, Q> Tuple<P, Q> makePair(P p, Q q) {
-        return new Tuple<P, Q>(p, q);
-    }
-
-    private final A a;
-    private final B b;
-
-    public Tuple(A a, B b) {
-        this.a = a;
-        this.b = b;
-    }
-
-    public A getLeft() {
-        return a;
-    }
-
-    public  B getRight() {
-        return b;
+class Tuple<A, B>(val left: A, val right: B) {
+    companion object {
+        @JvmStatic
+        fun <P, Q> makePair(left: P, right: Q): Tuple<P, Q> {
+            return Tuple(left, right)
+        }
     }
 }
-

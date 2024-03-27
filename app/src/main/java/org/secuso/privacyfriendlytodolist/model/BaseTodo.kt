@@ -14,17 +14,11 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.model;
-
-public interface BaseTodo {
-
-    void setCreated();
-
-    void setChanged();
-
-    void setChangedFromPomodoro();
-
-    void setUnchanged();
-
+interface BaseTodo {
+    fun setCreated()
+    fun setChanged()
+    fun setChangedFromPomodoro()
+    fun setUnchanged()
 }
