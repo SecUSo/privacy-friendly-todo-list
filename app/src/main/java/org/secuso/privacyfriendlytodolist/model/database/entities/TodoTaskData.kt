@@ -44,7 +44,7 @@ data class TodoTaskData(
     var listPosition: Int = 0,
     var name: String = "",
     var description: String = "",
-    var priority: Priority = Priority.MEDIUM,
+    var priority: Priority = Priority.DEFAULT_VALUE,
     var deadline: Long = 0,
     var reminderTime: Long = -1,
     var progress: Int = 0,

@@ -34,7 +34,7 @@ import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase.Compan
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
-import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.ObjectStates
+import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.RequiredDBAction
 
 class ModelServicesImpl(
     context: Context,
@@ -84,7 +84,7 @@ class ModelServicesImpl(
      * @param lockedIds Tasks for which the user was just notified (these tasks are locked).
      * They will be excluded.
      */
-    override fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<List<TodoTask>>) {
+    override fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllToRemind(today, lockedIds)
             val tasksToRemind = loadTasksSubtasks(false, *dataArray)
@@ -94,7 +94,8 @@ class ModelServicesImpl(
             if (nextDueTask != null) {
                 tasksToRemind.add(nextDueTask as TodoTaskImpl)
             }
-            dispatchResult(resultConsumer, tasksToRemind)
+            @Suppress("UNCHECKED_CAST")
+            dispatchResult(resultConsumer, tasksToRemind as MutableList<TodoTask>)
         }
     }
 
@@ -191,19 +192,21 @@ class ModelServicesImpl(
         }
     }
 
-    override fun getAllToDoTasks(resultConsumer: ResultConsumer<List<TodoTask>>) {
+    override fun getAllToDoTasks(resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllNotInRecycleBin()
             val data = loadTasksSubtasks(false, *dataArray)
-            dispatchResult(resultConsumer, data)
+            @Suppress("UNCHECKED_CAST")
+            dispatchResult(resultConsumer, data as MutableList<TodoTask>)
         }
     }
 
-    override fun getRecycleBin(resultConsumer: ResultConsumer<List<TodoTask>>) {
+    override fun getRecycleBin(resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
             val data = loadTasksSubtasks(true, *dataArray)
-            dispatchResult(resultConsumer, data)
+            @Suppress("UNCHECKED_CAST")
+            dispatchResult(resultConsumer, data as MutableList<TodoTask>)
         }
     }
 
@@ -219,11 +222,20 @@ class ModelServicesImpl(
         }
     }
 
-    override fun getAllToDoLists(resultConsumer: ResultConsumer<List<TodoList>>) {
+    override fun getAllToDoLists(resultConsumer: ResultConsumer<MutableList<TodoList>>) {
         coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoListDao().getAll()
             val todoLists = loadListsTasksSubtasks(*dataArray)
-            dispatchResult(resultConsumer, todoLists)
+            @Suppress("UNCHECKED_CAST")
+            dispatchResult(resultConsumer, todoLists as MutableList<TodoList>)
+        }
+    }
+
+    override fun getAllToDoListNames(resultConsumer: ResultConsumer<MutableList<String>>) {
+        coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoListDao().getAllNames()
+            val todoListNames = dataArray.toCollection(ArrayList(dataArray.size))
+            dispatchResult(resultConsumer, todoListNames)
         }
     }
 
@@ -244,14 +256,14 @@ class ModelServicesImpl(
             val todoListImpl = todoList as TodoListImpl
             val data = todoListImpl.data
             var counter = 0
-            when (todoListImpl.dbState) {
-                ObjectStates.INSERT_TO_DB -> {
+            when (todoListImpl.requiredDBAction) {
+                RequiredDBAction.INSERT -> {
                     todoListImpl.setId(db.getTodoListDao().insert(data).toInt())
                     counter = 1
                     Log.d(TAG, "Todo list was inserted into DB: $data")
                 }
 
-                ObjectStates.UPDATE_DB -> {
+                RequiredDBAction.UPDATE -> {
                     counter = db.getTodoListDao().update(data)
                     Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
                 }
@@ -284,19 +296,19 @@ class ModelServicesImpl(
         val todoTaskImpl = todoTask as TodoTaskImpl
         val data = todoTaskImpl.data
         var counter = 0
-        when (todoTaskImpl.dbState) {
-            ObjectStates.INSERT_TO_DB -> {
+        when (todoTaskImpl.requiredDBAction) {
+            RequiredDBAction.INSERT -> {
                 todoTaskImpl.setId(db.getTodoTaskDao().insert(data).toInt())
                 counter = 1
                 Log.d(TAG, "Todo task was inserted into DB: $data")
             }
 
-            ObjectStates.UPDATE_DB -> {
+            RequiredDBAction.UPDATE -> {
                 counter = db.getTodoTaskDao().update(data)
                 Log.d(TAG, "Todo task was updated in DB (return code $counter): $data")
             }
 
-            ObjectStates.UPDATE_FROM_POMODORO -> {
+            RequiredDBAction.UPDATE_FROM_POMODORO -> {
                 counter = db.getTodoTaskDao().updateValuesFromPomodoro(
                     todoTaskImpl.getId(),
                     todoTaskImpl.getName(),
@@ -323,14 +335,14 @@ class ModelServicesImpl(
         val todoSubtaskImpl = todoSubtask as TodoSubtaskImpl
         val data = todoSubtaskImpl.data
         var counter = 0
-        when (todoSubtaskImpl.dbState) {
-            ObjectStates.INSERT_TO_DB -> {
+        when (todoSubtaskImpl.requiredDBAction) {
+            RequiredDBAction.INSERT -> {
                 todoSubtaskImpl.setId(db.getTodoSubtaskDao().insert(data).toInt())
                 counter = 1
                 Log.d(TAG, "Todo subtask was inserted into DB: $data")
             }
 
-            ObjectStates.UPDATE_DB -> {
+            RequiredDBAction.UPDATE -> {
                 counter = db.getTodoSubtaskDao().update(data)
                 Log.d(TAG, "Todo subtask was updated in DB (return code $counter): $data")
             }
@@ -355,11 +367,12 @@ class ModelServicesImpl(
         for (data in dataArray) {
             val list = TodoListImpl(data)
             val dataArray2 = db.getTodoTaskDao().getAllOfListNotInRecycleBin(list.getId())
-            val tasks: List<TodoTaskImpl> = loadTasksSubtasks(false, *dataArray2)
+            val tasks = loadTasksSubtasks(false, *dataArray2)
             for (task in tasks) {
                 task.setListId(list.getId())
             }
-            list.setTasks(tasks)
+            @Suppress("UNCHECKED_CAST")
+            list.setTasks(tasks as MutableList<TodoTask>)
             lists.add(list)
         }
         return lists
@@ -376,7 +389,8 @@ class ModelServicesImpl(
                 db.getTodoSubtaskDao().getAllOfTask(task.getId()) else
                 db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.getId())
             val subtasks = loadSubtasks(*dataArray2)
-            task.setSubtasks(subtasks)
+            @Suppress("UNCHECKED_CAST")
+            task.setSubtasks(subtasks as MutableList<TodoSubtask>)
             tasks.add(task)
         }
         return tasks

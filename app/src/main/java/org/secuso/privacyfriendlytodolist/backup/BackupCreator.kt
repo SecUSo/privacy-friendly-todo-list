@@ -43,27 +43,26 @@ import java.nio.charset.Charset
 class BackupCreator : IBackupCreator {
     override fun writeBackup(context: Context, outputStream: OutputStream) : Boolean {
         return runBlocking {
-
-            val pinCheck = async<Boolean> {
+            val pinCheck = async {
                 // check if a pin is set and validate it first
-                if(hasPin(context)) {
+                if (hasPin(context)) {
                     // wait for pin
-                    PinActivity.result = null
+                    PinActivity.reset()
                     context.startActivity(Intent(context, PinActivity::class.java).apply {
                         flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP or FLAG_ACTIVITY_CLEAR_TASK
                     })
 
-                    while(PinActivity.result == null) {
+                    while (PinActivity.isAuthenticated == null) {
                         delay(200)
                     }
 
-                    return@async PinActivity.result!!
+                    return@async PinActivity.isAuthenticated!!
                 } else {
                     return@async true
                 }
             }
 
-            if(pinCheck.await()) {
+            if (pinCheck.await()) {
                 return@runBlocking writeBackupInternal(context, outputStream)
             } else {
                 return@runBlocking false

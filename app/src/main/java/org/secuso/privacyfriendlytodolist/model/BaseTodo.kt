@@ -17,7 +17,6 @@
 package org.secuso.privacyfriendlytodolist.model
 
 interface BaseTodo {
-    fun setCreated()
     fun setChanged()
     fun setChangedFromPomodoro()
     fun setUnchanged()

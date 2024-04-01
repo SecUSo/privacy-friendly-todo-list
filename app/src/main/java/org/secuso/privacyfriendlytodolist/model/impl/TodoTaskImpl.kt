@@ -19,18 +19,15 @@ package org.secuso.privacyfriendlytodolist.model.impl
 import android.os.Parcel
 import android.os.Parcelable.Creator
 import android.util.Log
-import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
 import java.util.Locale
-import java.util.Objects
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
- *
  *
  * Class to set up To-Do Tasks and its parameters.
  */
@@ -41,10 +38,12 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     /** Important for the reminder service.  */
     private var reminderTimeChanged = false
     private var reminderTimeWasInitialized = false
-    private var subtasks: List<TodoSubtask> = ArrayList()
+    private var subtasks: MutableList<TodoSubtask> = ArrayList()
 
     constructor() {
         data = TodoTaskData()
+        // New item needs to be stored in database.
+        requiredDBAction = RequiredDBAction.INSERT
     }
 
     constructor(data: TodoTaskData) {
@@ -60,8 +59,8 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
             parcel.readInt()
             data.listId = null
         }
-        data.name = Objects.requireNonNullElse(parcel.readString(), "")
-        data.description = Objects.requireNonNullElse(parcel.readString(), "")
+        data.name = parcel.readString()!!
+        data.description = parcel.readString()!!
         data.isDone = parcel.readByte() != 0.toByte()
         data.isInRecycleBin = parcel.readByte() != 0.toByte()
         data.progress = parcel.readInt()
@@ -70,8 +69,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         reminderTimeChanged = parcel.readByte() != 0.toByte()
         reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
         data.listPosition = parcel.readInt()
-        val priority = TodoTask.Priority.fromOrdinal(parcel.readInt())
-        data.priority = Objects.requireNonNullElse(priority, TodoTask.Priority.DEFAULT_VALUE)
+        data.priority = TodoTask.Priority.fromOrdinal(parcel.readInt())!!
         parcel.readList(subtasks, TodoSubtaskImpl::class.java.getClassLoader())
     }
 
@@ -96,6 +94,8 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeInt(data.listPosition)
         dest.writeInt(data.priority.ordinal)
         dest.writeList(subtasks)
+        // Parcel-interface is used for data backup.
+        // This use case does not require that 'dbState' gets stored in the parcel.
     }
 
     override fun setId(id: Int) {
@@ -150,11 +150,11 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.listPosition
     }
 
-    override fun setSubtasks(subtasks: List<TodoSubtask>) {
+    override fun setSubtasks(subtasks: MutableList<TodoSubtask>) {
         this.subtasks = subtasks
     }
 
-    override fun getSubtasks(): List<TodoSubtask> {
+    override fun getSubtasks(): MutableList<TodoSubtask> {
         return subtasks
     }
 
@@ -194,6 +194,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     override fun getProgress(computeProgress: Boolean): Int {
         if (computeProgress) {
             val progress: Int
+            @Suppress("LiftReturnOrAssignment")
             if (0 == subtasks.size) {
                 progress = if (isDone()) 100 else 0
             } else {
@@ -265,10 +266,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
                 break
             }
         }
-        if (allSubtasksAreDone != data.isDone) {
-            dbState = ObjectStates.UPDATE_DB
+        if (data.isDone != allSubtasksAreDone) {
+            data.isDone = allSubtasksAreDone
+            requiredDBAction = RequiredDBAction.UPDATE
         }
-        data.isDone = allSubtasksAreDone
     }
 
     override fun setInRecycleBin(isInRecycleBin: Boolean) {

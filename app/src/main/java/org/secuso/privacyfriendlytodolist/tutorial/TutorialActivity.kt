@@ -61,10 +61,10 @@ class TutorialActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         setContentView(R.layout.activity_tutorial)
-        viewPager = findViewById<View>(R.id.view_pager) as ViewPager
-        dotsLayout = findViewById<View>(R.id.layoutDots) as LinearLayout
-        btnSkip = findViewById<View>(R.id.btn_skip) as Button
-        btnNext = findViewById<View>(R.id.btn_next) as Button
+        viewPager = findViewById(R.id.view_pager)
+        dotsLayout = findViewById(R.id.layoutDots)
+        btnSkip = findViewById(R.id.btn_skip)
+        btnNext = findViewById(R.id.btn_next)
 
         //add slides to layouts array
         layouts = intArrayOf(

@@ -19,31 +19,26 @@ package org.secuso.privacyfriendlytodolist.model.impl
 import org.secuso.privacyfriendlytodolist.model.BaseTodo
 
 abstract class BaseTodoImpl : BaseTodo {
-    enum class ObjectStates {
-        INSERT_TO_DB,
-        UPDATE_DB,
-        UPDATE_FROM_POMODORO,
-        NO_DB_ACTION
+    enum class RequiredDBAction {
+        NONE,
+        INSERT,
+        UPDATE,
+        UPDATE_FROM_POMODORO
     }
 
-    var dbState: ObjectStates = ObjectStates.NO_DB_ACTION
-        protected set
-
-    override fun setCreated() {
-        dbState = ObjectStates.INSERT_TO_DB
-    }
+    var requiredDBAction: RequiredDBAction = RequiredDBAction.NONE
 
     override fun setChanged() {
-        if (dbState == ObjectStates.NO_DB_ACTION) {
-            dbState = ObjectStates.UPDATE_DB
+        if (requiredDBAction == RequiredDBAction.NONE) {
+            requiredDBAction = RequiredDBAction.UPDATE
         }
     }
 
     override fun setChangedFromPomodoro() {
-        dbState = ObjectStates.UPDATE_FROM_POMODORO
+        requiredDBAction = RequiredDBAction.UPDATE_FROM_POMODORO
     }
 
     override fun setUnchanged() {
-        dbState = ObjectStates.NO_DB_ACTION
+        requiredDBAction = RequiredDBAction.NONE
     }
 }

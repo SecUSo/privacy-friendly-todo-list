@@ -31,8 +31,8 @@ interface TodoList : BaseTodo, Parcelable {
     fun setName(name: String)
     fun getName(): String
     fun getSize(): Int
-    fun setTasks(tasks: List<TodoTask>)
-    fun getTasks(): List<TodoTask>
+    fun setTasks(tasks: MutableList<TodoTask>)
+    fun getTasks(): MutableList<TodoTask>
     fun getColor(): Int
     fun getDoneTodos(): Int
     fun getNextDeadline(): Long

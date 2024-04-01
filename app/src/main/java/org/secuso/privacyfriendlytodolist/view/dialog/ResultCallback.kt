@@ -14,9 +14,8 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.view.dialog
 
-package org.secuso.privacyfriendlytodolist.view.dialog;
-
-public interface ResultCallback<T> {
-    void onFinish(T item);
+fun interface ResultCallback<T> {
+    fun onFinish(item: T)
 }

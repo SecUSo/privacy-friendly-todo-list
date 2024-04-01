@@ -14,29 +14,18 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.view.widget
 
-package org.secuso.privacyfriendlytodolist.view.widget;
-
-import android.content.Intent;
-import android.widget.RemoteViewsService;
+import android.content.Intent
+import android.widget.RemoteViewsService
 
 /**
  * Created by Sebastian Lutz on 15.02.2018.
  *
  * Service that gives data to AppWidgetProvider (TodoListWidget) class
- *
  */
-
-public class ListViewWidgetService extends RemoteViewsService {
-
-    @Override
-    public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new WidgetViewsFactory(getApplicationContext());
-
+class ListViewWidgetService : RemoteViewsService() {
+    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+        return WidgetViewsFactory(applicationContext)
     }
-
-
-
-
-
 }

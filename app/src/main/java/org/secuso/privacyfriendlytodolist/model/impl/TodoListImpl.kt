@@ -24,7 +24,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import java.util.Locale
-import java.util.Objects
 
 
 /**
@@ -36,12 +35,14 @@ class TodoListImpl : BaseTodoImpl, TodoList {
     /** Container for data that gets stored in the database.  */
     val data: TodoListData
 
-    private var tasks: List<TodoTask> = ArrayList()
+    private var tasks: MutableList<TodoTask> = ArrayList()
     private var isDummyList = false
 
     constructor() {
         data = TodoListData()
         isDummyList = true
+        // New item needs to be stored in database.
+        requiredDBAction = RequiredDBAction.INSERT
     }
 
     constructor(data: TodoListData) {
@@ -53,7 +54,7 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         data = TodoListData()
         data.id = parcel.readInt()
         isDummyList = parcel.readByte().toInt() != 0
-        data.name = Objects.requireNonNullElse(parcel.readString(), "")
+        data.name = parcel.readString()!!
         parcel.readList(tasks, TodoTask::class.java.getClassLoader())
     }
 
@@ -62,6 +63,8 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         dest.writeByte((if (isDummyList) 1 else 0).toByte())
         dest.writeString(data.name)
         dest.writeList(tasks)
+        // Parcel-interface is used for data backup.
+        // This use case does not require that 'dbState' gets stored in the parcel.
     }
 
     override fun setId(id: Int) {
@@ -89,11 +92,11 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return tasks.size
     }
 
-    override fun setTasks(tasks: List<TodoTask>) {
+    override fun setTasks(tasks: MutableList<TodoTask>) {
         this.tasks = tasks
     }
 
-    override fun getTasks(): List<TodoTask> {
+    override fun getTasks(): MutableList<TodoTask> {
         return tasks
     }
 

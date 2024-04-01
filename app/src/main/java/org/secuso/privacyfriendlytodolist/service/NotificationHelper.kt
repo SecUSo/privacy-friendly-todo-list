@@ -42,7 +42,7 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
  * Creates and manages notifications based on the SDK version.
  * If SDK >= 26 NotificationChannels will be created.
  */
-class NotificationHelper(base: Context?) : ContextWrapper(base) {
+class NotificationHelper(base: Context) : ContextWrapper(base) {
     private var manager: NotificationManager? = null
 
     fun getManager(): NotificationManager? {

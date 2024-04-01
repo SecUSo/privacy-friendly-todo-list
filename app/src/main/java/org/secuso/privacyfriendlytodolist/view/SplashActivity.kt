@@ -14,24 +14,20 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.view
 
-package org.secuso.privacyfriendlytodolist.testing;
-
-import static junit.framework.TestCase.assertEquals;
-
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 /**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
+ * Created by yonjuni on 17.11.16.
  */
-@RunWith(AndroidJUnit4ClassRunner.class)
-public class ApplicationTest {
-    @Test
-    public void testInstrumentationTest() throws Exception {
-        assertEquals("org.secuso.privacyfriendlytodolist", InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName());
+class SplashActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val mainIntent = Intent(this, MainActivity::class.java)
+        startActivity(mainIntent)
+        finish()
     }
 }

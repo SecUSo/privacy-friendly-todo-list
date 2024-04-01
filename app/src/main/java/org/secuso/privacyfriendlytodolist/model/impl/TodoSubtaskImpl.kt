@@ -21,7 +21,6 @@ import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import java.util.Locale
-import java.util.Objects
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -35,6 +34,8 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
 
     constructor() {
         data = TodoSubtaskData()
+        // New item needs to be stored in database.
+        requiredDBAction = RequiredDBAction.INSERT
     }
 
     constructor(data: TodoSubtaskData) {
@@ -44,7 +45,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
     constructor(parcel: Parcel) {
         data = TodoSubtaskData()
         data.id = parcel.readInt()
-        data.name = Objects.requireNonNullElse(parcel.readString(), "")
+        data.name = parcel.readString()!!
         data.isDone = parcel.readByte().toInt() != 0
         data.isInRecycleBin = parcel.readByte().toInt() != 0
         data.taskId = parcel.readInt()
@@ -56,6 +57,8 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         dest.writeByte((if (data.isDone) 1 else 0).toByte())
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.taskId)
+        // Parcel-interface is used for data backup.
+        // This use case does not require that 'dbState' gets stored in the parcel.
     }
 
     override fun setId(id: Int) {

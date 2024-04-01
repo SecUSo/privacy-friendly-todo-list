@@ -20,25 +20,27 @@ import android.os.Parcelable
 
 
 interface TodoTask : BaseTodo, Parcelable {
+    /**
+     * Priority steps must be sorted in the same way like they will be displayed
+     */
     enum class Priority {
         HIGH,
         MEDIUM,
         LOW;
 
         companion object {
-            // Priority steps must be sorted in the same way like they will be displayed
             @JvmField
             val DEFAULT_VALUE = MEDIUM
 
-            /** Number of priorities.  */
+            /** Number of enumeration entries. */
             @JvmField
             val LENGTH = entries.size
 
             /**
-             * Provides the priority enumeration value that matches the given ordinal number.
+             * Provides the enumeration value that matches the given ordinal number.
              *
-             * @param ordinal The ordinal number of the requested priority enumeration value.
-             * @return The requested priority enumeration value if the given ordinal is valid. Otherwise null.
+             * @param ordinal The ordinal number of the requested enumeration value.
+             * @return The requested enumeration value if the given ordinal is valid. Otherwise null.
              */
             fun fromOrdinal(ordinal: Int): Priority? {
                 return if (ordinal in 0..<LENGTH) entries[ordinal] else null
@@ -73,8 +75,8 @@ interface TodoTask : BaseTodo, Parcelable {
     fun hasDeadline(): Boolean
     fun setListPosition(position: Int)
     fun getListPosition(): Int
-    fun setSubtasks(subtasks: List<TodoSubtask>)
-    fun getSubtasks(): List<TodoSubtask>
+    fun setSubtasks(subtasks: MutableList<TodoSubtask>)
+    fun getSubtasks(): MutableList<TodoSubtask>
 
     // This method expects the deadline to be greater than the reminder time.
     fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors
