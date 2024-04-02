@@ -52,6 +52,8 @@
     <string name="help_group_privacy">Privatsphäre</string>
     <string name="help_permissions_title">Berechtigung RECEIVE_BOOT_COMPLETED</string>
     <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte. Ansonsten verwendet die "To-Do Liste" kein Tracking, Werbung oder sonstige Berechtigungen, die Ihre Privatsphäre verletzen würden.</string>
+    <string name="help_group_data_backup">Datensicherung</string>
+    <string name="help_data_backup">Sie können die separate Privacy Friendly Backup-App verwenden, um die Daten dieser Anwendung zu sichern und wiederherzustellen. Dies kann auch verwendet werden, um Ihre Daten auf ein anderes Gerät zu übertragen.</string>
     <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App. Ein Tippen auf den Aktualisierungs-Button aktualisiert die Liste.</string>
 
     <!-- About -->

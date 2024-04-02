@@ -40,8 +40,7 @@ class HelpActivity : AppCompatActivity() {
         val helpDataDump = HelpDataDump(this)
         val expandableListDetail = helpDataDump.dataGeneral
         val expandableListTitleGeneral: List<String> = ArrayList(expandableListDetail.keys)
-        expandableListAdapter =
-            ExpandableListAdapter(this, expandableListTitleGeneral, expandableListDetail)
+        expandableListAdapter = ExpandableListAdapter(this, expandableListTitleGeneral, expandableListDetail)
         generalExpandableListView.setAdapter(expandableListAdapter)
         toolbar.setTitle(R.string.help)
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
@@ -52,8 +51,6 @@ class HelpActivity : AppCompatActivity() {
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
             supportActionBarCopy.setHomeAsUpIndicator(R.drawable.arrow)
         }
-
-        //getFragmentManager().beginTransaction().replace(R.id.help_fragment_container, new HelpFragment()).commit();
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -62,11 +59,5 @@ class HelpActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    class HelpFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            addPreferencesFromResource(R.xml.help)
-        }
     }
 }
