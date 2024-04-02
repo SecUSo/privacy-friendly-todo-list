@@ -33,10 +33,10 @@
             android:title="@string/help_permissions_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/help_data_backup_title">
+    <PreferenceCategory android:title="@string/help_group_data_backup">
         <Preference
             android:summary="@string/help_data_backup"
-            android:title="@string/help_data_backup_title" />
+            android:title="@string/help_group_data_backup" />
     </PreferenceCategory>
 
 </PreferenceScreen>

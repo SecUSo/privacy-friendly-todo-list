@@ -14,19 +14,10 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.util
-
-import android.content.Context
-import androidx.preference.PreferenceManager
-
-object PinUtil {
-    @JvmStatic
-    fun hasPin(context: Context): Boolean {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
-        val prefPin: String? = pref.getString("pref_pin", null)
-        // pin activated and valid?
-        return prefPinEnabled && prefPin != null && prefPin.length >= 4
-    }
+interface BaseTodo {
+    fun setChanged()
+    fun setChangedFromPomodoro()
+    fun setUnchanged()
 }

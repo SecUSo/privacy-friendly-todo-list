@@ -14,19 +14,20 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.model
 
-package org.secuso.privacyfriendlytodolist.util
+import android.os.Parcelable
 
-import android.content.Context
-import androidx.preference.PreferenceManager
-
-object PinUtil {
-    @JvmStatic
-    fun hasPin(context: Context): Boolean {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
-        val prefPin: String? = pref.getString("pref_pin", null)
-        // pin activated and valid?
-        return prefPinEnabled && prefPin != null && prefPin.length >= 4
-    }
+interface TodoSubtask : BaseTodo, Parcelable {
+    fun setId(id: Int)
+    fun getId(): Int
+    fun setName(name: String)
+    fun getName(): String
+    fun setTaskId(taskIdForeignKey: Int)
+    fun getTaskId(): Int
+    fun setDone(isDone: Boolean)
+    fun isDone(): Boolean
+    fun setInRecycleBin(isInRecycleBin: Boolean)
+    fun isInRecycleBin(): Boolean
+    fun checkQueryMatch(query: String?): Boolean
 }

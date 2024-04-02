@@ -14,19 +14,18 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.view.widget
 
-package org.secuso.privacyfriendlytodolist.util
+import android.content.Intent
+import android.widget.RemoteViewsService
 
-import android.content.Context
-import androidx.preference.PreferenceManager
-
-object PinUtil {
-    @JvmStatic
-    fun hasPin(context: Context): Boolean {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
-        val prefPin: String? = pref.getString("pref_pin", null)
-        // pin activated and valid?
-        return prefPinEnabled && prefPin != null && prefPin.length >= 4
+/**
+ * Created by Sebastian Lutz on 15.02.2018.
+ *
+ * Service that gives data to AppWidgetProvider (TodoListWidget) class
+ */
+class ListViewWidgetService : RemoteViewsService() {
+    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
+        return WidgetViewsFactory(applicationContext)
     }
 }

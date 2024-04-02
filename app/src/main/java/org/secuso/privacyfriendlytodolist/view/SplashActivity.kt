@@ -14,19 +14,20 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.view
 
-package org.secuso.privacyfriendlytodolist.util
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
-import android.content.Context
-import androidx.preference.PreferenceManager
-
-object PinUtil {
-    @JvmStatic
-    fun hasPin(context: Context): Boolean {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
-        val prefPin: String? = pref.getString("pref_pin", null)
-        // pin activated and valid?
-        return prefPinEnabled && prefPin != null && prefPin.length >= 4
+/**
+ * Created by yonjuni on 17.11.16.
+ */
+class SplashActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val mainIntent = Intent(this, MainActivity::class.java)
+        startActivity(mainIntent)
+        finish()
     }
 }

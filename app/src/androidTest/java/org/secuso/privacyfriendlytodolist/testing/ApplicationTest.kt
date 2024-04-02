@@ -14,19 +14,24 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.testing
 
-package org.secuso.privacyfriendlytodolist.util
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
+import junit.framework.TestCase
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import android.content.Context
-import androidx.preference.PreferenceManager
-
-object PinUtil {
-    @JvmStatic
-    fun hasPin(context: Context): Boolean {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
-        val prefPin: String? = pref.getString("pref_pin", null)
-        // pin activated and valid?
-        return prefPinEnabled && prefPin != null && prefPin.length >= 4
+/**
+ * [Testing Fundamentals](http://d.android.com/tools/testing/testing_android.html)
+ */
+@RunWith(AndroidJUnit4ClassRunner::class)
+class ApplicationTest {
+    @Test
+    @Throws(Exception::class)
+    fun testInstrumentationTest() {
+        TestCase.assertEquals(
+            "org.secuso.privacyfriendlytodolist",
+            InstrumentationRegistry.getInstrumentation().targetContext.packageName)
     }
 }

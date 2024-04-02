@@ -23,39 +23,46 @@ import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
 
 class PinActivity : AppCompatActivity() {
     companion object {
-        var result : Boolean? = null
+        var isAuthenticated : Boolean? = null
+            private set
+
+        fun reset() {
+            isAuthenticated = null
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // reset result and start dialog
-        result = null
+        reset()
         startDialog()
     }
 
     private fun startDialog() {
-        PinDialog(this).apply {
+        PinDialog(this, false).apply {
             setDialogCallback(object : PinDialog.PinCallback {
                 override fun accepted() {
-                    result = true
+                    isAuthenticated = true
                     this@PinActivity.finish()
                 }
+
                 override fun declined() {
-                    result = false
+                    isAuthenticated = false
                     this@PinActivity.finish()
                 }
+
                 override fun resetApp() {
-                    result = false
+                    isAuthenticated = false
                     this@PinActivity.finish()
                 }
             })
-            setDisallowReset(true)
             setOnCancelListener {
-                result = false
-                this@PinActivity.finish() }
+                isAuthenticated = false
+                this@PinActivity.finish()
+            }
             setOnDismissListener {
-                result = false
+                isAuthenticated = false
                 this@PinActivity.finish()
             }
             show()

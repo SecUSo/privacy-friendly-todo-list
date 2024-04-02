@@ -114,12 +114,12 @@ class ReminderService : Service() {
     }
 
     private fun notifyAboutAlarm(task: TodoTask) {
-        val title = task.name
-        val deadline = Helper.getDateTime(task.deadline)
+        val title = task.getName()
+        val deadline = Helper.getDateTime(task.getDeadline())
         val message =
             applicationContext.resources.getString(R.string.deadline_approaching, deadline)
         val nb = helper!!.getNotification(title, message, task)
-        helper!!.manager.notify(task.id, nb.build())
+        helper!!.getManager()!!.notify(task.getId(), nb.build())
     }
 
     private fun reloadAlarms() {
@@ -137,23 +137,23 @@ class ReminderService : Service() {
 
     private fun setAlarmForTask(task: TodoTask) {
         val context = applicationContext
-        val alarmID = task.id // use database id as unique alarm id
+        val alarmID = task.getId() // use database id as unique alarm id
         val alarmIntent = Intent(context, ReminderService::class.java)
         alarmIntent.putExtra(KEY_ALARM_TASK_ID, alarmID)
         val pendingAlarmIntent = PendingIntent.getService(context, alarmID, alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val calendar = Calendar.getInstance()
-        val reminderTime = task.reminderTime
+        val reminderTime = task.getReminderTime()
         if (reminderTime != -1L && reminderTime <= Helper.getCurrentTimestamp()) {
             val date = Date(TimeUnit.SECONDS.toMillis(Helper.getCurrentTimestamp()))
             calendar.time = date
             alarmManager!![AlarmManager.RTC_WAKEUP, calendar.timeInMillis] = pendingAlarmIntent
-            Log.i(TAG, "Alarm set for " + task.name + " at " + Helper.getDateTime(calendar.timeInMillis / 1000) + " (alarm id: " + alarmID + ")")
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.timeInMillis / 1000) + " (alarm id: " + alarmID + ")")
         } else if (reminderTime != -1L) {
             val date = Date(TimeUnit.SECONDS.toMillis(reminderTime)) // convert to milliseconds
             calendar.time = date
             alarmManager!![AlarmManager.RTC_WAKEUP, calendar.timeInMillis] = pendingAlarmIntent
-            Log.i(TAG, "Alarm set for " + task.name + " at " + Helper.getDateTime(calendar.timeInMillis / 1000) + " (alarm id: " + alarmID + ")")
+            Log.i(TAG, "Alarm set for " + task.getName() + " at " + Helper.getDateTime(calendar.timeInMillis / 1000) + " (alarm id: " + alarmID + ")")
         }
     }
 
@@ -163,7 +163,7 @@ class ReminderService : Service() {
             if (null != changedTask) {
                 val context = applicationContext
                 val alarmIntent = PendingIntent.getBroadcast(
-                    context, changedTask.id,
+                    context, changedTask.getId(),
                     Intent(context, ReminderService::class.java),
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
@@ -173,13 +173,13 @@ class ReminderService : Service() {
 
                     // 1. cancel old alarm
                     alarmManager!!.cancel(alarmIntent)
-                    Log.i(TAG, "Alarm of task " + changedTask.name + " cancelled. (id=" + changedTask.id + ")")
+                    Log.i(TAG, "Alarm of task " + changedTask.getName() + " cancelled. (id=" + changedTask.getId() + ")")
 
                     // 2. delete old notification if it exists
-                    mNotificationManager!!.cancel(changedTask.id)
-                    Log.i(TAG, "Notification of task " + changedTask.name + " deleted (if existed). (id=" + changedTask.id + ")")
+                    mNotificationManager!!.cancel(changedTask.getId())
+                    Log.i(TAG, "Notification of task " + changedTask.getName() + " deleted (if existed). (id=" + changedTask.getId() + ")")
                 } else {
-                    Log.i(TAG, "No alarm found for " + changedTask.name + " (alarm id: " + changedTask.id + ")")
+                    Log.i(TAG, "No alarm found for " + changedTask.getName() + " (alarm id: " + changedTask.getId() + ")")
                 }
                 setAlarmForTask(changedTask)
             }

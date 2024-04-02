@@ -1,18 +1,18 @@
 /*
- This file is part of Privacy Friendly To-Do List.
+ This file is part of Privacy Friendly To-Do MutableList.
 
- Privacy Friendly To-Do List is free software:
+ Privacy Friendly To-Do MutableList is free software:
  you can redistribute it and/or modify it under the terms of the
  GNU General Public License as published by the Free Software Foundation,
  either version 3 of the License, or any later version.
 
- Privacy Friendly To-Do List is distributed in the hope
+ Privacy Friendly To-Do MutableList is distributed in the hope
  that it will be useful, but WITHOUT ANY WARRANTY; without even
  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  See the GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
+ along with Privacy Friendly To-Do MutableList. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package org.secuso.privacyfriendlytodolist.model
@@ -32,7 +32,7 @@ interface ModelServices {
      * -   which are not fulfilled and whose reminder time is prior to the current time
      * -   the task which is next due
      */
-    fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<List<TodoTask>>)
+    fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>)
     fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?)
     fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
     fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
@@ -43,10 +43,11 @@ interface ModelServices {
      * Returns the number of all to-do-lists (left in tuple) and all to-do-tasks that are not in recycle bin (right in tuple).
      */
     fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>)
-    fun getAllToDoTasks(resultConsumer: ResultConsumer<List<TodoTask>>)
-    fun getRecycleBin(resultConsumer: ResultConsumer<List<TodoTask>>)
+    fun getAllToDoTasks(resultConsumer: ResultConsumer<MutableList<TodoTask>>)
+    fun getRecycleBin(resultConsumer: ResultConsumer<MutableList<TodoTask>>)
     fun clearRecycleBin(resultConsumer: ResultConsumer<Int>?)
-    fun getAllToDoLists(resultConsumer: ResultConsumer<List<TodoList>>)
+    fun getAllToDoLists(resultConsumer: ResultConsumer<MutableList<TodoList>>)
+    fun getAllToDoListNames(resultConsumer: ResultConsumer<MutableList<String>>)
     fun getToDoListById(todoListId: Int, resultConsumer: ResultConsumer<TodoList?>)
     fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
     fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)

@@ -52,10 +52,9 @@
     <string name="help_group_privacy">Privacy Info</string>
     <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
     <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline. Tracking, advertisement or other permissions do not exist.</string>
-    <string name="help_widget">In addition, this app provides a widget that you can add to your homescreen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
-    <string name="help_data_backup_title">Data Backup</string>
+    <string name="help_group_data_backup">Data Backup</string>
     <string name="help_data_backup">You can use the separate Privacy Friendly Backup app to backup and restore this application\'s data. This can also be used to migrate your data to a new phone.</string>
-
+    <string name="help_widget">In addition, this app provides a widget that you can add to your homescreen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
 
 
     <!-- About -->

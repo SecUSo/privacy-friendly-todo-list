@@ -14,19 +14,21 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.secuso.privacyfriendlytodolist.service
 
-package org.secuso.privacyfriendlytodolist.util
-
+import android.content.BroadcastReceiver
 import android.content.Context
-import androidx.preference.PreferenceManager
+import android.content.Intent
+import android.util.Log
 
-object PinUtil {
-    @JvmStatic
-    fun hasPin(context: Context): Boolean {
-        val pref = PreferenceManager.getDefaultSharedPreferences(context)
-        val prefPinEnabled = pref.getBoolean("pref_pin_enabled", false)
-        val prefPin: String? = pref.getString("pref_pin", null)
-        // pin activated and valid?
-        return prefPinEnabled && prefPin != null && prefPin.length >= 4
+class AutoStartReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val reminderServiceIntent = Intent(context, ReminderService::class.java)
+        context.startService(reminderServiceIntent)
+        Log.i(TAG, ReminderService::class.java.getSimpleName() + " started.")
+    }
+
+    companion object {
+        private val TAG = AutoStartReceiver::class.java.getSimpleName()
     }
 }
