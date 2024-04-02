@@ -65,6 +65,11 @@ public class HelpDataDump {
 
         expandableListDetail.put(context.getResources().getString(R.string.help_group_privacy), permissions);
 
+        List<String> data_backup = new ArrayList<String>();
+        data_backup.add(context.getResources().getString(R.string.help_data_backup));
+
+        expandableListDetail.put(context.getResources().getString(R.string.help_data_backup_title), data_backup);
+
         List<String> widget = new ArrayList<String>();
         widget.add(context.getResources().getString(R.string.help_widget));
 
