@@ -28,24 +28,34 @@ class HelpDataDump(private val context: Context) {
     val dataGeneral: LinkedHashMap<String, List<String>>
         get() {
             val expandableListDetail = LinkedHashMap<String, List<String>>()
+
             val general: MutableList<String> = ArrayList()
             general.add(context.resources.getString(R.string.help_intro))
             expandableListDetail[context.resources.getString(R.string.help_overview_heading)] = general
+
             val features: MutableList<String> = ArrayList()
             features.add(context.resources.getString(R.string.help_todo_lists))
             features.add(context.resources.getString(R.string.help_subtasks))
             features.add(context.resources.getString(R.string.help_deadline_reminder))
             expandableListDetail[context.resources.getString(R.string.help_group_lists)] = features
+
             val settings: MutableList<String> = ArrayList()
             settings.add(context.resources.getString(R.string.help_pin))
             settings.add(context.resources.getString(R.string.help_sound))
             expandableListDetail[context.resources.getString(R.string.help_group_app)] = settings
+
             val permissions: MutableList<String> = ArrayList()
             permissions.add(context.resources.getString(R.string.help_permissions))
             expandableListDetail[context.resources.getString(R.string.help_group_privacy)] = permissions
+
+            val dataBackup: MutableList<String> = ArrayList()
+            dataBackup.add(context.resources.getString(R.string.help_data_backup))
+            expandableListDetail[context.resources.getString(R.string.help_group_data_backup)] = dataBackup
+
             val widget: MutableList<String> = ArrayList()
             widget.add(context.resources.getString(R.string.help_widget))
             expandableListDetail["Widget"] = widget
+
             return expandableListDetail
         }
 }
