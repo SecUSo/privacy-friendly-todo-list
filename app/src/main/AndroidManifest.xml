@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".tutorial.TutorialActivity"
+            android:name=".view.TutorialActivity"
             android:parentActivityName="view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

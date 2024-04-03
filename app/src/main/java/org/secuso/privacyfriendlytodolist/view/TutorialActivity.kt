@@ -14,7 +14,7 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.secuso.privacyfriendlytodolist.tutorial
+package org.secuso.privacyfriendlytodolist.view
 
 import android.content.Intent
 import android.graphics.Color
@@ -33,7 +33,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.view.MainActivity
+import org.secuso.privacyfriendlytodolist.util.PrefManager
 
 /**
  * Created by Sebastian Lutz on 06.12.2017.
@@ -87,7 +87,7 @@ class TutorialActivity : AppCompatActivity() {
         btnNext!!.setOnClickListener {
             // checking for last page
             // if last page home screen will be launched
-            val current = getItem(+1)
+            val current = viewPager!!.currentItem + 1
             if (current < layouts!!.size) {
                 // move to next screen
                 viewPager!!.setCurrentItem(current)
@@ -150,10 +150,6 @@ class TutorialActivity : AppCompatActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = Color.TRANSPARENT
         }
-    }
-
-    private fun getItem(i: Int): Int {
-        return viewPager!!.currentItem + i
     }
 
     private inner class MyViewPageAdapter : PagerAdapter() {

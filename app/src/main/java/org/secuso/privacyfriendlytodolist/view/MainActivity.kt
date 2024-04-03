@@ -61,8 +61,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.service.ReminderService
 import org.secuso.privacyfriendlytodolist.service.ReminderService.ReminderServiceBinder
-import org.secuso.privacyfriendlytodolist.tutorial.PrefManager
-import org.secuso.privacyfriendlytodolist.tutorial.TutorialActivity
+import org.secuso.privacyfriendlytodolist.util.PrefManager
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
@@ -149,9 +148,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
         val priorityGroup = menu.findItem(R.id.ac_group_by_prio)
-        priorityGroup.setChecked(mPref!!.getBoolean("PRIORITY", false))
+        priorityGroup.setChecked(mPref!!.getBoolean(PrefManager.P_GROUP_BY_PRIORITY.name, false))
         val deadlineGroup = menu.findItem(R.id.ac_sort_by_deadline)
-        deadlineGroup.setChecked(mPref!!.getBoolean("DEADLINE", false))
+        deadlineGroup.setChecked(mPref!!.getBoolean(PrefManager.P_SORT_BY_DEADLINE.name, false))
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -179,21 +178,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.ac_show_all_tasks -> {
                 expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.ALL_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString("FILTER", "ALL_TASKS").commit()
+                mPref!!.edit().putString(PrefManager.P_TASK_FILTER.name, "ALL_TASKS").apply()
                 return true
             }
 
             R.id.ac_show_open_tasks -> {
                 expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.OPEN_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString("FILTER", "OPEN_TASKS").commit()
+                mPref!!.edit().putString(PrefManager.P_TASK_FILTER.name, "OPEN_TASKS").apply()
                 return true
             }
 
             R.id.ac_show_completed_tasks -> {
                 expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.COMPLETED_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString("FILTER", "COMPLETED_TASKS").commit()
+                mPref!!.edit().putString(PrefManager.P_TASK_FILTER.name, "COMPLETED_TASKS").apply()
                 return true
             }
 
@@ -201,14 +200,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 checked = !item.isChecked
                 item.setChecked(checked)
                 sortType = SortTypes.PRIORITY
-                mPref!!.edit().putBoolean("PRIORITY", checked).commit()
+                mPref!!.edit().putBoolean(PrefManager.P_GROUP_BY_PRIORITY.name, checked).apply()
             }
 
             R.id.ac_sort_by_deadline -> {
                 checked = !item.isChecked
                 item.setChecked(checked)
                 sortType = SortTypes.DEADLINE
-                mPref!!.edit().putBoolean("DEADLINE", checked).commit()
+                mPref!!.edit().putBoolean(PrefManager.P_SORT_BY_DEADLINE.name, checked).apply()
             }
 
             else -> return super.onOptionsItemSelected(item)

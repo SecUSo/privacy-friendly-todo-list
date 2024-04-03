@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.PrefManager
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
 
@@ -69,18 +70,15 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
         getManager()!!.createNotificationChannel(channel)
     }
 
-    fun getNotification(
-        title: String?,
-        message: String?,
-        task: TodoTask
-    ): NotificationCompat.Builder {
+    fun getNotification(title: String?, message: String?, task: TodoTask): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setContentTitle(title)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setAutoCancel(true)
             .setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500)
         if (task.hasDeadline()) builder.setContentText(message)
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notify", true)) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        if (prefs.getBoolean(PrefManager.P_IS_NOTIFICATION_SOUND.name, true)) {
             val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             builder.setSound(uri)
         }

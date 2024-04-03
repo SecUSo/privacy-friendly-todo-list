@@ -34,7 +34,7 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 
 @Database(
     entities = [ TodoListData::class, TodoTaskData::class, TodoSubtaskData::class ],
-    version = TodoListDatabase.DATABASE_VERSION,
+    version = TodoListDatabase.VERSION,
     exportSchema = true
 )
 @TypeConverters(DatabaseTypeConverters::class)
@@ -46,13 +46,12 @@ abstract class TodoListDatabase : RoomDatabase() {
     abstract fun getTodoSubtaskDao(): TodoSubtaskDao
 
     companion object {
-
-        const val DATABASE_NAME = "TodoDatabase.db"
-        const val DATABASE_VERSION = 3
+        const val NAME = "TodoDatabase.db"
+        const val VERSION = 3
         private var instance: TodoListDatabase? = null
 
         fun getInstance(context: Context): TodoListDatabase {
-            synchronized(DATABASE_NAME) {
+            synchronized(NAME) {
                 if (instance == null) {
                     instance = createDatabase(context)
                 }
@@ -127,7 +126,7 @@ abstract class TodoListDatabase : RoomDatabase() {
 
         private fun createDatabase(context: Context): TodoListDatabase {
             val builder = Room.databaseBuilder(context.applicationContext,
-                TodoListDatabase::class.java, DATABASE_NAME)
+                TodoListDatabase::class.java, NAME)
             builder.addMigrations(MIGRATION_1_2)
             builder.addMigrations(MIGRATION_2_3)
             return builder.build()

@@ -32,6 +32,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
+import org.secuso.privacyfriendlytodolist.util.PrefManager
 
 class TodoListAdapter(ac: Activity, data: List<TodoList>?) :
     RecyclerView.Adapter<TodoListAdapter.ViewHolder>() {
@@ -47,7 +48,7 @@ class TodoListAdapter(ac: Activity, data: List<TodoList>?) :
 
     private val defaultReminderTime: Long
         get() {
-            val value = prefs.getString(Settings.DEFAULT_REMINDER_TIME_KEY, null)?.toLong() ?:
+            val value = prefs.getString(PrefManager.P_DEFAULT_REMINDER_TIME.name, null)?.toLong() ?:
                 contextActivity.resources.getInteger(R.integer.one_day)
             return value.toLong()
         }

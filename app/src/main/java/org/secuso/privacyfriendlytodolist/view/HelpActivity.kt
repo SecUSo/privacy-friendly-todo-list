@@ -22,7 +22,6 @@ import android.widget.ExpandableListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceFragmentCompat
 import org.secuso.privacyfriendlytodolist.R
 
 /**

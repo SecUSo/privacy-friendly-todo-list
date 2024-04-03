@@ -35,10 +35,12 @@ import org.secuso.privacyfriendlybackup.api.backup.PreferenceUtil.writePreferenc
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupCreator
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
+import org.secuso.privacyfriendlytodolist.util.PrefDataType
+import org.secuso.privacyfriendlytodolist.util.PrefManager
 import org.secuso.privacyfriendlytodolist.view.PinActivity
 import java.io.OutputStream
 import java.io.OutputStreamWriter
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 class BackupCreator : IBackupCreator {
     override fun writeBackup(context: Context, outputStream: OutputStream) : Boolean {
@@ -71,28 +73,46 @@ class BackupCreator : IBackupCreator {
     }
 
     private fun writeBackupInternal(context: Context, outputStream: OutputStream) : Boolean {
-        val outputStreamWriter = OutputStreamWriter(outputStream, Charset.forName("UTF-8"))
+        Log.d(TAG, "Backup creation starts")
+        val outputStreamWriter = OutputStreamWriter(outputStream, StandardCharsets.UTF_8)
         val writer = JsonWriter(outputStreamWriter)
         writer.setIndent("")
 
         try {
             writer.beginObject()
-            val dataBase = DatabaseUtil.getSupportSQLiteOpenHelper(context, TodoListDatabase.DATABASE_NAME).readableDatabase
+
+            Log.d(TAG, "Writing database")
+            val dataBase = DatabaseUtil.getSupportSQLiteOpenHelper(context,
+                TodoListDatabase.NAME, TodoListDatabase.VERSION).readableDatabase
             writer.name("database")
             writeDatabase(writer, dataBase)
             dataBase.close()
 
-            writer.name("preferences")
+            Log.d(TAG, "Writing preferences")
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
-            writePreferences(writer, pref, arrayOf("pref_pin"))
+            val excludedPreferences = ArrayList<String>()
+            for (name in pref.all.keys) {
+                val prefMetaData = PrefManager.ALL_PREFERENCES[name]
+                    ?: throw RuntimeException("Unknown preference $name")
+                if (prefMetaData.excludeFromBackup) {
+                    excludedPreferences.add(name)
+                }
+            }
+            writer.name("preferences")
+            writePreferences(writer, pref, excludedPreferences.toTypedArray())
 
+            Log.d(TAG, "Writing files")
             writer.endObject()
             writer.close()
-            return true
         } catch (e: Exception) {
-            Log.e("PFA BackupCreator", "Error occurred", e)
-            e.printStackTrace()
+            Log.e(TAG, "Error occurred", e)
             return false
         }
+        Log.d(TAG, "Backup created successfully")
+        return true
+    }
+
+    companion object {
+        private val TAG = BackupCreator::class.java.simpleName
     }
 }
