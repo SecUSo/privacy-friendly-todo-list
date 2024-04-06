@@ -23,9 +23,15 @@ import android.util.Log
 
 class AutoStartReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val reminderServiceIntent = Intent(context, ReminderService::class.java)
-        context.startService(reminderServiceIntent)
-        Log.i(TAG, ReminderService::class.java.getSimpleName() + " started.")
+        val action = intent.action
+        if (action == "android.intent.action.BOOT_COMPLETED") {
+            val serviceClass = ReminderService::class.java
+            val reminderServiceIntent = Intent(context, serviceClass)
+            context.startService(reminderServiceIntent)
+            Log.i(TAG, serviceClass.getSimpleName() + " was started by $action.")
+        } else {
+            Log.e(TAG, "Received unexpected action '$action'.")
+        }
     }
 
     companion object {

@@ -608,7 +608,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName())
             }
         } else {
-            Log.i(TAG, "Service is null. Cannot update alarms")
+            Log.w(TAG, "Service is null. Cannot update alarms")
         }
     }
 

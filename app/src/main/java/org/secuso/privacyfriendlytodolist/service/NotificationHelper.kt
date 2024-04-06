@@ -46,11 +46,11 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
 class NotificationHelper(base: Context) : ContextWrapper(base) {
     private var manager: NotificationManager? = null
 
-    fun getManager(): NotificationManager? {
+    fun getManager(): NotificationManager {
         if (manager == null) {
             manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         }
-        return manager
+        return manager!!
     }
 
     init {
@@ -60,14 +60,15 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    fun createChannel() {
-        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
-        channel.description = "Test"
+    private fun createChannel() {
+        // TODO Channel name and description is visible to the user and therefore should come from resources as language dependent text.
+        val channel = NotificationChannel(CHANNEL_ID, "Task Reminder", NotificationManager.IMPORTANCE_DEFAULT)
+        channel.description = "Reminders for upcoming tasks."
         channel.enableLights(true)
         channel.lightColor = R.color.colorPrimary
         channel.enableVibration(true)
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        getManager()!!.createNotificationChannel(channel)
+        getManager().createNotificationChannel(channel)
     }
 
     fun getNotification(title: String?, message: String?, task: TodoTask): NotificationCompat.Builder {
@@ -76,35 +77,30 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setAutoCancel(true)
             .setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500)
-        if (task.hasDeadline()) builder.setContentText(message)
+        if (task.hasDeadline()) {
+            builder.setContentText(message)
+        }
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (prefs.getBoolean(PrefManager.P_IS_NOTIFICATION_SOUND.name, true)) {
             val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             builder.setSound(uri)
         }
         val snooze = Intent(this, MainActivity::class.java)
-        val pendingSnooze = PendingIntent.getActivity(
-            this,
-            0,
-            snooze,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+        val pendingSnooze = PendingIntent.getActivity(this, 0, snooze,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        // TODO Snooze duration should be configurable as a setting.
         snooze.putExtra("snooze", 900000)
         snooze.putExtra("taskId", task.getId())
         val resultIntent = Intent(this, MainActivity::class.java)
-        resultIntent.putExtra(
-            MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION,
-            TodoTasksFragment.KEY
-        )
+        resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY)
         resultIntent.putExtra(MainActivity.PARCELABLE_KEY_FOR_TODO_TASK, task)
         val stackBuilder = TaskStackBuilder.create(this)
         stackBuilder.addParentStack(MainActivity::class.java)
         stackBuilder.addNextIntent(resultIntent)
         stackBuilder.addNextIntent(snooze)
-        val resultPendingIntent = stackBuilder.getPendingIntent(
-            0,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+        val resultPendingIntent = stackBuilder.getPendingIntent(0,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        // TODO Texts should be language dependent (come from XML resource file):
         builder.addAction(R.drawable.snooze, "Snooze", pendingSnooze)
         builder.addAction(R.drawable.done, "Set done", resultPendingIntent)
         builder.setContentIntent(resultPendingIntent)
@@ -112,7 +108,6 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
     }
 
     companion object {
-        private const val CHANNEL_ID = "my_channel_01"
-        private const val CHANNEL_NAME = "Channel"
+        private const val CHANNEL_ID = "channel_01"
     }
 }

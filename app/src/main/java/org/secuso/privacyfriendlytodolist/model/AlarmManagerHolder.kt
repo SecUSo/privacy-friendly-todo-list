@@ -22,10 +22,10 @@ import android.content.Context
 object AlarmManagerHolder {
     private var alarmManager: AlarmManager? = null
 
-    fun getAlarmManager(context: Context): AlarmManager? {
+    fun getAlarmManager(context: Context): AlarmManager {
         if (alarmManager == null) {
             alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         }
-        return alarmManager
+        return alarmManager!!
     }
 }

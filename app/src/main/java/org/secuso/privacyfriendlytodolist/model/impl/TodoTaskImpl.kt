@@ -306,6 +306,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return checkQueryMatch(query, true)
     }
 
+    override fun toString(): String {
+        return "'${getName()}' (id ${getId()})"
+    }
+
     companion object CREATOR : Creator<TodoTaskImpl> {
         private val TAG = TodoTaskImpl::class.java.getSimpleName()
         override fun createFromParcel(parcel: Parcel): TodoTaskImpl {

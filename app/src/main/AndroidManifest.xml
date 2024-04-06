@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="org.secuso.privacyfriendlytodolist.TODO_PERMISSION" />
@@ -52,7 +53,6 @@
             android:exported="true" />
         <activity
             android:name=".view.MainActivity"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.RecyclerActivity"
@@ -67,8 +67,7 @@
             android:name=".view.calendar.CalendarActivity"
             android:label="@string/calendar" />
         <activity
-            android:name=".view.calendar.CalendarPopup"
-            android:label="@string/app_name" />
+            android:name=".view.calendar.CalendarPopup" />
         <activity
             android:name=".view.Settings"
             android:label="@string/settings" />
@@ -126,6 +125,7 @@
                 <action android:name="org.secuso.privacyfriendlybackup.api.pfa.PFAAuthService" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>
