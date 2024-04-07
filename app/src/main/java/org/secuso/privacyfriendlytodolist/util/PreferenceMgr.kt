@@ -31,7 +31,7 @@ class PrefMetaData(
     val excludeFromBackup: Boolean = false) {
 
     init {
-        PrefManager.ALL_PREFERENCES[name] = this
+        PreferenceMgr.ALL_PREFERENCES[name] = this
     }
 
     override fun toString(): String {
@@ -44,7 +44,7 @@ class PrefMetaData(
  *
  * This class is used to help create Preference hierarchies for the tutorial.
  */
-class PrefManager(context: Context) {
+class PreferenceMgr(context: Context) {
     private val pref: SharedPreferences
     private val editor: SharedPreferences.Editor
 

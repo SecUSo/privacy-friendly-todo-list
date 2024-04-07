@@ -27,7 +27,7 @@ import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupRestorer
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.util.PrefDataType
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -85,7 +85,7 @@ class BackupRestorer : IBackupRestorer {
         val pref = PreferenceManager.getDefaultSharedPreferences(context).edit()
         while (reader.hasNext()) {
             val name = reader.nextName()
-            val prefMetaData = PrefManager.ALL_PREFERENCES[name]
+            val prefMetaData = PreferenceMgr.ALL_PREFERENCES[name]
                 ?: throw RuntimeException("Unknown preference $name")
             when (prefMetaData.dataType) {
                 PrefDataType.BOOLEAN -> pref.putBoolean(name, reader.nextBoolean())

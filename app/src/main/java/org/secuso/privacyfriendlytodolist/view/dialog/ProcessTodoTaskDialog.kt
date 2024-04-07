@@ -38,7 +38,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDateTime
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.DeadlineDialog.DeadlineCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.ReminderDialog.ReminderCallback
 
@@ -311,6 +311,6 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
     private fun hasAutoProgress(): Boolean {
         //automatic-progress enabled?
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getBoolean(PrefManager.P_IS_AUTO_PROGRESS.name, false)
+        return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 }

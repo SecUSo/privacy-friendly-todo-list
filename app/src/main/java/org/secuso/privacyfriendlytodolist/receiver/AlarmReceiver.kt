@@ -14,27 +14,35 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.secuso.privacyfriendlytodolist.service
+package org.secuso.privacyfriendlytodolist.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import org.secuso.privacyfriendlytodolist.service.ReminderService
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 
-class AutoStartReceiver : BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
-        if (action == "android.intent.action.BOOT_COMPLETED") {
-            val serviceClass = ReminderService::class.java
-            val reminderServiceIntent = Intent(context, serviceClass)
-            context.startService(reminderServiceIntent)
-            Log.i(TAG, serviceClass.getSimpleName() + " was started by $action.")
+        if (action != ACTION) {
+            Log.e(TAG, "Received intent with unexpected action '$action'.")
+            return
+        }
+
+        val extras = intent.extras
+        if (null != extras && extras.containsKey(AlarmMgr.KEY_ALARM_ID)) {
+            val alarmId = extras.getInt(AlarmMgr.KEY_ALARM_ID)
+            Log.i(TAG, "Received intent with action $action and alarm ID $alarmId. Starting reminder service.")
+            ReminderService.processAlarm(context, alarmId)
         } else {
-            Log.e(TAG, "Received unexpected action '$action'.")
+            Log.e(TAG, "Received alarm without alarm ID.")
         }
     }
 
     companion object {
-        private val TAG = AutoStartReceiver::class.java.getSimpleName()
+        const val ACTION = "org.secuso.privacyfriendlytodolist.ALARM"
+        private val TAG = AlarmReceiver::class.java.getSimpleName()
     }
 }

@@ -58,15 +58,15 @@ class ModelServicesImpl(
         }
     }
 
-    override fun getNextDueTask(today: Long, resultConsumer: ResultConsumer<TodoTask?>) {
+    override fun getNextDueTask(now: Long, resultConsumer: ResultConsumer<TodoTask?>) {
         coroutineScope.launch(Dispatchers.IO) {
-            val data = getNextDueTaskBlocking(today)
+            val data = getNextDueTaskBlocking(now)
             dispatchResult(resultConsumer, data)
         }
     }
 
-    private suspend fun getNextDueTaskBlocking(today: Long): TodoTask? {
-        val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(today)
+    private suspend fun getNextDueTaskBlocking(now: Long): TodoTask? {
+        val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
         var nextDueTask: TodoTask? = null
         if (null != nextDueTaskData) {
             nextDueTask = loadTasksSubtasks(false, nextDueTaskData)[0]
@@ -74,23 +74,13 @@ class ModelServicesImpl(
         return nextDueTask
     }
 
-    /**
-     * returns a list of tasks
-     *
-     * -   which are not fulfilled and whose reminder time is prior to the current time
-     * -   the task which is next due
-     *
-     * @param today Date of today.
-     * @param lockedIds Tasks for which the user was just notified (these tasks are locked).
-     * They will be excluded.
-     */
-    override fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
+    override fun getTasksToRemind(now: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
         coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoTaskDao().getAllToRemind(today, lockedIds)
+            val dataArray = db.getTodoTaskDao().getAllToRemind(now, lockedIds)
             val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
             // get task that is next due
-            val nextDueTask = getNextDueTaskBlocking(today)
+            val nextDueTask = getNextDueTaskBlocking(now)
             if (nextDueTask != null) {
                 tasksToRemind.add(nextDueTask as TodoTaskImpl)
             }

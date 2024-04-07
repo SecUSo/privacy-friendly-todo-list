@@ -35,7 +35,7 @@ interface TodoSubtaskDao {
     suspend fun delete(todoSubtaskData: TodoSubtaskData): Int
     @Query("SELECT * FROM todoSubtasks WHERE taskId = :taskId")
     suspend fun getAllOfTask(taskId: Int): Array<TodoSubtaskData>
-    @Query("SELECT * FROM todoSubtasks WHERE taskId = :taskId AND isInRecycleBin = 0")
+    @Query("SELECT * FROM todoSubtasks WHERE isInRecycleBin = 0 AND taskId = :taskId")
     suspend fun getAllOfTaskNotInRecycleBin(taskId: Int): Array<TodoSubtaskData>
     @Query("DELETE FROM todoSubtasks")
     suspend fun deleteAll(): Int

@@ -17,30 +17,25 @@
 
 package org.secuso.privacyfriendlytodolist.service
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.AlarmManagerHolder
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
-import java.util.Calendar
-import java.util.Date
-import java.util.concurrent.TimeUnit
 
 class ReminderService : Service() {
     class ReminderServiceBinder(val service: ReminderService) : Binder()
 
     private var viewModel: CustomViewModel? = null
     private var model: ModelServices? = null
-    private lateinit var alarmManager: AlarmManager
-    private lateinit var notificationHelper: NotificationHelper
     private val binder: IBinder = ReminderServiceBinder(this)
     private var isAlreadyRunning = false
 
@@ -50,8 +45,6 @@ class ReminderService : Service() {
         Log.i(TAG, "Reminder service created.")
         viewModel = CustomViewModel(applicationContext)
         model = viewModel!!.model
-        alarmManager = AlarmManagerHolder.getAlarmManager(applicationContext)
-        notificationHelper = NotificationHelper(applicationContext)
     }
 
     override fun onDestroy() {
@@ -84,7 +77,7 @@ class ReminderService : Service() {
                 Log.i(TAG, "Service was already running.")
             }
         } else {
-            processAlarm(extras.getInt(KEY_ALARM_TASK_ID))
+            processAlarm(extras.getInt(AlarmMgr.KEY_ALARM_ID))
         }
         return START_NOT_STICKY // do not recreate service if the phone runs out of memory
     }
@@ -104,7 +97,7 @@ class ReminderService : Service() {
         }
         model!!.getNextDueTask(Helper.getCurrentTimestamp()) { todoTask ->
             if (null != todoTask) {
-                setAlarmForTask(todoTask)
+                AlarmMgr.setAlarmForTask(this, todoTask.getId(), todoTask.getReminderTime())
             }
         }
     }
@@ -114,17 +107,15 @@ class ReminderService : Service() {
         val title = task.getName()
         val deadline = Helper.getDateTime(task.getDeadline())
         val message = applicationContext.resources.getString(R.string.deadline_approaching, deadline)
-        val nb = notificationHelper.getNotification(title, message, task)
-        val notification = nb.build()
-        notificationHelper.getManager().notify(task.getId(), notification)
+        NotificationMgr.post(this, title, message, task)
     }
 
     private fun reloadAlarms() {
-        notificationHelper.getManager().cancelAll() // cancel all alarms
+        NotificationMgr.cancelAll(this) // First cancel all alarms
         model!!.getTasksToRemind(Helper.getCurrentTimestamp(), null) { tasksToRemind ->
-            // set alarms
+            // Then set alarms
             for (todoTask in tasksToRemind) {
-                setAlarmForTask(todoTask)
+                AlarmMgr.setAlarmForTask(this, todoTask.getId(), todoTask.getReminderTime())
             }
             if (tasksToRemind.isEmpty()) {
                 Log.i(TAG, "No alarms set.")
@@ -132,68 +123,17 @@ class ReminderService : Service() {
         }
     }
 
-    private fun setAlarmForTask(task: TodoTask) {
-        val context = applicationContext
-        val alarmID = task.getId() // use database id as unique alarm id
-        val alarmIntent = Intent(context, ReminderService::class.java)
-        alarmIntent.putExtra(KEY_ALARM_TASK_ID, alarmID)
-        val pendingAlarmIntent = PendingIntent.getService(context, alarmID, alarmIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val calendar = Calendar.getInstance()
-        val reminderTime = task.getReminderTime()
-        if (reminderTime != -1L && reminderTime <= Helper.getCurrentTimestamp()) {
-            val date = Date(TimeUnit.SECONDS.toMillis(Helper.getCurrentTimestamp()))
-            calendar.time = date
-            alarmManager[AlarmManager.RTC_WAKEUP, calendar.timeInMillis] = pendingAlarmIntent
-            Log.i(TAG, "Alarm set for task $task at " + Helper.getDateTime(calendar.timeInMillis / 1000) + " (note: alarm id == task id)")
-        } else if (reminderTime != -1L) {
-            val date = Date(TimeUnit.SECONDS.toMillis(reminderTime)) // convert to milliseconds
-            calendar.time = date
-            alarmManager[AlarmManager.RTC_WAKEUP, calendar.timeInMillis] = pendingAlarmIntent
-            Log.i(TAG, "Alarm set for task $task at " + Helper.getDateTime(calendar.timeInMillis / 1000) + " (note: alarm id == task id)")
-        } else {
-            Log.d(TAG, "No alarm set for task $task because it has no reminder time (note: alarm id == task id)")
-        }
-    }
-
-    fun processTodoTask(todoTaskId: Int) {
-        val modelCopy = model
-        if (modelCopy == null) {
-            Log.e(TAG, "Reminder service is not ready to process todo task now.")
-            return
-        }
-
-        // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        modelCopy.getTaskById(todoTaskId) { changedTask ->
-            if (null != changedTask) {
-                val context = applicationContext
-                val alarmIntent = PendingIntent.getBroadcast(
-                    context, changedTask.getId(),
-                    Intent(context, ReminderService::class.java),
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
-                // check if alarm was set for this task
-                if (alarmIntent != null) {
-
-                    // 1. cancel old alarm
-                    alarmManager.cancel(alarmIntent)
-                    Log.i(TAG, "Alarm of task $changedTask cancelled.")
-
-                    // 2. delete old notification if it exists
-                    notificationHelper.getManager().cancel(changedTask.getId())
-                    Log.i(TAG, "Notification of task $changedTask deleted (if exists).")
-                } else {
-                    Log.w(TAG, "No alarm found for task $changedTask.")
-                }
-                setAlarmForTask(changedTask)
-            } else {
-                Log.e(TAG, "Task with ID $todoTaskId not found.")
-            }
-        }
-    }
-
     companion object {
         private val TAG = ReminderService::class.java.simpleName
-        private const val KEY_ALARM_TASK_ID = "KEY_ALARM_TASK_ID"
+
+        fun processAutoStart(context: Context) {
+            context.startService(Intent(context, ReminderService::class.java))
+        }
+
+        fun processAlarm(context: Context, alarmId: Int) {
+            val intent = Intent(context, ReminderService::class.java)
+            intent.putExtra(AlarmMgr.KEY_ALARM_ID, alarmId)
+            context.startService(intent)
+        }
     }
 }

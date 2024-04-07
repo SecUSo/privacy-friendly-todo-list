@@ -14,7 +14,7 @@
  You should have received a copy of the GNU General Public License
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.secuso.privacyfriendlytodolist.service
+package org.secuso.privacyfriendlytodolist.util
 
 import android.annotation.TargetApi
 import android.app.Notification
@@ -23,7 +23,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
-import android.content.ContextWrapper
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
@@ -32,7 +32,6 @@ import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.PrefManager
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
 
@@ -43,24 +42,23 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
  * Creates and manages notifications based on the SDK version.
  * If SDK >= 26 NotificationChannels will be created.
  */
-class NotificationHelper(base: Context) : ContextWrapper(base) {
+object NotificationMgr {
+    private const val CHANNEL_ID = "channel_01"
     private var manager: NotificationManager? = null
 
-    fun getManager(): NotificationManager {
+    private fun getManager(context: Context): NotificationManager {
         if (manager == null) {
-            manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Avoid recursion, provide notificationManager directly.
+                createChannel(manager!!)
+            }
         }
         return manager!!
     }
 
-    init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createChannel()
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.O)
-    private fun createChannel() {
+    private fun createChannel(notificationManager: NotificationManager) {
         // TODO Channel name and description is visible to the user and therefore should come from resources as language dependent text.
         val channel = NotificationChannel(CHANNEL_ID, "Task Reminder", NotificationManager.IMPORTANCE_DEFAULT)
         channel.description = "Reminders for upcoming tasks."
@@ -68,33 +66,33 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
         channel.lightColor = R.color.colorPrimary
         channel.enableVibration(true)
         channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        getManager().createNotificationChannel(channel)
+        notificationManager.createNotificationChannel(channel)
     }
 
-    fun getNotification(title: String?, message: String?, task: TodoTask): NotificationCompat.Builder {
-        val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+    fun post(context: Context, title: String?, message: String?, task: TodoTask): Int {
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setAutoCancel(true)
-            .setLights(ContextCompat.getColor(this, R.color.colorPrimary), 1000, 500)
+            .setLights(ContextCompat.getColor(context, R.color.colorPrimary), 1000, 500)
         if (task.hasDeadline()) {
             builder.setContentText(message)
         }
-        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        if (prefs.getBoolean(PrefManager.P_IS_NOTIFICATION_SOUND.name, true)) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        if (prefs.getBoolean(PreferenceMgr.P_IS_NOTIFICATION_SOUND.name, true)) {
             val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             builder.setSound(uri)
         }
-        val snooze = Intent(this, MainActivity::class.java)
-        val pendingSnooze = PendingIntent.getActivity(this, 0, snooze,
+        val snooze = Intent(context, MainActivity::class.java)
+        val pendingSnooze = PendingIntent.getActivity(context, 0, snooze,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         // TODO Snooze duration should be configurable as a setting.
         snooze.putExtra("snooze", 900000)
         snooze.putExtra("taskId", task.getId())
-        val resultIntent = Intent(this, MainActivity::class.java)
+        val resultIntent = Intent(context, MainActivity::class.java)
         resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY)
         resultIntent.putExtra(MainActivity.PARCELABLE_KEY_FOR_TODO_TASK, task)
-        val stackBuilder = TaskStackBuilder.create(this)
+        val stackBuilder = TaskStackBuilder.create(context)
         stackBuilder.addParentStack(MainActivity::class.java)
         stackBuilder.addNextIntent(resultIntent)
         stackBuilder.addNextIntent(snooze)
@@ -104,10 +102,17 @@ class NotificationHelper(base: Context) : ContextWrapper(base) {
         builder.addAction(R.drawable.snooze, "Snooze", pendingSnooze)
         builder.addAction(R.drawable.done, "Set done", resultPendingIntent)
         builder.setContentIntent(resultPendingIntent)
-        return builder
+        val notificationId = task.getId()
+        val notification = builder.build()
+        getManager(context).notify(notificationId, notification)
+        return notificationId
     }
 
-    companion object {
-        private const val CHANNEL_ID = "channel_01"
+    fun cancel(context: Context, notificationId: Int) {
+        getManager(context).cancel(notificationId)
+    }
+
+    fun cancelAll(context: Context) {
+        getManager(context).cancelAll()
     }
 }

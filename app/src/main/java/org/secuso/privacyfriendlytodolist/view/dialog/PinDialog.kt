@@ -26,7 +26,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog.PinCallback
 
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
@@ -46,7 +46,7 @@ class PinDialog(context: Context, private val allowReset: Boolean) :
         val buttonOkay: Button = findViewById(R.id.bt_pin_ok)
         buttonOkay.setOnClickListener {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-            val pinExpected = prefs.getString(PrefManager.P_PIN.name, "")
+            val pinExpected = prefs.getString(PreferenceMgr.P_PIN.name, "")
             val textEditPin: EditText = findViewById(R.id.et_pin_pin)
             if (pinExpected == textEditPin.getText().toString()) {
                 getDialogCallback().accepted()

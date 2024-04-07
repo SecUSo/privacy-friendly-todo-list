@@ -45,6 +45,10 @@ object Helper {
     fun getDateTime(time: Long): String {
         val calendar = Calendar.getInstance()
         calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time))
+        return getDateTime(calendar)
+    }
+
+    fun getDateTime(calendar: Calendar): String {
         return DateFormat.format(DATE_TIME_FORMAT, calendar).toString()
     }
 

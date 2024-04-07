@@ -39,7 +39,7 @@ import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 import java.util.Collections
 
@@ -91,16 +91,16 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val priorityBarPositions = HashMap<TodoTask.Priority, Int>()
 
     init {
-        val filterString = prefs.getString(PrefManager.P_TASK_FILTER.name, "ALL_TASKS")
+        val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS")
         filter = try {
             Filter.valueOf(filterString!!)
         } catch (e: IllegalArgumentException) {
             Filter.ALL_TASKS
         }
-        if (prefs.getBoolean(PrefManager.P_GROUP_BY_PRIORITY.name, false)) {
+        if (prefs.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)) {
             addSortCondition(SortTypes.PRIORITY)
         }
-        if (prefs.getBoolean(PrefManager.P_SORT_BY_DEADLINE.name, false)) {
+        if (prefs.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)) {
             addSortCondition(SortTypes.DEADLINE)
         }
         queryString = null
@@ -331,7 +331,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     private val defaultReminderTime: Long
         get() {
-            val value = prefs.getString(PrefManager.P_DEFAULT_REMINDER_TIME.name, null)?.toLong() ?:
+            val value = prefs.getString(PreferenceMgr.P_DEFAULT_REMINDER_TIME.name, null)?.toLong() ?:
                 context.resources.getInteger(R.integer.one_day)
             return value.toLong()
         }
@@ -564,7 +564,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private fun hasAutoProgress(): Boolean {
         //automatic-progress enabled?
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getBoolean(PrefManager.P_IS_AUTO_PROGRESS.name, false)
+        return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 
     companion object {

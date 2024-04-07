@@ -85,10 +85,17 @@
             tools:node="remove" />
 
         <receiver
-            android:name=".service.AutoStartReceiver"
+            android:name=".receiver.AutoStartReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.secuso.privacyfriendlytodolist.ALARM" />
             </intent-filter>
         </receiver>
         <receiver
