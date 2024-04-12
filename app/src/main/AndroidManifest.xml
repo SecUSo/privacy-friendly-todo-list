@@ -118,7 +118,11 @@
         </receiver>
 
         <service
-            android:name=".service.ReminderService" />
+            android:name=".service.AutoStartJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".service.AlarmJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".view.widget.ListViewWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />

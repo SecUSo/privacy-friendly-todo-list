@@ -223,9 +223,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
-        val preferenceMgr = PreferenceMgr(this)
-        if (preferenceMgr.isFirstTimeLaunch) {
-            preferenceMgr.setFirstTimeValues(this)
+        if (PreferenceMgr.isFirstTimeLaunch(this)) {
+            PreferenceMgr.setFirstTimeValues(this)
             startTut()
             finish()
         }
@@ -556,25 +555,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onTaskChange(todoTask: TodoTask) {
-        // Report changes to the reminder task if the reminder time is prior to the deadline or
-        // if no deadline is set at all. The reminder time must always be after the the current time.
-        // The task must not be completed.
-        if (!todoTask.isDone() && (!todoTask.hasDeadline() || todoTask.getReminderTime() < todoTask.getDeadline())) {
-            // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-            // Use task's database ID as unique alarm ID.
-            val alarmWasSet = AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
-            if (alarmWasSet) {
-                // delete old notification if it exists
-                NotificationMgr.cancel(this, todoTask.getId())
-                Log.i(TAG, "Notification of task $todoTask deleted (if it did exist).")
-            } else {
-                Log.i(TAG, "No alarm found for task $todoTask.")
-            }
-            AlarmMgr.setAlarmForTask(this, todoTask.getId(), todoTask.getReminderTime())
-            Log.i(TAG, "Reminder is set!")
-        } else {
-            Log.i(TAG, "No reminder set for task $todoTask because its done or it has a deadline and the reminder time is after this deadline.")
-        }
+        // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
+        Log.i(TAG, "Task $todoTask changed. Canceling it's alarm and notification which may exist.")
+        AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
+        NotificationMgr.cancel(this, todoTask.getId())
+        // Direct user action lead to task change. So no need to set alarm if it is in the past.
+        // User should see that.
+        AlarmMgr.setAlarmForTask(this, todoTask, false)
     }
 
     //Adds To do-Lists to the navigation-drawer
@@ -694,7 +681,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    // todoListId != 0 means id is given from list. otherwise new task was created in all-tasks.
+    // todoListId != null means id is given from list. otherwise new task was created in all-tasks.
     private fun initFAB(todoListId: Int?) {
         optionFab!!.setOnClickListener { v: View? ->
             val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists)

@@ -17,7 +17,6 @@
 package org.secuso.privacyfriendlytodolist.util
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 
@@ -44,41 +43,43 @@ class PrefMetaData(
  *
  * This class is used to help create Preference hierarchies for the tutorial.
  */
-class PreferenceMgr(context: Context) {
-    private val pref: SharedPreferences
-    private val editor: SharedPreferences.Editor
+object PreferenceMgr {
+    val ALL_PREFERENCES = HashMap<String, PrefMetaData>()
 
-    init {
-        pref = context.getSharedPreferences(PREF_FILENAME, Context.MODE_PRIVATE)
-        editor = pref.edit()
+    // Note: Preference names must match with names in attributes at app/src/main/res/xml/settings.xml
+    private val P_IS_FIRST_TIME_LAUNCH = PrefMetaData("isFirstTimeLaunch", PrefDataType.BOOLEAN)
+    val P_IS_PIN_ENABLED = PrefMetaData("pref_pin_enabled", PrefDataType.BOOLEAN)
+    val P_PIN = PrefMetaData("pref_pin", PrefDataType.STRING, true)
+    private val P_DEFAULT_REMINDER_TIME = PrefMetaData("pref_default_reminder_time", PrefDataType.STRING)
+    val P_IS_AUTO_PROGRESS = PrefMetaData("pref_progress", PrefDataType.BOOLEAN)
+    val P_IS_NOTIFICATION_SOUND = PrefMetaData("notify", PrefDataType.BOOLEAN)
+    val P_GROUP_BY_PRIORITY = PrefMetaData("PRIORITY", PrefDataType.BOOLEAN)
+    val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
+    val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
+
+    fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = prefs.edit()
+        editor.putBoolean(P_IS_FIRST_TIME_LAUNCH.name, isFirstTimeLaunch)
+        editor.apply()
     }
 
-    var isFirstTimeLaunch: Boolean
-        get() = pref.getBoolean(P_IS_FIRST_TIME_LAUNCH.name, true)
-        set(isFirstTime) {
-            editor.putBoolean(P_IS_FIRST_TIME_LAUNCH.name, isFirstTime)
-            editor.commit()
-        }
+    fun isFirstTimeLaunch(context: Context): Boolean {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(P_IS_FIRST_TIME_LAUNCH.name, true)
+    }
 
     fun setFirstTimeValues(context: Context) {
         PreferenceManager.setDefaultValues(context, R.xml.settings, false)
     }
 
-    companion object {
-        // Shared preferences file name
-        private const val PREF_FILENAME = "privacy_friendly_todo"
-
-        val ALL_PREFERENCES = HashMap<String, PrefMetaData>()
-
-        // Note: Preference names must match with names in attributes at app/src/main/res/xml/settings.xml
-        val P_IS_FIRST_TIME_LAUNCH = PrefMetaData("isFirstTimeLaunch", PrefDataType.BOOLEAN)
-        val P_IS_PIN_ENABLED = PrefMetaData("pref_pin_enabled", PrefDataType.BOOLEAN)
-        val P_PIN = PrefMetaData("pref_pin", PrefDataType.STRING, true)
-        val P_DEFAULT_REMINDER_TIME = PrefMetaData("pref_default_reminder_time", PrefDataType.STRING)
-        val P_IS_AUTO_PROGRESS = PrefMetaData("pref_progress", PrefDataType.BOOLEAN)
-        val P_IS_NOTIFICATION_SOUND = PrefMetaData("notify", PrefDataType.BOOLEAN)
-        val P_GROUP_BY_PRIORITY = PrefMetaData("PRIORITY", PrefDataType.BOOLEAN)
-        val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
-        val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
+    /**
+     * @return The default reminder time as relative time span in seconds (e.g. 86400s == 1 day).
+     * In opposite to the user specified reminder times, which are absolute timestamps.
+     */
+    fun getDefaultReminderTimeSpan(context: Context): Long {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getString(P_DEFAULT_REMINDER_TIME.name, null)?.toLong()
+            ?: context.resources.getInteger(R.integer.one_day).toLong()
     }
 }

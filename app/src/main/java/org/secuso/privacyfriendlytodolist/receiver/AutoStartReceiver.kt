@@ -20,7 +20,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import org.secuso.privacyfriendlytodolist.service.ReminderService
+import org.secuso.privacyfriendlytodolist.service.JobManager
 
 class AutoStartReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -31,7 +31,7 @@ class AutoStartReceiver : BroadcastReceiver() {
         }
 
         Log.i(TAG, "Received intent with action $action. Starting reminder service.")
-        ReminderService.processAutoStart(context)
+        JobManager.processAutoStart(context)
     }
 
     companion object {

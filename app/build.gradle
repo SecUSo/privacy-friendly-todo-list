@@ -33,7 +33,7 @@ android {
 
     defaultConfig {
         applicationId "org.secuso.privacyfriendlytodolist"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 34
         compileSdk 34
         versionCode 9

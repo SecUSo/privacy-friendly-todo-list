@@ -20,7 +20,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import org.secuso.privacyfriendlytodolist.service.ReminderService
+import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -35,7 +35,7 @@ class AlarmReceiver : BroadcastReceiver() {
         if (null != extras && extras.containsKey(AlarmMgr.KEY_ALARM_ID)) {
             val alarmId = extras.getInt(AlarmMgr.KEY_ALARM_ID)
             Log.i(TAG, "Received intent with action $action and alarm ID $alarmId. Starting reminder service.")
-            ReminderService.processAlarm(context, alarmId)
+            JobManager.processAlarm(context, alarmId)
         } else {
             Log.e(TAG, "Received alarm without alarm ID.")
         }

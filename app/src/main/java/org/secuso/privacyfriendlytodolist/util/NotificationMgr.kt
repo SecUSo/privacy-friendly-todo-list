@@ -69,7 +69,7 @@ object NotificationMgr {
         notificationManager.createNotificationChannel(channel)
     }
 
-    fun post(context: Context, title: String?, message: String?, task: TodoTask): Int {
+    fun postTaskNotification(context: Context, title: String?, message: String?, task: TodoTask): Int {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
