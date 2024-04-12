@@ -114,6 +114,10 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         return data.name.lowercase(Locale.getDefault()).contains(queryLowerCase)
     }
 
+    override fun toString(): String {
+        return "'${getName()}' (id ${getId()})"
+    }
+
     companion object CREATOR : Creator<TodoSubtaskImpl> {
         override fun createFromParcel(parcel: Parcel): TodoSubtaskImpl {
             return TodoSubtaskImpl(parcel)

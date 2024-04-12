@@ -24,15 +24,21 @@ package org.secuso.privacyfriendlytodolist.model
  */
 interface ModelServices {
     fun getTaskById(todoTaskId: Int, resultConsumer: ResultConsumer<TodoTask?>)
-    fun getNextDueTask(today: Long, resultConsumer: ResultConsumer<TodoTask?>)
+    fun getNextDueTask(now: Long, resultConsumer: ResultConsumer<TodoTask?>)
 
     /**
-     * returns a list of tasks
+     * Returns a list of tasks
      *
      * -   which are not fulfilled and whose reminder time is prior to the current time
      * -   the task which is next due
+     *
+     * @param now Current time.
+     * @param lockedIds Tasks for which the user was just notified (these tasks are locked).
+     * They will be excluded from the result.
+     * @param resultConsumer Result consumer that will be notified when the asynchronous database
+     * access has finished.
      */
-    fun getTasksToRemind(today: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>)
+    fun getTasksToRemind(now: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>)
     fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?)
     fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
     fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)

@@ -33,7 +33,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 
 /**
  * Created by Sebastian Lutz on 06.12.2017.
@@ -41,7 +41,6 @@ import org.secuso.privacyfriendlytodolist.util.PrefManager
  * This Activity sets up the tutorial that shall appear for the first start of the app.
  */
 class TutorialActivity : AppCompatActivity() {
-    private var prefManager: PrefManager? = null
     private var viewPager: ViewPager? = null
     private var dotsLayout: LinearLayout? = null
     private var btnSkip: Button? = null
@@ -51,9 +50,6 @@ class TutorialActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Check if app is started the first time
-        prefManager = PrefManager(this)
 
         // Make notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
@@ -98,7 +94,7 @@ class TutorialActivity : AppCompatActivity() {
     }
 
     private fun launchHomeScreen() {
-        prefManager!!.isFirstTimeLaunch = false
+        PreferenceMgr.setFirstTimeLaunch(this, false)
         val intent = Intent(this@TutorialActivity, MainActivity::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)

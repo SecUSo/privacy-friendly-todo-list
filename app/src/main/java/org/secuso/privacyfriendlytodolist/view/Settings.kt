@@ -31,7 +31,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 
 /**
  * Created by Sebastian Lutz on 15.03.2018
@@ -101,13 +101,13 @@ class Settings : AppCompatActivity() {
         override fun onPause() {
             // uncheck pin if pin is invalid
             val sharedPreferences = preferenceManager.getSharedPreferences()!!
-            val pinEnabled = sharedPreferences.getBoolean(PrefManager.P_IS_PIN_ENABLED.name, false)
+            val pinEnabled = sharedPreferences.getBoolean(PreferenceMgr.P_IS_PIN_ENABLED.name, false)
             if (pinEnabled) {
-                val pin = sharedPreferences.getString(PrefManager.P_PIN.name, null)
+                val pin = sharedPreferences.getString(PreferenceMgr.P_PIN.name, null)
                 if (pin == null || pin.length < MINIMAL_PIN_LENGTH) {
                     // pin invalid: uncheck
                     ignoreChanges = true
-                    findPreference<SwitchPreference>(PrefManager.P_IS_PIN_ENABLED.name)!!.setChecked(false)
+                    findPreference<SwitchPreference>(PreferenceMgr.P_IS_PIN_ENABLED.name)!!.setChecked(false)
                     ignoreChanges = false
                 }
             }
@@ -117,21 +117,21 @@ class Settings : AppCompatActivity() {
 
         override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
             if (!ignoreChanges) {
-                if (key == PrefManager.P_PIN.name) {
+                if (key == PreferenceMgr.P_PIN.name) {
                     val pin = sharedPreferences.getString(key, null)
                     if (pin != null) {
                         if (pin.length < MINIMAL_PIN_LENGTH) {
                             ignoreChanges = true
-                            findPreference<EditTextPreference>(PrefManager.P_PIN.name)!!.setText("")
+                            findPreference<EditTextPreference>(PreferenceMgr.P_PIN.name)!!.setText("")
                             ignoreChanges = false
                             Toast.makeText(activity, getString(R.string.invalid_pin), Toast.LENGTH_LONG).show()
                         }
                     }
-                } else if (key == PrefManager.P_IS_PIN_ENABLED.name) {
-                    val pinEnabled = sharedPreferences.getBoolean(PrefManager.P_IS_PIN_ENABLED.name, false)
+                } else if (key == PreferenceMgr.P_IS_PIN_ENABLED.name) {
+                    val pinEnabled = sharedPreferences.getBoolean(PreferenceMgr.P_IS_PIN_ENABLED.name, false)
                     if (pinEnabled) {
                         ignoreChanges = true
-                        findPreference<EditTextPreference>(PrefManager.P_PIN.name)!!.setText("")
+                        findPreference<EditTextPreference>(PreferenceMgr.P_PIN.name)!!.setText("")
                         ignoreChanges = false
                     }
                 }

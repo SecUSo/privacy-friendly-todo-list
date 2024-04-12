@@ -185,6 +185,10 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return 0
     }
 
+    override fun toString(): String {
+        return "'${getName()}' (id ${getId()})"
+    }
+
     companion object CREATOR : Creator<TodoListImpl> {
         override fun createFromParcel(parcel: Parcel): TodoListImpl {
             return TodoListImpl(parcel)

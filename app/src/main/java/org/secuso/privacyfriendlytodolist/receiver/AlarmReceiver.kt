@@ -20,9 +20,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import org.secuso.privacyfriendlytodolist.view.MainActivity
+import org.secuso.privacyfriendlytodolist.service.JobManager
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 
-class TodoReReceiver : BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
         if (action != ACTION) {
@@ -30,25 +31,18 @@ class TodoReReceiver : BroadcastReceiver() {
             return
         }
 
-        Log.i(TAG, "Received intent with action $action. Starting main activity.")
-        val id = intent.getIntExtra("todo_id", -1)
-        val name = intent.getStringExtra("todo_name")
-        val progress = intent.getIntExtra("todo_progress", -1)
-        if (id != -1 && name != null) {
-            val runIntent = Intent(context, MainActivity::class.java)
-            runIntent.putExtra(MainActivity.COMMAND, MainActivity.COMMAND_UPDATE)
-                .putExtra("todo_id", id)
-                .putExtra("todo_name", name)
-                .putExtra("todo_progress", progress)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            context.startActivity(runIntent)
+        val extras = intent.extras
+        if (null != extras && extras.containsKey(AlarmMgr.KEY_ALARM_ID)) {
+            val alarmId = extras.getInt(AlarmMgr.KEY_ALARM_ID)
+            Log.i(TAG, "Received intent with action $action and alarm ID $alarmId. Starting reminder service.")
+            JobManager.processAlarm(context, alarmId)
         } else {
-            Log.e(TAG, "Todo Intent is not complete.")
+            Log.e(TAG, "Received alarm without alarm ID.")
         }
     }
 
     companion object {
-        const val ACTION = "org.secuso.privacyfriendlyproductivitytimer.TODO_RE_ACTION"
-        private val TAG = TodoReReceiver::class.java.getSimpleName()
+        const val ACTION = "org.secuso.privacyfriendlytodolist.ALARM"
+        private val TAG = AlarmReceiver::class.java.getSimpleName()
     }
 }

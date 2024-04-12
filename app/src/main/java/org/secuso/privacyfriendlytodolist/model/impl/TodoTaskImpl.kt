@@ -168,8 +168,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         val reminderTime = data.reminderTime
         if (!data.isDone && deadline > 0) {
             val currentTimeStamp = Helper.getCurrentTimestamp()
-            val remTimeToCalc =
-                if (reminderTime > 0) deadline - reminderTime else defaultReminderTime
+            val remTimeToCalc = if (reminderTime > 0) deadline - reminderTime else defaultReminderTime
             if (currentTimeStamp >= deadline - remTimeToCalc && deadline > currentTimeStamp) {
                 dDeadlineColor = DeadlineColors.ORANGE
             } else if (currentTimeStamp > deadline) {
@@ -304,6 +303,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun checkQueryMatch(query: String?): Boolean {
         return checkQueryMatch(query, true)
+    }
+
+    override fun toString(): String {
+        return "'${getName()}' (id ${getId()})"
     }
 
     companion object CREATOR : Creator<TodoTaskImpl> {

@@ -39,7 +39,7 @@ import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 import java.util.Collections
 
@@ -91,16 +91,16 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val priorityBarPositions = HashMap<TodoTask.Priority, Int>()
 
     init {
-        val filterString = prefs.getString(PrefManager.P_TASK_FILTER.name, "ALL_TASKS")
+        val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS")
         filter = try {
             Filter.valueOf(filterString!!)
         } catch (e: IllegalArgumentException) {
             Filter.ALL_TASKS
         }
-        if (prefs.getBoolean(PrefManager.P_GROUP_BY_PRIORITY.name, false)) {
+        if (prefs.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)) {
             addSortCondition(SortTypes.PRIORITY)
         }
-        if (prefs.getBoolean(PrefManager.P_SORT_BY_DEADLINE.name, false)) {
+        if (prefs.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)) {
             addSortCondition(SortTypes.DEADLINE)
         }
         queryString = null
@@ -329,13 +329,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         super.notifyDataSetChanged()
     }
 
-    private val defaultReminderTime: Long
-        get() {
-            val value = prefs.getString(PrefManager.P_DEFAULT_REMINDER_TIME.name, null)?.toLong() ?:
-                context.resources.getInteger(R.integer.one_day)
-            return value.toLong()
-        }
-
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup): View? {
         var actualConvertView = convertView
         val type = getGroupType(groupPosition)
@@ -395,7 +388,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 vh2.deadline!!.text = deadline
                 vh2.deadlineColorBar!!.setBackgroundColor(
-                    getDeadlineColor(context, currentTask.getDeadlineColor(defaultReminderTime)))
+                    getDeadlineColor(context, currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
                 vh2.done!!.setChecked(currentTask.isDone())
                 vh2.done!!.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
@@ -458,7 +451,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     vh1.taskDescription!!.visibility = View.GONE
                 }
                 vh1.deadlineColorBar!!.setBackgroundColor(
-                    getDeadlineColor(context, currentTask.getDeadlineColor(defaultReminderTime)))
+                    getDeadlineColor(context, currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
             }
 
             CH_SETTING_ROW -> {
@@ -488,7 +481,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     newSubtaskDialog.show()
                 }
                 vh2.deadlineColorBar!!.setBackgroundColor(
-                    getDeadlineColor(context, currentTask.getDeadlineColor(defaultReminderTime)))
+                    getDeadlineColor(context, currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
             }
 
             else -> {
@@ -520,7 +513,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 vh3.subtaskName!!.text = currentSubtask.getName()
                 vh3.deadlineColorBar!!.setBackgroundColor(
-                    getDeadlineColor(context, currentTask.getDeadlineColor(defaultReminderTime)))
+                    getDeadlineColor(context, currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
             }
         }
         return actualConvertView
@@ -529,6 +522,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
         val todoTask = getTaskByPosition(groupPosition)
         return null != todoTask && childPosition > 0 && childPosition < todoTask.getSubtasks().size + 1
+    }
+
+    private fun hasAutoProgress(): Boolean {
+        //automatic-progress enabled?
+        return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 
     inner class GroupTaskViewHolder {
@@ -559,12 +557,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private inner class SettingViewHolder {
         var addSubtaskButton: RelativeLayout? = null
         var deadlineColorBar: View? = null
-    }
-
-    private fun hasAutoProgress(): Boolean {
-        //automatic-progress enabled?
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getBoolean(PrefManager.P_IS_AUTO_PROGRESS.name, false)
     }
 
     companion object {

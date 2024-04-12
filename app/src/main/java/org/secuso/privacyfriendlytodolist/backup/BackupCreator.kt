@@ -35,8 +35,7 @@ import org.secuso.privacyfriendlybackup.api.backup.PreferenceUtil.writePreferenc
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupCreator
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
-import org.secuso.privacyfriendlytodolist.util.PrefDataType
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.PinActivity
 import java.io.OutputStream
 import java.io.OutputStreamWriter
@@ -92,7 +91,7 @@ class BackupCreator : IBackupCreator {
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
             val excludedPreferences = ArrayList<String>()
             for (name in pref.all.keys) {
-                val prefMetaData = PrefManager.ALL_PREFERENCES[name]
+                val prefMetaData = PreferenceMgr.ALL_PREFERENCES[name]
                     ?: throw RuntimeException("Unknown preference $name")
                 if (prefMetaData.excludeFromBackup) {
                     excludedPreferences.add(name)

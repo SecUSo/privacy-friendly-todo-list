@@ -16,13 +16,10 @@
  */
 package org.secuso.privacyfriendlytodolist.view
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import android.view.ContextMenu
 import android.view.ContextMenu.ContextMenuInfo
@@ -59,11 +56,11 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
-import org.secuso.privacyfriendlytodolist.service.ReminderService
-import org.secuso.privacyfriendlytodolist.service.ReminderService.ReminderServiceBinder
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
+import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.SortTypes
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
@@ -107,9 +104,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var adapter: TodoListAdapter? = null
 
-    /** Service that triggers notifications for upcoming tasks  */
-    private var reminderService: ReminderService? = null
-
     // GUI
     private var navigationView: NavigationView? = null
     private var navigationBottomView: NavigationView? = null
@@ -148,9 +142,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
         val priorityGroup = menu.findItem(R.id.ac_group_by_prio)
-        priorityGroup.setChecked(mPref!!.getBoolean(PrefManager.P_GROUP_BY_PRIORITY.name, false))
+        priorityGroup.setChecked(mPref!!.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false))
         val deadlineGroup = menu.findItem(R.id.ac_sort_by_deadline)
-        deadlineGroup.setChecked(mPref!!.getBoolean(PrefManager.P_SORT_BY_DEADLINE.name, false))
+        deadlineGroup.setChecked(mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false))
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -178,21 +172,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.ac_show_all_tasks -> {
                 expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.ALL_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PrefManager.P_TASK_FILTER.name, "ALL_TASKS").apply()
+                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS").apply()
                 return true
             }
 
             R.id.ac_show_open_tasks -> {
                 expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.OPEN_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PrefManager.P_TASK_FILTER.name, "OPEN_TASKS").apply()
+                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, "OPEN_TASKS").apply()
                 return true
             }
 
             R.id.ac_show_completed_tasks -> {
                 expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.COMPLETED_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PrefManager.P_TASK_FILTER.name, "COMPLETED_TASKS").apply()
+                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, "COMPLETED_TASKS").apply()
                 return true
             }
 
@@ -200,14 +194,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 checked = !item.isChecked
                 item.setChecked(checked)
                 sortType = SortTypes.PRIORITY
-                mPref!!.edit().putBoolean(PrefManager.P_GROUP_BY_PRIORITY.name, checked).apply()
+                mPref!!.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, checked).apply()
             }
 
             R.id.ac_sort_by_deadline -> {
                 checked = !item.isChecked
                 item.setChecked(checked)
                 sortType = SortTypes.DEADLINE
-                mPref!!.edit().putBoolean(PrefManager.P_SORT_BY_DEADLINE.name, checked).apply()
+                mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, checked).apply()
             }
 
             else -> return super.onOptionsItemSelected(item)
@@ -229,9 +223,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
-        val prefManager = PrefManager(this)
-        if (prefManager.isFirstTimeLaunch) {
-            prefManager.setFirstTimeValues(this)
+        if (PreferenceMgr.isFirstTimeLaunch(this)) {
+            PreferenceMgr.setFirstTimeValues(this)
             startTut()
             finish()
         }
@@ -509,9 +502,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //Intent intent = new Intent(this, MainActivity.class);
             //finish();
             //startActivity(intent);
-            if (reminderService == null) {
-                bindToReminderService()
-            }
             guiSetup()
             if (activeListId != null) {
                 showTasksOfList(activeListId!!)
@@ -524,32 +514,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // isUnlocked might be false when returning from another activity. set to true if the unlock period was not expired:
         isUnlocked = isUnlocked || unlockUntil != -1L && System.currentTimeMillis() <= unlockUntil
         unlockUntil = -1
-        if (reminderService == null) {
-            bindToReminderService()
-        }
         Log.i(TAG, "onResume()")
-    }
-
-    override fun onDestroy() {
-        if (reminderService != null) {
-            unbindService(reminderServiceConnection)
-            reminderService = null
-            Log.i(TAG, "service is now null")
-        }
-        super.onDestroy()
     }
 
     override fun onUserLeaveHint() {
         // prevents unlocking the app by rotating while the app is inactive and then returning
         isUnlocked = false
-    }
-
-    private fun bindToReminderService() {
-        Log.i(TAG, "bindToReminderService()")
-        val intent = Intent(this, ReminderService::class.java)
-        // no Context.BIND_AUTO_CREATE, because service will be started by startService and thus live longer than this activity
-        bindService(intent, reminderServiceConnection, 0 )
-        startService(intent)
     }
 
     override fun onBackPressed() {
@@ -584,32 +554,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private val reminderServiceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, binder: IBinder) {
-            Log.d("ServiceConnection", "connected")
-            reminderService = (binder as ReminderServiceBinder).service
-        }
-
-        //binder comes from server to communicate with method's of
-        override fun onServiceDisconnected(className: ComponentName) {
-            Log.d("ServiceConnection", "disconnected")
-            reminderService = null
-        }
-    }
-
-    fun notifyReminderService(currentTask: TodoTask) {
-        // TODO This method is called from other fragments as well (e.g. after opening MainActivity by reminder). In such cases the service is null and alarms cannot be updated. Fix this!
-        if (reminderService != null) {
-            // Report changes to the reminder task if the reminder time is prior to the deadline or if no deadline is set at all. The reminder time must always be after the the current time. The task must not be completed.
-            if ((currentTask.getReminderTime() < currentTask.getDeadline() || !currentTask.hasDeadline()) && !currentTask.isDone()) {
-                reminderService!!.processTodoTask(currentTask.getId())
-                Log.i(TAG, "Reminder is set!")
-            } else {
-                Log.i(TAG, "Reminder service was not informed about the task " + currentTask.getName())
-            }
-        } else {
-            Log.i(TAG, "Service is null. Cannot update alarms")
-        }
+    fun onTaskChange(todoTask: TodoTask) {
+        // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
+        Log.i(TAG, "Task $todoTask changed. Canceling it's alarm and notification which may exist.")
+        AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
+        NotificationMgr.cancel(this, todoTask.getId())
+        // Direct user action lead to task change. So no need to set alarm if it is in the past.
+        // User should see that.
+        AlarmMgr.setAlarmForTask(this, todoTask, false)
     }
 
     //Adds To do-Lists to the navigation-drawer
@@ -729,14 +681,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    // todoListId != 0 means id is given from list. otherwise new task was created in all-tasks.
+    // todoListId != null means id is given from list. otherwise new task was created in all-tasks.
     private fun initFAB(todoListId: Int?) {
         optionFab!!.setOnClickListener { v: View? ->
             val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists)
             pt.setListSelector(todoListId)
             pt.setDialogCallback { todoTask ->
                 model!!.saveTodoTaskInDb(todoTask) { counter: Int? ->
-                    notifyReminderService(todoTask)
+                    onTaskChange(todoTask)
                     hints()
                     // show List if created in certain list, else show all tasks
                     if (null != todoListId) {
@@ -803,7 +755,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     editTaskDialog.setListSelector(oldListId)
                     editTaskDialog.setDialogCallback(ResultCallback { todoTask2: TodoTask ->
                         model!!.saveTodoTaskInDb(todoTask2) { counter: Int? ->
-                            notifyReminderService(todoTask2)
+                            onTaskChange(todoTask2)
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
                             if (inList && oldListId != null) {
                                 showTasksOfList(oldListId)
@@ -899,7 +851,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (progress != -1) {
             // Update the existing entry, if no subtask
-            model!!.saveTodoTaskInDb(todoRe) { counter: Int? -> notifyReminderService(todoRe) }
+            model!!.saveTodoTaskInDb(todoRe) { counter: Int? -> onTaskChange(todoRe) }
         }
 
         //super.onResume();

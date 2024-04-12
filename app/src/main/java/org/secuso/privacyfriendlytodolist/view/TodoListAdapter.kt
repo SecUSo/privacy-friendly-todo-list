@@ -17,7 +17,6 @@
 package org.secuso.privacyfriendlytodolist.view
 
 import android.app.Activity
-import android.content.SharedPreferences
 import android.view.ContextMenu
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.LayoutInflater
@@ -25,33 +24,23 @@ import android.view.View
 import android.view.View.OnCreateContextMenuListener
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
-import org.secuso.privacyfriendlytodolist.util.PrefManager
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 
 class TodoListAdapter(ac: Activity, data: List<TodoList>?) :
     RecyclerView.Adapter<TodoListAdapter.ViewHolder>() {
     private val contextActivity: MainActivity
-    private val prefs: SharedPreferences
     private var allLists: List<TodoList>? = null
 
     init {
         updateList(data)
         contextActivity = ac as MainActivity
-        prefs = PreferenceManager.getDefaultSharedPreferences(ac)
     }
-
-    private val defaultReminderTime: Long
-        get() {
-            val value = prefs.getString(PrefManager.P_DEFAULT_REMINDER_TIME.name, null)?.toLong() ?:
-                contextActivity.resources.getInteger(R.integer.one_day)
-            return value.toLong()
-        }
 
     // invoked by the layout manager
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -74,8 +63,8 @@ class TodoListAdapter(ac: Activity, data: List<TodoList>?) :
                     holder.deadline.text = res.getString(R.string.next_deadline_dd, getDate(list.getNextDeadline()))
                 }
                 holder.done.text = String.format("%d/%d", list.getDoneTodos(), list.getSize())
-                holder.urgency.setBackgroundColor(
-                    getDeadlineColor(contextActivity, list.getDeadlineColor(defaultReminderTime)))
+                holder.urgency.setBackgroundColor(getDeadlineColor(contextActivity,
+                    list.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(contextActivity))))
             }
         }
     }

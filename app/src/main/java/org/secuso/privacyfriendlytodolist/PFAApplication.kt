@@ -26,11 +26,11 @@ import org.secuso.privacyfriendlytodolist.backup.BackupRestorer
 
 class PFAApplication : Application(), Configuration.Provider {
 
+    override val workManagerConfiguration = Configuration.Builder().setMinimumLoggingLevel(Log.INFO).build()
+
     override fun onCreate() {
         super.onCreate()
         BackupManager.backupCreator = BackupCreator()
         BackupManager.backupRestorer = BackupRestorer()
     }
-
-    override val workManagerConfiguration = Configuration.Builder().setMinimumLoggingLevel(Log.INFO).build()
 }
