@@ -31,6 +31,7 @@ import org.secuso.privacyfriendlytodolist.model.database.dao.TodoTaskDao
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
+import org.secuso.privacyfriendlytodolist.util.LogTag
 
 @Database(
     entities = [ TodoListData::class, TodoTaskData::class, TodoSubtaskData::class ],
@@ -60,7 +61,7 @@ abstract class TodoListDatabase : RoomDatabase() {
         }
 
         val MIGRATION_1_2 = object : Migration(1, 2) {
-            private val TAG = "MIGRATION_1_2"
+            private val TAG = LogTag.create("MIGRATION_1_2")
 
             override fun migrate(db: SupportSQLiteDatabase) {
                 Log.i(TAG, "DB migration v1 to v2 starts.")
@@ -84,7 +85,7 @@ abstract class TodoListDatabase : RoomDatabase() {
         }
 
         val MIGRATION_2_3 = object : Migration(2, 3) {
-            private val TAG = "MIGRATION_2_3"
+            private val TAG = LogTag.create("MIGRATION_2_3")
 
             override fun migrate(db: SupportSQLiteDatabase) {
                 Log.i(TAG, "DB migration v2 to v3 starts.")

@@ -39,6 +39,7 @@ import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 import java.util.Collections
@@ -560,7 +561,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     companion object {
-        private val TAG = ExpandableTodoTaskAdapter::class.java.getSimpleName()
+        private val TAG = LogTag.create(this::class.java.declaringClass)
 
         // ROW TYPES FOR USED TO CREATE DIFFERENT VIEWS DEPENDING ON ITEM TO SHOW
         private const val GR_TASK_ROW = 0 // gr == group type

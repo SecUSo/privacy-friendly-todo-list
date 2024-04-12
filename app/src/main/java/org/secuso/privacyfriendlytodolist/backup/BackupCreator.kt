@@ -34,6 +34,7 @@ import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.writeDatabase
 import org.secuso.privacyfriendlybackup.api.backup.PreferenceUtil.writePreferences
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupCreator
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.PinActivity
@@ -112,6 +113,6 @@ class BackupCreator : IBackupCreator {
     }
 
     companion object {
-        private val TAG = BackupCreator::class.java.simpleName
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

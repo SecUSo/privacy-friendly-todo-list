@@ -25,6 +25,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 
 /**
@@ -99,6 +100,10 @@ class TodoListWidget : AppWidgetProvider() {
         views!!.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview_widget)
         appWidgetManager.updateAppWidget(appWidgetId, views)
-        Log.d("UPDATE", "Widget was updated here!")
+        Log.d(TAG, "Widget was updated here!")
+    }
+
+    companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

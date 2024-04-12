@@ -41,6 +41,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.GroupTaskViewHolder
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.SortTypes
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
@@ -344,7 +345,7 @@ class TodoTasksFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     companion object {
-        private val TAG = TodoTasksFragment::class.java.getSimpleName()
+        private val TAG = LogTag.create(this::class.java.declaringClass)
 
         // The fab is used to create new tasks. However, a task can only be created if the user is inside
         // a certain list. If he chose the "show all task" view, the option to create a new task is not available.

@@ -22,6 +22,7 @@ import android.content.Intent
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
+import org.secuso.privacyfriendlytodolist.util.LogTag
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -43,6 +44,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
     companion object {
         const val ACTION = "org.secuso.privacyfriendlytodolist.ALARM"
-        private val TAG = AlarmReceiver::class.java.getSimpleName()
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 
 class TodoReReceiver : BroadcastReceiver() {
@@ -49,6 +50,6 @@ class TodoReReceiver : BroadcastReceiver() {
 
     companion object {
         const val ACTION = "org.secuso.privacyfriendlyproductivitytimer.TODO_RE_ACTION"
-        private val TAG = TodoReReceiver::class.java.getSimpleName()
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

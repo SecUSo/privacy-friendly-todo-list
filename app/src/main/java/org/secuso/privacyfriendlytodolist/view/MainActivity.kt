@@ -60,6 +60,7 @@ import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.SortTypes
@@ -895,7 +896,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val COMMAND = "command"
         const val COMMAND_RUN_TODO = 2
         const val COMMAND_UPDATE = 3
-        private val TAG = MainActivity::class.java.getSimpleName()
+        private val TAG = LogTag.create(this::class.java.declaringClass)
 
         // Keys
         private const val KEY_TODO_LISTS = "restore_todo_list_key_with_savedinstancestate"

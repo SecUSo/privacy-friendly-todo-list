@@ -25,9 +25,10 @@ import android.content.Context.JOB_SCHEDULER_SERVICE
 import android.os.PersistableBundle
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
+import org.secuso.privacyfriendlytodolist.util.LogTag
 
 object JobManager {
-    private val TAG = JobManager::class.java.simpleName
+    private val TAG = LogTag.create(this::class.java)
 
     /**
      * WorkManager uses ID range 0 .. Integer#MAX_VALUE. The JobInfo ID range must not overlap with

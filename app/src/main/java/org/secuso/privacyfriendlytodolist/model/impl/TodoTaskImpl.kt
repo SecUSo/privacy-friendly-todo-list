@@ -24,6 +24,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.util.Locale
 
 /**
@@ -310,7 +311,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     companion object CREATOR : Creator<TodoTaskImpl> {
-        private val TAG = TodoTaskImpl::class.java.getSimpleName()
+        private val TAG = LogTag.create(this::class.java.declaringClass)
         override fun createFromParcel(parcel: Parcel): TodoTaskImpl {
             return TodoTaskImpl(parcel)
         }

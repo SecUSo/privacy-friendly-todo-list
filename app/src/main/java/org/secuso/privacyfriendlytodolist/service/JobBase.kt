@@ -22,6 +22,7 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
 /**
@@ -82,6 +83,6 @@ abstract class JobBase : JobService() {
     }
 
     companion object {
-        private val TAG = JobBase::class.java.simpleName
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

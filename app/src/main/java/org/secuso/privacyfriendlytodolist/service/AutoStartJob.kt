@@ -22,6 +22,7 @@ import android.app.job.JobParameters
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 
 /**
@@ -66,6 +67,6 @@ class AutoStartJob : JobBase() {
     }
 
     companion object {
-        private val TAG = AutoStartJob::class.java.simpleName
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

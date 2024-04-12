@@ -24,6 +24,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 
 /**
@@ -85,6 +86,6 @@ class AlarmJob : JobBase() {
     }
 
     companion object {
-        private val TAG = AlarmJob::class.java.simpleName
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

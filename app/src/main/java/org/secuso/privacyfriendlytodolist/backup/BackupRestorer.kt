@@ -26,6 +26,7 @@ import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.readDatabaseCont
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
 import org.secuso.privacyfriendlybackup.api.pfa.IBackupRestorer
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PrefDataType
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import java.io.File
@@ -135,7 +136,7 @@ class BackupRestorer : IBackupRestorer {
     }
 
     companion object {
-        private val TAG = BackupRestorer::class.java.simpleName
+        private val TAG = LogTag.create(this::class.java.declaringClass)
         private const val RESTORE_DB_NAME = "restoreDatabase.db"
     }
 }

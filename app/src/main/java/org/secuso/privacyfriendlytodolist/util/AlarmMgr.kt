@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 
 object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
-    private val TAG = AlarmMgr::class.java.getSimpleName()
+    private val TAG = LogTag.create(this::class.java)
     private var manager: AlarmManager? = null
 
     private fun getManager(context: Context): AlarmManager {
