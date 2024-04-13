@@ -34,8 +34,8 @@ object JobManager {
      * WorkManager uses ID range 0 .. Integer#MAX_VALUE. The JobInfo ID range must not overlap with
      * this range. See androidx.work.Configuration.Builder#setJobSchedulerJobIdRange() for details.
      */
-    private const val JOB_SCHEDULER_JOB_ID_RANGE_BEGIN = -10000
-    private const val JOB_SCHEDULER_JOB_ID_RANGE_END = -1
+    private const val JOB_SCHEDULER_JOB_ID_RANGE_BEGIN = -1
+    private const val JOB_SCHEDULER_JOB_ID_RANGE_END = -10000
     private var jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
 
     fun processAutoStart(context: Context): Int {
@@ -66,11 +66,9 @@ object JobManager {
     }
 
     private fun getNextJobId(): Int {
-        val jobId = jobIdBuilder
-        jobIdBuilder = if (jobIdBuilder < JOB_SCHEDULER_JOB_ID_RANGE_END) {
-            jobIdBuilder + 1
-        } else {
-            JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
+        val jobId = jobIdBuilder--
+        if (jobIdBuilder < JOB_SCHEDULER_JOB_ID_RANGE_END) {
+            jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
         }
         return jobId
     }
