@@ -49,6 +49,8 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         data.isDone = parcel.readByte().toInt() != 0
         data.isInRecycleBin = parcel.readByte().toInt() != 0
         data.taskId = parcel.readInt()
+        // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
+        // ensure that DB action gets done. So keep initial value RequiredDBAction.NONE.
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -57,8 +59,6 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         dest.writeByte((if (data.isDone) 1 else 0).toByte())
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.taskId)
-        // Parcel-interface is used for data backup.
-        // This use case does not require that 'dbState' gets stored in the parcel.
     }
 
     override fun setId(id: Int) {
@@ -118,13 +118,16 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         return "'${getName()}' (id ${getId()})"
     }
 
-    companion object CREATOR : Creator<TodoSubtaskImpl> {
-        override fun createFromParcel(parcel: Parcel): TodoSubtaskImpl {
-            return TodoSubtaskImpl(parcel)
-        }
+    companion object {
+        @JvmField
+        val CREATOR = object : Creator<TodoSubtask> {
+            override fun createFromParcel(parcel: Parcel): TodoSubtask {
+                return TodoSubtaskImpl(parcel)
+            }
 
-        override fun newArray(size: Int): Array<TodoSubtaskImpl?> {
-            return arrayOfNulls(size)
+            override fun newArray(size: Int): Array<TodoSubtask?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 }

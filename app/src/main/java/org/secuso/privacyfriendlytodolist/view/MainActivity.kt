@@ -41,7 +41,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.core.view.MenuItemCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -57,12 +56,12 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
-import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil.hasPin
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.SortTypes
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
@@ -110,6 +109,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var navigationBottomView: NavigationView? = null
     private var toolbar: Toolbar? = null
     private var drawer: DrawerLayout? = null
+    private var drawerToggle: ActionBarDrawerToggle? = null
 
     // Others
     private var inList = false
@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuInflater.inflate(R.menu.search, menu)
         menuInflater.inflate(R.menu.add_list, menu)
         val searchItem = menu.findItem(R.id.ac_search)
-        val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 collapseAll()
@@ -362,8 +362,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // restore state before configuration change
                 if (savedInstanceState != null) {
                     todoLists = savedInstanceState.getParcelableArrayList<TodoList>(KEY_TODO_LISTS) as List<TodoList>
-                    clickedList = savedInstanceState[KEY_CLICKED_LIST] as TodoList?
-                    dummyList = savedInstanceState[KEY_DUMMY_LIST] as TodoList?
+                    clickedList = savedInstanceState.getParcelable(KEY_CLICKED_LIST)
+                    dummyList = savedInstanceState.getParcelable(KEY_DUMMY_LIST)
                 } else {
                     Log.i(TAG, "Could not restore old state because savedInstanceState is null.")
                 }
@@ -391,10 +391,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // side menu setup
         drawer = findViewById(R.id.drawer_layout)
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
+        if (null != drawerToggle) {
+            drawer!!.removeDrawerListener(drawerToggle!!)
+        }
+        drawerToggle = ActionBarDrawerToggle(this, drawer, toolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer!!.setDrawerListener(toggle)
-        toggle.syncState()
+        drawer!!.addDrawerListener(drawerToggle!!)
+        drawerToggle!!.syncState()
         addListToNav()
 
         //LinearLayout l = (LinearLayout) findViewById(R.id.footer);
@@ -523,6 +526,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         isUnlocked = false
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
         val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -572,17 +576,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navMenu.clear()
         val mf = MenuInflater(applicationContext)
         mf.inflate(R.menu.nav_content, navMenu)
-        val help = ArrayList<TodoList>()
-        help.addAll(todoLists)
-        for (i in help.indices) {
-            val name = help[i].getName()
-            val id = help[i].getId()
+        for (todoList in todoLists) {
+            val name = todoList.getName()
+            val id = todoList.getId()
             val item = navMenu.add(R.id.drawer_group2, id, 1, name)
             item.setCheckable(true)
             item.setIcon(R.drawable.ic_label_black_24dp)
             val v = ImageButton(this, null, R.style.BorderlessButtonStyle)
             v.setImageResource(R.drawable.ic_delete_black_24dp)
-            v.setOnClickListener(OnCustomMenuItemClickListener(help[i].getId(), this@MainActivity))
+            v.setOnClickListener(OnCustomMenuItemClickListener(id, this@MainActivity))
             item.setActionView(v)
         }
     }

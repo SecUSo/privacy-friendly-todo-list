@@ -55,16 +55,16 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         data.id = parcel.readInt()
         isDummyList = parcel.readByte().toInt() != 0
         data.name = parcel.readString()!!
-        parcel.readList(tasks, TodoTask::class.java.getClassLoader())
+        parcel.readTypedList(tasks, TodoTaskImpl.CREATOR)
+        // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
+        // ensure that DB action gets done. So keep initial value RequiredDBAction.NONE.
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(data.id)
         dest.writeByte((if (isDummyList) 1 else 0).toByte())
         dest.writeString(data.name)
-        dest.writeList(tasks)
-        // Parcel-interface is used for data backup.
-        // This use case does not require that 'dbState' gets stored in the parcel.
+        dest.writeTypedList(tasks)
     }
 
     override fun setId(id: Int) {
@@ -189,13 +189,16 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return "'${getName()}' (id ${getId()})"
     }
 
-    companion object CREATOR : Creator<TodoListImpl> {
-        override fun createFromParcel(parcel: Parcel): TodoListImpl {
-            return TodoListImpl(parcel)
-        }
+    companion object {
+        @JvmField
+        val CREATOR = object : Creator<TodoList> {
+            override fun createFromParcel(parcel: Parcel): TodoList {
+                return TodoListImpl(parcel)
+            }
 
-        override fun newArray(size: Int): Array<TodoListImpl?> {
-            return arrayOfNulls(size)
+            override fun newArray(size: Int): Array<TodoList?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 }

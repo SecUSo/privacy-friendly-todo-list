@@ -71,7 +71,9 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
         data.listPosition = parcel.readInt()
         data.priority = TodoTask.Priority.fromOrdinal(parcel.readInt())!!
-        parcel.readList(subtasks, TodoSubtaskImpl::class.java.getClassLoader())
+        parcel.readTypedList(subtasks, TodoSubtaskImpl.CREATOR)
+        // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
+        // ensure that DB action gets done. So keep initial value RequiredDBAction.NONE.
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -94,9 +96,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
         dest.writeInt(data.listPosition)
         dest.writeInt(data.priority.ordinal)
-        dest.writeList(subtasks)
-        // Parcel-interface is used for data backup.
-        // This use case does not require that 'dbState' gets stored in the parcel.
+        dest.writeTypedList(subtasks)
     }
 
     override fun setId(id: Int) {
@@ -310,14 +310,18 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return "'${getName()}' (id ${getId()})"
     }
 
-    companion object CREATOR : Creator<TodoTaskImpl> {
+    companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
-        override fun createFromParcel(parcel: Parcel): TodoTaskImpl {
-            return TodoTaskImpl(parcel)
-        }
 
-        override fun newArray(size: Int): Array<TodoTaskImpl?> {
-            return arrayOfNulls(size)
+        @JvmField
+        val CREATOR = object : Creator<TodoTask> {
+            override fun createFromParcel(parcel: Parcel): TodoTask {
+                return TodoTaskImpl(parcel)
+            }
+
+            override fun newArray(size: Int): Array<TodoTask?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 }

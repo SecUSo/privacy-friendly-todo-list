@@ -58,7 +58,7 @@ class CalendarPopup : AppCompatActivity() {
         }
         val bundle = intent.extras
         if (bundle != null) {
-            tasks = bundle.getParcelableArrayList("Deadlines")
+            tasks = bundle.getParcelableArrayList(CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES)
         }
         updateAdapter()
     }

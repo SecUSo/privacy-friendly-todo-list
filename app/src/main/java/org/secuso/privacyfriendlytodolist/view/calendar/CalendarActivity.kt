@@ -117,7 +117,7 @@ class CalendarActivity : AppCompatActivity() {
     private fun showDeadlineTasks(tasks: ArrayList<TodoTask>) {
         val intent = Intent(this, CalendarPopup::class.java)
         val b = Bundle()
-        b.putParcelableArrayList("Deadlines", tasks)
+        b.putParcelableArrayList(PARCELABLE_KEY_FOR_DEADLINES, tasks)
         intent.putExtras(b)
         startActivity(intent)
     }
@@ -135,10 +135,15 @@ class CalendarActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
         super.onBackPressed()
+    }
+
+    companion object {
+        const val PARCELABLE_KEY_FOR_DEADLINES = "PARCELABLE_KEY_FOR_DEADLINES"
     }
 }
