@@ -36,19 +36,19 @@ object Helper {
     const val DATE_FORMAT = "dd.MM.yyyy"
     private const val DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm"
 
-    fun getDate(time: Long): String {
+    fun createDateString(time: Long): String {
         val calendar = Calendar.getInstance()
         calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time))
         return DateFormat.format(DATE_FORMAT, calendar).toString()
     }
 
-    fun getDateTime(time: Long): String {
+    fun createDateTimeString(time: Long): String {
         val calendar = Calendar.getInstance()
         calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time))
-        return getDateTime(calendar)
+        return createDateTimeString(calendar)
     }
 
-    fun getDateTime(calendar: Calendar): String {
+    fun createDateTimeString(calendar: Calendar): String {
         return DateFormat.format(DATE_TIME_FORMAT, calendar).toString()
     }
 

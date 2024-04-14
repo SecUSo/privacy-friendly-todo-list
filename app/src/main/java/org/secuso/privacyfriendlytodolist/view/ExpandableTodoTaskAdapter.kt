@@ -36,7 +36,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
-import org.secuso.privacyfriendlytodolist.util.Helper.getDate
+import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -377,7 +377,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 val deadline =
                     if (currentTask.getDeadline() <= 0)
                         context.resources.getString(R.string.no_deadline) else
-                        context.resources.getString(R.string.deadline_dd) + " " + getDate(currentTask.getDeadline())
+                        context.resources.getString(R.string.deadline_dd) + " " + createDateString(currentTask.getDeadline())
                 vh2.listName!!.visibility = View.GONE
                 if (showListNames && currentTask.getListId() != null) {
                     model.getToDoListById(currentTask.getListId()!!) { todoList: TodoList? ->

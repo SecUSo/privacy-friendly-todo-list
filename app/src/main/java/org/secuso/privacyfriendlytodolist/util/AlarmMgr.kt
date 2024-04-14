@@ -84,7 +84,7 @@ object AlarmMgr {
         val alarmId = todoTask.getId()
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
         getManager(context)[AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis()] = pendingIntent
-        Log.i(TAG, "Alarm set for task $todoTask at ${Helper.getDateTime(calendar)} ($logMessage).")
+        Log.i(TAG, "Alarm set for task $todoTask at ${Helper.createDateTimeString(calendar)} ($logMessage).")
         return alarmId
     }
 

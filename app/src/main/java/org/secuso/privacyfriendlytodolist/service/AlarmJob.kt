@@ -80,7 +80,7 @@ class AlarmJob : JobBase() {
     private fun notifyAboutAlarm(task: TodoTask) {
         Log.d(TAG, "Notifying about alarm for task $task.")
         val title = task.getName()
-        val deadline = Helper.getDateTime(task.getDeadline())
+        val deadline = Helper.createDateTimeString(task.getDeadline())
         val message = applicationContext.resources.getString(R.string.deadline_approaching, deadline)
         NotificationMgr.postTaskNotification(this, title, message, task)
     }

@@ -36,8 +36,8 @@ import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
-import org.secuso.privacyfriendlytodolist.util.Helper.getDate
-import org.secuso.privacyfriendlytodolist.util.Helper.getDateTime
+import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
+import org.secuso.privacyfriendlytodolist.util.Helper.createDateTimeString
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.DeadlineDialog.DeadlineCallback
@@ -103,9 +103,9 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
             prioritySelector.text = priority2String(context, task.getPriority())
             progressSelector.progress = task.getProgress(false)
             deadlineTextView.text = if (task.getDeadline() <= 0)
-                context.getString(R.string.no_deadline) else getDate(deadline)
+                context.getString(R.string.no_deadline) else createDateString(deadline)
             reminderTextView.text = if (task.getReminderTime() <= 0)
-                context.getString(R.string.reminder) else getDateTime(reminderTime)
+                context.getString(R.string.reminder) else createDateTimeString(reminderTime)
 
         }
     }
@@ -191,7 +191,7 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
             deadlineDialog.setDialogCallback(object : DeadlineCallback {
                 override fun setDeadline(deadline: Long) {
                     this@ProcessTodoTaskDialog.deadline = deadline
-                    deadlineTextView.text = getDate(deadline)
+                    deadlineTextView.text = createDateString(deadline)
                 }
 
                 override fun removeDeadline() {
@@ -219,7 +219,7 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
                             Toast.LENGTH_SHORT).show()
                     } else {
                         reminderTime = reminderDeadline
-                        reminderTextView.text = getDateTime(reminderTime)
+                        reminderTextView.text = createDateTimeString(reminderTime)
                     }
                 }
 

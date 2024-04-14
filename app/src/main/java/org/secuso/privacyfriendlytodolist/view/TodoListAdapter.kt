@@ -27,7 +27,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoList
-import org.secuso.privacyfriendlytodolist.util.Helper.getDate
+import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
@@ -60,7 +60,7 @@ class TodoListAdapter(ac: Activity, data: List<TodoList>?) :
                 if (list.getNextDeadline() <= 0) {
                     holder.deadline.text = res.getString(R.string.no_next_deadline)
                 } else {
-                    holder.deadline.text = res.getString(R.string.next_deadline_dd, getDate(list.getNextDeadline()))
+                    holder.deadline.text = res.getString(R.string.next_deadline_dd, createDateString(list.getNextDeadline()))
                 }
                 holder.done.text = String.format("%d/%d", list.getDoneTodos(), list.getSize())
                 holder.urgency.setBackgroundColor(getDeadlineColor(contextActivity,
