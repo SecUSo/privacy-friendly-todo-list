@@ -17,6 +17,7 @@
 
 package org.secuso.privacyfriendlytodolist.testing
 
+import android.util.Log
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import androidx.room.Room
@@ -25,31 +26,33 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.IOException
-
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
 
 
 /**
  * [Room DB testing](https://developer.android.com/training/data-storage/room/migrating-db-versions#single-migration-test)
  */
+@Suppress("UseWithIndex")
 @RunWith(AndroidJUnit4ClassRunner::class)
 class DBMigrationTest {
     companion object {
-        private const val testDB = "todo_list_migration_test"
-        private const val task_priority_base = 1000
-        private const val task_deadline_base = 2000
-        private const val task_done_base = 3000
-        private const val task_progress_base = 4000
-        private const val task_num_subtasks_base = 5000
-        private const val task_deadline_warning_time_base = 6000
-        private const val subtask_done_base = 10000
+        private val TAG = LogTag.create(this::class.java.declaringClass)
+        private const val TEST_DB_NAME = "TodoDatabaseForMigrationTest.db"
+        private const val TASK_PRIORITY_BASE = 1000
+        private const val TASK_DEADLINE_BASE = 2000
+        private const val TASK_DONE_BASE = 3000
+        private const val TASK_PROGRESS_BASE = 4000
+        private const val TASK_NUM_SUBTASKS_BASE = 5000
+        private const val TASK_DEADLINE_WARNING_TIME_BASE = 6000
+        private const val SUBTASK_DONE_BASE = 10000
     }
 
     private val allMigrations = arrayOf(TodoListDatabase.MIGRATION_1_2, TodoListDatabase.MIGRATION_2_3)
@@ -64,13 +67,13 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun allMigrationsTest() {
-        var db = helper.createDatabase(testDB, 1)
+        var db = helper.createDatabase(TEST_DB_NAME, 1)
         populateDBv1(db)
         db.close()
 
-        // Open latest version of the database. Room validates the schema  once all migrations execute.
+        // Open latest version of the database. Room validates the schema once all migrations execute.
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        Room.databaseBuilder(context, TodoListDatabase::class.java, testDB)
+        Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
             .addMigrations(*allMigrations)
             .build()
             .apply {
@@ -79,7 +82,38 @@ class DBMigrationTest {
                 db.close()
             }
         // MigrationTestHelper automatically verifies the schema changes,
-        // but you need to validate that the data was migrated properly.
+        // but whether the data was migrated properly gets checked at checkDBv3().
+    }
+
+    /**
+     * A user described on GitHub at issue #63 that the app did crash at DB migration with
+     * android.database.sqlite.SQLiteException: duplicate column name: in_trash (code 1): , while compiling: ALTER TABLE todo_task ADD in_trash INTEGER NOT NULL DEFAULT 0;
+     *
+     * The root cause of this exception is unknown. But to be able to proceed with DB migration
+     * the check with #checkInTrashColumnExists() was added.
+     *
+     * This test tests if the workaround works.
+     */
+    @Test
+    @Throws(IOException::class)
+    fun specificMigrationErrorTest() {
+        var db = helper.createDatabase(TEST_DB_NAME, 1)
+        // Create a table v1
+        populateDBv1(db)
+        // Migrate its content to v2 but DB still is marked as v1
+        TodoListDatabase.MIGRATION_1_2.migrate(db)
+        db.close()
+
+        // Do the migration and migration checks.
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
+            .addMigrations(*allMigrations)
+            .build()
+            .apply {
+                db = openHelper.readableDatabase
+                checkDBv3(db)
+                db.close()
+            }
     }
 
     private fun populateDBv1(db: SupportSQLiteDatabase) {
@@ -98,7 +132,7 @@ class DBMigrationTest {
                 // Create the scenario where tasks have listId's that do not point to a list.
                 // Seen with listId 0 or -3. Use different not existing values here, if listCounter is 3.
                 val listId = if (listCounter != 3) listCounter else 1 - task
-                query += "('$id', '$listId', '$task', 'Test task $id', 'Test task description $id', '${id + task_priority_base}', '${id + task_deadline_base}', '${id + task_done_base}', '${id + task_progress_base}', '${id + task_num_subtasks_base}', '${id + task_deadline_warning_time_base}'), "
+                query += "('$id', '$listId', '$task', 'Test task $id', 'Test task description $id', '${id + TASK_PRIORITY_BASE}', '${id + TASK_DEADLINE_BASE}', '${id + TASK_DONE_BASE}', '${id + TASK_PROGRESS_BASE}', '${id + TASK_NUM_SUBTASKS_BASE}', '${id + TASK_DEADLINE_WARNING_TIME_BASE}'), "
             }
         }
         query = query.removeSuffix(", ")
@@ -110,7 +144,7 @@ class DBMigrationTest {
             val subtaskCount = taskId % 3
             for (subtask in 1..subtaskCount) {
                 ++id
-                query += "('$id', '$taskId', 'Test subtask $id', '${id + subtask_done_base}'), "
+                query += "('$id', '$taskId', 'Test subtask $id', '${id + SUBTASK_DONE_BASE}'), "
             }
         }
         query = query.removeSuffix(", ")
@@ -160,11 +194,11 @@ class DBMigrationTest {
                 assertEquals(task, cursor.getIntOrNull(col++))
                 assertEquals("Test task $id", cursor.getStringOrNull(col++))
                 assertEquals("Test task description $id", cursor.getStringOrNull(col++))
-                assertEquals(id + task_priority_base, cursor.getIntOrNull(col++))
-                assertEquals(id + task_deadline_base, cursor.getIntOrNull(col++))
-                assertEquals(id + task_deadline_warning_time_base, cursor.getIntOrNull(col++))
-                assertEquals(id + task_progress_base, cursor.getIntOrNull(col++))
-                assertEquals(id + task_done_base, cursor.getIntOrNull(col++))
+                assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
+                assertEquals(id + TASK_DEADLINE_BASE, cursor.getIntOrNull(col++))
+                assertEquals(id + TASK_DEADLINE_WARNING_TIME_BASE, cursor.getIntOrNull(col++))
+                assertEquals(id + TASK_PROGRESS_BASE, cursor.getIntOrNull(col++))
+                assertEquals(id + TASK_DONE_BASE, cursor.getIntOrNull(col++))
                 assertEquals(0, cursor.getIntOrNull(col))
                 assertTrue(listId == null || listIds.contains(listId))
                 taskIds.add(id)
@@ -192,12 +226,14 @@ class DBMigrationTest {
                 assertEquals(id, cursor.getIntOrNull(col++))
                 assertEquals(taskId, cursor.getIntOrNull(col++))
                 assertEquals("Test subtask $id", cursor.getStringOrNull(col++))
-                assertEquals(id + subtask_done_base, cursor.getIntOrNull(col++))
+                assertEquals(id + SUBTASK_DONE_BASE, cursor.getIntOrNull(col++))
                 assertEquals(0, cursor.getIntOrNull(col))
                 assertTrue(taskIds.contains(taskId))
             }
         }
         assertFalse(cursor.moveToNext())
         cursor.close()
+
+        Log.i(TAG, "Check of DB migration to v3 passed.")
     }
 }

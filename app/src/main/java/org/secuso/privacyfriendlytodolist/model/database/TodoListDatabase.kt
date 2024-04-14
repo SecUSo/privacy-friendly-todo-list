@@ -47,6 +47,7 @@ abstract class TodoListDatabase : RoomDatabase() {
     abstract fun getTodoSubtaskDao(): TodoSubtaskDao
 
     companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
         const val NAME = "TodoDatabase.db"
         const val VERSION = 3
         private var instance: TodoListDatabase? = null
@@ -58,6 +59,16 @@ abstract class TodoListDatabase : RoomDatabase() {
                 }
                 return instance!!
             }
+        }
+
+        private fun createDatabase(context: Context): TodoListDatabase {
+            val builder = Room.databaseBuilder(context.applicationContext,
+                TodoListDatabase::class.java, NAME)
+            builder.addMigrations(MIGRATION_1_2)
+            builder.addMigrations(MIGRATION_2_3)
+            val db = builder.build()
+            Log.d(TAG, "$NAME was created.")
+            return db
         }
 
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -76,11 +87,45 @@ abstract class TodoListDatabase : RoomDatabase() {
                 db.execSQL("COMMIT")
                 db.execSQL("PRAGMA foreign_keys=on")
 
-                db.execSQL("ALTER TABLE todo_task ADD in_trash INTEGER NOT NULL DEFAULT 0")
+                /*
+                A user described on GitHub at issue #63 that the app did crash at DB migration with
+                android.database.sqlite.SQLiteException: duplicate column name: in_trash (code 1): , while compiling: ALTER TABLE todo_task ADD in_trash INTEGER NOT NULL DEFAULT 0;
 
-                db.execSQL("ALTER TABLE todo_subtask ADD in_trash INTEGER NOT NULL DEFAULT 0")
+                The root cause of this exception is unknown. But to be able to proceed with DB migration
+                the check with #checkInTrashColumnExists() was added.
+                 */
+                if (!checkInTrashColumnExists(db, "todo_task")) {
+                    db.execSQL("ALTER TABLE todo_task ADD in_trash INTEGER NOT NULL DEFAULT 0")
+                }
+                if (!checkInTrashColumnExists(db, "todo_subtask")) {
+                    db.execSQL("ALTER TABLE todo_subtask ADD in_trash INTEGER NOT NULL DEFAULT 0")
+                }
 
                 Log.i(TAG, "DB migration v1 to v2 finished.")
+            }
+
+            private fun checkInTrashColumnExists(db: SupportSQLiteDatabase, tableName: String): Boolean {
+                val columnName = "in_trash"
+                var wasFound = false
+                val cursor = db.query("PRAGMA table_info($tableName)")
+                var hasData = cursor.moveToFirst()
+                while (hasData) {
+                    val index = cursor.getColumnIndex("name")
+                    if (index >= 0) {
+                        if (cursor.getString(index) == columnName) {
+                            wasFound = true
+                            break
+                        }
+                    } else {
+                        Log.e(TAG, "Column 'name' not found in table info.")
+                    }
+                    hasData = cursor.moveToNext()
+                }
+                cursor.close()
+
+                val found = if (wasFound) "found" else "not found"
+                Log.i(TAG, "Column $columnName $found in table $tableName.")
+                return wasFound
             }
         }
 
@@ -123,14 +168,6 @@ abstract class TodoListDatabase : RoomDatabase() {
 
                 Log.i(TAG, "DB migration v2 to v3 finished.")
             }
-        }
-
-        private fun createDatabase(context: Context): TodoListDatabase {
-            val builder = Room.databaseBuilder(context.applicationContext,
-                TodoListDatabase::class.java, NAME)
-            builder.addMigrations(MIGRATION_1_2)
-            builder.addMigrations(MIGRATION_2_3)
-            return builder.build()
         }
     }
 }
