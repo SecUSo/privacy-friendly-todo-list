@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.view
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextMenu
@@ -280,6 +281,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             outState.putByte(KEY_ACTIVE_LIST_IS_DUMMY, 1.toByte())
         }
+        isUnlocked = false
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -492,7 +494,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onStop() {
-        isUnlocked = false
+        // Call order if API level < 28: 1. onSaveInstanceState(), 2. onStop()
+        // Beginning with API level 28 this call order was reversed.
+        // To not reset the flag before saving it, 'isUnlocked = false' gets done at the end of onSaveInstanceState()
+        // for all API levels. Here too, if API level is < 28 (to keep old behavior (don't know if necessary)).
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            isUnlocked = false
+        }
         super.onStop()
     }
 
