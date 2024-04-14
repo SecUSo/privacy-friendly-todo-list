@@ -104,7 +104,8 @@
     <string name="task_removed">Task put into bin</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Reminder</string>
-    <string name="deadline_smaller_reminder">The deadline can not be earlier than the reminder time.</string>
+    <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
+    <string name="reminder_smaller_now">The reminder time cannot be in the past.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>

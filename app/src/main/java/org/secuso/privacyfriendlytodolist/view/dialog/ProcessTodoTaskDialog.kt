@@ -35,6 +35,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
 import org.secuso.privacyfriendlytodolist.util.Helper.getDate
 import org.secuso.privacyfriendlytodolist.util.Helper.getDateTime
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
@@ -202,33 +203,34 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
         }
         reminderTextView = findViewById(R.id.tv_todo_list_reminder)
         reminderTextView.setTextColor(okayButton.currentTextColor)
-        reminderTextView.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                val reminderDialog = ReminderDialog(context, reminderTime, deadline)
-                reminderDialog.setDialogCallback(object : ReminderCallback {
-                    override fun setReminder(reminderDeadline: Long) {
-                        /*if(deadline == -1) {
-                            Toast.makeText(getContext(), getContext().getString(R.string.set_deadline_before_reminder), Toast.LENGTH_SHORT).show();
-                            return;
-                        }*/
-                        if (deadline != -1L && deadline < reminderDeadline) {
-                            Toast.makeText(context, context.getString(R.string.deadline_smaller_reminder),
-                                Toast.LENGTH_SHORT).show()
-                            return
-                        }
+        reminderTextView.setOnClickListener {
+            val reminderDialog = ReminderDialog(context, reminderTime, deadline)
+            reminderDialog.setDialogCallback(object : ReminderCallback {
+                override fun setReminder(reminderDeadline: Long) {
+                    /* if (deadline == -1L) {
+                        Toast.makeText(context, context.getString(R.string.set_deadline_before_reminder),
+                            Toast.LENGTH_SHORT).show()
+                    } else */
+                    if (deadline != -1L && deadline < reminderDeadline) {
+                        Toast.makeText(context, context.getString(R.string.deadline_smaller_reminder),
+                            Toast.LENGTH_SHORT).show()
+                    } else if (reminderDeadline < getCurrentTimestamp()) {
+                        Toast.makeText(context, context.getString(R.string.reminder_smaller_now),
+                            Toast.LENGTH_SHORT).show()
+                    } else {
                         reminderTime = reminderDeadline
                         reminderTextView.text = getDateTime(reminderTime)
                     }
+                }
 
-                    override fun removeReminder() {
-                        reminderTime = -1
-                        val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
-                        reminderTextView.text = context.resources.getString(R.string.reminder)
-                    }
-                })
-                reminderDialog.show()
-            }
-        })
+                override fun removeReminder() {
+                    reminderTime = -1L
+                    val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
+                    reminderTextView.text = context.resources.getString(R.string.reminder)
+                }
+            })
+            reminderDialog.show()
+        }
         taskName = findViewById(R.id.et_new_task_name)
         taskDescription = findViewById(R.id.et_new_task_description)
     }
