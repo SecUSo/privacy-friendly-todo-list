@@ -60,7 +60,7 @@ abstract class JobBase : JobService() {
         currentJobParams = params
         currentJobId = params.jobId
         isJobFinished = false
-        Log.d(TAG, "Job $currentJobId started")
+        Log.d(TAG, "Job $currentJobId started.")
         return false
     }
 

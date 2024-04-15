@@ -103,8 +103,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     /** reference of last clicked list for fragment  */
     var clickedList: TodoList? = null
 
-    private var adapter: TodoListAdapter? = null
-
     // GUI
     private var navigationView: NavigationView? = null
     private var navigationBottomView: NavigationView? = null
@@ -569,7 +567,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun onTaskChange(todoTask: TodoTask) {
         // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        Log.i(TAG, "Task $todoTask changed. Canceling it's alarm and notification which may exist.")
+        Log.d(TAG, "Task $todoTask changed. Canceling it's alarm and notification which may exist.")
         AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
         NotificationMgr.cancel(this, todoTask.getId())
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
@@ -601,12 +599,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun startListDialog() {
         model!!.getAllToDoLists { todoLists ->
             this.todoLists = todoLists
-            adapter = TodoListAdapter(this, todoLists)
             val pl = ProcessTodoListDialog(this)
             pl.setDialogCallback(ResultCallback { todoList: TodoList ->
                 todoLists.add(todoList)
-                adapter!!.updateList(todoLists)
-                adapter!!.notifyDataSetChanged()
                 model!!.saveTodoListInDb(todoList) { counter: Int? ->
                     hints()
                     addListToNav()

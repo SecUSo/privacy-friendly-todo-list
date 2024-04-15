@@ -39,7 +39,6 @@ class AlarmJob : JobBase() {
         super.onStartJob(params)
 
         if (params.extras.containsKey(AlarmMgr.KEY_ALARM_ID)) {
-            Log.d(TAG, "Job $currentJobId started")
             doAlarm(params.extras.getInt(AlarmMgr.KEY_ALARM_ID))
         } else {
             Log.e(TAG, "Job $currentJobId started without alarm ID.")
@@ -78,7 +77,7 @@ class AlarmJob : JobBase() {
     }
 
     private fun notifyAboutAlarm(task: TodoTask) {
-        Log.d(TAG, "Notifying about alarm for task $task.")
+        Log.i(TAG, "Notifying about alarm for task $task.")
         val title = task.getName()
         val deadline = Helper.createDateTimeString(task.getDeadline())
         val message = applicationContext.resources.getString(R.string.deadline_approaching, deadline)
