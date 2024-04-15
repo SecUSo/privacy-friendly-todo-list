@@ -43,11 +43,11 @@ class PinDialog(context: Context, private val allowReset: Boolean) :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val textEditPin: EditText = findViewById(R.id.et_pin_pin)
         val buttonOkay: Button = findViewById(R.id.bt_pin_ok)
         buttonOkay.setOnClickListener {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val pinExpected = prefs.getString(PreferenceMgr.P_PIN.name, "")
-            val textEditPin: EditText = findViewById(R.id.et_pin_pin)
             if (pinExpected == textEditPin.getText().toString()) {
                 getDialogCallback().accepted()
                 setOnDismissListener(null)
@@ -84,7 +84,6 @@ class PinDialog(context: Context, private val allowReset: Boolean) :
             dismiss()
         }
         setOnDismissListener { getDialogCallback().declined() }
-        val textEditPin: EditText = findViewById(R.id.et_pin_pin)
         textEditPin.isActivated = true
     }
 }

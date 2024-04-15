@@ -104,7 +104,7 @@ class Settings : AppCompatActivity() {
             val pinEnabled = sharedPreferences.getBoolean(PreferenceMgr.P_IS_PIN_ENABLED.name, false)
             if (pinEnabled) {
                 val pin = sharedPreferences.getString(PreferenceMgr.P_PIN.name, null)
-                if (pin == null || pin.length < MINIMAL_PIN_LENGTH) {
+                if (!isPinValid(pin)) {
                     // pin invalid: uncheck
                     ignoreChanges = true
                     findPreference<SwitchPreference>(PreferenceMgr.P_IS_PIN_ENABLED.name)!!.setChecked(false)
@@ -120,7 +120,7 @@ class Settings : AppCompatActivity() {
                 if (key == PreferenceMgr.P_PIN.name) {
                     val pin = sharedPreferences.getString(key, null)
                     if (pin != null) {
-                        if (pin.length < MINIMAL_PIN_LENGTH) {
+                        if (!isPinValid(pin)) {
                             ignoreChanges = true
                             findPreference<EditTextPreference>(PreferenceMgr.P_PIN.name)!!.setText("")
                             ignoreChanges = false
@@ -149,6 +149,31 @@ class Settings : AppCompatActivity() {
     }
 
     companion object {
-        const val MINIMAL_PIN_LENGTH = 4
+        private const val MINIMAL_PIN_LENGTH = 4
+        private const val MAXIMAL_PIN_LENGTH = 32
+
+        /**
+         * All the XML attributes like
+         *         android:inputType="number|numberPassword|numberDecimal"
+         *         android:digits="0123456789"
+         *         android:maxLength="32"
+         * do not work for EditTextPreference.
+         * See [EditTextPreference. Attribute "android:inputType" ignored](https://issuetracker.google.com/issues/118522177)
+         * So do the full pin check here in the code.
+         */
+        private fun isPinValid(pin: String?): Boolean {
+            var isValid = true
+            if (null != pin && pin.length >= MINIMAL_PIN_LENGTH && pin.length <= MAXIMAL_PIN_LENGTH) {
+                for (c in pin) {
+                    if (c < '0' || c > '9') {
+                        isValid = false
+                        break
+                    }
+                }
+            } else {
+                isValid = false
+            }
+            return isValid
+        }
     }
 }
