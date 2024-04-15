@@ -37,8 +37,10 @@
         android:id="@+id/exlv_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:divider="@null"
-        android:groupIndicator="@null"/>
+        android:groupIndicator="@null"
+        android:paddingBottom="80dp" />
 
     <TextView
         android:id="@+id/tv_empty_view_no_tasks"
