@@ -22,6 +22,7 @@ import android.view.ContextMenu.ContextMenuInfo
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
@@ -35,9 +36,9 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
 import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.createDateTimeString
+import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
 import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.DeadlineDialog.DeadlineCallback
@@ -111,6 +112,14 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
     }
 
     private fun initGui() {
+        taskName = findViewById(R.id.et_new_task_name)
+        taskDescription = findViewById(R.id.et_new_task_description)
+
+        // Request focus for first input field.
+        taskName.requestFocus()
+        // Show soft-keyboard
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+
         // initialize textview that displays the selected priority
         prioritySelector = findViewById(R.id.tv_new_task_priority)
         prioritySelector.setOnClickListener {
@@ -231,8 +240,6 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
             })
             reminderDialog.show()
         }
-        taskName = findViewById(R.id.et_new_task_name)
-        taskDescription = findViewById(R.id.et_new_task_description)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {

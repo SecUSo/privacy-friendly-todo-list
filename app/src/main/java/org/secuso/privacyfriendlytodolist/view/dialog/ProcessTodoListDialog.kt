@@ -18,6 +18,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog
 
 import android.content.Context
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -44,6 +45,11 @@ class ProcessTodoListDialog(context: Context) :
         val etName: EditText = findViewById(R.id.et_todo_list_name)
         val buttonOkay: Button = findViewById(R.id.bt_newtodolist_ok)
         val buttonCancel: Button = findViewById(R.id.bt_newtodolist_cancel)
+
+        // Request focus for first input field.
+        etName.requestFocus()
+        // Show soft-keyboard
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         buttonOkay.setOnClickListener {
             // prepare list data

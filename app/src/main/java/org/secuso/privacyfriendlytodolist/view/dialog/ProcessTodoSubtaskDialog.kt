@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -63,8 +64,14 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
         dialogTitleNew = findViewById(R.id.dialog_subtitle)
         dialogTitleEdit = findViewById(R.id.dialog_edit_sub)
         if (isTitleEdit) {
+            isTitleEdit = false
             titleEdit()
         }
+
+        // Request focus for first input field.
+        etSubtaskName.requestFocus()
+        // Show soft-keyboard
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         etSubtaskName.setText(subtask.getName())
         okButton.setOnClickListener { v: View? ->
