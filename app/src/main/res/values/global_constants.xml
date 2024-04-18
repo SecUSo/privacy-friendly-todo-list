@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="max_todo_title_length">25</integer>
-    <integer name="one_day">86400</integer>
 </resources>

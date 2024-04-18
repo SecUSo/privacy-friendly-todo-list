@@ -69,17 +69,25 @@ object PreferenceMgr {
         return prefs.getBoolean(P_IS_FIRST_TIME_LAUNCH.name, true)
     }
 
-    fun setFirstTimeValues(context: Context) {
+    fun loadDefaultValues(context: Context) {
         PreferenceManager.setDefaultValues(context, R.xml.settings, false)
     }
 
     /**
-     * @return The default reminder time as relative time span in seconds (e.g. 86400s == 1 day).
+     * Returns the default reminder time span. It is stored in the app preference.
+     *
+     * The default reminder time is a relative time span in seconds (e.g. 86400s == 1 day).
      * In opposite to the user specified reminder times, which are absolute timestamps.
+     *
+     * @return The default reminder time span in seconds.
      */
     fun getDefaultReminderTimeSpan(context: Context): Long {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getString(P_DEFAULT_REMINDER_TIME.name, null)?.toLong()
-            ?: context.resources.getInteger(R.integer.one_day).toLong()
+        var value = prefs.getString(P_DEFAULT_REMINDER_TIME.name, null)
+        if (null == value) {
+            loadDefaultValues(context)
+            value = prefs.getString(P_DEFAULT_REMINDER_TIME.name, null)!!
+        }
+        return value.toLong()
     }
 }

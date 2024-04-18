@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
         if (PreferenceMgr.isFirstTimeLaunch(this)) {
-            PreferenceMgr.setFirstTimeValues(this)
+            PreferenceMgr.loadDefaultValues(this)
             startTut()
             finish()
         }
