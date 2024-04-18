@@ -24,6 +24,8 @@ import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.TimePicker
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ReminderDialog.ReminderCallback
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -40,15 +42,22 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val calendar = GregorianCalendar.getInstance()
+        var reminderTimeSuggestion: Long
         if (reminderTime != -1L) {
-            calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(reminderTime))
+            reminderTimeSuggestion = reminderTime
         } else if (deadline != -1L) {
-            calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline))
+            reminderTimeSuggestion = deadline - PreferenceMgr.getDefaultReminderTimeSpan(context)
+            val earliest = Helper.getCurrentTimestamp() + ONE_HOUR_IN_S
+            if (reminderTimeSuggestion < earliest) {
+                reminderTimeSuggestion = earliest
+            }
         } else {
-            // TODO subtract predefined reminder interval
-            calendar.setTime(Calendar.getInstance().time)
+            val now = Helper.getCurrentTimestamp()
+            reminderTimeSuggestion = now + PreferenceMgr.getDefaultReminderTimeSpan(context)
         }
+        val calendar = GregorianCalendar.getInstance()
+        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(reminderTimeSuggestion))
+
         val datePicker: DatePicker = findViewById(R.id.dp_reminder)
         datePicker.init(
             calendar[Calendar.YEAR],
@@ -62,7 +71,7 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
         val timePicker: TimePicker = findViewById(R.id.tp_reminder)
         timePicker.setIs24HourView(true)
         timePicker.currentHour = calendar[Calendar.HOUR_OF_DAY]
-        timePicker.currentMinute = calendar[Calendar.MINUTE] + 1
+        timePicker.currentMinute = calendar[Calendar.MINUTE]
         val buttonDate: Button = findViewById(R.id.bt_reminder_date)
         buttonDate.setOnClickListener {
             val layoutDate: LinearLayout = findViewById(R.id.ll_reminder_date)
@@ -93,5 +102,9 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
             getDialogCallback().removeReminder()
             dismiss()
         }
+    }
+
+    companion object {
+        private const val ONE_HOUR_IN_S = 60 * 60
     }
 }
