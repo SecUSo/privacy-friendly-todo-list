@@ -97,7 +97,7 @@
     <string name="set_deadline_before_reminder">リマインダーの時間を設定する前に期限を指定してください。</string>
     <string name="progress_colon">進捗:</string>
     <string name="priority_colon">優先度:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">優先度を選択してください!</string>
     <string name="new_todo_subtask">新しいサブタスク</string>
     <string name="todo_name_must_not_be_empty">タスク名を入力してください。</string>

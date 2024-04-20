@@ -105,7 +105,7 @@
     <string name="set_deadline_before_reminder">Bitte geben sie zuerst eine Deadline an.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
@@ -236,7 +236,7 @@
     <string name="exit_app">To-Do Liste beenden?</string>
     <string name="exit_positive">Ja</string>
     <string name="exit_negative">Nein</string>
-    <string name="select_no_list">keine Liste</string>
+    <string name="select_no_list">Keine Liste</string>
 
     <!-- TO-DO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>

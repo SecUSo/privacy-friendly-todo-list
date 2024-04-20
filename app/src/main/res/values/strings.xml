@@ -37,7 +37,7 @@
 
     <!-- Help -->
     <string name="help_overview_heading">General Information</string>
-    <string name="help_intro">The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
+    <string name="help_intro">The Privacy Friendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
     <string name="help_group_lists">Task management</string>
     <string name="help_todo_lists_title">To-Do lists</string>
     <string name="help_todo_lists">A To-Do list is a group of tasks and can be created using the + button in the toolbar. The lists appear in the navigation menu and can be called there. Tasks inside a To-Do list can be checked, edited and deleted.</string>
@@ -54,7 +54,7 @@
     <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline. Tracking, advertisement or other permissions do not exist.</string>
     <string name="help_group_data_backup">Data Backup</string>
     <string name="help_data_backup">You can use the separate Privacy Friendly Backup app to backup and restore this application\'s data. This can also be used to transfer your data to another device.</string>
-    <string name="help_widget">In addition, this app provides a widget that you can add to your homescreen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
+    <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
 
 
     <!-- About -->
@@ -101,7 +101,7 @@
     <string name="no_deadline">No Deadline</string>
     <string name="edit_task">Edit To-Do Task</string>
     <string name="delete_task">Delete To-Do Task</string>
-    <string name="task_removed">Task put into bin</string>
+    <string name="task_removed">Task put into recycle bin</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Reminder</string>
     <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
@@ -109,7 +109,7 @@
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Select a priority:</string>
     <string name="select_list">Select a list:</string>
     <string name="new_todo_subtask">New subtask</string>
@@ -194,13 +194,13 @@
     <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app does not use any permissions.</string>
 
     <string name="slide2_heading">Lists</string>
-    <string name="slide2_text">You can manage your tasks in labled To-Do lists.</string>
+    <string name="slide2_text">You can manage your tasks in labeled To-Do lists.</string>
 
     <string name="slide3_heading">Reminder</string>
     <string name="slide3_text">You can define deadlines and reminders for your tasks.</string>
 
     <string name="slide4_heading">Everything is important</string>
-    <string name="slide4_text">You can add subtasks and the progress of their maintask. Progress can be set manually or automatically by the number of done subtasks.</string>
+    <string name="slide4_text">You can add subtasks and the progress of their main task. Progress can be set manually or automatically by the number of done subtasks.</string>
 
     <string name="slide5_heading">Secure</string>
     <string name="slide5_text">You can add a PIN-protection in the settings.</string>
@@ -210,11 +210,11 @@
     <string name="skip">Skip</string>
 
     <!-- ### RECYCLE ACTIVITY ### -->
-    <string name="toast_del">Bin is cleared.</string>
-    <string name="bin">Recycler</string>
+    <string name="toast_del">Recycle bin is cleared.</string>
+    <string name="bin">Recycle bin</string>
     <string name="bin_toolbar">Recycle bin</string>
-    <string name="btn_clear">Clear bin</string>
-    <string name="bin_empty">Bin is empty</string>
+    <string name="btn_clear">Clear recycle bin</string>
+    <string name="bin_empty">Recycle bin is empty</string>
     <string name="restore">Restore task</string>
 
 
@@ -236,14 +236,14 @@
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Task changed status</string>
-    <string name="snack_undo">undo action</string>
-    <string name="snack_clear">Bin is now cleared</string>
+    <string name="snack_undo">Undo action</string>
+    <string name="snack_clear">Recycle bin is now cleared</string>
 
     <!-- ### EXIT ### -->
     <string name="exit_app">Exit To-Do List?</string>
     <string name="exit_positive">Yes</string>
     <string name="exit_negative">No</string>
-    <string name="select_no_list">no list</string>
+    <string name="select_no_list">No list</string>
 
     <!-- POMODORO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>

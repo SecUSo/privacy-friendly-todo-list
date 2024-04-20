@@ -97,7 +97,7 @@
     <string name="set_deadline_before_reminder">Gelieve een deadline in te vullen voor de herinneringstijd.</string>
     <string name="progress_colon">Vooruitgang:</string>
     <string name="priority_colon">Prioriteit:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Gelieve een prioriteit te selecteren!</string>
     <string name="new_todo_subtask">Nieuwe ondertaak</string>
     <string name="todo_name_must_not_be_empty">Gelieve een naam te geven aan de taak.</string>

@@ -97,7 +97,7 @@
     <string name="set_deadline_before_reminder">Il faut mettre l\'alarme d\'abord.</string>
     <string name="progress_colon">Progrès:</string>
     <string name="priority_colon">Importance:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Importance</string>
     <string name="new_todo_subtask">Nouvelle sous-tâche</string>
     <string name="todo_name_must_not_be_empty">Le nom ne peut pas être vide.</string>
