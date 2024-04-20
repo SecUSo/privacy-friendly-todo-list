@@ -140,11 +140,11 @@
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>
     <string-array name="default_reminder_times_human">
         <item>Pünktlich zur Deadline</item>
-        <item>0.5 Tage vorher</item>
+        <item>0,5 Tage vorher</item>
         <item>1 Tag vorher</item>
-        <item>1.5 Tage vorher</item>
+        <item>1,5 Tage vorher</item>
         <item>2 Tage vorher</item>
-        <item>2.5 Tage vorher</item>
+        <item>2,5 Tage vorher</item>
         <item>3 Tage vorher</item>
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
@@ -154,6 +154,12 @@
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
+
+    <!-- Notifications -->
+    <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
+    <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
+    <string name="notif_reminder_act_snooze">Schlummern</string>
+    <string name="notif_reminder_act_done">Abhaken</string>
 
     <!-- Date and Time -->
 	<string name="sunday_abbr">SO</string>
@@ -167,7 +173,7 @@
 	<string name="february">Februar</string>
 	<string name="march">März</string>
 	<string name="april">April</string>
-	<string name="may">May</string>
+	<string name="may">Mai</string>
 	<string name="june">Juni</string>
 	<string name="july">Juli</string>
 	<string name="august">August</string>

@@ -160,6 +160,12 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
 
+    <!-- Notifications -->
+    <string name="notif_reminder_ch_name">Task Reminder</string>
+    <string name="notif_reminder_ch_desc">Reminders for upcoming tasks.</string>
+    <string name="notif_reminder_act_snooze">Snooze</string>
+    <string name="notif_reminder_act_done">Set done</string>
+
     <!-- Date and Time -->
     <string name="sunday_abbr">SUN</string>
     <string name="monday_abbr">MON</string>

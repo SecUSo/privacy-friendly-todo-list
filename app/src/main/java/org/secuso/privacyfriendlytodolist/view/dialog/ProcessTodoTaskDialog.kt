@@ -115,10 +115,12 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
         taskName = findViewById(R.id.et_new_task_name)
         taskDescription = findViewById(R.id.et_new_task_description)
 
-        // Request focus for first input field.
-        taskName.requestFocus()
-        // Show soft-keyboard
-        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        if (!changeExistingTask) {
+            // Request focus for first input field.
+            taskName.requestFocus()
+            // Show soft-keyboard
+            window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        }
 
         // initialize textview that displays the selected priority
         prioritySelector = findViewById(R.id.tv_new_task_priority)

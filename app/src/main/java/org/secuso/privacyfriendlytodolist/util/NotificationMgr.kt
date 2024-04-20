@@ -43,7 +43,7 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
  * If SDK >= 26 NotificationChannels will be created.
  */
 object NotificationMgr {
-    private const val CHANNEL_ID = "channel_01"
+    private const val CHANNEL_ID = "my_channel_01"
     private var manager: NotificationManager? = null
 
     private fun getManager(context: Context): NotificationManager {
@@ -51,17 +51,18 @@ object NotificationMgr {
             manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // Avoid recursion, provide notificationManager directly.
-                createChannel(manager!!)
+                createChannel(context, manager!!)
             }
         }
         return manager!!
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    private fun createChannel(notificationManager: NotificationManager) {
-        // TODO Channel name and description is visible to the user and therefore should come from resources as language dependent text.
-        val channel = NotificationChannel(CHANNEL_ID, "Task Reminder", NotificationManager.IMPORTANCE_DEFAULT)
-        channel.description = "Reminders for upcoming tasks."
+    private fun createChannel(context: Context, notificationManager: NotificationManager) {
+        val channel = NotificationChannel(CHANNEL_ID,
+            context.resources.getString(R.string.notif_reminder_ch_name),
+            NotificationManager.IMPORTANCE_DEFAULT)
+        channel.description = context.resources.getString(R.string.notif_reminder_ch_desc)
         channel.enableLights(true)
         channel.lightColor = R.color.colorPrimary
         channel.enableVibration(true)
@@ -98,9 +99,10 @@ object NotificationMgr {
         stackBuilder.addNextIntent(snooze)
         val resultPendingIntent = stackBuilder.getPendingIntent(0,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        // TODO Texts should be language dependent (come from XML resource file):
-        builder.addAction(R.drawable.snooze, "Snooze", pendingSnooze)
-        builder.addAction(R.drawable.done, "Set done", resultPendingIntent)
+        builder.addAction(R.drawable.snooze,
+            context.resources.getString(R.string.notif_reminder_act_snooze), pendingSnooze)
+        builder.addAction(R.drawable.done,
+            context.resources.getString(R.string.notif_reminder_act_done), resultPendingIntent)
         builder.setContentIntent(resultPendingIntent)
         val notificationId = task.getId()
         val notification = builder.build()
