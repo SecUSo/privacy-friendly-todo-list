@@ -147,6 +147,21 @@
         <item>2,5 Tage vorher</item>
         <item>3 Tage vorher</item>
     </string-array>
+    <string name="snooze_duration">Schlummer-Dauer von Erinnerungen</string>
+    <string-array name="snooze_duration_values_human">
+        <item>5 Minuten</item>
+        <item>15 Minuten</item>
+        <item>30 Minuten</item>
+        <item>45 Minuten</item>
+        <item>1 Stunde</item>
+        <item>2 Stunden</item>
+        <item>8 Stunden</item>
+        <item>12 Stunden</item>
+        <item>1 Tag</item>
+        <item>2 Tage</item>
+        <item>3 Tage</item>
+        <item>7 Tage</item>
+    </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
     <string name="auto_progress">Fortschritt durch Teilaufgaben</string>

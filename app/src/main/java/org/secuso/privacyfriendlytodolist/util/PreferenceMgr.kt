@@ -56,6 +56,7 @@ object PreferenceMgr {
     val P_GROUP_BY_PRIORITY = PrefMetaData("PRIORITY", PrefDataType.BOOLEAN)
     val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
     val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
+    private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -70,7 +71,9 @@ object PreferenceMgr {
     }
 
     fun loadDefaultValues(context: Context) {
-        PreferenceManager.setDefaultValues(context, R.xml.settings, false)
+        // readAgain needs to be true to also get default values for settings that were recently
+        // added to the app. This does not delete changes at the current settings set by the user.
+        PreferenceManager.setDefaultValues(context, R.xml.settings, true)
     }
 
     /**
@@ -82,11 +85,22 @@ object PreferenceMgr {
      * @return The default reminder time span in seconds.
      */
     fun getDefaultReminderTimeSpan(context: Context): Long {
+        return getStringPrefAsLong(context, P_DEFAULT_REMINDER_TIME.name)
+    }
+
+    /**
+     * @return The snooze duration. It is stored in the app preference.
+     */
+    fun getSnoozeDuration(context: Context): Long {
+        return getStringPrefAsLong(context, P_SNOOZE_DURATION.name)
+    }
+
+    private fun getStringPrefAsLong(context: Context, prefName: String): Long {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        var value = prefs.getString(P_DEFAULT_REMINDER_TIME.name, null)
+        var value = prefs.getString(prefName, null)
         if (null == value) {
             loadDefaultValues(context)
-            value = prefs.getString(P_DEFAULT_REMINDER_TIME.name, null)!!
+            value = prefs.getString(prefName, null)!!
         }
         return value.toLong()
     }

@@ -26,6 +26,7 @@ import android.os.PersistableBundle
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 
 object JobManager {
     private val TAG = LogTag.create(this::class.java)
@@ -46,6 +47,13 @@ object JobManager {
         val extras = PersistableBundle()
         extras.putInt(AlarmMgr.KEY_ALARM_ID, alarmId)
         return scheduleJob(context, AlarmJob::class.java, extras)
+    }
+
+    fun processNotificationAction(context: Context, action: String, taskId: Int): Int {
+        val extras = PersistableBundle()
+        extras.putInt(action, 0)
+        extras.putInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID, taskId)
+        return scheduleJob(context, NotificationJob::class.java, extras)
     }
 
     private fun scheduleJob(context: Context, jobClass: Class<*>, extras: PersistableBundle? = null): Int {

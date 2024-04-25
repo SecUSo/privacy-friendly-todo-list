@@ -11,4 +11,19 @@
         <item>259200</item>
     </string-array>
 
+    <string-array name="snooze_duration_values">
+        <item>300</item>
+        <item>900</item>
+        <item>1800</item>
+        <item>2700</item>
+        <item>3600</item>
+        <item>7200</item>
+        <item>28800</item>
+        <item>43200</item>
+        <item>86400</item>
+        <item>172800</item>
+        <item>259200</item>
+        <item>604800</item>
+    </string-array>
+
 </resources>

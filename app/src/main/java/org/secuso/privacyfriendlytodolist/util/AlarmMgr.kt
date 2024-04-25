@@ -24,7 +24,6 @@ import android.util.Log
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
 import java.util.Calendar
-import java.util.Date
 import java.util.concurrent.TimeUnit
 
 object AlarmMgr {
@@ -52,6 +51,10 @@ object AlarmMgr {
      * If no alarm gets set null gets returned.
      */
     fun setAlarmForTask(context: Context, todoTask: TodoTask, setAlarmEvenIfItIsInPast: Boolean): Int? {
+        // Use task's database ID as unique alarm ID.
+        val alarmId = todoTask.getId()
+        cancelAlarmForTask(context, alarmId)
+
         if (todoTask.isDone()) {
             Log.i(TAG, "No alarm set because task $todoTask is done.")
             return null
@@ -77,15 +80,27 @@ object AlarmMgr {
             return null
         }
 
-        val date = Date(TimeUnit.SECONDS.toMillis(alarmTime))
-        val calendar = Calendar.getInstance()
-        calendar.setTime(date)
+        val timestamp = setAlarm(context, alarmId, alarmTime)
+        Log.i(TAG, "Alarm set for task $todoTask at $timestamp ($logMessage).")
+        return alarmId
+    }
+
+    fun setAlarmForTask(context: Context, todoTaskId: Int, alarmTime: Long): Int {
         // Use task's database ID as unique alarm ID.
-        val alarmId = todoTask.getId()
+        cancelAlarmForTask(context, todoTaskId)
+
+        val timestamp = setAlarm(context, todoTaskId, alarmTime)
+        Log.i(TAG, "Alarm set for task $todoTaskId at $timestamp.")
+        return todoTaskId
+    }
+
+    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
+        val calendar = Calendar.getInstance()
+        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(alarmTime))
+        // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
         getManager(context)[AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis()] = pendingIntent
-        Log.i(TAG, "Alarm set for task $todoTask at ${Helper.createDateTimeString(calendar)} ($logMessage).")
-        return alarmId
+        return Helper.createDateTimeString(calendar)
     }
 
     fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {
