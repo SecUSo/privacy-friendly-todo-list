@@ -350,6 +350,5 @@ class TodoTasksFragment : Fragment(), SearchView.OnQueryTextListener {
         // The fab is used to create new tasks. However, a task can only be created if the user is inside
         // a certain list. If he chose the "show all task" view, the option to create a new task is not available.
         const val SHOW_FLOATING_BUTTON = "SHOW_FAB"
-        const val KEY = "fragment_selector_key"
     }
 }

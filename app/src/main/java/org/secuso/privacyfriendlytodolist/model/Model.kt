@@ -54,4 +54,19 @@ object Model {
     fun createNewTodoSubtask(): TodoSubtask {
         return TodoSubtaskImpl()
     }
+
+    private val modelObservers = ArrayList<ModelObserver>()
+
+    fun registerModelObserver(modelObserver: ModelObserver) {
+        modelObservers.add(modelObserver)
+    }
+
+    fun unregisterModelObserver(modelObserver: ModelObserver) {
+        modelObservers.remove(modelObserver)
+    }
+    fun notifyDataChangedFromOutside() {
+        for (modelObserver in modelObservers) {
+            modelObserver.onDataChangedFromOutside()
+        }
+    }
 }

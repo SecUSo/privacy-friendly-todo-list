@@ -16,8 +16,10 @@
  */
 package org.secuso.privacyfriendlytodolist.view
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -50,7 +52,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
+import org.secuso.privacyfriendlytodolist.model.ModelObserver
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
@@ -79,7 +83,7 @@ import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
  * This Activity handles the navigation and operation on lists and tasks.
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ModelObserver {
     // Fragment administration
     private var currentFragment: Fragment? = null
 
@@ -243,19 +247,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         hints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        //Try to snooze the task by notification
-        /*if (savedInstanceState == null) {
-            Bundle b = getIntent().getExtras();
-            if (b != null){
-                notificationDone = b.getInt("snooze");
-                int taskID = b.getInt("taskId");
-                TodoList tasks = getTodoTasks();
-                TodoTask currentTask = tasks.getTasks().get(taskID);
-                currentTask.setReminderTime(System.currentTimeMillis() + notificationDone);
-                sendToDatabase(currentTask);
-
-            }
-        } */
         if (intent.getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
             updateTodoFromPomodoro()
         }
@@ -336,24 +327,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // check if app was started by clicking on a reminding notification
         val extras = intent.extras
-        if (extras != null && TodoTasksFragment.KEY == extras.getString(KEY_SELECTED_FRAGMENT_BY_NOTIFICATION)) {
-            val dueTask = extras.getParcelable<TodoTask>(PARCELABLE_KEY_FOR_TODO_TASK)
-            val bundle = Bundle()
-            val listId: Int?
-            if (null != dueTask) {
-                listId = dueTask.getListId()
-            } else {
-                listId = null
-                Log.e(TAG, "Failed to get todo task from parcelable after click on reminding notification.")
+        if (extras != null && extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
+            val dueTaskId = extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
+            model!!.getTaskById(dueTaskId) { dueTask ->
+                val listId: Int?
+                if (null != dueTask) {
+                    listId = dueTask.getListId()
+                    Log.d(TAG, "Reminding notification started MainActivity for task $dueTask and its list $listId.")
+                } else {
+                    listId = null
+                    Log.w(TAG, "Task with ID $dueTaskId not found after click on reminding notification.")
+                }
+                val bundle = Bundle()
+                if (listId != null) {
+                    bundle.putInt(KEY_SELECTED_LIST_ID_BY_NOTIFICATION, listId)
+                } else {
+                    bundle.putByte(KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION, 0.toByte())
+                }
+                bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true)
+                currentFragment = TodoTasksFragment()
+                currentFragment!!.setArguments(bundle)
             }
-            if (listId != null) {
-                bundle.putInt(KEY_SELECTED_LIST_ID_BY_NOTIFICATION, listId)
-            } else {
-                bundle.putByte(KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION, 0.toByte())
-            }
-            bundle.putBoolean(TodoTasksFragment.SHOW_FLOATING_BUTTON, true)
-            currentFragment = TodoTasksFragment()
-            currentFragment!!.setArguments(bundle)
         } else {
             if (currentFragment == null) {
                 showAllTasks()
@@ -502,8 +496,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStop()
     }
 
+    override fun onDataChangedFromOutside() {
+        Log.i(TAG, "Refreshing task list view because data model was changed from outside.")
+        if (activeListId != null) {
+            showTasksOfList(activeListId!!)
+        } else {
+            showAllTasks()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        Model.unregisterModelObserver(this)
+        Log.i(TAG, "onPause()")
+    }
+
     override fun onResume() {
         super.onResume()
+
+        Model.registerModelObserver(this)
 
         // Check if Pomodoro is installed
         pomodoroInstalled = checkIfPomodoroInstalled()
@@ -567,9 +579,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun onTaskChange(todoTask: TodoTask) {
         // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        Log.d(TAG, "Task $todoTask changed. Canceling it's alarm and notification which may exist.")
-        AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
-        NotificationMgr.cancel(this, todoTask.getId())
+        Log.d(MainActivity.TAG, "Task $todoTask changed. Setting its alarm.")
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
         // User should see that.
         AlarmMgr.setAlarmForTask(this, todoTask, false)
@@ -641,6 +651,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showAllTasks() {
+        activeListId = null
         model!!.getAllToDoTasks { todoTasks ->
             expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks)
             exLv!!.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
@@ -859,8 +870,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Update the existing entry, if no subtask
             model!!.saveTodoTaskInDb(todoRe) { counter: Int? -> onTaskChange(todoRe) }
         }
-
-        //super.onResume();
     }
 
     private fun hints() {
@@ -898,10 +907,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
         const val COMMAND = "command"
         const val COMMAND_RUN_TODO = 2
         const val COMMAND_UPDATE = 3
-        private val TAG = LogTag.create(this::class.java.declaringClass)
 
         // Keys
         private const val KEY_TODO_LISTS = "restore_todo_list_key_with_savedinstancestate"
@@ -909,13 +918,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private const val KEY_DUMMY_LIST = "restore_dummy_list_with_savedinstancestate"
         private const val KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate"
         private const val KEY_UNLOCK_UNTIL = "restore_unlock_until_key_with_savedinstancestate"
-        const val KEY_SELECTED_FRAGMENT_BY_NOTIFICATION = "fragment_choice"
         const val KEY_SELECTED_LIST_ID_BY_NOTIFICATION = "KEY_SELECTED_LIST_ID_BY_NOTIFICATION"
         const val KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION = "KEY_SELECTED_DUMMY_LIST_BY_NOTIFICATION"
         private const val KEY_ACTIVE_LIST_IS_DUMMY = "KEY_ACTIVE_LIST_IS_DUMMY"
         private const val KEY_ACTIVE_LIST = "KEY_ACTIVE_LIST"
         private const val POMODORO_ACTION = "org.secuso.privacyfriendlytodolist.TODO_ACTION"
-        const val PARCELABLE_KEY_FOR_TODO_TASK = "PARCELABLE_KEY_FOR_TODO_TASK"
         /** keep the app unlocked for 30 seconds after switching to another activity (settings/help/about) */
         private const val UNLOCK_PERIOD: Long = 30000
     }

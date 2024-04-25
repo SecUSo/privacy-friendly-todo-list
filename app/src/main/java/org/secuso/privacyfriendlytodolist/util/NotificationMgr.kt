@@ -32,8 +32,8 @@ import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
 import org.secuso.privacyfriendlytodolist.view.MainActivity
-import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -43,6 +43,7 @@ import org.secuso.privacyfriendlytodolist.view.TodoTasksFragment
  * If SDK >= 26 NotificationChannels will be created.
  */
 object NotificationMgr {
+    const val EXTRA_NOTIFICATION_TASK_ID = "EXTRA_NOTIFICATION_TASK_ID"
     private const val CHANNEL_ID = "my_channel_01"
     private var manager: NotificationManager? = null
 
@@ -70,7 +71,7 @@ object NotificationMgr {
         notificationManager.createNotificationChannel(channel)
     }
 
-    fun postTaskNotification(context: Context, title: String?, message: String?, task: TodoTask): Int {
+    fun postTaskNotification(context: Context, title: String, message: String, task: TodoTask): Int {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
@@ -80,30 +81,42 @@ object NotificationMgr {
             builder.setContentText(message)
         }
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        if (prefs.getBoolean(PreferenceMgr.P_IS_NOTIFICATION_SOUND.name, true)) {
+        // If Build.VERSION.SDK_INT >= Build.VERSION_CODES.O its no longer possible for the app to
+        // change notification sound after channel was created. Only user can change that in
+        // system notification settings.
+        if (   Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+            && prefs.getBoolean(PreferenceMgr.P_IS_NOTIFICATION_SOUND.name, true)) {
             val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             builder.setSound(uri)
         }
-        val snooze = Intent(context, MainActivity::class.java)
-        val pendingSnooze = PendingIntent.getActivity(context, 0, snooze,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        // TODO Snooze duration should be configurable as a setting.
-        snooze.putExtra("snooze", 900000)
-        snooze.putExtra("taskId", task.getId())
-        val resultIntent = Intent(context, MainActivity::class.java)
-        resultIntent.putExtra(MainActivity.KEY_SELECTED_FRAGMENT_BY_NOTIFICATION, TodoTasksFragment.KEY)
-        resultIntent.putExtra(MainActivity.PARCELABLE_KEY_FOR_TODO_TASK, task)
+
+        // Main Action -> Show task in MainActivity
+        var uniqueRequestCode = 0
+        var intent = Intent(context, MainActivity::class.java)
+        intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         val stackBuilder = TaskStackBuilder.create(context)
         stackBuilder.addParentStack(MainActivity::class.java)
-        stackBuilder.addNextIntent(resultIntent)
-        stackBuilder.addNextIntent(snooze)
-        val resultPendingIntent = stackBuilder.getPendingIntent(0,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        builder.addAction(R.drawable.snooze,
-            context.resources.getString(R.string.notif_reminder_act_snooze), pendingSnooze)
-        builder.addAction(R.drawable.done,
-            context.resources.getString(R.string.notif_reminder_act_done), resultPendingIntent)
-        builder.setContentIntent(resultPendingIntent)
+        stackBuilder.addNextIntent(intent)
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        var pendingIntent = stackBuilder.getPendingIntent(++uniqueRequestCode, flags)
+        builder.setContentIntent(pendingIntent)
+
+        // Snooze Action -> Restart reminder without showing activity
+        intent = Intent(context, NotificationReceiver::class.java)
+        intent.setAction(NotificationReceiver.ACTION_SNOOZE)
+        intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
+        pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
+        var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze)
+        builder.addAction(R.drawable.snooze, actionTitle, pendingIntent)
+
+        // Done Action
+        intent = Intent(context, NotificationReceiver::class.java)
+        intent.setAction(NotificationReceiver.ACTION_SET_DONE)
+        intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
+        pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
+        actionTitle = context.resources.getString(R.string.notif_reminder_act_done)
+        builder.addAction(R.drawable.done, actionTitle, pendingIntent)
+
         val notificationId = task.getId()
         val notification = builder.build()
         getManager(context).notify(notificationId, notification)

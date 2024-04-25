@@ -99,6 +99,14 @@
             </intent-filter>
         </receiver>
         <receiver
+            android:name=".receiver.NotificationReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.secuso.privacyfriendlytodolist.SNOOZE" />
+                <action android:name="org.secuso.privacyfriendlytodolist.SET_DONE" />
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name=".view.widget.TodoListWidget"
             android:exported="true">
             <intent-filter>
@@ -122,6 +130,9 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".service.AlarmJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".service.NotificationJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".view.widget.ListViewWidgetService"

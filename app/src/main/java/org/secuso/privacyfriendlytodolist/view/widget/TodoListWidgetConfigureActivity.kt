@@ -69,6 +69,7 @@ class TodoListWidgetConfigureActivity : Activity() {
                 setResult(RESULT_OK, resultValue)
                 finish()
             } else {
+                // TODO Enable "No list"-entry or "All tasks"-entry to show all tasks and not only a specific list
                 Toast.makeText(this, "No list available", Toast.LENGTH_SHORT).show()
             }
         }
