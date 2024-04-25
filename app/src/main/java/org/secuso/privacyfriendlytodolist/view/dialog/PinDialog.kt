@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -45,6 +46,12 @@ class PinDialog(context: Context, private val allowReset: Boolean) :
 
         val textEditPin: EditText = findViewById(R.id.et_pin_pin)
         val buttonOkay: Button = findViewById(R.id.bt_pin_ok)
+
+        // Request focus for first input field.
+        textEditPin.requestFocus()
+        // Show soft-keyboard
+        window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+
         buttonOkay.setOnClickListener {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val pinExpected = prefs.getString(PreferenceMgr.P_PIN.name, "")
