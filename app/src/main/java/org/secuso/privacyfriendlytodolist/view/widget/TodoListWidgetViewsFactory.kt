@@ -17,8 +17,10 @@
 package org.secuso.privacyfriendlytodolist.view.widget
 
 import android.annotation.SuppressLint
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
@@ -33,6 +35,7 @@ import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
+
 /**
  * Created by Sebastian Lutz on 15.02.2018.
  *
@@ -43,10 +46,13 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
     private var viewModel: CustomViewModel? = null
     private var model: ModelServices? = null
     private val items = ArrayList<Tuple<Int, RemoteViews>>()
+    private lateinit var defaultTitle: String
+    private var currentTitle: String = ""
 
     override fun onCreate() {
         viewModel = CustomViewModel(context)
         model = viewModel!!.model
+        defaultTitle = context.getString(R.string.app_name)
     }
 
     override fun onDestroy() {
@@ -60,26 +66,21 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
     }
 
     override fun onDataSetChanged() {
-        val listChosen = TodoListWidgetConfigureActivity.loadTitlePref(context, appWidgetId)
-        if (null == listChosen) {
-            Log.e(TAG, "Widget $appWidgetId: No title preference found.")
-            return
-        }
-
+        val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId)
         val job: Job
+        var newTitle: String? = null
         var changedTodoTasks: List<TodoTask>? = null
-        if (listChosen == TodoListWidgetConfigureActivity.TITLE_PREF_SHOW_ALL_TASKS) {
-            job = model!!.getAllToDoTasks(DeliveryOption.DIRECT) { todoTasks ->
-                changedTodoTasks = todoTasks
+        if (null != pref.todoListId) {
+            job = model!!.getToDoListById(pref.todoListId!!, DeliveryOption.DIRECT) { todoList ->
+                if (null != todoList) {
+                    newTitle = todoList.getName()
+                    changedTodoTasks = todoList.getTasks()
+                }
             }
         } else {
-            job = model!!.getAllToDoLists(DeliveryOption.DIRECT) { todoLists ->
-                for (todoList in todoLists) {
-                    if (todoList.getName() == listChosen) {
-                        changedTodoTasks = todoList.getTasks()
-                        break
-                    }
-                }
+            job = model!!.getAllToDoTasks(DeliveryOption.DIRECT) { todoTasks ->
+                newTitle = defaultTitle
+                changedTodoTasks = todoTasks
             }
         }
         runBlocking {
@@ -88,6 +89,14 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         if (null == changedTodoTasks) {
             Log.e(TAG, "Widget $appWidgetId: Failed to get changed tasks.")
             return
+        }
+
+        if (null != newTitle && currentTitle != newTitle) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val bundle: Bundle = appWidgetManager.getAppWidgetOptions(appWidgetId)
+            bundle.putString(TodoListWidget.WIDGET_OPTION_TITLE, newTitle)
+            appWidgetManager.updateAppWidgetOptions(appWidgetId, bundle)
+            currentTitle = newTitle!!
         }
 
         items.clear()

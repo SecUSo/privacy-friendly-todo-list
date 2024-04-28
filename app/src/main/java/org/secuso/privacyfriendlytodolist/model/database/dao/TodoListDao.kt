@@ -37,8 +37,6 @@ interface TodoListDao {
     suspend fun getCount(): Int
     @Query("SELECT * FROM todoLists")
     suspend fun getAll(): Array<TodoListData>
-    @Query("SELECT name FROM todoLists")
-    suspend fun getAllNames(): Array<String>
     @Query("SELECT * FROM todoLists WHERE id = :todoListId LIMIT 1")
     suspend fun getById(todoListId: Int): TodoListData?
     @Query("DELETE FROM todoLists")

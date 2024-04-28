@@ -255,15 +255,6 @@ class ModelServicesImpl(
         }
     }
 
-    override fun getAllToDoListNames(deliveryOption: DeliveryOption,
-                                     resultConsumer: ResultConsumer<MutableList<String>>): Job {
-        return coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoListDao().getAllNames()
-            val todoListNames = dataArray.toCollection(ArrayList(dataArray.size))
-            dispatchResult(deliveryOption, resultConsumer, todoListNames)
-        }
-    }
-
     override fun getToDoListById(todoListId: Int,
                                  deliveryOption: DeliveryOption,
                                  resultConsumer: ResultConsumer<TodoList?>): Job {

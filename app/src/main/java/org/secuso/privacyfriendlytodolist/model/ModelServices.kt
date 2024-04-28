@@ -88,7 +88,6 @@ interface ModelServices {
     fun getRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job
     fun clearRecycleBin(deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
     fun getAllToDoLists(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<TodoList>>): Job
-    fun getAllToDoListNames(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<String>>): Job
     fun getToDoListById(todoListId: Int, deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<TodoList?>): Job
     fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
     fun saveTodoTaskInDb(todoTask: TodoTask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job

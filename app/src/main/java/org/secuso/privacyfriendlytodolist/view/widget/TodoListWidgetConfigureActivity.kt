@@ -29,6 +29,7 @@ import android.view.View
 import android.widget.TextView
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
@@ -41,10 +42,10 @@ import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 class TodoListWidgetConfigureActivity : Activity() {
     private var viewModel: CustomViewModel? = null
     private var model: ModelServices? = null
-    private lateinit var listNames: MutableList<String>
+    private lateinit var todoLists: List<TodoList>
     private lateinit var listSelector: TextView
-    private var selectedListName: String = TITLE_PREF_SHOW_ALL_TASKS
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private val pref = TodoListWidgetPreferences()
 
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
@@ -69,8 +70,8 @@ class TodoListWidgetConfigureActivity : Activity() {
         setContentView(R.layout.todo_list_widget_configure)
 
         // Initialize textview that displays selected list
-        model!!.getAllToDoListNames { todoListNames ->
-            listNames = todoListNames
+        model!!.getAllToDoLists { todoLists ->
+            this.todoLists = todoLists
             listSelector = findViewById(R.id.tv_widget_cfg_list_choose)
             listSelector.setOnClickListener { view ->
                 registerForContextMenu(listSelector)
@@ -80,7 +81,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         }
 
         findViewById<View>(R.id.bt_widget_cfg_ok).setOnClickListener { view: View? ->
-            saveTitlePref(this, appWidgetId, selectedListName)
+            saveWidgetPreferences(this, appWidgetId, pref)
 
             // Trigger update after list name was saved to update the widget title with list name.
             TodoListWidget.triggerWidgetUpdate(this, appWidgetId)
@@ -109,19 +110,20 @@ class TodoListWidgetConfigureActivity : Activity() {
         if (v.id == R.id.tv_widget_cfg_list_choose) {
             menu.setHeaderTitle(R.string.select_list)
             menu.add(Menu.NONE, -1, Menu.NONE, R.string.all_tasks)
-            for (index in 0..<listNames.size) {
-                menu.add(Menu.NONE, index, Menu.NONE, listNames[index])
+            for (index in todoLists.indices) {
+                menu.add(Menu.NONE, index, Menu.NONE, todoLists[index].getName())
             }
         }
     }
 
     override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
         val index = item.itemId
-        if (index >= 0 && index < listNames.size) {
-            selectedListName = listNames[index]
-            listSelector.text = selectedListName
+        if (index >= 0 && index < todoLists.size) {
+            val todoList = todoLists[index]
+            pref.todoListId = todoList.getId()
+            listSelector.text = todoList.getName()
         } else {
-            selectedListName = TITLE_PREF_SHOW_ALL_TASKS
+            pref.todoListId = null
             listSelector.text = getString(R.string.all_tasks)
         }
 
@@ -130,28 +132,33 @@ class TodoListWidgetConfigureActivity : Activity() {
 
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
-        private const val PREFS_NAME =
-            "org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget"
-        private const val PREF_PREFIX_KEY = "appwidget_"
-        const val TITLE_PREF_SHOW_ALL_TASKS = ""
+        private const val PREFS_NAME = "org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget"
+        private const val PREF_PREFIX = "_todo_list_widget_"
+        private const val PREF_LIST_ID_KEY = PREF_PREFIX + "list_id"
+        private const val PREF_NULL_VALUE = "null"
 
-        // Write the prefix to the SharedPreferences object for this widget
-        fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
+        private fun saveWidgetPreferences(context: Context, appWidgetId: Int, pref: TodoListWidgetPreferences) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(PREF_PREFIX_KEY + appWidgetId, text)
+            val id = appWidgetId.toString()
+            prefs.putString(id + PREF_LIST_ID_KEY, pref.todoListId.toString())
             prefs.apply()
         }
 
-        // Read the prefix from the SharedPreferences object for this widget.
-        // If there is no preference saved, get the default from a resource
-        fun loadTitlePref(context: Context, appWidgetId: Int): String? {
+        fun loadWidgetPreferences(context: Context, appWidgetId: Int): TodoListWidgetPreferences {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            return prefs.getString(PREF_PREFIX_KEY + appWidgetId, null)
+            val id = appWidgetId.toString()
+            var todoListId: Int? = null
+            val todoListIdAsString = prefs.getString(id + PREF_LIST_ID_KEY, null)
+            if (todoListIdAsString != null && todoListIdAsString != PREF_NULL_VALUE) {
+                todoListId = todoListIdAsString.toInt()
+            }
+            return TodoListWidgetPreferences(todoListId)
         }
 
-        fun deleteTitlePref(context: Context, appWidgetId: Int) {
+        fun deleteWidgetPreferences(context: Context, appWidgetId: Int) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.remove(PREF_PREFIX_KEY + appWidgetId)
+            val id = appWidgetId.toString()
+            prefs.remove(id + PREF_LIST_ID_KEY)
             prefs.apply()
         }
     }
