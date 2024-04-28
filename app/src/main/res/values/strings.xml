@@ -244,9 +244,7 @@
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Configure</string>
-    <string name="widget_list">Choose a list:</string>
+    <string name="widget_configuration">Widget configuration</string>
 
 
     <!-- ### Snackbar Messages ### -->

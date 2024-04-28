@@ -117,7 +117,7 @@
                 android:resource="@xml/todo_list_widget_info" />
         </receiver>
         <receiver
-            android:name="org.secuso.privacyfriendlytodolist.receiver.TodoReReceiver"
+            android:name=".receiver.TodoReReceiver"
             android:exported="true"
             android:permission="org.secuso.privacyfriendlyproductivitytimer.TODO_RE_PERMISSION">
             <intent-filter>
@@ -135,7 +135,7 @@
             android:name=".service.NotificationJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".view.widget.ListViewWidgetService"
+            android:name=".view.widget.TodoListWidgetViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
             android:name=".backup.PFABackupService"

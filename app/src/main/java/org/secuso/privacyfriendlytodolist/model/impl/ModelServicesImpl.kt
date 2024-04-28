@@ -22,8 +22,11 @@ import android.os.Handler
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.model.ModelServices.DeliveryOption
 import org.secuso.privacyfriendlytodolist.model.ResultConsumer
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
@@ -37,7 +40,7 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.RequiredDBAction
 
 class ModelServicesImpl(
-    context: Context,
+    private val context: Context,
     private val coroutineScope: CoroutineScope,
     private val resultHandler: Handler): ModelServices {
 
@@ -47,21 +50,25 @@ class ModelServicesImpl(
 
     private var db: TodoListDatabase = getInstance(context)
 
-    override fun getTaskById(todoTaskId: Int, resultConsumer: ResultConsumer<TodoTask?>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getTaskById(todoTaskId: Int,
+                             deliveryOption: DeliveryOption,
+                             resultConsumer: ResultConsumer<TodoTask?>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val todoTaskData = db.getTodoTaskDao().getById(todoTaskId)
             var todoTask: TodoTask? = null
             if (null != todoTaskData) {
                 todoTask = loadTasksSubtasks(false, todoTaskData)[0]
             }
-            dispatchResult(resultConsumer, todoTask)
+            dispatchResult(deliveryOption, resultConsumer, todoTask)
         }
     }
 
-    override fun getNextDueTask(now: Long, resultConsumer: ResultConsumer<TodoTask?>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getNextDueTask(now: Long,
+                                deliveryOption: DeliveryOption,
+                                resultConsumer: ResultConsumer<TodoTask?>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val data = getNextDueTaskBlocking(now)
-            dispatchResult(resultConsumer, data)
+            dispatchResult(deliveryOption, resultConsumer, data)
         }
     }
 
@@ -74,8 +81,10 @@ class ModelServicesImpl(
         return nextDueTask
     }
 
-    override fun getTasksToRemind(now: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getTasksToRemind(now: Long, lockedIds: Set<Int>?,
+                                  deliveryOption: DeliveryOption,
+                                  resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllToRemind(now, lockedIds)
             val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
@@ -85,12 +94,14 @@ class ModelServicesImpl(
                 tasksToRemind.add(nextDueTask as TodoTaskImpl)
             }
             @Suppress("UNCHECKED_CAST")
-            dispatchResult(resultConsumer, tasksToRemind as MutableList<TodoTask>)
+            dispatchResult(deliveryOption, resultConsumer, tasksToRemind as MutableList<TodoTask>)
         }
     }
 
-    override fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun deleteTodoList(todoListId: Int,
+                                deliveryOption: DeliveryOption?,
+                                resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             var counter = 0
             val todoListData = db.getTodoListDao().getById(todoListId)
             if (null != todoListData) {
@@ -102,14 +113,18 @@ class ModelServicesImpl(
                 counter = db.getTodoListDao().delete(todoList.data)
             }
             Log.i(TAG, "$counter lists removed from database")
-            dispatchResult(resultConsumer, counter)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
-    override fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = deleteTodoTaskBlocking(todoTask)
-            dispatchResult(resultConsumer, data)
+    override fun deleteTodoTask(todoTask: TodoTask,
+                                deliveryOption: DeliveryOption?,
+                                resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = deleteTodoTaskBlocking(todoTask)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
@@ -125,10 +140,13 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = deleteTodoSubtaskBlocking(subtask)
-            dispatchResult(resultConsumer, data)
+    override fun deleteTodoSubtask(subtask: TodoSubtask,
+                                   deliveryOption: DeliveryOption?,
+                                   resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = deleteTodoSubtaskBlocking(subtask)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
@@ -139,14 +157,19 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = setTaskAndSubtasksInRecycleBinBlocking(todoTask, inRecycleBin)
-            dispatchResult(resultConsumer, data)
+    override fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask,
+                                                inRecycleBin: Boolean,
+                                                deliveryOption: DeliveryOption?,
+                                                resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = setTaskAndSubtasksInRecycleBinBlocking(todoTask, inRecycleBin)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
-    private suspend fun setTaskAndSubtasksInRecycleBinBlocking(todoTask: TodoTask, inRecycleBin: Boolean): Int {
+    private suspend fun setTaskAndSubtasksInRecycleBinBlocking(todoTask: TodoTask,
+                                                               inRecycleBin: Boolean): Int {
         var counter = 0
         for (subtask in todoTask.getSubtasks()) {
             counter += setSubtaskInRecycleBinBlocking(subtask, inRecycleBin)
@@ -159,14 +182,19 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = setSubtaskInRecycleBinBlocking(subtask, inRecycleBin)
-            dispatchResult(resultConsumer, data)
+    override fun setSubtaskInRecycleBin(subtask: TodoSubtask,
+                                        inRecycleBin: Boolean,
+                                        deliveryOption: DeliveryOption?,
+                                        resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = setSubtaskInRecycleBinBlocking(subtask, inRecycleBin)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
-    private suspend fun setSubtaskInRecycleBinBlocking(subtask: TodoSubtask, inRecycleBin: Boolean): Int {
+    private suspend fun setSubtaskInRecycleBinBlocking(subtask: TodoSubtask,
+                                                       inRecycleBin: Boolean): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
         todoSubtaskImpl.setInRecycleBin(inRecycleBin)
         val counter = db.getTodoSubtaskDao().update(todoSubtaskImpl.data)
@@ -174,75 +202,86 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getNumberOfAllListsAndTasks(deliveryOption: DeliveryOption,
+                                             resultConsumer: ResultConsumer<Tuple<Int, Int>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val numberOfLists = db.getTodoListDao().getCount()
             val numberOfTasksNotInRecycleBin = db.getTodoTaskDao().getCountNotInRecycleBin()
-            dispatchResult(resultConsumer, Tuple(numberOfLists, numberOfTasksNotInRecycleBin))
+            dispatchResult(deliveryOption, resultConsumer, Tuple(numberOfLists, numberOfTasksNotInRecycleBin))
         }
     }
 
-    override fun getAllToDoTasks(resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getAllToDoTasks(deliveryOption: DeliveryOption,
+                                 resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllNotInRecycleBin()
             val data = loadTasksSubtasks(false, *dataArray)
             @Suppress("UNCHECKED_CAST")
-            dispatchResult(resultConsumer, data as MutableList<TodoTask>)
+            dispatchResult(deliveryOption, resultConsumer, data as MutableList<TodoTask>)
         }
     }
 
-    override fun getRecycleBin(resultConsumer: ResultConsumer<MutableList<TodoTask>>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getRecycleBin(deliveryOption: DeliveryOption,
+                               resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
             val data = loadTasksSubtasks(true, *dataArray)
             @Suppress("UNCHECKED_CAST")
-            dispatchResult(resultConsumer, data as MutableList<TodoTask>)
+            dispatchResult(deliveryOption, resultConsumer, data as MutableList<TodoTask>)
         }
     }
 
-    override fun clearRecycleBin(resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun clearRecycleBin(deliveryOption: DeliveryOption?,
+                                 resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
             val todoTasks = loadTasksSubtasks(true, *dataArray)
             var counter = 0
             for (todoTask in todoTasks) {
                 counter += deleteTodoTaskBlocking(todoTask)
             }
-            dispatchResult(resultConsumer, counter)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
-    override fun getAllToDoLists(resultConsumer: ResultConsumer<MutableList<TodoList>>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getAllToDoLists(deliveryOption: DeliveryOption,
+                                 resultConsumer: ResultConsumer<MutableList<TodoList>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoListDao().getAll()
             val todoLists = loadListsTasksSubtasks(*dataArray)
             @Suppress("UNCHECKED_CAST")
-            dispatchResult(resultConsumer, todoLists as MutableList<TodoList>)
+            dispatchResult(deliveryOption, resultConsumer, todoLists as MutableList<TodoList>)
         }
     }
 
-    override fun getAllToDoListNames(resultConsumer: ResultConsumer<MutableList<String>>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getAllToDoListNames(deliveryOption: DeliveryOption,
+                                     resultConsumer: ResultConsumer<MutableList<String>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoListDao().getAllNames()
             val todoListNames = dataArray.toCollection(ArrayList(dataArray.size))
-            dispatchResult(resultConsumer, todoListNames)
+            dispatchResult(deliveryOption, resultConsumer, todoListNames)
         }
     }
 
-    override fun getToDoListById(todoListId: Int, resultConsumer: ResultConsumer<TodoList?>) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun getToDoListById(todoListId: Int,
+                                 deliveryOption: DeliveryOption,
+                                 resultConsumer: ResultConsumer<TodoList?>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val todoListData = db.getTodoListDao().getById(todoListId)
             var todoList: TodoList? = null
             if (null != todoListData) {
                 todoList = loadListsTasksSubtasks(todoListData)[0]
             }
-            dispatchResult(resultConsumer, todoList)
+            dispatchResult(deliveryOption, resultConsumer, todoList)
         }
     }
 
     // returns the id of the todolist
-    override fun saveTodoListInDb(todoList: TodoList, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun saveTodoListInDb(todoList: TodoList,
+                                  deliveryOption: DeliveryOption?,
+                                  resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             val todoListImpl = todoList as TodoListImpl
             val data = todoListImpl.data
             var counter = 0
@@ -261,24 +300,31 @@ class ModelServicesImpl(
                 else -> {}
             }
             todoListImpl.setUnchanged()
-            dispatchResult(resultConsumer, counter)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
-    override fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = saveTodoTaskInDbBlocking(todoTask)
-            dispatchResult(resultConsumer, data)
+    override fun saveTodoTaskInDb(todoTask: TodoTask,
+                                  deliveryOption: DeliveryOption?,
+                                  resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = saveTodoTaskInDbBlocking(todoTask)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
-    override fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = saveTodoTaskInDbBlocking(todoTask)
+    override fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask,
+                                             deliveryOption: DeliveryOption?,
+                                             resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            var counter = saveTodoTaskInDbBlocking(todoTask)
             for (subtask in todoTask.getSubtasks()) {
-                saveTodoSubtaskInDbBlocking(subtask)
+                counter += saveTodoSubtaskInDbBlocking(subtask)
             }
-            dispatchResult(resultConsumer, data)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
@@ -314,10 +360,13 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
-            val data = saveTodoSubtaskInDbBlocking(todoSubtask)
-            dispatchResult(resultConsumer, data)
+    override fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask,
+                                     deliveryOption: DeliveryOption?,
+                                     resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = saveTodoSubtaskInDbBlocking(todoSubtask)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
@@ -343,12 +392,14 @@ class ModelServicesImpl(
         return counter
     }
 
-    override fun deleteAllData(resultConsumer: ResultConsumer<Int>?) {
-        coroutineScope.launch(Dispatchers.IO) {
+    override fun deleteAllData(deliveryOption: DeliveryOption?,
+                               resultConsumer: ResultConsumer<Int>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
             var counter = db.getTodoSubtaskDao().deleteAll()
             counter += db.getTodoTaskDao().deleteAll()
             counter += db.getTodoListDao().deleteAll()
-            dispatchResult(resultConsumer, counter)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
         }
     }
 
@@ -395,10 +446,24 @@ class ModelServicesImpl(
         return subtasks
     }
 
-    private inline fun <reified T>dispatchResult(resultConsumer: ResultConsumer<T>?, result: T) {
-        if (null != resultConsumer) {
-            if (!resultHandler.post { resultConsumer.consume(result) }) {
-                Log.e(TAG, "Failed to post data model result of type " + T::class.java.simpleName)
+    private inline fun <reified T>dispatchResult(deliveryOption: DeliveryOption?,
+                                                 resultConsumer: ResultConsumer<T>?, result: T) {
+        if (null != deliveryOption && null != resultConsumer) {
+            if (deliveryOption == DeliveryOption.POST) {
+                if (!resultHandler.post { resultConsumer.consume(result) }) {
+                    Log.e(TAG, "Failed to post data model result of type " + T::class.java.simpleName)
+                }
+            } else {
+                // DeliveryOption.DIRECT
+                resultConsumer.consume(result)
+            }
+        }
+    }
+
+    private fun notifyDataChanged(changedItems: Int) {
+        if (changedItems > 0) {
+            if (!resultHandler.post { Model.notifyDataChanged(context) }) {
+                Log.e(TAG, "Failed to post Model.notifyDataChanged().")
             }
         }
     }

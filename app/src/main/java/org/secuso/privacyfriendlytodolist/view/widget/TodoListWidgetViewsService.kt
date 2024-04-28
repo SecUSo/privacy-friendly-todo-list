@@ -16,6 +16,7 @@
  */
 package org.secuso.privacyfriendlytodolist.view.widget
 
+import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.widget.RemoteViewsService
 
@@ -24,8 +25,9 @@ import android.widget.RemoteViewsService
  *
  * Service that gives data to AppWidgetProvider (TodoListWidget) class
  */
-class ListViewWidgetService : RemoteViewsService() {
+class TodoListWidgetViewsService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return WidgetViewsFactory(applicationContext)
+        val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,AppWidgetManager.INVALID_APPWIDGET_ID)
+        return TodoListWidgetViewsFactory(applicationContext, appWidgetId)
     }
 }

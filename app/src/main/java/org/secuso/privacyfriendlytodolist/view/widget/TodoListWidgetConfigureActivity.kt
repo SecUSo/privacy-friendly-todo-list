@@ -21,12 +21,15 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.TextView
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
 /**
@@ -38,59 +41,59 @@ import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 class TodoListWidgetConfigureActivity : Activity() {
     private var viewModel: CustomViewModel? = null
     private var model: ModelServices? = null
-    private lateinit var spinner: Spinner
-    private var lists: ArrayAdapter<String>? = null
-    private var mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private lateinit var listNames: MutableList<String>
+    private lateinit var listSelector: TextView
+    private var selectedListName: String = TITLE_PREF_SHOW_ALL_TASKS
+    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
 
-        viewModel = CustomViewModel(this)
-        model = viewModel!!.model
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED)
-        setContentView(R.layout.todo_list_widget_configure)
-        spinner = findViewById(R.id.spinner1)
-        findViewById<View>(R.id.add_button).setOnClickListener { view: View? ->
-            // When the button is clicked, store the string locally
-            val listsCopy = lists
-            if (null != listsCopy && !listsCopy.isEmpty) {
-                val listTitle = spinner.getSelectedItem().toString()
-                saveTitlePref(this, mAppWidgetId, listTitle)
-
-                // It is the responsibility of the configuration activity to update the app widget
-                //AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                WidgetViewsFactory.setAppWidgetId(mAppWidgetId)
-
-                // Make sure we pass back the original appWidgetId
-                val resultValue = Intent()
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
-                setResult(RESULT_OK, resultValue)
-                finish()
-            } else {
-                // TODO Enable "No list"-entry or "All tasks"-entry to show all tasks and not only a specific list
-                Toast.makeText(this, "No list available", Toast.LENGTH_SHORT).show()
-            }
-        }
-        //updates the lists array and prepare adapter for spinner
-        model!!.getAllToDoListNames { todoListNames ->
-            lists = ArrayAdapter(this, android.R.layout.simple_spinner_item, todoListNames)
-            //initialize spinner dropdown
-            lists!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.setAdapter(lists)
-        }
 
         // Find the widget id from the intent.
-        val extras = intent.extras
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-        }
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+        appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            // This activity was started with an intent without an app widget ID, finish with an error.
+            Log.e(TAG, "Widget configurator started without an app widget ID.")
             finish()
             return
+        }
+        Log.d(TAG, "Widget configurator started with app widget ID $appWidgetId.")
+
+        viewModel = CustomViewModel(this)
+        model = viewModel!!.model
+
+        setContentView(R.layout.todo_list_widget_configure)
+
+        // Initialize textview that displays selected list
+        model!!.getAllToDoListNames { todoListNames ->
+            listNames = todoListNames
+            listSelector = findViewById(R.id.tv_widget_cfg_list_choose)
+            listSelector.setOnClickListener { view ->
+                registerForContextMenu(listSelector)
+                openContextMenu(listSelector)
+            }
+            listSelector.setOnCreateContextMenuListener(this)
+        }
+
+        findViewById<View>(R.id.bt_widget_cfg_ok).setOnClickListener { view: View? ->
+            saveTitlePref(this, appWidgetId, selectedListName)
+
+            // Trigger update after list name was saved to update the widget title with list name.
+            TodoListWidget.triggerWidgetUpdate(this, appWidgetId)
+
+            // Make sure we pass back the original appWidgetId
+            val resultValue = Intent()
+            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            setResult(RESULT_OK, resultValue)
+            finish()
+        }
+
+        findViewById<View>(R.id.bt_widget_cfg_cancel).setOnClickListener { view: View? ->
+            finish()
         }
     }
 
@@ -102,13 +105,38 @@ class TodoListWidgetConfigureActivity : Activity() {
         viewModel = null
     }
 
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        if (v.id == R.id.tv_widget_cfg_list_choose) {
+            menu.setHeaderTitle(R.string.select_list)
+            menu.add(Menu.NONE, -1, Menu.NONE, R.string.all_tasks)
+            for (index in 0..<listNames.size) {
+                menu.add(Menu.NONE, index, Menu.NONE, listNames[index])
+            }
+        }
+    }
+
+    override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
+        val index = item.itemId
+        if (index >= 0 && index < listNames.size) {
+            selectedListName = listNames[index]
+            listSelector.text = selectedListName
+        } else {
+            selectedListName = TITLE_PREF_SHOW_ALL_TASKS
+            listSelector.text = getString(R.string.all_tasks)
+        }
+
+        return super.onMenuItemSelected(featureId, item)
+    }
+
     companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
         private const val PREFS_NAME =
             "org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget"
         private const val PREF_PREFIX_KEY = "appwidget_"
+        const val TITLE_PREF_SHOW_ALL_TASKS = ""
 
         // Write the prefix to the SharedPreferences object for this widget
-        fun saveTitlePref(context: Context, appWidgetId: Int, text: String?) {
+        fun saveTitlePref(context: Context, appWidgetId: Int, text: String) {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
             prefs.putString(PREF_PREFIX_KEY + appWidgetId, text)
             prefs.apply()
@@ -116,10 +144,9 @@ class TodoListWidgetConfigureActivity : Activity() {
 
         // Read the prefix from the SharedPreferences object for this widget.
         // If there is no preference saved, get the default from a resource
-        fun loadTitlePref(context: Context, appWidgetId: Int): String {
+        fun loadTitlePref(context: Context, appWidgetId: Int): String? {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null)
-            return titleValue ?: context.getString(R.string.appwidget_text)
+            return prefs.getString(PREF_PREFIX_KEY + appWidgetId, null)
         }
 
         fun deleteTitlePref(context: Context, appWidgetId: Int) {

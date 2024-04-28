@@ -238,9 +238,7 @@
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Widget hinzufügen</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Konfigurieren</string>
-    <string name="widget_list">Wählen Sie eine Liste aus:</string>
+    <string name="widget_configuration">Widget Konfiguration</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Status geändert</string>

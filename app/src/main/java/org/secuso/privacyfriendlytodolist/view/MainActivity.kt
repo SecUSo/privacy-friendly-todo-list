@@ -16,10 +16,8 @@
  */
 package org.secuso.privacyfriendlytodolist.view
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -302,7 +300,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun resetApp() {
                     PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit().clear().apply()
-                    model!!.deleteAllData(null)
+                    model!!.deleteAllData(null, null)
                     val intent = Intent(this@MainActivity, MainActivity::class.java)
                     dialog.dismiss()
                     startActivity(intent)
@@ -496,7 +494,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStop()
     }
 
-    override fun onDataChangedFromOutside() {
+    override fun onTodoDataChangedFromOutside(context: Context) {
         Log.i(TAG, "Refreshing task list view because data model was changed from outside.")
         if (activeListId != null) {
             showTasksOfList(activeListId!!)
@@ -579,7 +577,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun onTaskChange(todoTask: TodoTask) {
         // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        Log.d(MainActivity.TAG, "Task $todoTask changed. Setting its alarm.")
+        Log.d(TAG, "Task $todoTask changed. Setting its alarm.")
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
         // User should see that.
         AlarmMgr.setAlarmForTask(this, todoTask, false)
@@ -633,19 +631,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     inner class OnCustomMenuItemClickListener internal constructor(private val id: Int,
         private val context: Context) : View.OnClickListener {
         override fun onClick(view: View) {
-            val builder1 = AlertDialog.Builder(context)
-            builder1.setMessage(R.string.alert_listdelete)
-            builder1.setCancelable(true)
-            builder1.setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
-                model!!.deleteTodoList(id, null)
+            val alertBuilder = AlertDialog.Builder(context)
+            alertBuilder.setMessage(R.string.alert_listdelete)
+            alertBuilder.setCancelable(true)
+            alertBuilder.setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
+                model!!.deleteTodoList(id, null, null)
                 dialog.cancel()
                 val intent = Intent(context, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 startActivity(intent)
             }
-            builder1.setNegativeButton(R.string.alert_delete_no) { dialog, id -> dialog.cancel() }
-            val alert11 = builder1.create()
-            alert11.show()
+            alertBuilder.setNegativeButton(R.string.alert_delete_no) { dialog, id -> dialog.cancel() }
+            alertBuilder.create().show()
             return
         }
     }

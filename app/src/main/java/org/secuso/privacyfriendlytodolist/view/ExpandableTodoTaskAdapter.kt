@@ -405,7 +405,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                                 subtask.setDone(inverted)
                             }
-                            model.saveTodoTaskAndSubtasksInDb(currentTask, null)
+                            model.saveTodoTaskAndSubtasksInDb(currentTask, null, null)
                         }
                         snackbar.show()
                         currentTask.setDone(buttonView.isChecked)
@@ -417,7 +417,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             subtask.setChanged()
                             notifyDataSetChanged()
                         }
-                        model.saveTodoTaskInDb(currentTask, null)
+                        model.saveTodoTaskInDb(currentTask, null, null)
                     }
                 }
             }

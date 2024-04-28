@@ -16,6 +16,7 @@
             android:fadeScrollbars="false"
             android:gravity="center"
             android:textColor="@color/white"
+            android:text="@string/app_name"
             android:textSize="22dp"
             android:textStyle="italic"
             />

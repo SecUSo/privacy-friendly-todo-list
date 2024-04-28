@@ -338,7 +338,7 @@ class TodoTasksFragment : Fragment(), SearchView.OnQueryTextListener {
             for (todoSubtask in todoTask.getSubtasks()) {
                 todoSubtask.setTaskId(todoTask.getId()) // crucial step to not lose the connection to the task
             }
-            model.saveTodoTaskAndSubtasksInDb(todoTask) { counter: Int? ->
+            model.saveTodoTaskAndSubtasksInDb(todoTask) { counter ->
                 containingActivity.onTaskChange(todoTask)
             }
         }
