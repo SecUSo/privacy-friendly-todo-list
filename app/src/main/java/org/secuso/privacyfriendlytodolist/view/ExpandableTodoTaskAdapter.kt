@@ -92,6 +92,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val priorityBarPositions = HashMap<TodoTask.Priority, Int>()
 
     init {
+        if (todoTasks.isNotEmpty()) {
+            showListNames = null == todoTasks[0].getListId()
+        }
         val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS")
         filter = try {
             Filter.valueOf(filterString!!)

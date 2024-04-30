@@ -77,6 +77,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     private fun update(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
                        title: String? = null) {
         val view = RemoteViews(context.packageName, R.layout.todo_list_widget)
+
         // Intent to call the Service adding the tasks to the ListView
         val intent = Intent(context, TodoListWidgetViewsService::class.java)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -84,14 +85,16 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)))
         view.setRemoteAdapter(R.id.listview_widget, intent)
 
-        // Intent to open the App by clicking on an elements of the LinearLayout
-        val templateIntent = Intent(context, MainActivity::class.java)
-        templateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-        val templatePendingIntent = PendingIntent.getActivity(
-            context, appWidgetId, templateIntent, PendingIntent.FLAG_IMMUTABLE)
+        // Intent-template to open the App by clicking on an elements of the LinearLayout.
+        // This template gets filled in TodoListWidgetViewsFactory#createItem() via setOnClickFillInIntent()
+        val templatePendingIntent = PendingIntent.getActivity(context, 0,
+            Intent(context, MainActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
         view.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent)
 
-        view.setOnClickPendingIntent(R.id.click_widget, createWidgetUpdatePendingIntent(context, appWidgetId))
+        // Intent to trigger the update of the widget by clicking on the update icon
+        view.setOnClickPendingIntent(R.id.bt_widget_update, createWidgetUpdatePendingIntent(context, appWidgetId))
+
         view.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget)
         if (null != title) {
             view.setTextViewText(R.id.widget_title, title)
@@ -108,7 +111,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
 
         // Check if title was changed.
-        val title = newOptions.getString(WIDGET_OPTION_TITLE, null)
+        val title = newOptions.getString(OPTION_WIDGET_TITLE, null)
         if (null != title) {
             Log.d(TAG, "Widget $appWidgetId: New title: '$title'.")
             update(context, appWidgetManager, appWidgetId, title)
@@ -127,7 +130,8 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
 
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
-        const val WIDGET_OPTION_TITLE = "OPTION_LIST_NAME"
+        const val EXTRA_WIDGET_LIST_ID = "EXTRA_WIDGET_LIST_ID"
+        const val OPTION_WIDGET_TITLE = "OPTION_WIDGET_TITLE"
 
         fun triggerWidgetUpdate(context: Context, appWidgetId: Int) {
             val intent = createWidgetUpdateIntent(context, appWidgetId)

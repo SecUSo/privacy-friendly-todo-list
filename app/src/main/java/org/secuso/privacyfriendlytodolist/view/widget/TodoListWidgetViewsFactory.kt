@@ -94,21 +94,25 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         if (null != newTitle && currentTitle != newTitle) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val bundle: Bundle = appWidgetManager.getAppWidgetOptions(appWidgetId)
-            bundle.putString(TodoListWidget.WIDGET_OPTION_TITLE, newTitle)
+            bundle.putString(TodoListWidget.OPTION_WIDGET_TITLE, newTitle)
             appWidgetManager.updateAppWidgetOptions(appWidgetId, bundle)
             currentTitle = newTitle!!
         }
 
         items.clear()
+        val fillInIntent = Intent()
+        fillInIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        fillInIntent.putExtra(TodoListWidget.EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())
         for (todoTask in changedTodoTasks!!) {
-            val item = createItem(todoTask)
+            val item = createItem(todoTask, fillInIntent)
             val tuple = Tuple(todoTask.getId(), item)
             items.add(tuple)
         }
+        Log.d(TAG, "Widget $appWidgetId: Updated data. Items: ${items.count()}, list ID: ${pref.todoListId}, title: '$currentTitle'.")
     }
 
     @SuppressLint("ResourceType")
-    private fun createItem(todoTask: TodoTask): RemoteViews {
+    private fun createItem(todoTask: TodoTask, fillInIntent: Intent): RemoteViews {
         val view = RemoteViews(context.packageName, R.layout.widget_tasks)
         if (todoTask.isDone()) {
             view.setViewVisibility(R.id.widget_done, View.VISIBLE)
@@ -119,7 +123,6 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         }
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())
         view.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list)
-        val fillInIntent = Intent()
         view.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent)
         view.setOnClickFillInIntent(R.id.widget_undone, fillInIntent)
         view.setOnClickFillInIntent(R.id.widget_done, fillInIntent)

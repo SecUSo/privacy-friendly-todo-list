@@ -53,7 +53,8 @@
             android:exported="true" />
         <activity
             android:name=".view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask" />
         <activity
             android:name=".view.RecyclerActivity"
             android:label="@string/bin" />
