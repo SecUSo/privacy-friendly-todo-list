@@ -108,7 +108,7 @@ class RecyclerActivity : AppCompatActivity() {
 
     private fun updateAdapter() {
         model.getRecycleBin { todoTasks ->
-            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model, todoTasks)
+            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model, todoTasks, true)
             lv.setAdapter(expandableTodoTaskAdapter)
             lv.setEmptyView(tv)
             lv.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->

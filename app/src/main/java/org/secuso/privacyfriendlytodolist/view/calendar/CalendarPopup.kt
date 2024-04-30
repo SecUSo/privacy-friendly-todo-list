@@ -56,7 +56,7 @@ class CalendarPopup : AppCompatActivity() {
     }
 
     private fun updateAdapter() {
-        expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, tasks!!)
+        expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, tasks!!, true)
         lv.setAdapter(expandableTodoTaskAdapter)
     }
 }

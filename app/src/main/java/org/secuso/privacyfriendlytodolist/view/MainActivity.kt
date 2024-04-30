@@ -351,7 +351,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun clearTaskListView() {
         toolbar?.setTitle(R.string.home)
-        exLv?.setAdapter(ExpandableTodoTaskAdapter(this, model!!, ArrayList()))
+        exLv?.setAdapter(ExpandableTodoTaskAdapter(this, model!!, ArrayList(), false))
     }
 
     private fun uncheckNavigationEntries() {
@@ -594,7 +594,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         homeMenuEntry.setCheckable(true)
         homeMenuEntry.setChecked(true)
         model!!.getAllToDoTasks { todoTasks ->
-            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks)
+            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks, true)
             exLv!!.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
                 val groupPosition = ExpandableListView.getPackedPositionGroup(id)
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
@@ -625,7 +625,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         model!!.getToDoListById(listId) { todoList: TodoList? ->
             if (null != todoList) {
                 toolbar!!.setTitle(todoList.getName())
-                expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoList.getTasks())
+                expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(
+                    this, model!!, todoList.getTasks(), false)
                 exLv!!.setAdapter(expandableTodoTaskAdapter)
                 exLv!!.setEmptyView(tv)
                 optionFab!!.visibility = View.VISIBLE

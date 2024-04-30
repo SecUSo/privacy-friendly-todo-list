@@ -50,10 +50,13 @@ import java.util.Collections
  * This class manages the To-Do task expandable list items.
  *
  * @param todoTasks Data from database in original order
+ * @param showListNames Normally the toolbar title contains the list name. However, if all tasks are
+ * displayed in a dummy list it is not obvious to what list a tasks belongs. This missing
+ * information is then added to each task in an additional text view.
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ExpandableTodoTaskAdapter(private val context: Context, private val model: ModelServices,
-    private val todoTasks: List<TodoTask>) : BaseExpandableListAdapter() {
+    private val todoTasks: List<TodoTask>, private var showListNames: Boolean) : BaseExpandableListAdapter() {
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     /**
@@ -74,13 +77,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         DEADLINE(0x2)
     }
 
-    /**
-     * Normally the toolbar title contains the list name. However, if all tasks are displayed in
-     * a dummy list it is not obvious to what list a tasks belongs. This missing information is
-     * then added to each task in an additional text view.
-     */
-    var showListNames = false
-
     // FILTER AND SORTING OPTIONS MADE BY THE USER
     var filter: Filter?
     var queryString: String?
@@ -92,9 +88,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val priorityBarPositions = HashMap<TodoTask.Priority, Int>()
 
     init {
-        if (todoTasks.isNotEmpty()) {
-            showListNames = null == todoTasks[0].getListId()
-        }
         val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS")
         filter = try {
             Filter.valueOf(filterString!!)
