@@ -1,6 +1,5 @@
 package org.secuso.privacyfriendlytodolist.view.calendar
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -27,7 +26,6 @@ import java.util.concurrent.TimeUnit
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class CalendarActivity : AppCompatActivity() {
     private var model: ModelServices? = null
-    private lateinit var calendarView: CalendarView
     private var calendarGridAdapter: CalendarGridAdapter? = null
     private val tasksPerDay = HashMap<String, ArrayList<TodoTask>>()
     private var todaysTasks: ArrayList<TodoTask>? = null
@@ -37,8 +35,8 @@ class CalendarActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
         setContentView(R.layout.fragment_calendar)
-        @SuppressLint("MissingInflatedId", "LocalSuppress")
-        val toolbar = findViewById<Toolbar>(R.id.toolbar_calendar)
+        val calendarView = findViewById<CalendarView>(R.id.calendar_view)
+        val toolbar = calendarView.findViewById<Toolbar>(R.id.toolbar_calendar)
         toolbar.setTitle(R.string.calendar)
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
         setSupportActionBar(toolbar)
@@ -48,7 +46,6 @@ class CalendarActivity : AppCompatActivity() {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
-        calendarView = findViewById(R.id.calendar_view)
         calendarGridAdapter = CalendarGridAdapter(this, R.layout.calendar_day)
         calendarView.setGridAdapter(calendarGridAdapter)
         todaysTasks = ArrayList()

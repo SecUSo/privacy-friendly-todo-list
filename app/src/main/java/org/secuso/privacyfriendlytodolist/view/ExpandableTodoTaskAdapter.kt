@@ -50,10 +50,13 @@ import java.util.Collections
  * This class manages the To-Do task expandable list items.
  *
  * @param todoTasks Data from database in original order
+ * @param showListNames Normally the toolbar title contains the list name. However, if all tasks are
+ * displayed in a dummy list it is not obvious to what list a tasks belongs. This missing
+ * information is then added to each task in an additional text view.
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ExpandableTodoTaskAdapter(private val context: Context, private val model: ModelServices,
-    private val todoTasks: List<TodoTask>) : BaseExpandableListAdapter() {
+    private val todoTasks: List<TodoTask>, private var showListNames: Boolean) : BaseExpandableListAdapter() {
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     /**
@@ -73,13 +76,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         PRIORITY(0x1),
         DEADLINE(0x2)
     }
-
-    /**
-     * Normally the toolbar title contains the list name. However, if all tasks are displayed in
-     * a dummy list it is not obvious to what list a tasks belongs. This missing information is
-     * then added to each task in an additional text view.
-     */
-    var showListNames = false
 
     // FILTER AND SORTING OPTIONS MADE BY THE USER
     var filter: Filter?
@@ -405,7 +401,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                                 subtask.setDone(inverted)
                             }
-                            model.saveTodoTaskAndSubtasksInDb(currentTask, null)
+                            model.saveTodoTaskAndSubtasksInDb(currentTask, null, null)
                         }
                         snackbar.show()
                         currentTask.setDone(buttonView.isChecked)
@@ -417,7 +413,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             subtask.setChanged()
                             notifyDataSetChanged()
                         }
-                        model.saveTodoTaskInDb(currentTask, null)
+                        model.saveTodoTaskInDb(currentTask, null, null)
                     }
                 }
             }

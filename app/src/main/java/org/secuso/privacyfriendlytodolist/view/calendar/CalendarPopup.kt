@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
@@ -19,17 +18,11 @@ import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
  * This class helps to show the tasks that are on a specific deadline
  */
 class CalendarPopup : AppCompatActivity() {
-    private lateinit var lv: ExpandableListView
-    private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
-    private var tasks: ArrayList<TodoTask>? = ArrayList()
-    private var model: ModelServices? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
-        model = viewModel.model
+        val model = viewModel.model
         setContentView(R.layout.calendar_popup)
-        lv = findViewById(R.id.deadline_tasks)
         val toolbar: Toolbar = findViewById(R.id.toolbar_deadlineTasks)
         toolbar.setTitle(R.string.deadline)
         toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
@@ -40,11 +33,11 @@ class CalendarPopup : AppCompatActivity() {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
-        val bundle = intent.extras
-        if (bundle != null) {
-            tasks = bundle.getParcelableArrayList(CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES)
-        }
-        updateAdapter()
+        val tasksFromBundle = intent.extras?.getParcelableArrayList<TodoTask>(CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES)
+        val tasks = tasksFromBundle ?: ArrayList()
+        val adapter = ExpandableTodoTaskAdapter(this, model, tasks, true)
+        val lv = findViewById<ExpandableListView>(R.id.deadline_tasks)
+        lv.setAdapter(adapter)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -53,10 +46,5 @@ class CalendarPopup : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun updateAdapter() {
-        expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, tasks!!)
-        lv.setAdapter(expandableTodoTaskAdapter)
     }
 }

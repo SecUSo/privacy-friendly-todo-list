@@ -58,15 +58,24 @@ object Model {
     private val modelObservers = ArrayList<ModelObserver>()
 
     fun registerModelObserver(modelObserver: ModelObserver) {
-        modelObservers.add(modelObserver)
+        if (!modelObservers.contains(modelObserver)) {
+            modelObservers.add(modelObserver)
+        }
     }
 
     fun unregisterModelObserver(modelObserver: ModelObserver) {
         modelObservers.remove(modelObserver)
     }
-    fun notifyDataChangedFromOutside() {
+
+    fun notifyDataChanged(context: Context) {
         for (modelObserver in modelObservers) {
-            modelObserver.onDataChangedFromOutside()
+            modelObserver.onTodoDataChanged(context)
+        }
+    }
+
+    fun notifyDataChangedFromOutside(context: Context) {
+        for (modelObserver in modelObservers) {
+            modelObserver.onTodoDataChangedFromOutside(context)
         }
     }
 }

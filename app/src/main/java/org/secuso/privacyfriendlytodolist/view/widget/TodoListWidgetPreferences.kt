@@ -16,16 +16,4 @@
  */
 package org.secuso.privacyfriendlytodolist.view.widget
 
-import android.content.Intent
-import android.widget.RemoteViewsService
-
-/**
- * Created by Sebastian Lutz on 15.02.2018.
- *
- * Service that gives data to AppWidgetProvider (TodoListWidget) class
- */
-class ListViewWidgetService : RemoteViewsService() {
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return WidgetViewsFactory(applicationContext)
-    }
-}
+data class TodoListWidgetPreferences(var todoListId: Int? = null)

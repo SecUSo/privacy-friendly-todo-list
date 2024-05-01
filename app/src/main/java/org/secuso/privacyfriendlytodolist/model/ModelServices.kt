@@ -17,14 +17,49 @@
 
 package org.secuso.privacyfriendlytodolist.model
 
+import kotlinx.coroutines.Job
+
 /**
  * Created by Christian Adams on 17.02.2024.
  *
  * This class provides an interface to the database services.
  */
 interface ModelServices {
-    fun getTaskById(todoTaskId: Int, resultConsumer: ResultConsumer<TodoTask?>)
-    fun getNextDueTask(now: Long, resultConsumer: ResultConsumer<TodoTask?>)
+    /**
+     * The model services work asynchronously to not block the callers thread. These delivery
+     * options allow to decide how the result of a model service gets delivered.
+     */
+    enum class DeliveryOption {
+        /**
+         * The results get posted via the result handler that was given to the model services while
+         * creating them. The result consumer will work in the result handler thread.
+         * This is usually the caller thread which is usually the main thread / GUI thread.
+         */
+        POST,
+
+        /**
+         * The results get posted directly from the asynchronous worker thread. So the result
+         * consumer will run asynchronously to the caller thread.
+         * This can be used to wait for the results, if asynchronous behavior is not wished.
+         *
+         * <pre>
+         * var changedTodoTasks: List<TodoTask>? = null
+         * val job = model.someService(DeliveryOption.DIRECT) { todoTasks ->
+         *     changedTodoTasks = todoTasks
+         * }
+         * runBlocking {
+         *     job.join()
+         * }
+         * if (null != changedTodoTasks) {
+         *     // ...
+         * }
+         * </pre>
+         */
+        DIRECT
+    }
+    
+    fun getTaskById(todoTaskId: Int, deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<TodoTask?>): Job
+    fun getNextDueTask(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<TodoTask?>): Job
 
     /**
      * Returns a list of tasks
@@ -38,26 +73,25 @@ interface ModelServices {
      * @param resultConsumer Result consumer that will be notified when the asynchronous database
      * access has finished.
      */
-    fun getTasksToRemind(now: Long, lockedIds: Set<Int>?, resultConsumer: ResultConsumer<MutableList<TodoTask>>)
-    fun deleteTodoList(todoListId: Int, resultConsumer: ResultConsumer<Int>?)
-    fun deleteTodoTask(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
-    fun deleteTodoSubtask(subtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
-    fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?)
-    fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean, resultConsumer: ResultConsumer<Int>?)
+    fun getTasksToRemind(now: Long, lockedIds: Set<Int>?, deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job
+    fun deleteTodoList(todoListId: Int, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun deleteTodoTask(todoTask: TodoTask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun deleteTodoSubtask(subtask: TodoSubtask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
 
     /**
      * Returns the number of all to-do-lists (left in tuple) and all to-do-tasks that are not in recycle bin (right in tuple).
      */
-    fun getNumberOfAllListsAndTasks(resultConsumer: ResultConsumer<Tuple<Int, Int>>)
-    fun getAllToDoTasks(resultConsumer: ResultConsumer<MutableList<TodoTask>>)
-    fun getRecycleBin(resultConsumer: ResultConsumer<MutableList<TodoTask>>)
-    fun clearRecycleBin(resultConsumer: ResultConsumer<Int>?)
-    fun getAllToDoLists(resultConsumer: ResultConsumer<MutableList<TodoList>>)
-    fun getAllToDoListNames(resultConsumer: ResultConsumer<MutableList<String>>)
-    fun getToDoListById(todoListId: Int, resultConsumer: ResultConsumer<TodoList?>)
-    fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, resultConsumer: ResultConsumer<Int>?)
-    fun saveTodoTaskInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
-    fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, resultConsumer: ResultConsumer<Int>?)
-    fun saveTodoListInDb(todoList: TodoList, resultConsumer: ResultConsumer<Int>?)
-    fun deleteAllData(resultConsumer: ResultConsumer<Int>?)
+    fun getNumberOfAllListsAndTasks(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<Tuple<Int, Int>>): Job
+    fun getAllToDoTasks(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job
+    fun getRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job
+    fun clearRecycleBin(deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun getAllToDoLists(deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<MutableList<TodoList>>): Job
+    fun getToDoListById(todoListId: Int, deliveryOption: DeliveryOption = DeliveryOption.POST, resultConsumer: ResultConsumer<TodoList?>): Job
+    fun saveTodoSubtaskInDb(todoSubtask: TodoSubtask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun saveTodoTaskInDb(todoTask: TodoTask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun saveTodoListInDb(todoList: TodoList, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
+    fun deleteAllData(deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>?): Job
 }

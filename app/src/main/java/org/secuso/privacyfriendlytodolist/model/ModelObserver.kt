@@ -17,12 +17,23 @@
 
 package org.secuso.privacyfriendlytodolist.model
 
+import android.content.Context
+
 interface ModelObserver {
+    /**
+     * Gets called when a the data in the data model (lists, tasks, subtasks) gets changed.
+     *
+     * For example if a task gets changed and saved.
+     */
+    fun onTodoDataChanged(context: Context) {
+    }
+
     /**
      * Gets called when a non-GUI component changes the data in the data model (lists, tasks,
      * subtasks) to notify the currently registered GUI components.
      *
-     * For example if a task gets set as done via a reminder notification.
+     * For example if a task gets changed and saved by a reminder notification action.
      */
-    fun onDataChangedFromOutside()
+    fun onTodoDataChangedFromOutside(context: Context) {
+    }
 }

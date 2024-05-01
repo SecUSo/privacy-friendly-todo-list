@@ -139,7 +139,7 @@ class ProcessTodoTaskDialog : FullScreenDialog<ResultCallback<TodoTask>> {
             titleEdit()
         }
 
-        //initialize textview that displays selected list
+        // Initialize textview that displays selected list
         listSelector = findViewById(R.id.tv_new_task_listchoose)
         if (null != listSelectorText) {
             listSelector.text = listSelectorText
