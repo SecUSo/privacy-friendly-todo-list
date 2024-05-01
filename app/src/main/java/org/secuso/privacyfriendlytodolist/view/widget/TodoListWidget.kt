@@ -77,9 +77,10 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     private fun update(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
                        title: String? = null) {
         val view = RemoteViews(context.packageName, R.layout.todo_list_widget)
+        val uniqueRequestCode = appWidgetId
 
         // Intent to call the Service adding the tasks to the ListView
-        val intent = Intent(context, TodoListWidgetViewsService::class.java)
+        var intent = Intent(context, TodoListWidgetViewsService::class.java)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         // This line of code causes that for every widget an own WidgetViewsFactory gets created:
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)))
@@ -87,13 +88,25 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
 
         // Intent-template to open the App by clicking on an elements of the LinearLayout.
         // This template gets filled in TodoListWidgetViewsFactory#createItem() via setOnClickFillInIntent()
-        val templatePendingIntent = PendingIntent.getActivity(context, 0,
-            Intent(context, MainActivity::class.java),
+        intent = Intent(context, MainActivity::class.java)
+        var pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
-        view.setPendingIntentTemplate(R.id.listview_widget, templatePendingIntent)
+        view.setPendingIntentTemplate(R.id.listview_widget, pendingIntent)
 
-        // Intent to trigger the update of the widget by clicking on the update icon
-        view.setOnClickPendingIntent(R.id.bt_widget_update, createWidgetUpdatePendingIntent(context, appWidgetId))
+        // Intent to open the App by clicking on the widget title.
+        val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId)
+        intent = Intent(context, MainActivity::class.java)
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        intent.putExtra(EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())
+        pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        view.setOnClickPendingIntent(R.id.widget_title, pendingIntent)
+
+        // Intent to trigger the update of the widget by clicking on the update icon.
+        intent = createWidgetUpdateIntent(context, appWidgetId)
+        pendingIntent = PendingIntent.getBroadcast(context, uniqueRequestCode, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        view.setOnClickPendingIntent(R.id.bt_widget_update, pendingIntent)
 
         view.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget)
         if (null != title) {
@@ -103,7 +116,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         appWidgetManager.updateAppWidget(appWidgetId, view)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview_widget)
 
-        Log.d(TAG, "Widget $appWidgetId: Updated.")
+        Log.d(TAG, "Widget $appWidgetId: Updated. List ID: ${pref.todoListId}, title: '$title'.")
     }
 
     override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager,
@@ -136,12 +149,6 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         fun triggerWidgetUpdate(context: Context, appWidgetId: Int) {
             val intent = createWidgetUpdateIntent(context, appWidgetId)
             context.sendBroadcast(intent)
-        }
-
-        private fun createWidgetUpdatePendingIntent(context: Context, appWidgetId: Int): PendingIntent {
-            val intent = createWidgetUpdateIntent(context, appWidgetId)
-            return PendingIntent.getBroadcast(context, appWidgetId, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
 
         private fun createWidgetUpdateIntent(context: Context, appWidgetId: Int): Intent {
