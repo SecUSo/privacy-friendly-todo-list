@@ -238,6 +238,18 @@ class ModelServicesImpl(
         }
     }
 
+    override fun getAllToDoListNames(deliveryOption: DeliveryOption,
+                                     resultConsumer: ResultConsumer<HashMap<Int, String>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val dataArray = db.getTodoListDao().getAllNames()
+            val map = HashMap<Int, String>()
+            for (tuple in dataArray) {
+                map[tuple.id] = tuple.name
+            }
+            dispatchResult(deliveryOption, resultConsumer, map)
+        }
+    }
+
     override fun getToDoListById(todoListId: Int,
                                  deliveryOption: DeliveryOption,
                                  resultConsumer: ResultConsumer<TodoList?>): Job {

@@ -42,8 +42,12 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity
 class TodoListWidget : AppWidgetProvider(), ModelObserver {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "Received action '${intent.action}'.")
-        // Call base implementation. Depending on action, it calls onUpdate, onDelete, ...
-        super.onReceive(context, intent)
+        if (ACTION_REGISTER_AS_MODEL_OBSERVER == intent.action) {
+            Model.registerModelObserver(this)
+        } else {
+            // Call base implementation. Depending on action, it calls onUpdate, onDelete, ...
+            super.onReceive(context, intent)
+        }
     }
 
     override fun onEnabled(context: Context) {
@@ -143,8 +147,15 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
 
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
+        private const val ACTION_REGISTER_AS_MODEL_OBSERVER = "ACTION_REGISTER_AS_MODEL_OBSERVER"
         const val EXTRA_WIDGET_LIST_ID = "EXTRA_WIDGET_LIST_ID"
         const val OPTION_WIDGET_TITLE = "OPTION_WIDGET_TITLE"
+
+        fun registerAsModelObserver(context: Context) {
+            val intent = Intent(context, TodoListWidget::class.java)
+            intent.setAction(ACTION_REGISTER_AS_MODEL_OBSERVER)
+            context.sendBroadcast(intent)
+        }
 
         fun triggerWidgetUpdate(context: Context, appWidgetId: Int) {
             val intent = createWidgetUpdateIntent(context, appWidgetId)

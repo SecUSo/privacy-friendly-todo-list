@@ -6,6 +6,7 @@ import androidx.work.Configuration
 import org.secuso.privacyfriendlybackup.api.pfa.BackupManager
 import org.secuso.privacyfriendlytodolist.backup.BackupCreator
 import org.secuso.privacyfriendlytodolist.backup.BackupRestorer
+import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 
 class PFAApplication : Application(), Configuration.Provider {
 
@@ -15,5 +16,6 @@ class PFAApplication : Application(), Configuration.Provider {
         super.onCreate()
         BackupManager.backupCreator = BackupCreator()
         BackupManager.backupRestorer = BackupRestorer()
+        TodoListWidget.registerAsModelObserver(this)
     }
 }

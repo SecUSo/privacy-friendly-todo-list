@@ -22,7 +22,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 
 @Dao
@@ -37,6 +36,8 @@ interface TodoListDao {
     suspend fun getCount(): Int
     @Query("SELECT * FROM todoLists")
     suspend fun getAll(): Array<TodoListData>
+    @Query("SELECT id, name FROM todoLists")
+    suspend fun getAllNames(): Array<IdNameTuple>
     @Query("SELECT * FROM todoLists WHERE id = :todoListId LIMIT 1")
     suspend fun getById(todoListId: Int): TodoListData?
     @Query("DELETE FROM todoLists")

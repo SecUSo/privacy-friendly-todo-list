@@ -25,6 +25,7 @@
     <string name="name">Name</string>
     <string name="todo_list_description_hint">Description</string>
     <string name="ok">Okay</string>
+    <string name="delete">Delete</string>
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>

@@ -18,12 +18,14 @@ package org.secuso.privacyfriendlytodolist.view.dialog
 
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoList
+import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoList
 
 /**
@@ -32,24 +34,37 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
  * Defines the dialog that lets the user create a list
  */
 class ProcessTodoListDialog(context: Context) :
-    FullScreenDialog<ResultCallback<TodoList>>(context, R.layout.add_todolist_dialog) {
-    private val todoList: TodoList = createNewTodoList()
+    FullScreenDialog<ResultCallback<TodoList?>>(context, R.layout.add_todolist_dialog) {
+    private lateinit var todoList: TodoList
+    private var editExistingList = false
+
+    constructor(context: Context, todoList: TodoList) : this(context) {
+        this.todoList = todoList
+        editExistingList = true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initGui()
-    }
-
-    private fun initGui() {
-        val etName: EditText = findViewById(R.id.et_todo_list_name)
-        val buttonOkay: Button = findViewById(R.id.bt_newtodolist_ok)
-        val buttonCancel: Button = findViewById(R.id.bt_newtodolist_cancel)
+        val tvTitle = findViewById<TextView>(R.id.tv_todo_list_title)
+        val etName = findViewById<EditText>(R.id.et_todo_list_name)
+        val buttonOkay = findViewById<Button>(R.id.bt_todo_list_ok)
+        val buttonDelete = findViewById<Button>(R.id.bt_todo_list_delete)
+        val buttonCancel = findViewById<Button>(R.id.bt_todo_list_cancel)
 
         // Request focus for first input field.
         etName.requestFocus()
         // Show soft-keyboard
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+
+        if (editExistingList) {
+            tvTitle.text = context.getString(R.string.edit_todo_list)
+            etName.setText(todoList.getName())
+            etName.selectAll()
+        } else {
+            todoList = Model.createNewTodoList()
+            buttonDelete.visibility = View.GONE
+        }
 
         buttonOkay.setOnClickListener {
             // prepare list data
@@ -66,6 +81,14 @@ class ProcessTodoListDialog(context: Context) :
                 dismiss()
             }
         }
-        buttonCancel.setOnClickListener { dismiss() }
+
+        buttonDelete.setOnClickListener {
+            getDialogCallback().onFinish(null)
+            dismiss()
+        }
+
+        buttonCancel.setOnClickListener {
+            dismiss()
+        }
     }
 }

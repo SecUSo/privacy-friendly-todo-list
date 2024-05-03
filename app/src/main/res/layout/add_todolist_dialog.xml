@@ -2,34 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_margin="0dp">
+    android:layout_margin="0dp"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_todo_list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:padding="20sp"
         android:text="@string/new_todo_list"
         android:textColor="@color/black"
         android:textSize="22sp"
-        android:padding="20sp"
-        android:textStyle="bold"
-        android:background="@color/transparent"/>
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/et_todo_list_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/name"
-        android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
-        android:inputType="text" />
+        android:hint="@string/name"
+        android:inputType="text"
+        android:autofillHints="" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/grey" />
-
 
     <View
         android:layout_width="match_parent"
@@ -37,27 +38,37 @@
         android:background="@color/grey" />
 
     <LinearLayout
-        android:layout_width="210dp"
+        android:layout_width="315dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="right">
+        android:layout_gravity="end">
 
         <Button
-            android:id="@+id/bt_newtodolist_cancel"
-            android:layout_width="0dp"
+            android:id="@+id/bt_todo_list_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dip"
             android:layout_weight="1"
-            android:text="@android:string/cancel"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:minHeight="48dip"
+            android:text="@android:string/cancel" />
 
         <Button
-            android:id="@+id/bt_newtodolist_ok"
-            android:layout_width="0dp"
+            android:id="@+id/bt_todo_list_ok"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dip"
             android:layout_weight="1"
-            android:text="@string/ok"
-            style="?android:attr/buttonBarButtonStyle" />
+            android:minHeight="48dip"
+            android:text="@string/ok" />
+
+        <Button
+            android:id="@+id/bt_todo_list_delete"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="48dip"
+            android:text="@string/delete" />
+
     </LinearLayout>
 
 </LinearLayout>
