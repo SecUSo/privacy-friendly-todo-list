@@ -34,7 +34,7 @@ class CalendarPopup : AppCompatActivity() {
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
         val tasksFromBundle = intent.extras?.getParcelableArrayList<TodoTask>(CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES)
-        val tasks = tasksFromBundle ?: ArrayList()
+        val tasks = tasksFromBundle ?: ArrayList(0)
         val adapter = ExpandableTodoTaskAdapter(this, model, tasks, true)
         val lv = findViewById<ExpandableListView>(R.id.deadline_tasks)
         lv.setAdapter(adapter)

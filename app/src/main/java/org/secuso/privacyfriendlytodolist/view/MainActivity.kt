@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mPref: SharedPreferences? = null
 
     // TodoList administration
-    var todoLists: MutableList<TodoList> = ArrayList()
+    var todoLists: MutableList<TodoList> = ArrayList(0)
         private set
 
     // GUI
@@ -351,7 +351,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun clearTaskListView() {
         toolbar?.setTitle(R.string.home)
-        exLv?.setAdapter(ExpandableTodoTaskAdapter(this, model!!, ArrayList(), false))
+        exLv?.setAdapter(ExpandableTodoTaskAdapter(
+            this, model!!, ArrayList(0), false))
     }
 
     private fun uncheckNavigationEntries() {
@@ -538,8 +539,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Method to add a new To do-List
     private fun startAddListDialog() {
-        model!!.getAllToDoLists { todoLists ->
-            this.todoLists = todoLists
+        model!!.getAllToDoLists { allTodoLists ->
+            todoLists = allTodoLists
             val pl = ProcessTodoListDialog(this)
             pl.setDialogCallback(ResultCallback { todoList: TodoList? ->
                 todoLists.add(todoList!!)

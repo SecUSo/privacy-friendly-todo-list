@@ -28,7 +28,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
     private var oldColors: ColorStateList? = null
     private var currentMonth = 0
-    private var tasksPerDay = HashMap<String, ArrayList<TodoTask>>()
+    private var tasksPerDay = HashMap<String, ArrayList<TodoTask>>(0)
 
     init {
         inflater = LayoutInflater.from(context)

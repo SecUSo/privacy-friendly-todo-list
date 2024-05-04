@@ -25,10 +25,9 @@ import java.util.concurrent.TimeUnit
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class CalendarActivity : AppCompatActivity() {
-    private var model: ModelServices? = null
-    private var calendarGridAdapter: CalendarGridAdapter? = null
+    private lateinit var model: ModelServices
+    private lateinit var calendarGridAdapter: CalendarGridAdapter
     private val tasksPerDay = HashMap<String, ArrayList<TodoTask>>()
-    private var todaysTasks: ArrayList<TodoTask>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +47,6 @@ class CalendarActivity : AppCompatActivity() {
         }
         calendarGridAdapter = CalendarGridAdapter(this, R.layout.calendar_day)
         calendarView.setGridAdapter(calendarGridAdapter)
-        todaysTasks = ArrayList()
         updateDeadlines()
         calendarView.setNextMonthOnClickListener {
             calendarView.incMonth(1)
@@ -60,19 +58,19 @@ class CalendarActivity : AppCompatActivity() {
         }
         calendarView.setDayOnClickListener { parent, view, position, id ->
             updateDeadlines()
-            val selectedDate = calendarGridAdapter!!.getItem(position)
+            val selectedDate = calendarGridAdapter.getItem(position)
             val key = absSecondsToDate(selectedDate!!.time / 1000)
-            todaysTasks = tasksPerDay[key]
-            if (todaysTasks == null) {
-                Toast.makeText(applicationContext, getString(R.string.no_deadline_today), Toast.LENGTH_SHORT).show()
+            val tasksOfToday = tasksPerDay[key]
+            if (tasksOfToday != null) {
+                showDeadlineTasks(tasksOfToday)
             } else {
-                showDeadlineTasks(todaysTasks!!)
+                Toast.makeText(applicationContext, getString(R.string.no_deadline_today), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun updateDeadlines() {
-        model!!.getAllToDoTasks { todoTasks ->
+        model.getAllToDoTasks { todoTasks ->
             tasksPerDay.clear()
             for (todoTask in todoTasks) {
                 val deadline = todoTask.getDeadline()
@@ -84,8 +82,8 @@ class CalendarActivity : AppCompatActivity() {
                 }
                 tasksOfDay.add(todoTask)
             }
-            calendarGridAdapter!!.setTodoTasks(tasksPerDay)
-            calendarGridAdapter!!.notifyDataSetChanged()
+            calendarGridAdapter.setTodoTasks(tasksPerDay)
+            calendarGridAdapter.notifyDataSetChanged()
         }
     }
 

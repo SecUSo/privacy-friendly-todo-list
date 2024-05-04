@@ -242,7 +242,7 @@ class ModelServicesImpl(
                                      resultConsumer: ResultConsumer<HashMap<Int, String>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val dataArray = db.getTodoListDao().getAllNames()
-            val map = HashMap<Int, String>()
+            val map = HashMap<Int, String>(dataArray.size)
             for (tuple in dataArray) {
                 map[tuple.id] = tuple.name
             }
