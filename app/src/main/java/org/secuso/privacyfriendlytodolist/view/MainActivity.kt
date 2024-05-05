@@ -665,7 +665,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 exLv!!.setAdapter(expandableTodoTaskAdapter)
                 exLv!!.setEmptyView(tv)
                 optionFab!!.visibility = View.VISIBLE
-                initFAB(listId)
+                initFAB(todoList)
             } else {
                 Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
                 showAllTasks()
@@ -674,16 +674,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     // todoListId != null means id is given from list. otherwise new task was created in all-tasks.
-    private fun initFAB(todoListId: Int?) {
+    private fun initFAB(todoList: TodoList?) {
         optionFab!!.setOnClickListener { v: View? ->
-            val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists)
-            pt.setListSelector(todoListId)
+            val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists, todoList)
             pt.setDialogCallback { todoTask ->
                 model!!.saveTodoTaskInDb(todoTask) { counter: Int? ->
                     onTaskChange(todoTask)
                     showHints()
                     // show List if created in certain list, else show all tasks
-                    showTasksOfListOrAllTasks(todoListId)
+                    showTasksOfListOrAllTasks(todoList?.getId())
                 }
             }
             pt.show()
@@ -716,7 +715,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (item.itemId) {
                 R.id.change_subtask -> {
                     val dialog = ProcessTodoSubtaskDialog(this, todoSubtask!!)
-                    dialog.titleEdit()
                     dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
                         model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter: Int? ->
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
@@ -737,9 +735,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 R.id.change_task -> {
-                    val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoTask)
-                    editTaskDialog.titleEdit()
-                    editTaskDialog.setListSelector(todoTask.getListId())
+                    var todoList: TodoList? = null
+                    for (currentTodoList in todoLists) {
+                        if (currentTodoList.getId() == todoTask.getListId()) {
+                            todoList = currentTodoList
+                            break
+                        }
+                    }
+                    val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoList, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { todoTask2: TodoTask ->
                         model!!.saveTodoTaskInDb(todoTask2) { counter: Int? ->
                             onTaskChange(todoTask2)

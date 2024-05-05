@@ -37,7 +37,7 @@ import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
 import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
-import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
+import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
@@ -313,12 +313,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private fun getPriorityNameByBarPos(groupPosition: Int): String {
+        var priority: TodoTask.Priority? = null
         for ((key, value) in priorityBarPositions) {
             if (value == groupPosition) {
-                return priority2String(context, key)
+                priority = key
+                break
             }
         }
-        return context.getString(R.string.unknown_priority)
+        return priorityToString(context, priority)
     }
 
     override fun notifyDataSetChanged() {

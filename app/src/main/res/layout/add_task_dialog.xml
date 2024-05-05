@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
@@ -10,179 +11,171 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:maxLength="@integer/max_todo_title_length"
+        android:padding="20sp"
         android:text="@string/new_todo_task"
         android:textColor="@color/black"
         android:textSize="22sp"
-        android:padding="20sp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/dialog_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:maxLength="@integer/max_todo_title_length"
-        android:visibility="gone"
-        android:text="@string/edit_todo_task"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:padding="20sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/et_new_task_name"
+        android:id="@+id/et_task_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="48dp"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:autofillHints=""
         android:hint="@string/name"
         android:inputType="text" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
-
     <EditText
-        android:id="@+id/et_new_task_description"
+        android:id="@+id/et_task_description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:autofillHints=""
         android:hint="@string/todo_list_description_hint"
         android:inputType="textMultiLine"
         android:maxLines="15"
         android:minLines="1" />
 
-    <View
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:stretchColumns="0,1">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_todo_list_deadline"
-            android:layout_width="0dp"
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
-            android:drawablePadding="5dp"
-            android:gravity="center_vertical"
-            android:text="@string/deadline" />
+            android:padding="5dp">
 
-        <TextView
-            android:id="@+id/tv_todo_list_reminder"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_todo_list_deadline"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:text="@string/deadline"
+                app:drawableStartCompat="@drawable/ic_calendar_month_24dp" />
+
+            <TextView
+                android:id="@+id/tv_task_recurrence_pattern"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:text="@string/recurrence_pattern"
+                app:drawableStartCompat="@drawable/ic_event_repeat_24dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawableLeft="@android:drawable/ic_lock_idle_alarm"
-            android:drawablePadding="5dp"
-            android:gravity="center_vertical"
-            android:text="@string/reminder" />
+            android:padding="5dp">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_todo_list_reminder"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:text="@string/reminder"
+                app:drawableStartCompat="@drawable/ic_alarm_clock_24dp" />
+        </TableRow>
 
-    <View
+    </TableLayout>
+
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey" />
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:shrinkColumns="0"
+        android:stretchColumns="1">
 
-    <RelativeLayout
-        android:id="@+id/progress_relative"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="10dp">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
 
-        <TextView
-            android:id="@+id/tv_task_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="@string/progress_colon" />
+            <TextView
+                android:id="@+id/tv_task_progress_str"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/progress_colon"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <SeekBar
-            android:id="@+id/sb_new_task_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/tv_task_progress"
-            android:layout_alignParentRight="true"
-            android:max="100"/>
+            <SeekBar
+                android:id="@+id/sb_task_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:max="100" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/new_task_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sb_new_task_progress"
-            android:text="@string/zero_percent"
-            android:layout_alignLeft="@+id/sb_new_task_progress"
-            android:layout_marginLeft="15dp"/>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="5dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_task_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_marginStart="17dp"
+                android:text="@string/zero_percent" />
+        </TableRow>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:paddingTop="0dp"
-        android:paddingBottom="10dp">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
 
-        <TextView
-            android:id="@+id/tv_new_task_priority_str"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/priority_colon"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"/>
+            <TextView
+                android:id="@+id/tv_task_priority_str"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:text="@string/priority_colon"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_new_task_priority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tv_new_task_priority_str"
-            android:layout_alignBottom="@+id/tv_new_task_priority_str"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="44dp"
-            android:layout_toEndOf="@+id/tv_new_task_priority_str"
-            android:text="@string/click_to_choose"
-            android:textSize="16sp"
-            android:textStyle="italic" />
+            <TextView
+                android:id="@+id/tv_task_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/click_to_choose"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/tv_new_task_listchoose_str"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/list_colon"
-            android:layout_below="@+id/tv_new_task_priority"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"/>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp">
 
-        <TextView
-            android:id="@+id/tv_new_task_listchoose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tv_new_task_listchoose_str"
-            android:layout_alignBottom="@+id/tv_new_task_listchoose_str"
-            android:layout_alignParentEnd="true"
-            android:layout_alignStart="@+id/tv_new_task_priority"
-            android:text="@string/click_to_choose"
-            android:textSize="16sp"
-            android:textStyle="italic" />
+            <TextView
+                android:id="@+id/tv_task_list_choose_str"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/list_colon"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_task_list_choose"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/click_to_choose"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+        </TableRow>
+    </TableLayout>
 
     <View
         android:layout_width="match_parent"
@@ -192,10 +185,10 @@
     <LinearLayout
         android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="right">
+        android:layout_gravity="end">
 
         <Button
-            android:id="@+id/bt_new_task_cancel"
+            android:id="@+id/bt_process_task_cancel"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -204,7 +197,7 @@
             android:text="@android:string/cancel" />
 
         <Button
-            android:id="@+id/bt_new_task_ok"
+            android:id="@+id/bt_process_task_ok"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

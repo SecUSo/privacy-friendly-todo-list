@@ -18,18 +18,31 @@
 package org.secuso.privacyfriendlytodolist.model.database
 
 import androidx.room.TypeConverter
-import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
+import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 
 object DatabaseTypeConverters {
     @TypeConverter
     @JvmStatic
-    fun fromPriority(priority: TodoTask.Priority?): Int? {
+    fun fromRecurrencePattern(recurrencePattern: RecurrencePattern?): Int? {
+        return recurrencePattern?.ordinal
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toRecurrencePattern(ordinal: Int?): RecurrencePattern? {
+        return if (null != ordinal) RecurrencePattern.fromOrdinal(ordinal) else null
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromPriority(priority: Priority?): Int? {
         return priority?.ordinal
     }
 
     @TypeConverter
     @JvmStatic
-    fun toPriority(ordinal: Int?): TodoTask.Priority? {
-        return if (null != ordinal) TodoTask.Priority.fromOrdinal(ordinal) else null
+    fun toPriority(ordinal: Int?): Priority? {
+        return if (null != ordinal) Priority.fromOrdinal(ordinal) else null
     }
 }

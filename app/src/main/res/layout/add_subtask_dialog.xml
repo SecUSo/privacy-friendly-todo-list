@@ -14,19 +14,6 @@
         android:padding="20sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/dialog_edit_sub"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:maxLength="@integer/max_todo_title_length"
-        android:visibility="gone"
-        android:text="@string/edit_subtask"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:padding="20sp"
-        android:textStyle="bold"/>
-
     <EditText
         android:id="@+id/et_new_subtask_name"
         android:layout_width="match_parent"

@@ -20,6 +20,31 @@ import android.os.Parcelable
 
 
 interface TodoTask : BaseTodo, Parcelable {
+
+    enum class RecurrencePattern {
+        NONE,
+        DAILY,
+        WEEKLY,
+        MONTHLY,
+        YEARLY;
+
+        companion object {
+            /** Number of enumeration entries. */
+            @JvmField
+            val LENGTH = entries.size
+
+            /**
+             * Provides the enumeration value that matches the given ordinal number.
+             *
+             * @param ordinal The ordinal number of the requested enumeration value.
+             * @return The requested enumeration value if the given ordinal is valid. Otherwise null.
+             */
+            fun fromOrdinal(ordinal: Int): RecurrencePattern? {
+                return if (ordinal in 0..<LENGTH) entries[ordinal] else null
+            }
+        }
+    }
+
     /**
      * Priority steps must be sorted in the same way like they will be displayed
      */
@@ -73,6 +98,8 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setDeadline(deadline: Long)
     fun getDeadline(): Long
     fun hasDeadline(): Boolean
+    fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
+    fun getRecurrencePattern(): RecurrencePattern
     fun setListPosition(position: Int)
     fun getListPosition(): Int
     fun setSubtasks(subtasks: MutableList<TodoSubtask>)

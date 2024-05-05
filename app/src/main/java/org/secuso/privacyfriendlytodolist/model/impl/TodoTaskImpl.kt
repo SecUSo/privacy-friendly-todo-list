@@ -127,6 +127,14 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.deadline > 0
     }
 
+    override fun setRecurrencePattern(recurrencePattern: TodoTask.RecurrencePattern) {
+        data.recurrencePattern = recurrencePattern
+    }
+
+    override fun getRecurrencePattern(): TodoTask.RecurrencePattern {
+        return data.recurrencePattern
+    }
+
     override fun setListPosition(position: Int) {
         data.listPosition = position
     }

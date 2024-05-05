@@ -32,7 +32,6 @@
     <string name="high_priority">High</string>
     <string name="medium_priority">Medium</string>
     <string name="low_priority">Low</string>
-    <string name="unknown_priority">Unknown Priority</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
@@ -104,6 +103,8 @@
     <string name="delete_task">Delete To-Do Task</string>
     <string name="task_removed">Task put into recycle bin</string>
     <string name="deadline">Deadline</string>
+    <string name="recurrence_pattern">Recurrence pattern</string>
+    <string name="select_recurrence_pattern">Select a recurrence pattern:</string>
     <string name="reminder">Reminder</string>
     <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
     <string name="reminder_smaller_now">The reminder time cannot be in the past.</string>
@@ -202,6 +203,11 @@
     <string name="october">October</string>
     <string name="november">November</string>
     <string name="december">December</string>
+    <string name="none">None</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>

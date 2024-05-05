@@ -28,7 +28,6 @@
     <string name="high_priority">Muy importante</string>
     <string name="medium_priority">Importante</string>
     <string name="low_priority">Poco importante</string>
-    <string name="unknown_priority">Indefinido</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
 

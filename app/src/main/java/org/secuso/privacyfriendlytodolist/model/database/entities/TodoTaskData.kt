@@ -22,6 +22,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
+import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 
 @Entity(
     tableName = "todoTasks",
@@ -41,11 +42,12 @@ data class TodoTaskData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var listId: Int? = null,
-    var listPosition: Int = 0,
+    var listPosition: Int = -1,
     var name: String = "",
     var description: String = "",
     var priority: Priority = Priority.DEFAULT_VALUE,
-    var deadline: Long = 0,
+    var deadline: Long = -1,
+    var recurrencePattern: RecurrencePattern = RecurrencePattern.NONE,
     var reminderTime: Long = -1,
     var progress: Int = 0,
     var isDone: Boolean = false,

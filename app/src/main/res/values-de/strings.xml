@@ -31,7 +31,6 @@
     <string name="high_priority">Hoch</string>
     <string name="medium_priority">Normal</string>
     <string name="low_priority">Niedrig</string>
-    <string name="unknown_priority">Unbekannte Priorität</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
 
@@ -100,6 +99,8 @@
     <string name="delete_task">Aufgabe löschen</string>
     <string name="task_removed">Aufgabe ist im Papierkorb</string>
     <string name="deadline">Deadline</string>
+    <string name="recurrence_pattern">Wiederholungsmuster</string>
+    <string name="select_recurrence_pattern">Wiederholungsmuster wählen:</string>
     <string name="reminder">Erinnerung</string>
     <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
     <string name="reminder_smaller_now">Die Erinnerungszeit darf nicht in der Vergangenheit liegen.</string>
@@ -197,6 +198,11 @@
 	<string name="october">Oktober</string>
 	<string name="november">November</string>
 	<string name="december">Dezember</string>
+    <string name="none">Keines</string>
+    <string name="daily">Täglich</string>
+    <string name="weekly">Wöchentlich</string>
+    <string name="monthly">Monatlich</string>
+    <string name="yearly">Jährlich</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>
