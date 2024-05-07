@@ -8,6 +8,7 @@ jobs:
       status: ${{ steps.check-androidTest.outputs.NOT_EMPTY }}
       min-sdk-version: ${{ steps.get-sdk-version.outputs.MIN_SDK_VERSION }}
       target-sdk-version: ${{ steps.get-sdk-version.outputs.TARGET_SDK_VERSION }}
+      app-id: ${{ steps.get-app-id.outputs.APP_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,6 +25,10 @@ jobs:
         run: |
             echo "MIN_SDK_VERSION=$(cat app/build.gradle | grep minSdkVersion | rev | cut -d' ' -f 1 | rev)" >> $GITHUB_OUTPUT
             echo "TARGET_SDK_VERSION=$(cat app/build.gradle | grep targetSdkVersion | rev | cut -d' ' -f 1 | rev)" >> $GITHUB_OUTPUT
+      - name: Get app ID
+        id: get-app-id
+        run: |
+            echo "APP_ID=$(cat app/build.gradle | grep applicationId | rev | cut -d' ' -f 1 | rev | tr -d '"')" >> $GITHUB_OUTPUT
       
   test:
     needs: check-if-tests-exist
@@ -83,4 +88,9 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew :app:connectedCheck --stacktrace
+          script: |
+            adb uninstall ${{needs.check-if-tests-exist.outputs.app-id}} || true
+            adb uninstall ${{needs.check-if-tests-exist.outputs.app-id}}.androidTest || true
+            ./gradlew :app:connectedCheck --stacktrace
+            adb uninstall ${{needs.check-if-tests-exist.outputs.app-id}} || true
+            adb uninstall ${{needs.check-if-tests-exist.outputs.app-id}}.androidTest || true
