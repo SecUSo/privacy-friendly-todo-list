@@ -28,29 +28,24 @@ import org.secuso.privacyfriendlytodolist.R
 import java.util.Calendar
 
 class CalendarView : LinearLayout {
-    private lateinit var currentDate: Calendar
-    private lateinit var buttonPrevMonth: ImageView
-    private lateinit var buttonNextMonth: ImageView
-    private lateinit var tvCurrentMonth: TextView
-    private lateinit var calendarGrid: GridView
+    private var currentDate: Calendar
+    private var buttonPrevMonth: ImageView
+    private var buttonNextMonth: ImageView
+    private var tvCurrentMonth: TextView
+    private var calendarGrid: GridView
+    private var monthNames: Array<String>
     private var gridAdapter: CalendarGridAdapter? = null
 
     constructor(context: Context) :
-            super(context) {
-        initGui(context)
-    }
+            super(context)
 
     constructor(context: Context, attrs: AttributeSet?) :
-            super(context, attrs) {
-        initGui(context)
-    }
+            super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-            super(context, attrs, defStyleAttr) {
-        initGui(context)
-    }
+            super(context, attrs, defStyleAttr)
 
-    private fun initGui(context: Context) {
+    init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         inflater.inflate(R.layout.calendar, this)
         currentDate = Calendar.getInstance()
@@ -58,6 +53,19 @@ class CalendarView : LinearLayout {
         buttonNextMonth = findViewById(R.id.iv_next_month)
         tvCurrentMonth = findViewById(R.id.tv_current_month)
         calendarGrid = findViewById(R.id.gv_calendargrid)
+        monthNames = arrayOf(
+            resources.getString(R.string.january),
+            resources.getString(R.string.february),
+            resources.getString(R.string.march),
+            resources.getString(R.string.april),
+            resources.getString(R.string.may),
+            resources.getString(R.string.june),
+            resources.getString(R.string.july),
+            resources.getString(R.string.august),
+            resources.getString(R.string.september),
+            resources.getString(R.string.october),
+            resources.getString(R.string.november),
+            resources.getString(R.string.december))
     }
 
     fun setGridAdapter(adapter: CalendarGridAdapter?) {
@@ -101,26 +109,12 @@ class CalendarView : LinearLayout {
         gridAdapter!!.notifyDataSetChanged()
 
         // update title
-        val text = getMonth(currentDate[Calendar.MONTH]) + " " + currentDate[Calendar.YEAR]
+        val text = getMonthName(currentDate[Calendar.MONTH]) + " " + currentDate[Calendar.YEAR]
         tvCurrentMonth.text = text
     }
 
-    private fun getMonth(month: Int): String {
-        return when (month) {
-            0 -> resources.getString(R.string.january)
-            1 -> resources.getString(R.string.february)
-            2 -> resources.getString(R.string.march)
-            3 -> resources.getString(R.string.april)
-            4 -> resources.getString(R.string.may)
-            5 -> resources.getString(R.string.june)
-            6 -> resources.getString(R.string.july)
-            7 -> resources.getString(R.string.august)
-            8 -> resources.getString(R.string.september)
-            9 -> resources.getString(R.string.october)
-            10 -> resources.getString(R.string.november)
-            11 -> resources.getString(R.string.december)
-            else -> "UNKNOWN MONTH"
-        }
+    private fun getMonthName(month: Int): String {
+        return if (month in monthNames.indices) monthNames[month] else "UNKNOWN MONTH $month"
     }
 
     fun incMonth(i: Int) {

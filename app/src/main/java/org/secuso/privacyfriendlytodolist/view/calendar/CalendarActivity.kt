@@ -2,7 +2,6 @@ package org.secuso.privacyfriendlytodolist.view.calendar
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
-import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,7 +24,7 @@ import java.util.concurrent.TimeUnit
 class CalendarActivity : AppCompatActivity() {
     private lateinit var model: ModelServices
     private lateinit var calendarGridAdapter: CalendarGridAdapter
-    private val tasksPerDay = HashMap<String, ArrayList<TodoTask>>()
+    private val tasksPerDay = HashMap<Long, ArrayList<TodoTask>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +56,7 @@ class CalendarActivity : AppCompatActivity() {
         calendarView.setDayOnClickListener { parent, view, position, id ->
             updateDeadlines()
             val selectedDate = calendarGridAdapter.getItem(position)
-            val key = absSecondsToDate(selectedDate!!.time / 1000)
+            val key = TimeUnit.MILLISECONDS.toDays(selectedDate!!.time)
             val tasksOfToday = tasksPerDay[key]
             if (tasksOfToday != null) {
                 showDeadlineTasks(tasksOfToday)
@@ -74,7 +71,7 @@ class CalendarActivity : AppCompatActivity() {
             tasksPerDay.clear()
             for (todoTask in todoTasks) {
                 val deadline = todoTask.getDeadline()
-                val key = absSecondsToDate(deadline)
+                val key = TimeUnit.SECONDS.toDays(deadline)
                 var tasksOfDay = tasksPerDay[key]
                 if (null == tasksOfDay) {
                     tasksOfDay = ArrayList()
@@ -85,12 +82,6 @@ class CalendarActivity : AppCompatActivity() {
             calendarGridAdapter.setTodoTasks(tasksPerDay)
             calendarGridAdapter.notifyDataSetChanged()
         }
-    }
-
-    private fun absSecondsToDate(seconds: Long): String {
-        val cal = Calendar.getInstance()
-        cal.setTimeInMillis(TimeUnit.SECONDS.toMillis(seconds))
-        return DateFormat.format(Helper.DATE_FORMAT, cal).toString()
     }
 
     private fun showDeadlineTasks(tasks: ArrayList<TodoTask>) {

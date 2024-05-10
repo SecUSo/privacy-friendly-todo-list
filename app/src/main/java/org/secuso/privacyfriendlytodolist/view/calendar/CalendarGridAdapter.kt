@@ -2,7 +2,6 @@ package org.secuso.privacyfriendlytodolist.view.calendar
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -28,7 +27,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
     private var oldColors: ColorStateList? = null
     private var currentMonth = 0
-    private var tasksPerDay = HashMap<String, ArrayList<TodoTask>>(0)
+    private var tasksPerDay = HashMap<Long, ArrayList<TodoTask>>(0)
 
     init {
         inflater = LayoutInflater.from(context)
@@ -55,7 +54,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
 
         // grey day out if it is outside the current month
         if (posCal[Calendar.MONTH] != currentMonth) {
-            dayViewHolder.dayText!!.setTextColor(ContextCompat.getColor(context, R.color.grey))
+            dayViewHolder.dayText!!.setTextColor(ContextCompat.getColor(context, R.color.middlegrey))
         } else if (sameDay(posCal, todayCal)) {
             dayViewHolder.dayText!!.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
         } else {
@@ -63,7 +62,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         }
 
         // add color bar if a task has its deadline on this day
-        val day = DateFormat.format(Helper.DATE_FORMAT, dateAtPos).toString()
+        val day = TimeUnit.MILLISECONDS.toDays(dateAtPos.time)
         val tasksToday = tasksPerDay[day]
         if (tasksToday != null) {
             var border = ContextCompat.getDrawable(context, R.drawable.border_green)
@@ -93,7 +92,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         currentMonth = month
     }
 
-    fun setTodoTasks(tasksPerDay: HashMap<String, ArrayList<TodoTask>>) {
+    fun setTodoTasks(tasksPerDay: HashMap<Long, ArrayList<TodoTask>>) {
         this.tasksPerDay = tasksPerDay
     }
 

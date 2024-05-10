@@ -68,8 +68,7 @@ class NotificationJob : JobBase() {
 
         // Serialize actions to be sure that both actions are done before calling jobFinished.
         model!!.getTaskById(todoTaskId) { todoTask ->
-            // Check if job is still active
-            if (null != currentJobParams) {
+            if (isJobStillActive()) {
                 if (null == todoTask) {
                     Log.e(TAG, "Unable to set task as done. No task with ID $todoTaskId was found.")
                 } else if (todoTask.isDone()) {

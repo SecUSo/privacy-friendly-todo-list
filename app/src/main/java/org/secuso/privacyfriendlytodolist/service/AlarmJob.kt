@@ -52,8 +52,7 @@ class AlarmJob : JobBase() {
     private fun doAlarm(todoTaskId: Int) {
         // Serialize actions to be sure that both actions are done before calling jobFinished.
         model!!.getTaskById(todoTaskId) { todoTask1 ->
-            // Check if job is still active
-            if (null != currentJobParams) {
+            if (isJobStillActive()) {
                 if (null != todoTask1) {
                     notifyAboutAlarm(todoTask1)
                 } else {
@@ -61,8 +60,7 @@ class AlarmJob : JobBase() {
                 }
 
                 model!!.getNextDueTask(Helper.getCurrentTimestamp()) { todoTask2 ->
-                    // Check if job is still active
-                    if (null != currentJobParams) {
+                    if (isJobStillActive()) {
                         if (null != todoTask2) {
                             // Set alarm even if it is in the past. But should not occur because
                             // getNextDueTask returns only tasks where reminder time is in the future.

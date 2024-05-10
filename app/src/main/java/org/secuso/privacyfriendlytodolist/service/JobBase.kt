@@ -71,10 +71,13 @@ abstract class JobBase : JobService() {
         return !isJobFinished
     }
 
+    protected fun isJobStillActive(): Boolean {
+        return null != currentJobParams
+    }
+
     protected fun jobFinished() {
         isJobFinished = true
-        // Check if job is still active
-        if (null != currentJobParams) {
+        if (isJobStillActive()) {
             Log.d(TAG, "Job $currentJobId finished regularly.")
             jobFinished(currentJobParams, false)
         } else {
