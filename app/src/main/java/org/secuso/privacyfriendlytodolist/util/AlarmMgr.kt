@@ -25,6 +25,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
@@ -55,33 +57,43 @@ object AlarmMgr {
         val alarmId = todoTask.getId()
         cancelAlarmForTask(context, alarmId)
 
-        if (todoTask.isDone()) {
-            Log.i(TAG, "No alarm set because task $todoTask is done.")
+        var reminderTime = todoTask.getReminderTime()
+        if (reminderTime == -1L) {
+            Log.i(TAG, "No alarm set because $todoTask has no reminder time.")
             return null
         }
 
-        val reminderTime = todoTask.getReminderTime()
+        if (todoTask.isDone() && !todoTask.isRecurring()) {
+            Log.i(TAG, "No alarm set because $todoTask is done and not recurring.")
+            return null
+        }
+
+        val now = Helper.getCurrentTimestamp()
+        if (todoTask.isRecurring()) {
+            // Get the upcoming due date of the recurring task. The initial reminder time is not the
+            // right date for the alarm.
+            reminderTime = Helper.getNextRecurringDate(reminderTime, todoTask.getRecurrencePattern(), now)
+        }
+
         val alarmTime: Long
-        val logMessage: String
-        if (reminderTime != -1L) {
-            val now = Helper.getCurrentTimestamp()
-            if (reminderTime > now) {
-                alarmTime = reminderTime
-                logMessage = "reminder time"
-            } else if (setAlarmEvenIfItIsInPast) {
-                alarmTime = now
-                logMessage = "reminder time is in the past, using 'now'"
-            } else {
-                Log.i(TAG, "No alarm set because reminder time of task $todoTask is in the past.")
-                return null
-            }
+        val logDuration: String
+        val logDetail: String
+        if (reminderTime > now) {
+            alarmTime = reminderTime
+            val duration = (reminderTime - now).toDuration(DurationUnit.SECONDS)
+            logDuration = "in $duration"
+            logDetail = "reminder time"
+        } else if (setAlarmEvenIfItIsInPast) {
+            alarmTime = now
+            logDuration = "now"
+            logDetail = "reminder time is in the past, using 'now'"
         } else {
-            Log.i(TAG, "No alarm set because task $todoTask has no reminder time.")
+            Log.i(TAG, "No alarm set because reminder time of $todoTask is in the past.")
             return null
         }
 
         val timestamp = setAlarm(context, alarmId, alarmTime)
-        Log.i(TAG, "Alarm set for task $todoTask at $timestamp ($logMessage).")
+        Log.i(TAG, "Alarm set for $todoTask at $timestamp which is $logDuration ($logDetail).")
         return alarmId
     }
 
@@ -103,7 +115,7 @@ object AlarmMgr {
         return Helper.createDateTimeString(calendar)
     }
 
-    fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {
+    private fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {
         val pendingIntent = getPendingAlarmIntent(context, alarmId, false)
         var alarmWasSet = false
         if (pendingIntent != null) {

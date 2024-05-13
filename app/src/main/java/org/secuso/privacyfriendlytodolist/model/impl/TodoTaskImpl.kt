@@ -6,6 +6,8 @@ import android.util.Log
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
+import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -46,15 +48,17 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         }
         data.name = parcel.readString()!!
         data.description = parcel.readString()!!
-        data.isDone = parcel.readByte() != 0.toByte()
+        data.creationTime = parcel.readLong()
+        data.doneTime = parcel.readLong()
         data.isInRecycleBin = parcel.readByte() != 0.toByte()
         data.progress = parcel.readInt()
         data.deadline = parcel.readLong()
+        data.recurrencePattern = RecurrencePattern.fromOrdinal(parcel.readInt())!!
         data.reminderTime = parcel.readLong()
         reminderTimeChanged = parcel.readByte() != 0.toByte()
         reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
         data.listPosition = parcel.readInt()
-        data.priority = TodoTask.Priority.fromOrdinal(parcel.readInt())!!
+        data.priority = Priority.fromOrdinal(parcel.readInt())!!
         parcel.readTypedList(subtasks, TodoSubtaskImpl.CREATOR)
         // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
         // ensure that DB action gets done. So keep initial value RequiredDBAction.NONE.
@@ -71,10 +75,12 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         }
         dest.writeString(data.name)
         dest.writeString(data.description)
-        dest.writeByte((if (data.isDone) 1 else 0).toByte())
+        dest.writeLong(data.creationTime)
+        dest.writeLong(data.doneTime)
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.progress)
         dest.writeLong(data.deadline)
+        dest.writeInt(data.recurrencePattern.ordinal)
         dest.writeLong(data.reminderTime)
         dest.writeByte((if (reminderTimeChanged) 1 else 0).toByte())
         dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
@@ -89,6 +95,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun getId(): Int {
         return data.id
+    }
+
+    override fun getCreationTime(): Long {
+        return data.creationTime
     }
 
     override fun setName(name: String) {
@@ -127,12 +137,16 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.deadline > 0
     }
 
-    override fun setRecurrencePattern(recurrencePattern: TodoTask.RecurrencePattern) {
+    override fun setRecurrencePattern(recurrencePattern: RecurrencePattern) {
         data.recurrencePattern = recurrencePattern
     }
 
-    override fun getRecurrencePattern(): TodoTask.RecurrencePattern {
+    override fun getRecurrencePattern(): RecurrencePattern {
         return data.recurrencePattern
+    }
+
+    override fun isRecurring(): Boolean {
+        return data.recurrencePattern != RecurrencePattern.NONE
     }
 
     override fun setListPosition(position: Int) {
@@ -159,7 +173,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         var dDeadlineColor = DeadlineColors.BLUE
         val deadline = data.deadline
         val reminderTime = data.reminderTime
-        if (!data.isDone && deadline > 0) {
+        if (!isDone() && deadline > 0) {
             val currentTimeStamp = Helper.getCurrentTimestamp()
             val remTimeToCalc = if (reminderTime > 0) deadline - reminderTime else defaultReminderTime
             if (currentTimeStamp >= deadline - remTimeToCalc && deadline > currentTimeStamp) {
@@ -171,11 +185,11 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return dDeadlineColor
     }
 
-    override fun setPriority(priority: TodoTask.Priority) {
+    override fun setPriority(priority: Priority) {
         data.priority = priority
     }
 
-    override fun getPriority(): TodoTask.Priority {
+    override fun getPriority(): Priority {
         return data.priority
     }
 
@@ -208,12 +222,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun setReminderTime(reminderTime: Long) {
-        val deadline = data.deadline
-        if (deadline in 1..<reminderTime) {
-            Log.i(TAG, "Reminder time must not be greater than the deadline.")
-        } else {
-            data.reminderTime = reminderTime
-        }
+        data.reminderTime = reminderTime
 
         // check if reminder time was already set and now changed -> important for reminder service
         if (reminderTimeWasInitialized) {
@@ -241,11 +250,15 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun setDone(isDone: Boolean) {
-        data.isDone = isDone
+        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else -1L
     }
 
     override fun isDone(): Boolean {
-        return data.isDone
+        return -1L != data.doneTime
+    }
+
+    override fun getDoneTime(): Long {
+        return data.doneTime
     }
 
     // A task is done if the user manually sets it done or when all subtasks are done.
@@ -258,8 +271,8 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
                 break
             }
         }
-        if (data.isDone != allSubtasksAreDone) {
-            data.isDone = allSubtasksAreDone
+        if (isDone() != allSubtasksAreDone) {
+            setDone(allSubtasksAreDone)
             requiredDBAction = RequiredDBAction.UPDATE
         }
     }
@@ -299,7 +312,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun toString(): String {
-        return "'${getName()}' (id ${getId()})"
+        return "TodoTask(name=${getName()}, id=${getId()}, r=${getRecurrencePattern()})"
     }
 
     companion object {

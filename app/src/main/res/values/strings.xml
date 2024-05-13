@@ -107,7 +107,7 @@
     <string name="select_recurrence_pattern">Select a recurrence pattern:</string>
     <string name="reminder">Reminder</string>
     <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
-    <string name="reminder_smaller_now">The reminder time cannot be in the past.</string>
+    <string name="reminder_smaller_now">Only recurring tasks can have reminder time in the past.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>

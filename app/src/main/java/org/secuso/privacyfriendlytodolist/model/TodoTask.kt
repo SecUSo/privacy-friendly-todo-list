@@ -81,6 +81,7 @@ interface TodoTask : BaseTodo, Parcelable {
 
     fun setId(id: Int)
     fun getId(): Int
+    fun getCreationTime(): Long
     fun setName(name: String)
     fun getName(): String
     fun setDescription(description: String)
@@ -100,6 +101,7 @@ interface TodoTask : BaseTodo, Parcelable {
     fun hasDeadline(): Boolean
     fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
     fun getRecurrencePattern(): RecurrencePattern
+    fun isRecurring(): Boolean
     fun setListPosition(position: Int)
     fun getListPosition(): Int
     fun setSubtasks(subtasks: MutableList<TodoSubtask>)
@@ -128,10 +130,12 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
+    fun getDoneTime(): Long
 
     /**
      * A task is done if the user manually sets it done or when all subtasks are done.
      * If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
+     * This method checks if done-status of task needs an update due to this and if so, does the update.
      */
     fun doneStatusChanged()
     fun setInRecycleBin(isInRecycleBin: Boolean)

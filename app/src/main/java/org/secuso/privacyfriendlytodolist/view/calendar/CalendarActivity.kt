@@ -13,7 +13,6 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 31.01.2018.
@@ -24,7 +23,6 @@ import java.util.concurrent.TimeUnit
 class CalendarActivity : AppCompatActivity() {
     private lateinit var model: ModelServices
     private lateinit var calendarGridAdapter: CalendarGridAdapter
-    private val tasksPerDay = HashMap<Long, ArrayList<TodoTask>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +42,6 @@ class CalendarActivity : AppCompatActivity() {
         }
         calendarGridAdapter = CalendarGridAdapter(this, R.layout.calendar_day)
         calendarView.setGridAdapter(calendarGridAdapter)
-        updateDeadlines()
         calendarView.setNextMonthOnClickListener {
             calendarView.incMonth(1)
             calendarView.refresh()
@@ -54,32 +51,21 @@ class CalendarActivity : AppCompatActivity() {
             calendarView.refresh()
         }
         calendarView.setDayOnClickListener { parent, view, position, id ->
-            updateDeadlines()
-            val selectedDate = calendarGridAdapter.getItem(position)
-            val key = TimeUnit.MILLISECONDS.toDays(selectedDate!!.time)
-            val tasksOfToday = tasksPerDay[key]
+            val tasksOfToday = calendarGridAdapter.getTasksOfDay(position)
             if (tasksOfToday != null) {
                 showDeadlineTasks(tasksOfToday)
             } else {
-                Toast.makeText(applicationContext, getString(R.string.no_deadline_today), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.no_deadline_today),
+                    Toast.LENGTH_SHORT).show()
             }
         }
+
+        loadTodoTasks()
     }
 
-    private fun updateDeadlines() {
+    private fun loadTodoTasks() {
         model.getAllToDoTasks { todoTasks ->
-            tasksPerDay.clear()
-            for (todoTask in todoTasks) {
-                val deadline = todoTask.getDeadline()
-                val key = TimeUnit.SECONDS.toDays(deadline)
-                var tasksOfDay = tasksPerDay[key]
-                if (null == tasksOfDay) {
-                    tasksOfDay = ArrayList()
-                    tasksPerDay[key] = tasksOfDay
-                }
-                tasksOfDay.add(todoTask)
-            }
-            calendarGridAdapter.setTodoTasks(tasksPerDay)
+            calendarGridAdapter.setTodoTasks(todoTasks)
             calendarGridAdapter.notifyDataSetChanged()
         }
     }

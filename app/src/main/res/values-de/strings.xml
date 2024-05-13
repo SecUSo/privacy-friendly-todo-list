@@ -103,7 +103,7 @@
     <string name="select_recurrence_pattern">Wiederholungsmuster wählen:</string>
     <string name="reminder">Erinnerung</string>
     <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
-    <string name="reminder_smaller_now">Die Erinnerungszeit darf nicht in der Vergangenheit liegen.</string>
+    <string name="reminder_smaller_now">Nur wiederkehrende Aufgaben können eine Erinnerungszeit in der Vergangenheit haben.</string>
     <string name="set_deadline_before_reminder">Bitte geben sie zuerst eine Deadline an.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>

@@ -36,6 +36,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.createDateTimeString
 import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
@@ -43,8 +44,6 @@ import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
 import org.secuso.privacyfriendlytodolist.util.Helper.recurrencePatternToString
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import org.secuso.privacyfriendlytodolist.view.dialog.DeadlineDialog.DeadlineCallback
-import org.secuso.privacyfriendlytodolist.view.dialog.ReminderDialog.ReminderCallback
 
 /**
  * This class creates a dialog that lets the user create/edit a task.
@@ -60,7 +59,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     private val editExistingTask: Boolean
     private var todoTask: TodoTask
     private var deadline: Long
-    private var recurrencePattern: TodoTask.RecurrencePattern
+    private var recurrencePattern: RecurrencePattern
     private var reminderTime: Long
     private var taskProgress: Int
     private var taskPriority: TodoTask.Priority
@@ -197,9 +196,9 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         deadlineTextView.setOnClickListener {
             val deadlineDialog = DeadlineDialog(context, deadline)
             deadlineDialog.setDialogCallback(object : DeadlineCallback {
-                override fun setDeadline(deadline: Long) {
-                    this@ProcessTodoTaskDialog.deadline = deadline
-                    deadlineTextView.text = createDateString(deadline)
+                override fun setDeadline(selectedDeadline: Long) {
+                    deadline = selectedDeadline
+                    deadlineTextView.text = createDateString(selectedDeadline)
                 }
 
                 override fun removeDeadline() {
@@ -223,24 +222,27 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         reminderTextView.setOnClickListener {
             val reminderDialog = ReminderDialog(context, reminderTime, deadline)
             reminderDialog.setDialogCallback(object : ReminderCallback {
-                override fun setReminder(reminderDeadline: Long) {
-                    /* if (deadline == -1L) {
-                        Toast.makeText(context, context.getString(R.string.set_deadline_before_reminder),
-                            Toast.LENGTH_SHORT).show()
-                    } else */
-                    if (deadline != -1L && deadline < reminderDeadline) {
-                        Toast.makeText(context, context.getString(R.string.deadline_smaller_reminder),
-                            Toast.LENGTH_SHORT).show()
-                    } else if (reminderDeadline < getCurrentTimestamp()) {
-                        Toast.makeText(context, context.getString(R.string.reminder_smaller_now),
-                            Toast.LENGTH_SHORT).show()
-                    } else {
-                        reminderTime = reminderDeadline
+                override fun setReminderTime(selectedReminderTime: Long) {
+                    var resIdErrorMsg = 0
+                    if (recurrencePattern == RecurrencePattern.NONE) {
+                        /* if (deadline == -1L) {
+                            resIdErrorMsg = R.string.set_deadline_before_reminder
+                        } else */
+                        if (deadline != -1L && deadline < selectedReminderTime) {
+                            resIdErrorMsg = R.string.deadline_smaller_reminder
+                        } else if (selectedReminderTime < getCurrentTimestamp()) {
+                            resIdErrorMsg = R.string.reminder_smaller_now
+                        }
+                    }
+                    if (resIdErrorMsg == 0) {
+                        reminderTime = selectedReminderTime
                         reminderTextView.text = createDateTimeString(reminderTime)
+                    } else {
+                        Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                override fun removeReminder() {
+                override fun removeReminderTime() {
                     reminderTime = -1L
                     val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
                     reminderTextView.text = context.resources.getString(R.string.reminder)
@@ -254,7 +256,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         when (v.id) {
             R.id.tv_task_recurrence_pattern -> {
                 menu.setHeaderTitle(R.string.select_recurrence_pattern)
-                for (pattern in TodoTask.RecurrencePattern.entries) {
+                for (pattern in RecurrencePattern.entries) {
                     menu.add(v.id, pattern.ordinal, Menu.NONE, recurrencePatternToString(context, pattern))
                 }
             }
@@ -282,7 +284,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
         when (item.groupId) {
             R.id.tv_task_recurrence_pattern -> {
-                recurrencePattern = TodoTask.RecurrencePattern.fromOrdinal(item.itemId)!!
+                recurrencePattern = RecurrencePattern.fromOrdinal(item.itemId)!!
                 updateRecurrencePatternText()
             }
 
@@ -314,7 +316,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     }
 
     private fun updateRecurrencePatternText() {
-        recurrencePatternTextView.text = if (recurrencePattern == TodoTask.RecurrencePattern.NONE) {
+        recurrencePatternTextView.text = if (recurrencePattern == RecurrencePattern.NONE) {
             context.getString(R.string.recurrence_pattern)
         } else {
             recurrencePatternToString(context, recurrencePattern)

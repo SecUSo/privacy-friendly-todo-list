@@ -75,7 +75,14 @@ class AlarmJob : JobBase() {
     }
 
     private fun notifyAboutAlarm(task: TodoTask) {
-        Log.i(TAG, "Notifying about alarm for task $task.")
+        if (task.isRecurring() && task.isDone()) {
+            Log.i(TAG, "Notifying about alarm for $task and setting it as undone because its recurring.")
+            task.setDone(false)
+            task.setChanged()
+            model!!.saveTodoTaskInDb(task)
+        } else {
+            Log.i(TAG, "Notifying about alarm for $task.")
+        }
         val title = task.getName()
         val deadline = Helper.createDateTimeString(task.getDeadline())
         val message = applicationContext.resources.getString(R.string.deadline_approaching, deadline)

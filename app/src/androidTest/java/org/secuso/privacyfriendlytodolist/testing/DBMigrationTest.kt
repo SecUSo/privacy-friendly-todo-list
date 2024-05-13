@@ -33,6 +33,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
+import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.IOException
 
@@ -48,11 +49,9 @@ class DBMigrationTest {
         private const val TEST_DB_NAME = "TodoDatabaseForMigrationTest.db"
         private const val TASK_PRIORITY_BASE = 1000
         private const val TASK_DEADLINE_BASE = 2000
-        private const val TASK_DONE_BASE = 3000
-        private const val TASK_PROGRESS_BASE = 4000
-        private const val TASK_NUM_SUBTASKS_BASE = 5000
-        private const val TASK_DEADLINE_WARNING_TIME_BASE = 6000
-        private const val SUBTASK_DONE_BASE = 10000
+        private const val TASK_PROGRESS_BASE = 3000
+        private const val TASK_NUM_SUBTASKS_BASE = 4000
+        private const val TASK_DEADLINE_WARNING_TIME_BASE = 5000
     }
 
     @get:Rule
@@ -130,7 +129,7 @@ class DBMigrationTest {
                 // Create the scenario where tasks have listId's that do not point to a list.
                 // Seen with listId 0 or -3. Use different not existing values here, if listCounter is 3.
                 val listId = if (listCounter != 3) listCounter else 1 - task
-                query += "('$id', '$listId', '$task', 'Test task $id', 'Test task description $id', '${id + TASK_PRIORITY_BASE}', '${id + TASK_DEADLINE_BASE}', '${id + TASK_DONE_BASE}', '${id + TASK_PROGRESS_BASE}', '${id + TASK_NUM_SUBTASKS_BASE}', '${id + TASK_DEADLINE_WARNING_TIME_BASE}'), "
+                query += "('$id', '$listId', '$task', 'Test task $id', 'Test task description $id', '${id + TASK_PRIORITY_BASE}', '${id + TASK_DEADLINE_BASE}', '${id % 2}', '${id + TASK_PROGRESS_BASE}', '${id + TASK_NUM_SUBTASKS_BASE}', '${id + TASK_DEADLINE_WARNING_TIME_BASE}'), "
             }
         }
         query = query.removeSuffix(", ")
@@ -142,7 +141,7 @@ class DBMigrationTest {
             val subtaskCount = taskId % 3
             for (subtask in 1..subtaskCount) {
                 ++id
-                query += "('$id', '$taskId', 'Test subtask $id', '${id + SUBTASK_DONE_BASE}'), "
+                query += "('$id', '$taskId', 'Test subtask $id', '${id % 2}'), "
             }
         }
         query = query.removeSuffix(", ")
@@ -171,10 +170,13 @@ class DBMigrationTest {
             assertFalse(cursor.moveToNext())
         }
 
+        val now = Helper.getCurrentTimestamp()
+        val nowRange = LongRange(now - 120, now)
+
         val taskIds = ArrayList<Int>()
         cursor = db.query("SELECT * FROM todoTasks")
         cursor.use {
-            assertEquals(12, cursor.columnCount)
+            assertEquals(13, cursor.columnCount)
             // Check values
             var pos = 0
             var id = 0
@@ -191,7 +193,7 @@ class DBMigrationTest {
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(listId, cursor.getIntOrNull(col++))
-                    assertEquals(task, cursor.getIntOrNull(col++))
+                    assertEquals(-1, cursor.getIntOrNull(col++)) // listPosition
                     assertEquals("Test task $id", cursor.getStringOrNull(col++))
                     assertEquals("Test task description $id", cursor.getStringOrNull(col++))
                     assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
@@ -199,7 +201,12 @@ class DBMigrationTest {
                     assertEquals(0, cursor.getIntOrNull(col++)) // RecurrencePattern
                     assertEquals(id + TASK_DEADLINE_WARNING_TIME_BASE, cursor.getIntOrNull(col++))
                     assertEquals(id + TASK_PROGRESS_BASE, cursor.getIntOrNull(col++))
-                    assertEquals(id + TASK_DONE_BASE, cursor.getIntOrNull(col++))
+                    assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // creationTime
+                    if (id % 2 != 0) {
+                        assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime
+                    } else {
+                        assertEquals(-1, cursor.getIntOrNull(col++))
+                    }
                     assertEquals(0, cursor.getIntOrNull(col)) // isInRecycleBin
                     assertTrue(listId == null || listIds.contains(listId))
                     taskIds.add(id)
@@ -228,7 +235,11 @@ class DBMigrationTest {
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(taskId, cursor.getIntOrNull(col++))
                     assertEquals("Test subtask $id", cursor.getStringOrNull(col++))
-                    assertEquals(id + SUBTASK_DONE_BASE, cursor.getIntOrNull(col++))
+                    if (id % 2 != 0) {
+                        assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime
+                    } else {
+                        assertEquals(-1, cursor.getIntOrNull(col++))
+                    }
                     assertEquals(0, cursor.getIntOrNull(col))
                     assertTrue(taskIds.contains(taskId))
                 }

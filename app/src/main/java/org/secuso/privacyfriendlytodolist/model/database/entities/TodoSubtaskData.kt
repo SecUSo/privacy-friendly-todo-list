@@ -40,6 +40,6 @@ data class TodoSubtaskData(
     var id: Int = 0,
     var taskId: Int = 0,
     var name: String = "",
-    var isDone: Boolean = false,
+    var doneTime: Long = -1,
     var isInRecycleBin: Boolean = false
 )

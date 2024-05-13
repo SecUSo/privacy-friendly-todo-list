@@ -88,6 +88,7 @@ class CalendarView : LinearLayout {
 
     fun refresh() {
         val calendar = currentDate.clone() as Calendar
+        val selectedYear = calendar[Calendar.YEAR]
         val selectedMonth = calendar[Calendar.MONTH]
 
         // determine cell for the current month's beginning
@@ -99,13 +100,11 @@ class CalendarView : LinearLayout {
 
         // fill cells
         gridAdapter!!.clear()
-        var dayCounter = 0
-        while (dayCounter < MAX_DAY_COUNT) {
-            gridAdapter!!.insert(calendar.time, dayCounter)
+        for (dayIndex in 0..<MAX_DAY_COUNT) {
+            gridAdapter!!.insert(calendar.time, dayIndex)
             calendar.add(Calendar.DAY_OF_MONTH, 1)
-            dayCounter++
         }
-        gridAdapter!!.setMonth(selectedMonth)
+        gridAdapter!!.setSelectedDate(selectedYear, selectedMonth)
         gridAdapter!!.notifyDataSetChanged()
 
         // update title

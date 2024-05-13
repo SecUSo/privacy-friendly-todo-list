@@ -186,7 +186,7 @@ class TodoListImpl : BaseTodoImpl, TodoList {
     }
 
     override fun toString(): String {
-        return "'${getName()}' (id ${getId()})"
+        return "TodoList(name=${getName()}, id=${getId()})"
     }
 
     companion object {

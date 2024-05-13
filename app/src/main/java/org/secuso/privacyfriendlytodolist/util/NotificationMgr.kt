@@ -106,7 +106,8 @@ object NotificationMgr {
         intent.setAction(NotificationReceiver.ACTION_SNOOZE)
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
-        var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze)
+        var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze) + " " +
+                Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context))
         builder.addAction(R.drawable.snooze, actionTitle, pendingIntent)
 
         // Done Action

@@ -48,7 +48,7 @@ class AutoStartJob : JobBase() {
         // First cancel all alarms
         NotificationMgr.cancelAll(this)
         
-        model!!.getTasksToRemind(Helper.getCurrentTimestamp(), null) { tasksToRemind ->
+        model!!.getTasksToRemind(Helper.getCurrentTimestamp()) { tasksToRemind ->
             if (isJobStillActive()) {
                 // Then set alarms, if there are tasks to remind.
                 if (tasksToRemind.isEmpty()) {

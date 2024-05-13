@@ -2,6 +2,7 @@ package org.secuso.privacyfriendlytodolist.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
 
 class PinActivity : AppCompatActivity() {
@@ -24,7 +25,7 @@ class PinActivity : AppCompatActivity() {
 
     private fun startDialog() {
         PinDialog(this, false).apply {
-            setDialogCallback(object : PinDialog.PinCallback {
+            setDialogCallback(object : PinCallback {
                 override fun accepted() {
                     isAuthenticated = true
                     this@PinActivity.finish()

@@ -21,15 +21,13 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.RequiredDBAction
+import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.LogTag
 
 class ModelServicesImpl(
     private val context: Context,
     private val coroutineScope: CoroutineScope,
     private val resultHandler: Handler): ModelServices {
-
-    companion object {
-        private val TAG: String = ModelServicesImpl::class.java.simpleName
-    }
 
     private var db: TodoListDatabase = getInstance(context)
 
@@ -56,7 +54,27 @@ class ModelServicesImpl(
     }
 
     private suspend fun getNextDueTaskBlocking(now: Long): TodoTask? {
-        val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
+        // Get next due task in recurring tasks.
+        var nextRecurringDueTaskData: TodoTaskData? = null
+        var nextRecurringDueTaskReminderTime = -1L
+        val dataArray = db.getTodoTaskDao().getAllRecurringWithReminder(now)
+        for (data in dataArray) {
+            val nextDate = Helper.getNextRecurringDate(data.reminderTime, data.recurrencePattern, now)
+            if (nextRecurringDueTaskData == null || nextDate < nextRecurringDueTaskReminderTime) {
+                nextRecurringDueTaskData = data
+                nextRecurringDueTaskReminderTime = nextDate
+            }
+        }
+
+        // Get next due task in regular tasks.
+        var nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
+
+        // Take the earliest of the two due tasks.
+        if (nextDueTaskData == null || (nextRecurringDueTaskData != null &&
+            nextDueTaskData.reminderTime > nextRecurringDueTaskReminderTime)) {
+            nextDueTaskData = nextRecurringDueTaskData
+        }
+
         var nextDueTask: TodoTask? = null
         if (null != nextDueTaskData) {
             nextDueTask = loadTasksSubtasks(false, nextDueTaskData)[0]
@@ -64,11 +82,10 @@ class ModelServicesImpl(
         return nextDueTask
     }
 
-    override fun getTasksToRemind(now: Long, lockedIds: Set<Int>?,
-                                  deliveryOption: DeliveryOption,
+    override fun getTasksToRemind(now: Long, deliveryOption: DeliveryOption,
                                   resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val dataArray = db.getTodoTaskDao().getAllToRemind(now, lockedIds)
+            val dataArray = db.getTodoTaskDao().getAllToRemind(now)
             val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
             // get task that is next due
@@ -335,8 +352,7 @@ class ModelServicesImpl(
                     todoTaskImpl.getId(),
                     todoTaskImpl.getName(),
                     todoTaskImpl.getProgress(false),
-                    todoTaskImpl.isDone()
-                )
+                    todoTaskImpl.getDoneTime())
                 Log.d(TAG, "Todo task was updated in DB by values from pomodoro (return code $counter): $data")
             }
 
@@ -411,16 +427,24 @@ class ModelServicesImpl(
     ): MutableList<TodoTaskImpl> {
         val tasks = ArrayList<TodoTaskImpl>()
         for (data in dataArray) {
-            val task = TodoTaskImpl(data)
-            val dataArray2 = if (subtasksFromRecycleBinToo)
-                db.getTodoSubtaskDao().getAllOfTask(task.getId()) else
-                db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.getId())
-            val subtasks = loadSubtasks(*dataArray2)
-            @Suppress("UNCHECKED_CAST")
-            task.setSubtasks(subtasks as MutableList<TodoSubtask>)
+            val task = loadTaskSubtasks(subtasksFromRecycleBinToo, data)
             tasks.add(task)
         }
         return tasks
+    }
+
+    private suspend fun loadTaskSubtasks(
+        subtasksFromRecycleBinToo: Boolean,
+        data: TodoTaskData
+    ): TodoTaskImpl {
+        val task = TodoTaskImpl(data)
+        val dataArray = if (subtasksFromRecycleBinToo)
+            db.getTodoSubtaskDao().getAllOfTask(task.getId()) else
+            db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.getId())
+        val subtasks = loadSubtasks(*dataArray)
+        @Suppress("UNCHECKED_CAST")
+        task.setSubtasks(subtasks as MutableList<TodoSubtask>)
+        return task
     }
 
     private fun loadSubtasks(vararg dataArray: TodoSubtaskData): MutableList<TodoSubtaskImpl> {
@@ -452,5 +476,9 @@ class ModelServicesImpl(
                 Log.e(TAG, "Failed to post Model.notifyDataChanged().")
             }
         }
+    }
+
+    companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

@@ -21,18 +21,17 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.view.dialog.DeadlineDialog.DeadlineCallback
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.concurrent.TimeUnit
 
+interface DeadlineCallback {
+    fun setDeadline(selectedDeadline: Long)
+    fun removeDeadline()
+}
+
 class DeadlineDialog(context: Context, private val deadline: Long) :
     FullScreenDialog<DeadlineCallback>(context, R.layout.deadline_dialog) {
-    interface DeadlineCallback {
-        fun setDeadline(deadline: Long)
-        fun removeDeadline()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
