@@ -79,7 +79,8 @@ object AlarmMgr {
         val logDuration: String
         val logDetail: String
         if (reminderTime > now) {
-            alarmTime = reminderTime
+            // Get full minutes as alarm time.
+            alarmTime = reminderTime - (reminderTime % 60)
             val duration = (reminderTime - now).toDuration(DurationUnit.SECONDS)
             logDuration = "in $duration"
             logDetail = "reminder time"

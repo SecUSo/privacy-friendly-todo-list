@@ -107,8 +107,10 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setSubtasks(subtasks: MutableList<TodoSubtask>)
     fun getSubtasks(): MutableList<TodoSubtask>
 
-    // This method expects the deadline to be greater than the reminder time.
-    fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors
+    /**
+     * @param reminderTimeSpan The reminder time span is a relative value in seconds (e.g. 86400 s == 1 day).
+     */
+    fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)

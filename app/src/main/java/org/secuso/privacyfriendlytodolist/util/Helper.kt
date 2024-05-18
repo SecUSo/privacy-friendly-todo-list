@@ -114,19 +114,16 @@ object Helper {
 
     fun snoozeDurationToString(context: Context, snoozeDuration: Long): String {
         val snoozeDurationValues = context.resources.getStringArray(R.array.snooze_duration_values)
-        var result = "Unknown snooze duration '$snoozeDuration'"
-        var index = 0
-        for (currentSnoozeDuration in snoozeDurationValues) {
-            if (currentSnoozeDuration.toLong() == snoozeDuration) {
+        for (index in snoozeDurationValues.indices) {
+            if (snoozeDurationValues[index].toLong() == snoozeDuration) {
                 val valuesHuman = context.resources.getStringArray(R.array.snooze_duration_values_human)
                 if (index < valuesHuman.size) {
-                    result = valuesHuman[index]
+                    return valuesHuman[index]
                 }
                 break
             }
-            ++index
         }
-        return result
+        return "Unknown snooze duration '$snoozeDuration'"
     }
 
     fun getMenuHeader(context: Context, title: String?): TextView {

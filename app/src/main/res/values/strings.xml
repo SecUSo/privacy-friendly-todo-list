@@ -109,6 +109,7 @@
     <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
     <string name="reminder_smaller_now">Only recurring tasks can have reminder time in the past.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
+    <string name="set_deadline_if_recurring">A recurring task needs a deadline.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0 %</string>

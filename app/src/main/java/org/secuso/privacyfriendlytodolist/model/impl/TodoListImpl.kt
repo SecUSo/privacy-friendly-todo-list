@@ -145,10 +145,10 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         } */return minDeadLine
     }
 
-    override fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors {
+    override fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors {
         var result = DeadlineColors.BLUE
         for (currentTask in tasks) {
-            when (currentTask.getDeadlineColor(defaultReminderTime)) {
+            when (currentTask.getDeadlineColor(reminderTimeSpan)) {
                 DeadlineColors.RED -> return DeadlineColors.RED
                 DeadlineColors.ORANGE -> result = DeadlineColors.ORANGE
                 else -> {}

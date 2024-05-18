@@ -49,19 +49,21 @@ class AutoStartJob : JobBase() {
         NotificationMgr.cancelAll(this)
         
         model!!.getTasksToRemind(Helper.getCurrentTimestamp()) { tasksToRemind ->
-            if (isJobStillActive()) {
-                // Then set alarms, if there are tasks to remind.
-                if (tasksToRemind.isEmpty()) {
-                    Log.i(TAG, "No alarms set.")
-                } else {
-                    for (todoTask in tasksToRemind) {
-                        // Set alarm even if it is in the past. Phone could be switched off for a while.
-                        AlarmMgr.setAlarmForTask(this, todoTask, true)
-                    }
-                }
-
-                jobFinished()
+            if (isJobStopped()) {
+                return@getTasksToRemind
             }
+
+            // Then set alarms, if there are tasks to remind.
+            if (tasksToRemind.isEmpty()) {
+                Log.i(TAG, "No alarms set.")
+            } else {
+                for (todoTask in tasksToRemind) {
+                    // Set alarm even if it is in the past. Phone could be switched off for a while.
+                    AlarmMgr.setAlarmForTask(this, todoTask, true)
+                }
+            }
+
+            jobFinished()
         }
     }
 

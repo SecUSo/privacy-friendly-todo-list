@@ -2,7 +2,6 @@ package org.secuso.privacyfriendlytodolist.model.impl
 
 import android.os.Parcel
 import android.os.Parcelable.Creator
-import android.util.Log
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
@@ -10,7 +9,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
-import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.util.Locale
 
 /**
@@ -165,24 +163,28 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return subtasks
     }
 
-    // This method expects the deadline to be greater than the reminder time.
-    override fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors {
-
-        // The default reminder time is a relative value in seconds (e.g. 86400s == 1 day)
-        // The user specified reminder time is an absolute timestamp
-        var dDeadlineColor = DeadlineColors.BLUE
-        val deadline = data.deadline
-        val reminderTime = data.reminderTime
+    override fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors {
+        var color = DeadlineColors.BLUE
+        var deadline = data.deadline
         if (!isDone() && deadline > 0) {
-            val currentTimeStamp = Helper.getCurrentTimestamp()
-            val remTimeToCalc = if (reminderTime > 0) deadline - reminderTime else defaultReminderTime
-            if (currentTimeStamp >= deadline - remTimeToCalc && deadline > currentTimeStamp) {
-                dDeadlineColor = DeadlineColors.ORANGE
-            } else if (currentTimeStamp > deadline) {
-                dDeadlineColor = DeadlineColors.RED
+            val now = Helper.getCurrentTimestamp()
+            val finalReminderTimeSpan: Long
+            if (isRecurring()) {
+                deadline = Helper.getNextRecurringDate(deadline, data.recurrencePattern, now)
+                finalReminderTimeSpan = reminderTimeSpan
+            } else {
+                val reminderTime = data.reminderTime
+                finalReminderTimeSpan = if (reminderTime in 1..<deadline)
+                    deadline - reminderTime else reminderTimeSpan
+            }
+
+            if (deadline <= now) {
+                color = DeadlineColors.RED
+            } else if ((deadline - finalReminderTimeSpan) <= now) {
+                color = DeadlineColors.ORANGE
             }
         }
-        return dDeadlineColor
+        return color
     }
 
     override fun setPriority(priority: Priority) {
@@ -316,8 +318,6 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     companion object {
-        private val TAG = LogTag.create(this::class.java.declaringClass)
-
         @JvmField
         val CREATOR = object : Creator<TodoTask> {
             override fun createFromParcel(parcel: Parcel): TodoTask {

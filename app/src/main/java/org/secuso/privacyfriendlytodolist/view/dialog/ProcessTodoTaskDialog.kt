@@ -173,6 +173,9 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             if (name.isEmpty()) {
                 Toast.makeText(context, context.getString(R.string.todo_name_must_not_be_empty),
                     Toast.LENGTH_SHORT).show()
+            } else if (recurrencePattern != RecurrencePattern.NONE && deadline == -1L) {
+                Toast.makeText(context, context.getString(R.string.set_deadline_if_recurring),
+                    Toast.LENGTH_SHORT).show()
             } else {
                 todoTask.setName(name)
                 todoTask.setDescription(description)
