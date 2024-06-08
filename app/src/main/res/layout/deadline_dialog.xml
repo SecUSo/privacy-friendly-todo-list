@@ -25,14 +25,14 @@
         <Button
             android:id="@+id/bt_deadline_nodeadline"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="51dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="48dip"
             android:text="@string/no_deadline" />
         <Button
             android:id="@+id/bt_deadline_ok"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
             android:layout_weight="1"
