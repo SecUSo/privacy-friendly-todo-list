@@ -197,7 +197,7 @@
         <Button
             android:id="@+id/bt_new_task_cancel"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="48dip"
@@ -206,7 +206,7 @@
         <Button
             android:id="@+id/bt_new_task_ok"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="48dip"
