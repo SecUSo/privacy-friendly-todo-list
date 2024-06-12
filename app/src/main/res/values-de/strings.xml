@@ -172,11 +172,12 @@
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
+    <string name="recurring_deadline_approaching">Deadline rückt näher: %1$s (%2$d. Wiederholung)</string>
 
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
     <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
-    <string name="notif_reminder_act_snooze">Schlummern</string>
+    <string name="notif_reminder_act_snooze">%1$s schlummern</string>
     <string name="notif_reminder_act_done">Abhaken</string>
 
     <!-- Date and Time -->

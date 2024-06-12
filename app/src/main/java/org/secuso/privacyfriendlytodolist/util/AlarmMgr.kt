@@ -21,8 +21,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import org.secuso.privacyfriendlytodolist.model.Model
+import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
+import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
@@ -31,7 +34,17 @@ import kotlin.time.toDuration
 object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
     private val TAG = LogTag.create(this::class.java)
+    private var model: ModelServices? = null
     private var manager: AlarmManager? = null
+
+    private fun getModel(context: Context): ModelServices {
+        if (model == null) {
+            val viewModel = CustomViewModel(context)
+            model = viewModel.model
+        }
+        return model!!
+    }
+
 
     private fun getManager(context: Context): AlarmManager {
         if (manager == null) {
@@ -70,9 +83,19 @@ object AlarmMgr {
 
         val now = Helper.getCurrentTimestamp()
         if (todoTask.isRecurring()) {
-            // Get the upcoming due date of the recurring task. The initial reminder time is not the
-            // right date for the alarm.
+            // Get the upcoming due date of the recurring task. The initial reminder time might not
+            // be the right date for the alarm.
+            val oldReminderTime = reminderTime
             reminderTime = Helper.getNextRecurringDate(reminderTime, todoTask.getRecurrencePattern(), now)
+            if (oldReminderTime != reminderTime) {
+                // Store new reminder time to make it visible for the user.
+                Log.i(TAG, "Updating reminder time of $todoTask from ${Helper.createDateTimeString(oldReminderTime)} to ${Helper.createDateTimeString(reminderTime)}.")
+                todoTask.setReminderTime(reminderTime)
+                todoTask.setChanged()
+                getModel(context).saveTodoTaskInDb(todoTask) {
+                    Model.notifyDataChangedFromOutside(context)
+                }
+            }
         }
 
         val alarmTime: Long

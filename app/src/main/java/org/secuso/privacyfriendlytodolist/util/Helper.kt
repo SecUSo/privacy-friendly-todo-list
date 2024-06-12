@@ -17,7 +17,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
-
 object Helper {
     private val TAG = LogTag.create(this::class.java)
     private const val DATE_FORMAT = "dd.MM.yyyy"
@@ -83,6 +82,38 @@ object Helper {
         }
     }
 
+    fun computeRepetitions(firstDate: Long, followingDate: Long, recurrencePattern: RecurrencePattern): Long {
+        if (recurrencePattern == RecurrencePattern.NONE) {
+            return 0
+        }
+        if (recurrencePattern == RecurrencePattern.DAILY) {
+            return TimeUnit.DAYS.convert(followingDate - firstDate, TimeUnit.SECONDS)
+        }
+
+        val first = Calendar.getInstance()
+        first.setTimeInMillis(TimeUnit.SECONDS.toMillis(firstDate))
+        val following = Calendar.getInstance()
+        following.setTimeInMillis(TimeUnit.SECONDS.toMillis(followingDate))
+        val result: Int
+        when (recurrencePattern) {
+            RecurrencePattern.WEEKLY -> {
+                val unitsFirst = 52 * first[Calendar.YEAR] + first[Calendar.WEEK_OF_YEAR]
+                val unitsFollowing = 52 * following[Calendar.YEAR] + following[Calendar.WEEK_OF_YEAR]
+                result = unitsFollowing - unitsFirst
+            }
+            RecurrencePattern.MONTHLY -> {
+                val unitsFirst = 12 * first[Calendar.YEAR] + first[Calendar.MONTH]
+                val unitsFollowing = 12 * following[Calendar.YEAR] + following[Calendar.MONTH]
+                result = unitsFollowing - unitsFirst
+            }
+            RecurrencePattern.YEARLY -> {
+                result = following[Calendar.YEAR] - first[Calendar.YEAR]
+            }
+            else -> throw InternalError("Unhandled recurrence pattern: $recurrencePattern")
+        }
+        return result.toLong()
+    }
+
     fun getDeadlineColor(context: Context, color: DeadlineColors?): Int {
         return when (color) {
             DeadlineColors.RED -> ContextCompat.getColor(context, R.color.deadline_red)
@@ -112,11 +143,12 @@ object Helper {
         }
     }
 
-    fun snoozeDurationToString(context: Context, snoozeDuration: Long): String {
+    fun snoozeDurationToString(context: Context, snoozeDuration: Long, shortVersion: Boolean = false): String {
         val snoozeDurationValues = context.resources.getStringArray(R.array.snooze_duration_values)
         for (index in snoozeDurationValues.indices) {
             if (snoozeDurationValues[index].toLong() == snoozeDuration) {
-                val valuesHuman = context.resources.getStringArray(R.array.snooze_duration_values_human)
+                val valuesHuman = context.resources.getStringArray(
+                    if (shortVersion) R.array.snooze_duration_values_human_short else R.array.snooze_duration_values_human)
                 if (index < valuesHuman.size) {
                     return valuesHuman[index]
                 }

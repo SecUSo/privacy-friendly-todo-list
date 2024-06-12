@@ -60,8 +60,21 @@ class AlarmJob : JobBase() {
             if (null != todoTask) {
                 Log.i(TAG, "Notifying about alarm for $todoTask.")
                 val title = todoTask.getName()
-                val deadline = Helper.createDateTimeString(todoTask.getDeadline())
-                val message = applicationContext.resources.getString(R.string.deadline_approaching, deadline)
+                var message: String? = null
+                if (todoTask.hasDeadline()) {
+                    message = if (todoTask.isRecurring()) {
+                        val now = Helper.getCurrentTimestamp()
+                        val firstDeadline = todoTask.getDeadline()
+                        val nextDeadline = Helper.getNextRecurringDate(firstDeadline, todoTask.getRecurrencePattern(), now)
+                        val deadlineStr = Helper.createDateString(nextDeadline)
+                        val repetitions = Helper.computeRepetitions(firstDeadline, nextDeadline, todoTask.getRecurrencePattern())
+                        applicationContext.resources.getString(R.string.recurring_deadline_approaching,
+                            deadlineStr, repetitions)
+                    } else {
+                        val deadlineStr = Helper.createDateString(todoTask.getDeadline())
+                        applicationContext.resources.getString(R.string.deadline_approaching, deadlineStr)
+                    }
+                }
                 NotificationMgr.postTaskNotification(this, title, message, todoTask)
 
                 setNextAlarm(todoTask)

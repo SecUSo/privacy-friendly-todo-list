@@ -71,13 +71,13 @@ object NotificationMgr {
         notificationManager.createNotificationChannel(channel)
     }
 
-    fun postTaskNotification(context: Context, title: String, message: String, task: TodoTask): Int {
+    fun postTaskNotification(context: Context, title: String, message: String?, task: TodoTask): Int {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setAutoCancel(true)
             .setLights(ContextCompat.getColor(context, R.color.colorPrimary), 1000, 500)
-        if (task.hasDeadline()) {
+        if (null != message) {
             builder.setContentText(message)
         }
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -106,11 +106,11 @@ object NotificationMgr {
         intent.setAction(NotificationReceiver.ACTION_SNOOZE)
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
-        var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze) + " " +
-                Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context))
+        val snoozeDuration = Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context), true)
+        var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze, snoozeDuration)
         builder.addAction(R.drawable.snooze, actionTitle, pendingIntent)
 
-        // Done Action
+        // Done Action -> Set task done without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
         intent.setAction(NotificationReceiver.ACTION_SET_DONE)
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
