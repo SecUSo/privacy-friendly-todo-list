@@ -74,7 +74,7 @@ object NotificationMgr {
     fun postTaskNotification(context: Context, title: String, message: String?, task: TodoTask): Int {
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setSmallIcon(R.drawable.ic_checkbox)
             .setAutoCancel(true)
             .setLights(ContextCompat.getColor(context, R.color.colorPrimary), 1000, 500)
         if (null != message) {
