@@ -68,8 +68,8 @@
     <!-- To-Do list overview -->
 	<string name="done">erledigt</string>
 	<string name="no_todo_lists_available">Keine To-Do Listen verfügbar.</string>
-	<string name="next_deadline_dd">Nächste Deadline: %1$s</string>
-    <string name="no_next_deadline">Keine Deadlines</string>
+	<string name="next_deadline_dd">Nächster Termin: %1$s</string>
+    <string name="no_next_deadline">Keine Termine</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
     <string name="delete_list">To-Do Liste löschen</string>
@@ -87,25 +87,25 @@
     <string name="open_tasks">Ausstehende Aufgaben</string>
     <string name="completed_tasks">Erledigte Aufgaben</string>
     <string name="group_by_priority">Nach Priorität gruppieren</string>
-    <string name="sort_by_deadline">Nach Deadline sortieren</string>
+    <string name="sort_by_deadline">Nach Termin sortieren</string>
     <string name="add_subtask">Unteraufgabe hinzufügen</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Neue Aufgabe</string>
     <string name="edit_todo_task">Aufgabe bearbeiten</string>
-    <string name="deadline_dd">Deadline:</string>
-    <string name="no_deadline">Keine Deadline</string>
+    <string name="deadline_dd">Termin:</string>
+    <string name="no_deadline">Kein Termin</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="delete_task">Aufgabe löschen</string>
     <string name="task_removed">Aufgabe ist im Papierkorb</string>
-    <string name="deadline">Deadline</string>
+    <string name="deadline">Termin</string>
     <string name="recurrence_pattern">Wiederholungsmuster</string>
     <string name="select_recurrence_pattern">Wiederholungsmuster wählen:</string>
     <string name="reminder">Erinnerung</string>
-    <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
+    <string name="deadline_smaller_reminder">Der Termin darf nicht vor der Erinnerungszeit liegen.</string>
     <string name="reminder_smaller_now">Nur wiederkehrende Aufgaben können eine Erinnerungszeit in der Vergangenheit haben.</string>
-    <string name="set_deadline_before_reminder">Bitte geben sie zuerst eine Deadline an.</string>
-    <string name="set_deadline_if_recurring">Eine wiederkehrende Aufgabe benötigt eine Deadline.</string>
+    <string name="set_deadline_before_reminder">Bitte geben sie zuerst einen Termin an.</string>
+    <string name="set_deadline_if_recurring">Eine wiederkehrende Aufgabe benötigt einen Termin.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
     <string name="zero_percent">0 %</string>
@@ -129,7 +129,7 @@
 
     <!-- Calendar view -->
     <string name="calendar">Kalender</string>
-    <string name="no_deadline_today">Keine Deadlines an diesem Tag.</string>
+    <string name="no_deadline_today">Keine Termine an diesem Tag.</string>
 
     <!-- PIN -->
 	<string name="enter_pin">PIN eingeben</string>
@@ -142,7 +142,7 @@
     <!-- Settings -->
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>
     <string-array name="default_reminder_times_human">
-        <item>Pünktlich zur Deadline</item>
+        <item>Pünktlich zum Termin</item>
         <item>0,5 Tage vorher</item>
         <item>1 Tag vorher</item>
         <item>1,5 Tage vorher</item>
@@ -171,8 +171,8 @@
     <string name="notify">Benachrichtigungston</string>
 
     <!-- Reminder service -->
-    <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
-    <string name="recurring_deadline_approaching">Deadline rückt näher: %1$s (%2$d. Wiederholung)</string>
+    <string name="deadline_approaching">Termin rückt näher: %1$s</string>
+    <string name="recurring_deadline_approaching">Termin rückt näher: %1$s (%2$d. Wiederholung)</string>
 
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
