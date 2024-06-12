@@ -28,6 +28,6 @@
         android:layout_below="@+id/tv_add_subtask"
         android:layout_width="match_parent"
         android:layout_height="2px"
-        android:background="@color/grey" />
+        android:background="@color/lightgrey" />
 
 </RelativeLayout>

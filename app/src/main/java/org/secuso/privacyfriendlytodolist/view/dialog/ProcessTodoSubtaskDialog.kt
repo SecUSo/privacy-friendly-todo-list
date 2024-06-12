@@ -33,18 +33,18 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
-    private var subtask: TodoSubtask
-    private lateinit var dialogTitleNew: TextView
-    private lateinit var dialogTitleEdit: TextView
-    private var isTitleEdit = false
+    private val editExistingSubtask: Boolean
+    private val subtask: TodoSubtask
 
     constructor(context: Context) :
             super(context, R.layout.add_subtask_dialog) {
+        editExistingSubtask = false
         subtask = createNewTodoSubtask()
     }
 
     constructor(context: Context, todoSubtask: TodoSubtask) :
             super(context, R.layout.add_subtask_dialog) {
+        editExistingSubtask = true
         subtask = todoSubtask
         subtask.setChanged()
     }
@@ -61,11 +61,9 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
         val cancelButton: Button = findViewById(R.id.bt_new_subtask_cancel)
 
         //initialize titles of the dialog
-        dialogTitleNew = findViewById(R.id.dialog_subtitle)
-        dialogTitleEdit = findViewById(R.id.dialog_edit_sub)
-        if (isTitleEdit) {
-            isTitleEdit = false
-            titleEdit()
+        val dialogTitle = findViewById<TextView>(R.id.dialog_subtitle)
+        if (editExistingSubtask) {
+            dialogTitle.text = context.resources.getString(R.string.edit_subtask)
         }
 
         // Request focus for first input field.
@@ -86,14 +84,5 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
             }
         }
         cancelButton.setOnClickListener { dismiss() }
-    }
-
-    fun titleEdit() {
-        if (::dialogTitleNew.isInitialized) {
-            dialogTitleNew.visibility = View.GONE
-            dialogTitleEdit.visibility = View.VISIBLE
-        } else {
-            isTitleEdit = true
-        }
     }
 }

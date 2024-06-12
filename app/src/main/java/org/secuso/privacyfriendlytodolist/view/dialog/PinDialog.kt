@@ -12,17 +12,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog.PinCallback
+
+interface PinCallback {
+    fun accepted()
+    fun declined()
+    fun resetApp()
+}
 
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class PinDialog(context: Context, private val allowReset: Boolean) :
     FullScreenDialog<PinCallback>(context, R.layout.pin_dialog) {
-    interface PinCallback {
-        fun accepted()
-        fun declined()
-        fun resetApp()
-    }
-
     private var wrongCounter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {

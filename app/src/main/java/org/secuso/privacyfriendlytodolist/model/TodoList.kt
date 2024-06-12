@@ -36,7 +36,7 @@ interface TodoList : BaseTodo, Parcelable {
     fun getColor(): Int
     fun getDoneTodos(): Int
     fun getNextDeadline(): Long
-    fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors
+    fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors
     fun checkQueryMatch(query: String?, recursive: Boolean): Boolean
     fun checkQueryMatch(query: String?): Boolean
 }

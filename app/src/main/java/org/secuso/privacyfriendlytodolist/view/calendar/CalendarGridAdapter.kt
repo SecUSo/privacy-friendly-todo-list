@@ -2,7 +2,8 @@ package org.secuso.privacyfriendlytodolist.view.calendar
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.text.format.DateFormat
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -27,57 +29,74 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     private val inflater: LayoutInflater
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
     private var oldColors: ColorStateList? = null
-    private var currentMonth = 0
-    private var tasksPerDay = HashMap<String, ArrayList<TodoTask>>(0)
+    private var currentMonth = -1
+    private var currentYear = -1
+    private var todoTasks: List<TodoTask>? = null
+    private var tasksPerDay = HashMap<Long, ArrayList<TodoTask>>(0)
+    private var tasksPerDayNeedUpdate = false
 
     init {
         inflater = LayoutInflater.from(context)
     }
 
+    fun setTodoTasks(todoTasks: List<TodoTask>) {
+        this.todoTasks = todoTasks
+        tasksPerDayNeedUpdate = true
+    }
+
+    fun setSelectedDate(year: Int, month: Int) {
+        tasksPerDayNeedUpdate =
+            tasksPerDayNeedUpdate || currentYear != year || currentMonth != month
+        currentYear = year
+        currentMonth = month
+    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        updateTasksPerDay()
         var view = convertView
-        val dayViewHolder: CalendarDayViewHolder
+        val dayText: TextView
         val dateAtPos = getItem(position)
         val todayDate = Date()
         val todayCal = Calendar.getInstance()
         val posCal = Calendar.getInstance()
         todayCal.setTime(todayDate)
         posCal.setTime(dateAtPos!!)
-        if (view == null) {
-            dayViewHolder = CalendarDayViewHolder()
-            view = inflater.inflate(R.layout.calendar_day, parent, false)
-            dayViewHolder.dayText = view.findViewById(R.id.tv_calendar_day_content)
-            oldColors = dayViewHolder.dayText!!.textColors
-            view.tag = dayViewHolder
+        if (view?.tag is CalendarDayViewHolder) {
+            val dayViewHolder = view.tag as CalendarDayViewHolder
+            dayText = dayViewHolder.dayText
         } else {
-            dayViewHolder = view.tag as CalendarDayViewHolder
+            view = inflater.inflate(R.layout.calendar_day, parent, false)
+            val dayViewHolder = CalendarDayViewHolder(view.findViewById(R.id.tv_calendar_day_content))
+            view.tag = dayViewHolder
+            dayText = dayViewHolder.dayText
+            oldColors = dayText.textColors
         }
 
         // grey day out if it is outside the current month
         if (posCal[Calendar.MONTH] != currentMonth) {
-            dayViewHolder.dayText!!.setTextColor(ContextCompat.getColor(context, R.color.grey))
+            dayText.setTextColor(ContextCompat.getColor(context, R.color.middlegrey))
         } else if (sameDay(posCal, todayCal)) {
-            dayViewHolder.dayText!!.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            dayText.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
         } else {
-            dayViewHolder.dayText!!.setTextColor(oldColors)
+            dayText.setTextColor(oldColors)
         }
 
         // add color bar if a task has its deadline on this day
-        val day = DateFormat.format(Helper.DATE_FORMAT, dateAtPos).toString()
+        val day = TimeUnit.MILLISECONDS.toDays(dateAtPos.time)
         val tasksToday = tasksPerDay[day]
         if (tasksToday != null) {
-            var border = ContextCompat.getDrawable(context, R.drawable.border_green)
+            var border: Drawable? = null
             for (t in tasksToday) {
                 if (!t.isDone()) {
                     border = ContextCompat.getDrawable(context, R.drawable.border_blue)
                     break
                 }
             }
-            dayViewHolder.dayText!!.background = border
+            dayText.background = border ?: ContextCompat.getDrawable(context, R.drawable.border_green)
         } else {
-            dayViewHolder.dayText!!.setBackgroundResource(0)
+            dayText.setBackgroundResource(0)
         }
-        dayViewHolder.dayText!!.text = dateToStr(posCal)
+        dayText.text = dateToStr(posCal)
         return view!!
     }
 
@@ -89,15 +108,66 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         return dateFormat.format(c.time)
     }
 
-    fun setMonth(month: Int) {
-        currentMonth = month
+    /**
+     * All non-recurring tasks can be added easily to the look-up table.
+     * For the recurring tasks the look-up table will be filled with all recurring dates in a
+     * period of 3 months: one before the selected, the selected and one after the selected month.
+     */
+    private fun updateTasksPerDay()  {
+        val allTodoTasks = todoTasks
+        if (!tasksPerDayNeedUpdate || allTodoTasks == null || currentMonth == -1) {
+            return
+        }
+
+        val startCal = Calendar.getInstance()
+        startCal.timeInMillis = 0
+        startCal[Calendar.YEAR] = currentYear
+        startCal[Calendar.MONTH] = currentMonth
+        startCal.add(Calendar.MONTH, -1)
+        val endCal = Calendar.getInstance()
+        endCal.timeInMillis = 0
+        endCal[Calendar.YEAR] = currentYear
+        endCal[Calendar.MONTH] = currentMonth
+        endCal.add(Calendar.MONTH, 2)
+        endCal.add(Calendar.DAY_OF_MONTH, -1)
+
+        tasksPerDay.clear()
+        for (todoTask in allTodoTasks) {
+            var deadline = todoTask.getDeadline()
+            if (deadline == -1L) {
+                continue
+            }
+            if (todoTask.isRecurring()) {
+                val recurringDateCal = Calendar.getInstance()
+                recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(todoTask.getDeadline()))
+                Helper.getNextRecurringDate(recurringDateCal, todoTask.getRecurrencePattern(), startCal)
+                while (recurringDateCal < endCal) {
+                    deadline = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
+                    addTaskOfDay(todoTask, deadline)
+                    Helper.addInterval(recurringDateCal, todoTask.getRecurrencePattern())
+                }
+            } else {
+                addTaskOfDay(todoTask, deadline)
+            }
+        }
+        tasksPerDayNeedUpdate = false
     }
 
-    fun setTodoTasks(tasksPerDay: HashMap<String, ArrayList<TodoTask>>) {
-        this.tasksPerDay = tasksPerDay
+    private fun addTaskOfDay(todoTask: TodoTask, deadline: Long) {
+        val key = TimeUnit.SECONDS.toDays(deadline)
+        var tasksOfDay = tasksPerDay[key]
+        if (null == tasksOfDay) {
+            tasksOfDay = ArrayList()
+            tasksPerDay[key] = tasksOfDay
+        }
+        tasksOfDay.add(todoTask)
     }
 
-    private inner class CalendarDayViewHolder {
-        var dayText: TextView? = null
+    fun getTasksOfDay(position: Int): ArrayList<TodoTask>? {
+        val selectedDate = getItem(position) ?: return null
+        val key = TimeUnit.MILLISECONDS.toDays(selectedDate.time)
+        return tasksPerDay[key]
     }
+
+    private inner class CalendarDayViewHolder(val dayText: TextView)
 }

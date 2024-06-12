@@ -35,9 +35,10 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
+import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
-import org.secuso.privacyfriendlytodolist.util.Helper.priority2String
+import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
@@ -313,12 +314,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private fun getPriorityNameByBarPos(groupPosition: Int): String {
+        var priority: TodoTask.Priority? = null
         for ((key, value) in priorityBarPositions) {
             if (value == groupPosition) {
-                return priority2String(context, key)
+                priority = key
+                break
             }
         }
-        return context.getString(R.string.unknown_priority)
+        return priorityToString(context, priority)
     }
 
     override fun notifyDataSetChanged() {
@@ -379,10 +382,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 vh2.name!!.text = currentTask.getName()
                 vh2.progressBar!!.progress = currentTask.getProgress(hasAutoProgress())
-                val deadline =
-                    if (currentTask.getDeadline() <= 0)
-                        context.resources.getString(R.string.no_deadline) else
-                        context.resources.getString(R.string.deadline_dd) + " " + createDateString(currentTask.getDeadline())
                 vh2.listName!!.visibility = View.GONE
                 if (showListNames && currentTask.getListId() != null) {
                     val listName = listNames[currentTask.getListId()]
@@ -391,6 +390,16 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         vh2.listName!!.visibility = View.VISIBLE
                     }
                 }
+                var deadline: String
+                    if (currentTask.getDeadline() == -1L) {
+                        deadline = context.resources.getString(R.string.no_deadline)
+                    } else {
+                        deadline = context.resources.getString(R.string.deadline_dd) + " " +
+                                createDateString(currentTask.getDeadline())
+                        if (currentTask.isRecurring()) {
+                            deadline += ", " + Helper.recurrencePatternToString(context, currentTask.getRecurrencePattern())
+                        }
+                    }
                 vh2.deadline!!.text = deadline
                 vh2.deadlineColorBar!!.setBackgroundColor(
                     getDeadlineColor(context, currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))

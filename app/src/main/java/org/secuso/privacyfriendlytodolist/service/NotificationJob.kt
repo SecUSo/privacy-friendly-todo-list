@@ -68,24 +68,25 @@ class NotificationJob : JobBase() {
 
         // Serialize actions to be sure that both actions are done before calling jobFinished.
         model!!.getTaskById(todoTaskId) { todoTask ->
-            // Check if job is still active
-            if (null != currentJobParams) {
-                if (null == todoTask) {
-                    Log.e(TAG, "Unable to set task as done. No task with ID $todoTaskId was found.")
-                } else if (todoTask.isDone()) {
-                    Log.d(TAG, "Task with ID $todoTaskId already is done.")
-                } else {
-                    todoTask.setDone(true)
-                    todoTask.setChanged()
-                    model!!.saveTodoTaskInDb(todoTask) { counter ->
-                        if (counter == 1) {
-                            Log.i(TAG, "Set task with ID $todoTaskId as done.")
-                            Model.notifyDataChangedFromOutside(this)
-                        } else {
-                            Log.e(TAG, "Failed to set task with ID $todoTaskId as done. Result: $counter")
-                        }
-                        jobFinished()
+            if (isJobStopped()) {
+                return@getTaskById
+            }
+
+            if (null == todoTask) {
+                Log.e(TAG, "Unable to set task as done. No task with ID $todoTaskId was found.")
+            } else if (todoTask.isDone()) {
+                Log.d(TAG, "Task with ID $todoTaskId already is done.")
+            } else {
+                todoTask.setDone(true)
+                todoTask.setChanged()
+                model!!.saveTodoTaskInDb(todoTask) { counter ->
+                    if (counter == 1) {
+                        Log.i(TAG, "Set task with ID $todoTaskId as done.")
+                        Model.notifyDataChangedFromOutside(this)
+                    } else {
+                        Log.e(TAG, "Failed to set task with ID $todoTaskId as done. Result: $counter")
                     }
+                    jobFinished()
                 }
             }
         }

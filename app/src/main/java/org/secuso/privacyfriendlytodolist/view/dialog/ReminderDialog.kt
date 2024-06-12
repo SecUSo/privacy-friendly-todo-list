@@ -26,35 +26,30 @@ import android.widget.TimePicker
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import org.secuso.privacyfriendlytodolist.view.dialog.ReminderDialog.ReminderCallback
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.concurrent.TimeUnit
 
+interface ReminderCallback {
+    fun setReminderTime(selectedReminderTime: Long)
+    fun removeReminderTime()
+}
+
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ReminderDialog(context: Context, private val reminderTime: Long, private val deadline: Long) :
     FullScreenDialog<ReminderCallback>(context, R.layout.reminder_dialog) {
-    interface ReminderCallback {
-        fun setReminder(reminderDeadline: Long)
-        fun removeReminder()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var reminderTimeSuggestion: Long
-        if (reminderTime != -1L) {
-            reminderTimeSuggestion = reminderTime
-        } else if (deadline != -1L) {
-            reminderTimeSuggestion = deadline - PreferenceMgr.getDefaultReminderTimeSpan(context)
-            val earliest = Helper.getCurrentTimestamp() + ONE_HOUR_IN_S
-            if (reminderTimeSuggestion < earliest) {
-                reminderTimeSuggestion = earliest
+        val reminderTimeSuggestion =
+            if (reminderTime != -1L) {
+                reminderTime
+            } else if (deadline != -1L) {
+                deadline - PreferenceMgr.getReminderTimeOffset(context, DEFAULT_REMINDER_TIME_OFFSET)
+            } else {
+                val now = Helper.getCurrentTimestamp()
+                now + PreferenceMgr.getDefaultReminderTimeSpan(context)
             }
-        } else {
-            val now = Helper.getCurrentTimestamp()
-            reminderTimeSuggestion = now + PreferenceMgr.getDefaultReminderTimeSpan(context)
-        }
         val calendar = GregorianCalendar.getInstance()
         calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(reminderTimeSuggestion))
 
@@ -94,17 +89,24 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
                 datePicker.dayOfMonth,
                 timePicker.currentHour,
                 timePicker.currentMinute)
-            getDialogCallback().setReminder(TimeUnit.MILLISECONDS.toSeconds(calendar2.getTimeInMillis()))
+            val reminderTime = TimeUnit.MILLISECONDS.toSeconds(calendar2.getTimeInMillis())
+            if (deadline != -1L) {
+                PreferenceMgr.setReminderTimeOffset(context, deadline - reminderTime)
+            }
+            getDialogCallback().setReminderTime(reminderTime)
             dismiss()
         }
         val buttonNoReminder: Button = findViewById(R.id.bt_reminder_noreminder)
         buttonNoReminder.setOnClickListener {
-            getDialogCallback().removeReminder()
+            getDialogCallback().removeReminderTime()
             dismiss()
         }
     }
 
     companion object {
-        private const val ONE_HOUR_IN_S = 60 * 60
+        /**
+         * Default reminder time offset to deadline: 12 hours
+         */
+        private const val DEFAULT_REMINDER_TIME_OFFSET = 12L * 60L * 60L
     }
 }

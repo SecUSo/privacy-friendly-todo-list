@@ -86,7 +86,7 @@
         android:layout_height="2px"
         android:layout_below="@+id/pb_task_progress"
         android:layout_toRightOf="@+id/v_urgency_task"
-        android:background="@color/grey" />
+        android:background="@color/lightgrey" />
 
     <View
         android:id="@+id/v_exlv_header_align_anchor"

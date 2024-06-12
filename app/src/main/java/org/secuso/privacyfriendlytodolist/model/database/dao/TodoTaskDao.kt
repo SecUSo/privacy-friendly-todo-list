@@ -42,16 +42,18 @@ interface TodoTaskDao {
     suspend fun getCountNotInRecycleBin(): Int
     @Query("SELECT * FROM todoTasks WHERE id = :todoTaskId LIMIT 1")
     suspend fun getById(todoTaskId: Int): TodoTaskData?
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND isDone = 0 AND reminderTime > 0 AND reminderTime > :now ORDER BY ABS(reminderTime - :now) LIMIT 1")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime = -1 AND reminderTime > 0 AND reminderTime > :now ORDER BY ABS(reminderTime - :now) LIMIT 1")
     suspend fun getNextDueTask(now: Long): TodoTaskData?
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND isDone = 0 AND reminderTime > 0 AND reminderTime <= :now AND id NOT IN (:lockedIds)")
-    suspend fun getAllToRemind(now: Long, lockedIds: Set<Int>?): Array<TodoTaskData>
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime > 0 AND reminderTime <= :now")
+    suspend fun getAllRecurringWithReminder(now: Long): Array<TodoTaskData>
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime = -1 AND reminderTime > 0 AND reminderTime <= :now")
+    suspend fun getAllToRemind(now: Long): Array<TodoTaskData>
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0")
     suspend fun getAllNotInRecycleBin(): Array<TodoTaskData>
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin <> 0")
     suspend fun getAllInRecycleBin(): Array<TodoTaskData>
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND listId = :listId")
     suspend fun getAllOfListNotInRecycleBin(listId: Int): Array<TodoTaskData>
-    @Query("UPDATE todoTasks SET name = :name, progress = :progress, isDone = :isDone WHERE id = :id")
-    suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, isDone: Boolean): Int
+    @Query("UPDATE todoTasks SET name = :name, progress = :progress, doneTime = :doneTime WHERE id = :id")
+    suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Long): Int
 }

@@ -20,6 +20,31 @@ import android.os.Parcelable
 
 
 interface TodoTask : BaseTodo, Parcelable {
+
+    enum class RecurrencePattern {
+        NONE,
+        DAILY,
+        WEEKLY,
+        MONTHLY,
+        YEARLY;
+
+        companion object {
+            /** Number of enumeration entries. */
+            @JvmField
+            val LENGTH = entries.size
+
+            /**
+             * Provides the enumeration value that matches the given ordinal number.
+             *
+             * @param ordinal The ordinal number of the requested enumeration value.
+             * @return The requested enumeration value if the given ordinal is valid. Otherwise null.
+             */
+            fun fromOrdinal(ordinal: Int): RecurrencePattern? {
+                return if (ordinal in 0..<LENGTH) entries[ordinal] else null
+            }
+        }
+    }
+
     /**
      * Priority steps must be sorted in the same way like they will be displayed
      */
@@ -56,6 +81,7 @@ interface TodoTask : BaseTodo, Parcelable {
 
     fun setId(id: Int)
     fun getId(): Int
+    fun getCreationTime(): Long
     fun setName(name: String)
     fun getName(): String
     fun setDescription(description: String)
@@ -73,13 +99,18 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setDeadline(deadline: Long)
     fun getDeadline(): Long
     fun hasDeadline(): Boolean
+    fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
+    fun getRecurrencePattern(): RecurrencePattern
+    fun isRecurring(): Boolean
     fun setListPosition(position: Int)
     fun getListPosition(): Int
     fun setSubtasks(subtasks: MutableList<TodoSubtask>)
     fun getSubtasks(): MutableList<TodoSubtask>
 
-    // This method expects the deadline to be greater than the reminder time.
-    fun getDeadlineColor(defaultReminderTime: Long): DeadlineColors
+    /**
+     * @param reminderTimeSpan The reminder time span is a relative value in seconds (e.g. 86400 s == 1 day).
+     */
+    fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)
@@ -101,10 +132,12 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
+    fun getDoneTime(): Long
 
     /**
      * A task is done if the user manually sets it done or when all subtasks are done.
      * If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
+     * This method checks if done-status of task needs an update due to this and if so, does the update.
      */
     fun doneStatusChanged()
     fun setInRecycleBin(isInRecycleBin: Boolean)

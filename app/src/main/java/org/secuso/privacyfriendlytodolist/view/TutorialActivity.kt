@@ -149,8 +149,4 @@ class TutorialActivity : AppCompatActivity() {
             container.removeView(view)
         }
     }
-
-    companion object {
-        val TAG: String = TutorialActivity::class.java.getSimpleName()
-    }
 }

@@ -50,8 +50,8 @@ import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.SortTypes
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
+import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
-import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog
@@ -508,8 +508,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onTaskChange(todoTask: TodoTask) {
+        // TODO should this method be called if task gets set done to cancel alarm and if it gets set undone to again set an alarm?
         // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        Log.d(TAG, "Task $todoTask changed. Setting its alarm.")
+        Log.d(TAG, "$todoTask changed. Setting its alarm.")
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
         // User should see that.
         AlarmMgr.setAlarmForTask(this, todoTask, false)
@@ -665,7 +666,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 exLv!!.setAdapter(expandableTodoTaskAdapter)
                 exLv!!.setEmptyView(tv)
                 optionFab!!.visibility = View.VISIBLE
-                initFAB(listId)
+                initFAB(todoList)
             } else {
                 Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
                 showAllTasks()
@@ -674,16 +675,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     // todoListId != null means id is given from list. otherwise new task was created in all-tasks.
-    private fun initFAB(todoListId: Int?) {
+    private fun initFAB(todoList: TodoList?) {
         optionFab!!.setOnClickListener { v: View? ->
-            val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists)
-            pt.setListSelector(todoListId)
+            val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists, todoList)
             pt.setDialogCallback { todoTask ->
                 model!!.saveTodoTaskInDb(todoTask) { counter: Int? ->
                     onTaskChange(todoTask)
                     showHints()
                     // show List if created in certain list, else show all tasks
-                    showTasksOfListOrAllTasks(todoListId)
+                    showTasksOfListOrAllTasks(todoList?.getId())
                 }
             }
             pt.show()
@@ -716,7 +716,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (item.itemId) {
                 R.id.change_subtask -> {
                     val dialog = ProcessTodoSubtaskDialog(this, todoSubtask!!)
-                    dialog.titleEdit()
                     dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
                         model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter: Int? ->
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
@@ -737,9 +736,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 R.id.change_task -> {
-                    val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoTask)
-                    editTaskDialog.titleEdit()
-                    editTaskDialog.setListSelector(todoTask.getListId())
+                    var todoList: TodoList? = null
+                    for (currentTodoList in todoLists) {
+                        if (currentTodoList.getId() == todoTask.getListId()) {
+                            todoList = currentTodoList
+                            break
+                        }
+                    }
+                    val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoList, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { todoTask2: TodoTask ->
                         model!!.saveTodoTaskInDb(todoTask2) { counter: Int? ->
                             onTaskChange(todoTask2)
