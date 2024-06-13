@@ -3,8 +3,10 @@
     android:configure="org.secuso.privacyfriendlytodolist.view.widget.TodoListWidgetConfigureActivity"
     android:initialKeyguardLayout="@layout/todo_list_widget"
     android:initialLayout="@layout/todo_list_widget"
-    android:minHeight="110dp"
-    android:minWidth="180dp"
+    android:minWidth="160dp"
+    android:minHeight="80dp"
+    android:minResizeWidth="80dp"
+    android:minResizeHeight="80dp"
     android:previewImage="@drawable/widget_preview"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen" />
