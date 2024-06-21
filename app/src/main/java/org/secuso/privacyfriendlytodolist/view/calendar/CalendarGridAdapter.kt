@@ -2,8 +2,11 @@ package org.secuso.privacyfriendlytodolist.view.calendar
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.util.Log
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +57,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         updateTasksPerDay()
         var view = convertView
-        val dayText: TextView
+        val dayTextView: TextView
         val dateAtPos = getItem(position)
         val todayDate = Date()
         val todayCal = Calendar.getInstance()
@@ -63,22 +66,27 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         posCal.setTime(dateAtPos!!)
         if (view?.tag is CalendarDayViewHolder) {
             val dayViewHolder = view.tag as CalendarDayViewHolder
-            dayText = dayViewHolder.dayText
+            dayTextView = dayViewHolder.dayText
         } else {
             view = inflater.inflate(R.layout.calendar_day, parent, false)
             val dayViewHolder = CalendarDayViewHolder(view.findViewById(R.id.tv_calendar_day_content))
             view.tag = dayViewHolder
-            dayText = dayViewHolder.dayText
-            oldColors = dayText.textColors
+            dayTextView = dayViewHolder.dayText
+            oldColors = dayTextView.textColors
         }
 
-        // grey day out if it is outside the current month
+        val spanString = SpannableString(dateToStr(posCal))
         if (posCal[Calendar.MONTH] != currentMonth) {
-            dayText.setTextColor(ContextCompat.getColor(context, R.color.middlegrey))
+            // grey day out if it is outside the current month
+            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.middlegrey))
         } else if (sameDay(posCal, todayCal)) {
-            dayText.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            // highlight today
+            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            spanString.setSpan(UnderlineSpan(), 0, spanString.length, 0)
+            spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
         } else {
-            dayText.setTextColor(oldColors)
+            // otherwise apply default
+            dayTextView.setTextColor(oldColors)
         }
 
         // add color bar if a task has its deadline on this day
@@ -92,11 +100,11 @@ class CalendarGridAdapter(context: Context, resource: Int) :
                     break
                 }
             }
-            dayText.background = border ?: ContextCompat.getDrawable(context, R.drawable.border_green)
+            dayTextView.background = border ?: ContextCompat.getDrawable(context, R.drawable.border_green)
         } else {
-            dayText.setBackgroundResource(0)
+            dayTextView.setBackgroundResource(0)
         }
-        dayText.text = dateToStr(posCal)
+        dayTextView.text = spanString
         return view!!
     }
 
