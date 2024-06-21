@@ -29,7 +29,7 @@ object Helper {
     }
 
     fun createLocalizedDateTimeString(time: Long): String {
-        val dateTimeFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, Locale.getDefault())
+        val dateTimeFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.SHORT, Locale.getDefault())
         val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
         return dateTimeFormat.format(dateTime)
     }

@@ -105,8 +105,8 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
 
     companion object {
         /**
-         * Default reminder time offset to deadline: 12 hours
+         * Default reminder time offset to deadline: 24 hours
          */
-        private const val DEFAULT_REMINDER_TIME_OFFSET = 12L * 60L * 60L
+        private const val DEFAULT_REMINDER_TIME_OFFSET = 24L * 60L * 60L
     }
 }
