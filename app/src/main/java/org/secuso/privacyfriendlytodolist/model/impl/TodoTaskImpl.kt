@@ -265,7 +265,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     // A task is done if the user manually sets it done or when all subtasks are done.
     // If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
-    override fun doneStatusChanged() {
+    override fun doneStatusChanged(): Boolean {
         var allSubtasksAreDone = true
         for (subtask in subtasks) {
             if (!subtask.isDone()) {
@@ -273,10 +273,12 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
                 break
             }
         }
-        if (isDone() != allSubtasksAreDone) {
+        val doneStatusChanged = isDone() != allSubtasksAreDone
+        if (doneStatusChanged) {
             setDone(allSubtasksAreDone)
             requiredDBAction = RequiredDBAction.UPDATE
         }
+        return doneStatusChanged
     }
 
     override fun setInRecycleBin(isInRecycleBin: Boolean) {

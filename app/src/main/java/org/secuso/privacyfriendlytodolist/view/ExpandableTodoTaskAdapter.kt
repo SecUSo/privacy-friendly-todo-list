@@ -35,6 +35,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
@@ -419,7 +420,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                                 subtask.setDone(inverted)
                             }
-                            model.saveTodoTaskAndSubtasksInDb(currentTask, null, null)
+                            model.saveTodoTaskAndSubtasksInDb(currentTask) {
+                                AlarmMgr.setAlarmForTask(context, currentTask, false)
+                            }
                         }
                         snackbar.show()
                         currentTask.setDone(buttonView.isChecked)
@@ -431,7 +434,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             subtask.setChanged()
                             notifyDataSetChanged()
                         }
-                        model.saveTodoTaskInDb(currentTask, null, null)
+                        model.saveTodoTaskInDb(currentTask) {
+                            AlarmMgr.setAlarmForTask(context, currentTask, false)
+                        }
                     }
                 }
             }
@@ -517,12 +522,16 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 vh3.done!!.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
                         currentSubtask.setDone(buttonView.isChecked)
-                        currentTask.doneStatusChanged() // check if entire task is now (when all subtasks are done)
+                        // check if entire task is now (when all subtasks are done)
+                        val doneStatusChanged = currentTask.doneStatusChanged()
                         currentSubtask.setChanged()
                         model.saveTodoSubtaskInDb(currentSubtask) { counter1: Int? ->
                             currentTask.getProgress(hasAutoProgress())
                             model.saveTodoTaskInDb(currentTask) {
                                 counter2: Int? -> notifyDataSetChanged()
+                                if (doneStatusChanged) {
+                                    AlarmMgr.setAlarmForTask(context, currentTask, false)
+                                }
                             }
                         }
                     }

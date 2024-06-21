@@ -508,7 +508,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onTaskChange(todoTask: TodoTask) {
-        // TODO should this method be called if task gets set done to cancel alarm and if it gets set undone to again set an alarm?
         // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
         Log.d(TAG, "$todoTask changed. Setting its alarm.")
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
