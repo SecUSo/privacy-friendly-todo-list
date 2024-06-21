@@ -26,7 +26,6 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
-import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -89,7 +88,9 @@ object AlarmMgr {
             reminderTime = Helper.getNextRecurringDate(reminderTime, todoTask.getRecurrencePattern(), now)
             if (oldReminderTime != reminderTime) {
                 // Store new reminder time to make it visible for the user.
-                Log.i(TAG, "Updating reminder time of $todoTask from ${Helper.createDateTimeString(oldReminderTime)} to ${Helper.createDateTimeString(reminderTime)}.")
+                Log.i(TAG, "Updating reminder time of $todoTask from " +
+                        "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
+                        "${Helper.createCanonicalDateTimeString(reminderTime)}.")
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setChanged()
                 getModel(context).saveTodoTaskInDb(todoTask) {
@@ -131,12 +132,10 @@ object AlarmMgr {
     }
 
     private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(alarmTime))
         // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
-        getManager(context)[AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis()] = pendingIntent
-        return Helper.createDateTimeString(calendar)
+        getManager(context)[AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime)] = pendingIntent
+        return Helper.createCanonicalDateTimeString(alarmTime)
     }
 
     private fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {

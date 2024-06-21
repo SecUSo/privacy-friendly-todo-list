@@ -18,6 +18,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog
 
 import android.content.Context
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
@@ -38,16 +39,24 @@ interface ReminderCallback {
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ReminderDialog(context: Context, private val reminderTime: Long, private val deadline: Long) :
     FullScreenDialog<ReminderCallback>(context, R.layout.reminder_dialog) {
+
+    private lateinit var layoutDate: LinearLayout
+    private lateinit var layoutTime: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        layoutDate = findViewById(R.id.ll_reminder_date)
+        layoutTime = findViewById(R.id.ll_reminder_time)
+
+        val forDeadline = deadline - DEFAULT_REMINDER_TIME_OFFSET
+        val now = Helper.getCurrentTimestamp()
         val reminderTimeSuggestion =
             if (reminderTime != -1L) {
                 reminderTime
-            } else if (deadline != -1L) {
-                deadline - PreferenceMgr.getReminderTimeOffset(context, DEFAULT_REMINDER_TIME_OFFSET)
+            } else if (deadline != -1L && forDeadline >= now) {
+                forDeadline
             } else {
-                val now = Helper.getCurrentTimestamp()
                 now + PreferenceMgr.getDefaultReminderTimeSpan(context)
             }
         val calendar = GregorianCalendar.getInstance()
@@ -58,27 +67,21 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
             calendar[Calendar.DAY_OF_MONTH]) { view, year, monthOfYear, dayOfMonth ->
-            val layoutDate: LinearLayout = findViewById(R.id.ll_reminder_date)
             layoutDate.visibility = View.GONE
-            val layoutTime: LinearLayout = findViewById(R.id.ll_reminder_time)
             layoutTime.visibility = View.VISIBLE
         }
         val timePicker: TimePicker = findViewById(R.id.tp_reminder)
-        timePicker.setIs24HourView(true)
+        timePicker.setIs24HourView(DateFormat.is24HourFormat(context))
         timePicker.currentHour = calendar[Calendar.HOUR_OF_DAY]
         timePicker.currentMinute = calendar[Calendar.MINUTE]
         val buttonDate: Button = findViewById(R.id.bt_reminder_date)
         buttonDate.setOnClickListener {
-            val layoutDate: LinearLayout = findViewById(R.id.ll_reminder_date)
             layoutDate.visibility = View.VISIBLE
-            val layoutTime: LinearLayout = findViewById(R.id.ll_reminder_time)
             layoutTime.visibility = View.GONE
         }
         val buttonTime: Button = findViewById(R.id.bt_reminder_time)
         buttonTime.setOnClickListener {
-            val layoutDate: LinearLayout = findViewById(R.id.ll_reminder_date)
             layoutDate.visibility = View.GONE
-            val layoutTime: LinearLayout = findViewById(R.id.ll_reminder_time)
             layoutTime.visibility = View.VISIBLE
         }
         val buttonOkay: Button = findViewById(R.id.bt_reminder_ok)
@@ -90,9 +93,6 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
                 timePicker.currentHour,
                 timePicker.currentMinute)
             val reminderTime = TimeUnit.MILLISECONDS.toSeconds(calendar2.getTimeInMillis())
-            if (deadline != -1L) {
-                PreferenceMgr.setReminderTimeOffset(context, deadline - reminderTime)
-            }
             getDialogCallback().setReminderTime(reminderTime)
             dismiss()
         }

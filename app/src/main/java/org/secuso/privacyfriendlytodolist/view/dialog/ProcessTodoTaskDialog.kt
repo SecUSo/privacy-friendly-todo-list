@@ -37,8 +37,8 @@ import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
-import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
-import org.secuso.privacyfriendlytodolist.util.Helper.createDateTimeString
+import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateString
+import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateTimeString
 import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
 import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
 import org.secuso.privacyfriendlytodolist.util.Helper.recurrencePatternToString
@@ -98,10 +98,10 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             taskName.setText(todoTask.getName())
             taskDescription.setText(todoTask.getDescription())
             deadlineTextView.text = if (todoTask.getDeadline() <= 0)
-                context.getString(R.string.deadline) else createDateString(deadline)
+                context.getString(R.string.deadline) else createLocalizedDateString(deadline)
             updateRecurrencePatternText()
             reminderTextView.text = if (todoTask.getReminderTime() <= 0)
-                context.getString(R.string.reminder) else createDateTimeString(reminderTime)
+                context.getString(R.string.reminder) else createLocalizedDateTimeString(reminderTime)
             progressSelector.progress = todoTask.getProgress(false)
             prioritySelector.text = priorityToString(context, todoTask.getPriority())
         }
@@ -201,7 +201,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             deadlineDialog.setDialogCallback(object : DeadlineCallback {
                 override fun setDeadline(selectedDeadline: Long) {
                     deadline = selectedDeadline
-                    deadlineTextView.text = createDateString(selectedDeadline)
+                    deadlineTextView.text = createLocalizedDateString(selectedDeadline)
                 }
 
                 override fun removeDeadline() {
@@ -239,7 +239,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                     }
                     if (resIdErrorMsg == 0) {
                         reminderTime = selectedReminderTime
-                        reminderTextView.text = createDateTimeString(reminderTime)
+                        reminderTextView.text = createLocalizedDateTimeString(reminderTime)
                     } else {
                         Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
                     }

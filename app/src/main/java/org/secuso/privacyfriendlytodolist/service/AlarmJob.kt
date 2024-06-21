@@ -66,12 +66,12 @@ class AlarmJob : JobBase() {
                         val now = Helper.getCurrentTimestamp()
                         val firstDeadline = todoTask.getDeadline()
                         val nextDeadline = Helper.getNextRecurringDate(firstDeadline, todoTask.getRecurrencePattern(), now)
-                        val deadlineStr = Helper.createDateString(nextDeadline)
+                        val deadlineStr = Helper.createLocalizedDateString(nextDeadline)
                         val repetitions = Helper.computeRepetitions(firstDeadline, nextDeadline, todoTask.getRecurrencePattern())
                         applicationContext.resources.getString(R.string.recurring_deadline_approaching,
                             deadlineStr, repetitions)
                     } else {
-                        val deadlineStr = Helper.createDateString(todoTask.getDeadline())
+                        val deadlineStr = Helper.createLocalizedDateString(todoTask.getDeadline())
                         applicationContext.resources.getString(R.string.deadline_approaching, deadlineStr)
                     }
                 }

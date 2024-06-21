@@ -49,7 +49,23 @@ class DeadlineDialog(context: Context, private val deadline: Long) :
         )
         val buttonOkay: Button = findViewById(R.id.bt_deadline_ok)
         buttonOkay.setOnClickListener {
-            val calendar2: Calendar = GregorianCalendar(datePicker.year, datePicker.month, datePicker.dayOfMonth)
+            val calendar2: Calendar = GregorianCalendar(
+                datePicker.year, datePicker.month, datePicker.dayOfMonth, 12, 0)
+            /*
+             TODO Deadline gets stored as milliseconds since epoch UTC, which is a timestamp.
+                With changing the timezone, the time of this timestamp changes. If it changes more
+                than 12 hours not only the time changes but also the date which is bad for the
+                deadline.
+                Potential fixes:
+                a) Store deadline as days-since-epoch.
+                b) General change at timestamp handling in the app: Store them together with the
+                   timezone where they were created.
+                   This might improve reminder time too: Now the reminder time changes with the
+                   timezone. Creating reminder for 5 o'clock and traveling from timezone +2 to 0
+                   will result in a reminder at 3 o'clock in the new timezone.
+                   With the knowledge of the timezone it would be possible to have the reminder at
+                   the local 5 o'clock regardless to which timezone the user travels.
+             */
             getDialogCallback().setDeadline(TimeUnit.MILLISECONDS.toSeconds(calendar2.getTimeInMillis()))
             dismiss()
         }

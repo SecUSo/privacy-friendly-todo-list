@@ -3,7 +3,6 @@ package org.secuso.privacyfriendlytodolist.util
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Typeface
-import android.text.format.DateFormat
 import android.util.Log
 import android.util.TypedValue
 import android.view.ViewGroup
@@ -14,32 +13,35 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 object Helper {
     private val TAG = LogTag.create(this::class.java)
-    private const val DATE_FORMAT = "dd.MM.yyyy"
-    private const val DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm"
 
-    fun createDateString(time: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time))
-        return DateFormat.format(DATE_FORMAT, calendar).toString()
+    fun createLocalizedDateString(time: Long): String {
+        val dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.DEFAULT, Locale.getDefault())
+        val date = Date(TimeUnit.SECONDS.toMillis(time))
+        return dateFormat.format(date)
     }
 
-    fun createDateTimeString(time: Long): String {
-        val calendar = Calendar.getInstance()
-        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(time))
-        return createDateTimeString(calendar)
+    fun createLocalizedDateTimeString(time: Long): String {
+        val dateTimeFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.DEFAULT, Locale.getDefault())
+        val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
+        return dateTimeFormat.format(dateTime)
     }
 
-    fun createDateTimeString(calendar: Calendar): String {
-        return DateFormat.format(DATE_TIME_FORMAT, calendar).toString()
+    fun createCanonicalDateTimeString(time: Long): String {
+        val canonicalDateTimeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
+        val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
+        return canonicalDateTimeFormat.format(dateTime)
     }
 
     /**
-     * @return The current time in seconds.
+     * @return The number of seconds since midnight, January 1, 1970 UTC.
      */
     fun getCurrentTimestamp(): Long {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())

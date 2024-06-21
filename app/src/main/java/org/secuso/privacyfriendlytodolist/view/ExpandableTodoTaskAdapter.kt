@@ -36,7 +36,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
 import org.secuso.privacyfriendlytodolist.util.Helper
-import org.secuso.privacyfriendlytodolist.util.Helper.createDateString
+import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateString
 import org.secuso.privacyfriendlytodolist.util.Helper.getDeadlineColor
 import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -395,9 +395,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         deadline = context.resources.getString(R.string.no_deadline)
                     } else {
                         deadline = context.resources.getString(R.string.deadline_dd) + " " +
-                                createDateString(currentTask.getDeadline())
+                                createLocalizedDateString(currentTask.getDeadline())
                         if (currentTask.isRecurring()) {
-                            deadline += ", " + Helper.recurrencePatternToString(context, currentTask.getRecurrencePattern())
+                            deadline += " (" + Helper.recurrencePatternToString(context, currentTask.getRecurrencePattern()) + ")"
                         }
                     }
                 vh2.deadline!!.text = deadline

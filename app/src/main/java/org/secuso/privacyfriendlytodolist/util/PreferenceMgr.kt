@@ -57,7 +57,6 @@ object PreferenceMgr {
     val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
     val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
-    private val P_REMINDER_TIME_OFFSET = PrefMetaData("pref_reminder_offset", PrefDataType.LONG)
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -94,18 +93,6 @@ object PreferenceMgr {
      */
     fun getSnoozeDuration(context: Context): Long {
         return getStringPrefAsLong(context, P_SNOOZE_DURATION.name)
-    }
-
-    fun getReminderTimeOffset(context: Context, defaultValue: Long): Long {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getLong(P_REMINDER_TIME_OFFSET.name, defaultValue)
-    }
-
-    fun setReminderTimeOffset(context: Context, value: Long) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = prefs.edit()
-        editor.putLong(P_REMINDER_TIME_OFFSET.name, value)
-        editor.apply()
     }
 
     private fun getStringPrefAsLong(context: Context, prefName: String): Long {
