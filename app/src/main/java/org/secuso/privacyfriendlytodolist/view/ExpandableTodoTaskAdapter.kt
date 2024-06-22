@@ -421,7 +421,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                                 subtask.setDone(inverted)
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
-                                AlarmMgr.setAlarmForTask(context, currentTask, false)
+                                AlarmMgr.setAlarmForTask(context, currentTask)
                             }
                         }
                         snackbar.show()
@@ -435,7 +435,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             notifyDataSetChanged()
                         }
                         model.saveTodoTaskInDb(currentTask) {
-                            AlarmMgr.setAlarmForTask(context, currentTask, false)
+                            AlarmMgr.setAlarmForTask(context, currentTask)
                         }
                     }
                 }
@@ -530,7 +530,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             model.saveTodoTaskInDb(currentTask) {
                                 counter2: Int? -> notifyDataSetChanged()
                                 if (doneStatusChanged) {
-                                    AlarmMgr.setAlarmForTask(context, currentTask, false)
+                                    AlarmMgr.setAlarmForTask(context, currentTask)
                                 }
                             }
                         }

@@ -34,7 +34,6 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
 
-
     <!-- Help -->
     <string name="help_overview_heading">Allgemein</string>
     <string name="help_intro">Die Privacy Friendly To-Do Liste kann zur Organisation und persönlichen Zeitplanung verwendet werden.</string>
@@ -173,6 +172,7 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Termin rückt näher: %1$s</string>
     <string name="recurring_deadline_approaching">Termin rückt näher: %1$s (%2$d. Wiederholung)</string>
+    <string name="alarm_set_for_task">Benachrichtigung für \'%1$s\' am %2$s aktiviert (in %3$s)</string>
 
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
@@ -240,7 +240,7 @@
     <string name="todo_activity">Todo Aufgaben</string>
 
     <!-- ### Delete AlertDialog ### -->
-    <string name="alert_listdelete">Wollen Sie die Liste wirklich löschen?</string>
+    <string name="alert_list_delete">Wollen Sie die Liste wirklich löschen?</string>
     <string name="alert_clear">Wirklich leeren?</string>
     <string name="alert_delete_yes">Löschen</string>
     <string name="alert_delete_no">Abbrechen</string>

@@ -21,12 +21,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
+import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -64,7 +67,7 @@ object AlarmMgr {
      * @return If an alarm gets set the alarm ID gets returned (task ID gets used as alarm ID).
      * If no alarm gets set null gets returned.
      */
-    fun setAlarmForTask(context: Context, todoTask: TodoTask, setAlarmEvenIfItIsInPast: Boolean): Int? {
+    fun setAlarmForTask(context: Context, todoTask: TodoTask, setAlarmEvenIfItIsInPast: Boolean = false): Int? {
         // Use task's database ID as unique alarm ID.
         val alarmId = todoTask.getId()
         cancelAlarmForTask(context, alarmId)
@@ -100,25 +103,28 @@ object AlarmMgr {
         }
 
         val alarmTime: Long
-        val logDuration: String
+        val duration: Duration
         val logDetail: String
         if (reminderTime > now) {
             // Get full minutes as alarm time.
             alarmTime = reminderTime - (reminderTime % 60)
-            val duration = (reminderTime - now).toDuration(DurationUnit.SECONDS)
-            logDuration = "in $duration"
+            duration = (reminderTime - now).toDuration(DurationUnit.SECONDS)
             logDetail = "reminder time"
         } else if (setAlarmEvenIfItIsInPast) {
             alarmTime = now
-            logDuration = "now"
+            duration = Duration.ZERO
             logDetail = "reminder time is in the past, using 'now'"
         } else {
             Log.i(TAG, "No alarm set because reminder time of $todoTask is in the past.")
             return null
         }
 
-        val timestamp = setAlarm(context, alarmId, alarmTime)
-        Log.i(TAG, "Alarm set for $todoTask at $timestamp which is $logDuration ($logDetail).")
+        setAlarm(context, alarmId, alarmTime)
+        var timestamp = Helper.createCanonicalDateTimeString(alarmTime)
+        Log.i(TAG, "Alarm set for $todoTask at $timestamp which is in $duration ($logDetail).")
+        timestamp = Helper.createLocalizedDateTimeString(alarmTime)
+        val message = context.getString(R.string.alarm_set_for_task, todoTask.getName(), timestamp, duration.toString())
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         return alarmId
     }
 
@@ -126,16 +132,15 @@ object AlarmMgr {
         // Use task's database ID as unique alarm ID.
         cancelAlarmForTask(context, todoTaskId)
 
-        val timestamp = setAlarm(context, todoTaskId, alarmTime)
-        Log.i(TAG, "Alarm set for task $todoTaskId at $timestamp.")
+        setAlarm(context, todoTaskId, alarmTime)
+        Log.i(TAG, "Alarm set for task $todoTaskId at ${Helper.createCanonicalDateTimeString(alarmTime)}.")
         return todoTaskId
     }
 
-    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
+    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long) {
         // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
         getManager(context)[AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime)] = pendingIntent
-        return Helper.createCanonicalDateTimeString(alarmTime)
     }
 
     private fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {

@@ -18,7 +18,6 @@
     <string name="menu_about">About</string>
     <string name="search">Search</string>
 
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
@@ -55,7 +54,6 @@
     <string name="help_group_data_backup">Data Backup</string>
     <string name="help_data_backup">You can use the separate Privacy Friendly Backup app to backup and restore this application\'s data. This can also be used to transfer your data to another device.</string>
     <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
-
 
     <!-- About -->
     <string name="about">About</string>
@@ -126,7 +124,6 @@
     <string name="work_subtask">Work on this subtask</string>
     <string name="work_task">Work on this task</string>
 
-
     <!-- Select reminder dialog -->
     <string name="date">Date</string>
     <string name="time">Time</string>
@@ -192,6 +189,7 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
     <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
+    <string name="alarm_set_for_task">Reminder set for \'%1$s\' at %2$s (in %3$s)</string>
 
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Task Reminder</string>
@@ -260,7 +258,7 @@
     <string name="todo_activity">Todo Tasks</string>
 
     <!-- ### Delete AlertDialog ### -->
-    <string name="alert_listdelete">Really delete this list?</string>
+    <string name="alert_list_delete">Really delete this list?</string>
     <string name="alert_clear">Really clear?</string>
     <string name="alert_delete_yes">Delete</string>
     <string name="alert_delete_no">Cancel</string>

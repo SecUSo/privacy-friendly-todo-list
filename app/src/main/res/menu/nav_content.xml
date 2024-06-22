@@ -1,61 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <group android:title="@string/todos"
         android:checkableBehavior="single"
         android:orderInCategory="0">
 
-            <item
-                android:id="@+id/menu_home"
-                android:icon="@drawable/ic_home_black_24dp"
-                android:title="@string/home" />
-
-            <item
-                android:id="@+id/menu_calendar_view"
-                android:icon="@android:drawable/ic_menu_my_calendar"
-                android:title="@string/calendar_view" />
-
-
-            <item
-                android:id="@+id/nav_recycle_bin"
-                android:icon="@drawable/ic_delete_black_24dp"
-                android:title="@string/bin"/>
+        <item
+            android:id="@+id/menu_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/home" />
 
         <item
-            android:id="@+id/nav_tutorial"
-            android:icon="@drawable/ic_school_black_24dp"
-            android:title="@string/tutorial"/>
+            android:id="@+id/menu_calendar_view"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="@string/calendar_view" />
+
+        <item
+            android:id="@+id/nav_recycle_bin"
+            android:icon="@drawable/ic_delete_black_24dp"
+            android:title="@string/bin"/>
+
     </group>
 
+    <group android:checkableBehavior="single"
+        android:id="@+id/drawer_group2"
+        android:orderInCategory="1">
+        <!-- Gets filled by Lists -->
+    </group>
 
-            <group android:checkableBehavior="single"
-                android:id="@+id/drawer_group2"
-                android:orderInCategory="1">
-                <!-- //Get's filled by Lists -->
+    <group android:checkableBehavior="single"
+           android:orderInCategory="2"
+           android:id="@+id/nav_bottom">
 
-            </group>
+        <item
+            android:id="@+id/nav_dummy1"
+            android:title=""
+            android:checkable="false" />
 
+        <item
+            android:id="@+id/nav_dummy2"
+            android:title=""
+            android:checkable="false" />
 
-        <group android:checkableBehavior="single"
-               android:orderInCategory="2"
-               android:id="@+id/nav_bottom">
-
-            <item
-                android:id="@+id/nav_dummy1"
-                android:title=""
-                android:checkable="false" />
-
-            <item
-                android:id="@+id/nav_dummy2"
-                android:title=""
-                android:checkable="false" />
-
-            <item
-                android:id="@+id/nav_dummy3"
-                android:title=""
-                android:checkable="false" />
-        </group>
+        <item
+            android:id="@+id/nav_dummy3"
+            android:title=""
+            android:checkable="false" />
+    </group>
 
 </menu>
-

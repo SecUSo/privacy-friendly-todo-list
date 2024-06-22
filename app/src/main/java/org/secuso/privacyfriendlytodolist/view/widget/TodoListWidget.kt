@@ -44,6 +44,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         Log.d(TAG, "Received action '${intent.action}'.")
         if (ACTION_REGISTER_AS_MODEL_OBSERVER == intent.action) {
             Model.registerModelObserver(this)
+            initialUpdate(context)
         } else {
             // Call base implementation. Depending on action, it calls onUpdate, onDelete, ...
             super.onReceive(context, intent)
@@ -69,9 +70,15 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         }
     }
 
+    private fun initialUpdate(context: Context) {
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.getName())
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)
+        onUpdate(context, appWidgetManager, appWidgetIds)
+    }
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
             update(context, appWidgetManager, appWidgetId)

@@ -512,7 +512,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d(TAG, "$todoTask changed. Setting its alarm.")
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
         // User should see that.
-        AlarmMgr.setAlarmForTask(this, todoTask, false)
+        AlarmMgr.setAlarmForTask(this, todoTask)
     }
 
     //Adds To do-Lists to the navigation-drawer
@@ -578,7 +578,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             } else {
                 // List was deleted.
                 val alertBuilder = AlertDialog.Builder(this)
-                alertBuilder.setMessage(R.string.alert_listdelete)
+                alertBuilder.setMessage(R.string.alert_list_delete)
                 alertBuilder.setCancelable(true)
                 alertBuilder.setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
                     todoLists.remove(existingTodoList)
