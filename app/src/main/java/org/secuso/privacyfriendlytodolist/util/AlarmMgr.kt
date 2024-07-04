@@ -123,7 +123,7 @@ object AlarmMgr {
         var timestamp = Helper.createCanonicalDateTimeString(alarmTime)
         Log.i(TAG, "Alarm set for $todoTask at $timestamp which is in $duration ($logDetail).")
         timestamp = Helper.createLocalizedDateTimeString(alarmTime)
-        val message = context.getString(R.string.alarm_set_for_task, todoTask.getName(), timestamp, duration.toString())
+        val message = context.getString(R.string.alarm_set_for_task, timestamp, duration.toString(), todoTask.getName())
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         return alarmId
     }

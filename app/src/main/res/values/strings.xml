@@ -189,7 +189,7 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
     <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
-    <string name="alarm_set_for_task">Reminder set for \'%1$s\' at %2$s (in %3$s)</string>
+    <string name="alarm_set_for_task">Reminder at %1$s (in %2$s) for \'%3$s\'</string>
 
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Task Reminder</string>

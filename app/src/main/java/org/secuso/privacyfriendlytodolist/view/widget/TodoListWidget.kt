@@ -104,14 +104,14 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
         view.setPendingIntentTemplate(R.id.listview_widget, pendingIntent)
 
-        // Intent to open the App by clicking on the widget title.
+        // Intent to open the App by clicking on the widget title or the widget background.
         val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId)
         intent = Intent(context, MainActivity::class.java)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         intent.putExtra(EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())
         pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        view.setOnClickPendingIntent(R.id.widget_title, pendingIntent)
+        view.setOnClickPendingIntent(R.id.root_layout, pendingIntent)
 
         // Intent to trigger the update of the widget by clicking on the update icon.
         intent = createWidgetUpdateIntent(context, appWidgetId)
