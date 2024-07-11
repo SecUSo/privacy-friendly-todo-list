@@ -15,7 +15,7 @@
  along with Privacy Friendly To-Do List. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.secuso.privacyfriendlytodolist.testing
+package org.secuso.privacyfriendlytodolist.androidtest
 
 import android.util.Log
 import androidx.core.database.getIntOrNull

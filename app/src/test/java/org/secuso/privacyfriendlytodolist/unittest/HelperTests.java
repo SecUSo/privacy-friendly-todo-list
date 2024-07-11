@@ -1,4 +1,4 @@
-package org.secuso.privacyfriendlytodolist.testing;
+package org.secuso.privacyfriendlytodolist.unittest;
 
 import static org.junit.Assert.assertEquals;
 
