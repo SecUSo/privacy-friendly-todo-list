@@ -10,9 +10,11 @@
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
     <string name="home">Alle Aufgaben</string>
-    <string name="calendar_view">Kalenderansicht</string>
     <string name="show_all_tasks">Alle Aufgaben</string>
+    <string name="calendar_view">Kalenderansicht</string>
     <string name="settings">Einstellungen</string>
+    <string name="export_tasks">Tasks exportieren</string>
+    <string name="import_tasks">Tasks importieren</string>
     <string name="other">Andere</string>
 	<string name="help">Hilfe</string>
 	<string name="menu_about">Über</string>
@@ -238,6 +240,10 @@
 
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Aufgaben</string>
+
+    <!-- ### Export / Import ### -->
+    <string name="export_succeeded">Export erfolgreich beendet</string>
+    <string name="export_failed">Export fehlgeschlagen</string>
 
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_list_delete">Wollen Sie die Liste wirklich löschen?</string>

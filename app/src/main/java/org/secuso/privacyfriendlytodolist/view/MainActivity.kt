@@ -20,6 +20,9 @@ import android.widget.ExpandableListView.ExpandableListContextMenuInfo
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +36,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.exportimport.CSVExporter
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.ModelObserver
@@ -66,7 +70,7 @@ import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ModelObserver {
-    //TodoTask administration
+    // TodoTask administration
     private var exLv: ExpandableListView? = null
     private var tv: TextView? = null
     private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
@@ -82,10 +86,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // GUI
     private var navigationView: NavigationView? = null
-    private var navigationBottomView: NavigationView? = null
     private var toolbar: Toolbar? = null
     private var drawer: DrawerLayout? = null
     private var drawerToggle: ActionBarDrawerToggle? = null
+    private lateinit var exportTasksLauncher: ActivityResultLauncher<Intent>
 
     // Others
     private var isUnlocked = false
@@ -214,6 +218,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showHints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
+        exportTasksLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val uri = result.data?.data
+            if (result.resultCode != RESULT_OK) {
+                Log.i(TAG, "Export aborted by user. Result: ${result.resultCode}")
+            } else if (null == uri) {
+                Log.e(TAG, "Export failed: Uri is null.")
+                Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+            } else {
+                Log.i(TAG, "Export to $uri starts.")
+                model!!.getAllToDoTasks() { todoTasks ->
+                    var isSuccess = false
+                    try {
+                        val outputStream = contentResolver.openOutputStream(uri)
+                        if (null != outputStream) {
+                            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                            val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
+                            outputStream.use { os ->
+                                val csvExporter = CSVExporter()
+                                csvExporter.export(todoLists, todoTasks, hasAutoProgress, os)
+                            }
+                            isSuccess = true
+                        } else {
+                            Log.e(TAG, "Export failed: Unable to open output stream.")
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Export failed: $e")
+                    }
+                    val id = if (isSuccess) R.string.export_succeeded else R.string.export_failed
+                    Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         if (intent.getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
             updateTodoFromPomodoro()
         }
@@ -293,11 +330,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer!!.addDrawerListener(drawerToggle!!)
         drawerToggle!!.syncState()
 
-        //LinearLayout l = (LinearLayout) findViewById(R.id.footer);
         navigationView = findViewById(R.id.nav_view)
-        navigationBottomView = findViewById(R.id.nav_view_bottom)
         navigationView!!.setNavigationItemSelectedListener(this)
-        navigationBottomView!!.setNavigationItemSelectedListener(this)
 
         model!!.getAllToDoLists { allTodoLists ->
             todoLists = allTodoLists
@@ -368,17 +402,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_settings -> {
-                uncheckNavigationEntries()
-                val intent = Intent(this, Settings::class.java)
-                unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
-                startActivity(intent)
-            }
-            R.id.nav_tutorial -> {
-                uncheckNavigationEntries()
-                val intent = Intent(this, TutorialActivity::class.java)
-                unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
-                startActivity(intent)
+            R.id.menu_home -> {
+                showAllTasks()
             }
             R.id.menu_calendar_view -> {
                 uncheckNavigationEntries()
@@ -392,9 +417,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
                 startActivity(intent)
             }
-            R.id.nav_about -> {
+            R.id.nav_settings -> {
                 uncheckNavigationEntries()
-                val intent = Intent(this, AboutActivity::class.java)
+                val intent = Intent(this, Settings::class.java)
+                unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
+                startActivity(intent)
+            }
+            R.id.nav_export -> {
+                uncheckNavigationEntries()
+                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "text/csv"
+                    putExtra(Intent.EXTRA_TITLE, "ToDo List Tasks.csv")
+                }
+                exportTasksLauncher.launch(intent)
+            }
+            R.id.nav_import -> {
+                uncheckNavigationEntries()
+            }
+            R.id.nav_tutorial -> {
+                uncheckNavigationEntries()
+                val intent = Intent(this, TutorialActivity::class.java)
                 unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
                 startActivity(intent)
             }
@@ -404,11 +447,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
                 startActivity(intent)
             }
-            R.id.menu_home -> {
-                showAllTasks()
-            }
-            R.id.nav_dummy1, R.id.nav_dummy2, R.id.nav_dummy3 -> {
-                return false
+            R.id.nav_about -> {
+                uncheckNavigationEntries()
+                val intent = Intent(this, AboutActivity::class.java)
+                unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
+                startActivity(intent)
             }
             else -> {
                 showTasksOfList(item.itemId)

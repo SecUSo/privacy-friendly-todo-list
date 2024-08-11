@@ -33,19 +33,35 @@
            android:id="@+id/nav_bottom">
 
         <item
-            android:id="@+id/nav_dummy1"
-            android:title=""
-            android:checkable="false" />
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings" />
 
         <item
-            android:id="@+id/nav_dummy2"
-            android:title=""
-            android:checkable="false" />
+            android:id="@+id/nav_export"
+            android:icon="@drawable/ic_import_export_black_24"
+            android:title="@string/export_tasks"/>
 
         <item
-            android:id="@+id/nav_dummy3"
-            android:title=""
-            android:checkable="false" />
+            android:id="@+id/nav_import"
+            android:icon="@drawable/ic_import_export_black_24"
+            android:title="@string/import_tasks"/>
+
+        <item
+            android:id="@+id/nav_tutorial"
+            android:icon="@drawable/ic_school_black_24dp"
+            android:title="@string/tutorial"/>
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help_outline_black_24dp"
+            android:title="@string/help" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/about" />
+
     </group>
 
 </menu>
