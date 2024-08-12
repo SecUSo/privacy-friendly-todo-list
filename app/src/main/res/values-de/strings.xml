@@ -244,6 +244,8 @@
     <!-- ### Export / Import ### -->
     <string name="export_succeeded">Export erfolgreich beendet</string>
     <string name="export_failed">Export fehlgeschlagen</string>
+    <string name="import_succeeded">Import erfolgreich beendet</string>
+    <string name="import_failed">Import fehlgeschlagen</string>
 
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_list_delete">Wollen Sie die Liste wirklich löschen?</string>

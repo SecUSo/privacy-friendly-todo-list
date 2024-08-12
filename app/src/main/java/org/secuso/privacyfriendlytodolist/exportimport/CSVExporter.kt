@@ -71,8 +71,9 @@ class CSVExporter {
             csvBuilder.addField(todoList.getId())
             csvBuilder.addField(todoList.getName())
         } else {
-            for (i in 1..2)
-            csvBuilder.addEmptyField()
+            for (i in 1..2) {
+                csvBuilder.addEmptyField()
+            }
         }
 
         if (null != todoTask) {
@@ -89,8 +90,9 @@ class CSVExporter {
             csvBuilder.addField(todoTask.getProgress(hasAutoProgress))
             csvBuilder.addField(todoTask.getPriority().toString())
         } else {
-            for (i in 1..12)
+            for (i in 1..12) {
                 csvBuilder.addEmptyField()
+            }
         }
 
 
@@ -100,8 +102,9 @@ class CSVExporter {
             csvBuilder.addTimeField(todoSubtask.getDoneTime())
             csvBuilder.addField(todoSubtask.isDone().toString())
         } else {
-            for (i in 1..4)
+            for (i in 1..4) {
                 csvBuilder.addEmptyField()
+            }
         }
 
 

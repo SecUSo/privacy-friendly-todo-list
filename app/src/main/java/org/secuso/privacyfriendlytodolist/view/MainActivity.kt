@@ -3,6 +3,7 @@ package org.secuso.privacyfriendlytodolist.view
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var drawer: DrawerLayout? = null
     private var drawerToggle: ActionBarDrawerToggle? = null
     private lateinit var exportTasksLauncher: ActivityResultLauncher<Intent>
+    private lateinit var importTasksLauncher: ActivityResultLauncher<Intent>
+    private var deleteAllDataBeforeImport = false
 
     // Others
     private var isUnlocked = false
@@ -219,41 +222,82 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
         exportTasksLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            val uri = result.data?.data
-            if (result.resultCode != RESULT_OK) {
-                Log.i(TAG, "Export aborted by user. Result: ${result.resultCode}")
-            } else if (null == uri) {
-                Log.e(TAG, "Export failed: Uri is null.")
-                Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+            if (result.resultCode == RESULT_OK) {
+                doExport(result.data?.data)
             } else {
-                Log.i(TAG, "Export to $uri starts.")
-                model!!.getAllToDoTasks() { todoTasks ->
-                    var isSuccess = false
-                    try {
-                        val outputStream = contentResolver.openOutputStream(uri)
-                        if (null != outputStream) {
-                            val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                            val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
-                            outputStream.use { os ->
-                                val csvExporter = CSVExporter()
-                                csvExporter.export(todoLists, todoTasks, hasAutoProgress, os)
-                            }
-                            isSuccess = true
-                        } else {
-                            Log.e(TAG, "Export failed: Unable to open output stream.")
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Export failed: $e")
-                    }
-                    val id = if (isSuccess) R.string.export_succeeded else R.string.export_failed
-                    Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
-                }
+                Log.i(TAG, "Export aborted by user. Result: ${result.resultCode}")
+            }
+        }
+        importTasksLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                doImport(result.data?.data)
+            } else {
+                Log.i(TAG, "Import aborted by user. Result: ${result.resultCode}")
             }
         }
 
         if (intent.getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
             updateTodoFromPomodoro()
         }
+    }
+
+    private fun doExport(uri: Uri?) {
+        if (null == uri) {
+            Log.e(TAG, "Export failed: Uri is null.")
+            Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Log.i(TAG, "Export to $uri starts.")
+        model!!.getAllToDoTasks { todoTasks ->
+            var isSuccess = false
+            try {
+                val outputStream = contentResolver.openOutputStream(uri)
+                if (null != outputStream) {
+                    val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+                    val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
+                    outputStream.use { os ->
+                        val csvExporter = CSVExporter()
+                        csvExporter.export(todoLists, todoTasks, hasAutoProgress, os)
+                    }
+                    isSuccess = true
+                } else {
+                    Log.e(TAG, "Export failed: Unable to open output stream.")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Export failed: $e")
+            }
+            val id = if (isSuccess) R.string.export_succeeded else R.string.export_failed
+            Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun doImport(uri: Uri?) {
+        if (null == uri) {
+            Log.e(TAG, "Import failed: Uri is null.")
+            Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Log.i(TAG, "Import from $uri starts.")
+        var isSuccess = false
+        try {
+            val inputStream = contentResolver.openInputStream(uri)
+            if (null != inputStream) {
+                inputStream.use { ins ->
+                    /* TODO
+                    val csvImporter = CSVImporter()
+                    csvImporter.import(ins)*/
+                }
+                isSuccess = true
+            } else {
+                Log.e(TAG, "Import failed: Unable to open input stream.")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Import failed: $e")
+        }
+        val id = if (isSuccess) R.string.import_succeeded else R.string.import_failed
+        Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -424,16 +468,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
             }
             R.id.nav_export -> {
-                uncheckNavigationEntries()
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "text/csv"
-                    putExtra(Intent.EXTRA_TITLE, "ToDo List Tasks.csv")
+                    type = "text/comma-separated-values"
+                    putExtra(Intent.EXTRA_TITLE, "ToDo List.csv")
                 }
                 exportTasksLauncher.launch(intent)
             }
             R.id.nav_import -> {
-                uncheckNavigationEntries()
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "text/comma-separated-values"
+                }
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle(R.string.import_question_title)
+                builder.setMessage(R.string.import_question_text)
+                builder.setPositiveButton(R.string.delete_existing_data) { dialog, which ->
+                    deleteAllDataBeforeImport = true
+                    importTasksLauncher.launch(intent)
+                }
+                builder.setNegativeButton(R.string.keep_existing_data) { dialog, which ->
+                    deleteAllDataBeforeImport = false
+                    importTasksLauncher.launch(intent)
+                }
+                builder.setNeutralButton(R.string.abort) { dialog, which ->
+                }
+                builder.show()
             }
             R.id.nav_tutorial -> {
                 uncheckNavigationEntries()

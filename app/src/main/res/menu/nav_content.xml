@@ -12,13 +12,15 @@
 
         <item
             android:id="@+id/menu_calendar_view"
+            android:checkable="false"
             android:icon="@android:drawable/ic_menu_my_calendar"
             android:title="@string/calendar_view" />
 
         <item
             android:id="@+id/nav_recycle_bin"
+            android:checkable="false"
             android:icon="@drawable/ic_delete_black_24dp"
-            android:title="@string/bin"/>
+            android:title="@string/bin" />
 
     </group>
 
@@ -34,31 +36,37 @@
 
         <item
             android:id="@+id/nav_settings"
+            android:checkable="false"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/settings" />
 
         <item
             android:id="@+id/nav_export"
+            android:checkable="false"
             android:icon="@drawable/ic_import_export_black_24"
-            android:title="@string/export_tasks"/>
+            android:title="@string/export_tasks" />
 
         <item
             android:id="@+id/nav_import"
+            android:checkable="false"
             android:icon="@drawable/ic_import_export_black_24"
-            android:title="@string/import_tasks"/>
+            android:title="@string/import_tasks" />
 
         <item
             android:id="@+id/nav_tutorial"
+            android:checkable="false"
             android:icon="@drawable/ic_school_black_24dp"
-            android:title="@string/tutorial"/>
+            android:title="@string/tutorial" />
 
         <item
             android:id="@+id/nav_help"
+            android:checkable="false"
             android:icon="@drawable/ic_help_outline_black_24dp"
             android:title="@string/help" />
 
         <item
             android:id="@+id/nav_about"
+            android:checkable="false"
             android:icon="@drawable/ic_info_outline_black_24dp"
             android:title="@string/about" />
 
