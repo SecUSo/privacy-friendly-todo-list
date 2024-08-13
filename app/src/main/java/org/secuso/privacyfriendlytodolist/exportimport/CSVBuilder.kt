@@ -6,8 +6,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class CSVBuilder {
-    @Suppress("MemberVisibilityCanBePrivate")
-    val fieldSeparator = ','
+    private val fieldSeparator = ','
     private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
     private val sb = StringBuilder()
     private var isFirstFieldInRow = true

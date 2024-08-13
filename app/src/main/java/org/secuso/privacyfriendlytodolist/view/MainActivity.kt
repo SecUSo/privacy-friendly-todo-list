@@ -38,6 +38,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.exportimport.CSVExporter
+import org.secuso.privacyfriendlytodolist.exportimport.CSVImporter
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.ModelObserver
@@ -285,9 +286,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val inputStream = contentResolver.openInputStream(uri)
             if (null != inputStream) {
                 inputStream.use { ins ->
-                    /* TODO
                     val csvImporter = CSVImporter()
-                    csvImporter.import(ins)*/
+                    csvImporter.import(ins)
                 }
                 isSuccess = true
             } else {
