@@ -2,7 +2,7 @@ package org.secuso.privacyfriendlytodolist.unittest
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
-import org.secuso.privacyfriendlytodolist.exportimport.CSVParser
+import org.secuso.privacyfriendlytodolist.util.CSVParser
 
 class CSVParserTests {
     @Test

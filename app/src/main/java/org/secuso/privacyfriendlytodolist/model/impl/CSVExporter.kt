@@ -1,8 +1,9 @@
-package org.secuso.privacyfriendlytodolist.exportimport
+package org.secuso.privacyfriendlytodolist.model.impl
 
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.CSVBuilder
 import java.io.OutputStream
 
 class CSVExporter {

@@ -1,6 +1,7 @@
 package org.secuso.privacyfriendlytodolist.model.impl
 
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -397,11 +398,67 @@ class ModelServicesImpl(
     override fun deleteAllData(deliveryOption: DeliveryOption?,
                                resultConsumer: ResultConsumer<Int>?): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            var counter = db.getTodoSubtaskDao().deleteAll()
-            counter += db.getTodoTaskDao().deleteAll()
-            counter += db.getTodoListDao().deleteAll()
+            val counter = deleteAllDataBlocking()
             dispatchResult(deliveryOption, resultConsumer, counter)
             notifyDataChanged(counter)
+        }
+    }
+
+    private suspend fun deleteAllDataBlocking(): Int {
+        var counter = db.getTodoSubtaskDao().deleteAll()
+        counter += db.getTodoTaskDao().deleteAll()
+        counter += db.getTodoListDao().deleteAll()
+        return counter
+    }
+
+    override fun exportCSVData(hasAutoProgress: Boolean, csvDataUri: Uri,
+                               deliveryOption: DeliveryOption?,
+                               resultConsumer: ResultConsumer<String?>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            // Load lists
+            val listDataArray = db.getTodoListDao().getAll()
+            val todoLists = loadListsTasksSubtasks(*listDataArray)
+            // Load tasks and subtasks
+            val tasksDataArray = db.getTodoTaskDao().getAllNotInRecycleBin()
+            val todoTasks = loadTasksSubtasks(false, *tasksDataArray)
+
+            var errorMessage: String? = null
+            try {
+                // Do the export
+                val csvExporter = CSVExporter()
+                val outputStream = context.contentResolver.openOutputStream(csvDataUri, "wt")
+                    ?: throw NullPointerException("Failed to open output file.")
+                outputStream.use { os ->
+                    csvExporter.export(todoLists, todoTasks, hasAutoProgress, os)
+                }
+            } catch (e: Exception) {
+                errorMessage = e.toString()
+            }
+            dispatchResult(deliveryOption, resultConsumer, errorMessage)
+        }
+    }
+
+    override fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri,
+                               deliveryOption: DeliveryOption?,
+                               resultConsumer: ResultConsumer<String?>?): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            if (deleteAllDataBeforeImport) {
+                Log.i(TAG, "Deleting all data due to CSV data import.")
+                deleteAllDataBlocking()
+            }
+
+            var errorMessage: String? = null
+            try {
+                val csvImporter = CSVImporter()
+                val inputStream = context.contentResolver.openInputStream(csvDataUri)
+                    ?: throw NullPointerException("Failed to open input file.")
+                inputStream.use { ins ->
+                    csvImporter.import(ins)
+                }
+            } catch (e: Exception) {
+                errorMessage = e.toString()
+            }
+            dispatchResult(deliveryOption, resultConsumer, errorMessage)
         }
     }
 

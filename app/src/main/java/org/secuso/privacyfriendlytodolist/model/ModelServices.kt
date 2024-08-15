@@ -17,7 +17,10 @@
 
 package org.secuso.privacyfriendlytodolist.model
 
+import android.net.Uri
 import kotlinx.coroutines.Job
+import java.io.InputStream
+import java.io.OutputStream
 
 /**
  * Created by Christian Adams on 17.02.2024.
@@ -93,4 +96,7 @@ interface ModelServices {
     fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>? = null): Job
     fun saveTodoListInDb(todoList: TodoList, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>? = null): Job
     fun deleteAllData(deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<Int>? = null): Job
+
+    fun exportCSVData(hasAutoProgress: Boolean, csvDataUri: Uri, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<String?>? = null): Job
+    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, deliveryOption: DeliveryOption? = DeliveryOption.POST, resultConsumer: ResultConsumer<String?>? = null): Job
 }

@@ -37,8 +37,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.exportimport.CSVExporter
-import org.secuso.privacyfriendlytodolist.exportimport.CSVImporter
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.ModelObserver
@@ -224,16 +222,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         exportTasksLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
-                doExport(result.data?.data)
+                val uri = result.data?.data
+                if (null != uri) {
+                    doExport(uri)
+                } else {
+                    Log.e(TAG, "CSV export failed: Uri is null.")
+                    Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Log.i(TAG, "Export aborted by user. Result: ${result.resultCode}")
+                Log.i(TAG, "CSV export aborted by user. Result: ${result.resultCode}")
             }
         }
         importTasksLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
-                doImport(result.data?.data)
+                val uri = result.data?.data
+                if (null != uri) {
+                    doImport(uri)
+                } else {
+                    Log.e(TAG, "CSV import failed: Uri is null.")
+                    Toast.makeText(baseContext, getString(R.string.import_failed), Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Log.i(TAG, "Import aborted by user. Result: ${result.resultCode}")
+                Log.i(TAG, "CSV import aborted by user. Result: ${result.resultCode}")
             }
         }
 
@@ -242,62 +252,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun doExport(uri: Uri?) {
-        if (null == uri) {
-            Log.e(TAG, "Export failed: Uri is null.")
-            Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        Log.i(TAG, "Export to $uri starts.")
-        model!!.getAllToDoTasks { todoTasks ->
-            var isSuccess = false
-            try {
-                val outputStream = contentResolver.openOutputStream(uri)
-                if (null != outputStream) {
-                    val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-                    val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
-                    outputStream.use { os ->
-                        val csvExporter = CSVExporter()
-                        csvExporter.export(todoLists, todoTasks, hasAutoProgress, os)
-                    }
-                    isSuccess = true
-                } else {
-                    Log.e(TAG, "Export failed: Unable to open output stream.")
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Export failed: $e")
+    private fun doExport(uri: Uri) {
+        Log.i(TAG, "CSV export to $uri starts.")
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
+        model!!.exportCSVData(hasAutoProgress, uri) { errorMessage ->
+            val id = if (null == errorMessage) {
+                R.string.export_succeeded
+            } else {
+                Log.e(TAG, "CSV export failed: $errorMessage")
+                R.string.export_failed
             }
-            val id = if (isSuccess) R.string.export_succeeded else R.string.export_failed
             Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun doImport(uri: Uri?) {
-        if (null == uri) {
-            Log.e(TAG, "Import failed: Uri is null.")
-            Toast.makeText(baseContext, getString(R.string.export_failed), Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        Log.i(TAG, "Import from $uri starts.")
-        var isSuccess = false
-        try {
-            val inputStream = contentResolver.openInputStream(uri)
-            if (null != inputStream) {
-                inputStream.use { ins ->
-                    val csvImporter = CSVImporter()
-                    csvImporter.import(ins)
-                }
-                isSuccess = true
+    private fun doImport(uri: Uri) {
+        Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
+        model!!.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
+            val id = if (null == errorMessage) {
+                R.string.import_succeeded
             } else {
-                Log.e(TAG, "Import failed: Unable to open input stream.")
+                Log.e(TAG, "CSV import failed: $errorMessage")
+                R.string.import_failed
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Import failed: $e")
+            Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
         }
-        val id = if (isSuccess) R.string.import_succeeded else R.string.import_failed
-        Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

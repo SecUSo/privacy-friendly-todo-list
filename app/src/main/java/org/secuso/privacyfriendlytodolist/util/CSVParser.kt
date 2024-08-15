@@ -1,4 +1,4 @@
-package org.secuso.privacyfriendlytodolist.exportimport
+package org.secuso.privacyfriendlytodolist.util
 
 import java.io.InputStream
 

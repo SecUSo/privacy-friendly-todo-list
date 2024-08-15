@@ -1,5 +1,6 @@
-package org.secuso.privacyfriendlytodolist.exportimport
+package org.secuso.privacyfriendlytodolist.model.impl
 
+import org.secuso.privacyfriendlytodolist.util.CSVParser
 import java.io.InputStream
 
 class CSVImporter {
