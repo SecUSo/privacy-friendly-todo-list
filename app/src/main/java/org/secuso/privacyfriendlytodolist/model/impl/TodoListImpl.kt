@@ -128,21 +128,7 @@ class TodoListImpl : BaseTodoImpl, TodoList {
                 }
             }
         }
-
-
-        /*
-
-        long minDeadLine = -1;
-        if(tasks.size() > 0 ) {
-
-            minDeadLine = tasks.get(0).getDeadline();
-            for(int i=1; i<tasks.size(); i++) {
-                long possNewDeadline = tasks.get(i).getDeadline();
-                if (possNewDeadline > 0 && possNewDeadline < minDeadLine)
-                    minDeadLine = possNewDeadline;
-            }
-
-        } */return minDeadLine
+        return minDeadLine
     }
 
     override fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors {

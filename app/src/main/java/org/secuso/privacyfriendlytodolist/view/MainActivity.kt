@@ -276,7 +276,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e(TAG, "CSV import failed: $errorMessage")
                 R.string.import_failed
             }
-            Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
+
+            model!!.getAllToDoLists { allTodoLists ->
+                todoLists = allTodoLists
+                showHints()
+                addTodoListsToNavigationMenu()
+                showAllTasks()
+
+                Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -327,7 +335,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun resetApp() {
                     PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit().clear().apply()
-                    model!!.deleteAllData(null, null)
+                    model!!.deleteAllData()
                     val intent = Intent(this@MainActivity, MainActivity::class.java)
                     dialog.dismiss()
                     startActivity(intent)

@@ -1,6 +1,6 @@
 package org.secuso.privacyfriendlytodolist.util
 
-import java.io.InputStream
+import java.io.Reader
 
 class CSVParser {
     private val fieldSeparator = ','
@@ -12,16 +12,13 @@ class CSVParser {
         POTENTIAL_END_OF_ESC_SEQ
     }
 
-    fun parse(inputStream: InputStream): List<List<String>> {
-        val lines = mutableListOf<List<String>>()
-        inputStream.bufferedReader().use { br ->
-            var line = br.readLine()
-            while (null != line) {
-                lines.add(parseLine(line))
-                line = br.readLine()
-            }
+    fun parse(reader: Reader): List<List<String>> {
+        val rows = mutableListOf<List<String>>()
+        reader.forEachLine { line ->
+            val row = parseLine(line)
+            rows.add(row)
         }
-        return lines
+        return rows
     }
 
     private fun parseLine(line: String): List<String> {

@@ -4,20 +4,33 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.CSVBuilder
-import java.io.OutputStream
+import java.io.Writer
 
 class CSVExporter {
-    private val csvBuilder = CSVBuilder()
     private var hasAutoProgress = false
+    private lateinit var csvBuilder: CSVBuilder
 
-    fun export(todoLists:  List<TodoList>, todoTasks: List<TodoTask>, hasAutoProgress: Boolean, outputStream: OutputStream) {
+    private fun initialize(hasAutoProgress: Boolean, writer: Writer) {
         this.hasAutoProgress = hasAutoProgress
-        csvBuilder.reset()
-        createHeading()
+        csvBuilder = CSVBuilder(writer)
+    }
 
+    fun export(todoLists: List<TodoList>, todoTasks: List<TodoTask>,
+               hasAutoProgress: Boolean, writer: Writer) {
+        initialize(hasAutoProgress, writer)
+        createHeading()
+        exportTasks(todoLists, todoTasks)
+        exportLists(todoLists)
+    }
+
+    private fun exportTasks(todoLists: List<TodoList>, todoTasks: List<TodoTask>) {
         for (todoTask in todoTasks) {
-            val todoList = todoLists.find { list ->
-                list.getId() == todoTask.getListId()
+            var todoList: TodoList? = null
+            val todoListId = todoTask.getListId()
+            if (null != todoListId) {
+                todoList = todoLists.find { list ->
+                    list.getId() == todoListId
+                }
             }
             if (todoTask.getSubtasks().isEmpty()) {
                 createRow(todoList, todoTask)
@@ -27,17 +40,12 @@ class CSVExporter {
                 }
             }
         }
+    }
 
+    private fun exportLists(todoLists: List<TodoList>) {
         for (todoList in todoLists) {
             if (todoList.getTasks().isEmpty()) {
                 createRow(todoList)
-            }
-        }
-
-        val csv = csvBuilder.getCSV()
-        outputStream.use { os ->
-            os.bufferedWriter().use { bw ->
-                bw.write(csv)
             }
         }
     }
@@ -67,7 +75,8 @@ class CSVExporter {
         csvBuilder.startNewRow()
     }
 
-    private fun createRow(todoList: TodoList? = null, todoTask: TodoTask? = null, todoSubtask: TodoSubtask? = null) {
+    private fun createRow(todoList: TodoList? = null, todoTask: TodoTask? = null,
+                          todoSubtask: TodoSubtask? = null) {
         if (null != todoList) {
             csvBuilder.addField(todoList.getId())
             csvBuilder.addField(todoList.getName())
@@ -82,7 +91,6 @@ class CSVExporter {
             csvBuilder.addField(todoTask.getName())
             csvBuilder.addTimeField(todoTask.getCreationTime())
             csvBuilder.addTimeField(todoTask.getDoneTime())
-            csvBuilder.addField(todoTask.isDone().toString())
             csvBuilder.addField(todoTask.getListPosition())
             csvBuilder.addField(todoTask.getDescription())
             csvBuilder.addTimeField(todoTask.getDeadline())
@@ -91,24 +99,25 @@ class CSVExporter {
             csvBuilder.addField(todoTask.getProgress(hasAutoProgress))
             csvBuilder.addField(todoTask.getPriority().toString())
         } else {
-            for (i in 1..12) {
+            for (i in 1..11) {
                 csvBuilder.addEmptyField()
             }
         }
-
 
         if (null != todoSubtask) {
             csvBuilder.addField(todoSubtask.getId())
             csvBuilder.addField(todoSubtask.getName())
             csvBuilder.addTimeField(todoSubtask.getDoneTime())
-            csvBuilder.addField(todoSubtask.isDone().toString())
         } else {
-            for (i in 1..4) {
+            for (i in 1..3) {
                 csvBuilder.addEmptyField()
             }
         }
 
-
         csvBuilder.startNewRow()
+    }
+
+    companion object {
+        const val COLUMN_COUNT = 16
     }
 }

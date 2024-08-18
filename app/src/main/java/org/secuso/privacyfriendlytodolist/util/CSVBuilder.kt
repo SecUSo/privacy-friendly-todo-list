@@ -1,26 +1,19 @@
 package org.secuso.privacyfriendlytodolist.util
 
+import java.io.Writer
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-class CSVBuilder {
-    private val fieldSeparator = ','
-    private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val sb = StringBuilder()
+class CSVBuilder(private val writer: Writer) {
     private var isFirstFieldInRow = true
-
-    fun reset() {
-        sb.clear()
-        isFirstFieldInRow = true
-    }
 
     private fun addFieldSeparator() {
         if (isFirstFieldInRow) {
             isFirstFieldInRow = false
         } else {
-            sb.append(fieldSeparator)
+            writer.write(FIELD_SEPARATOR)
         }
     }
 
@@ -30,7 +23,7 @@ class CSVBuilder {
 
     fun addField(content: Int) {
         addFieldSeparator()
-        sb.append(content)
+        writer.write(content.toString())
     }
 
     fun addField(content: String) {
@@ -40,28 +33,25 @@ class CSVBuilder {
             escapedContent = escapedContent.replace("\"", "\"\"")
             escapedContent = "\"" + escapedContent + "\""
         }
-        sb.append(escapedContent)
+        writer.write(escapedContent)
     }
 
     fun addTimeField(time: Long) {
         addFieldSeparator()
         if (time > 0) {
             val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
-            val dateTimeString = dateTimeFormat.format(dateTime)
-            sb.append(dateTimeString)
+            val dateTimeString = DATE_TIME_FORMAT.format(dateTime)
+            writer.write(dateTimeString)
         }
     }
 
     fun startNewRow() {
-        sb.appendLine()
+        writer.appendLine()
         isFirstFieldInRow = true
     }
 
-    fun getCSV(): String {
-        return sb.toString()
-    }
-
-    override fun toString(): String {
-        return sb.toString()
+    companion object {
+        val DATE_TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+        const val FIELD_SEPARATOR = ","
     }
 }
