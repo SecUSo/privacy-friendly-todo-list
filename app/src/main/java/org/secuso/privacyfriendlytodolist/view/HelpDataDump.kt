@@ -25,37 +25,27 @@ import org.secuso.privacyfriendlytodolist.R
  * This class handles the FAQ-style help menu.
  */
 class HelpDataDump(private val context: Context) {
-    val dataGeneral: LinkedHashMap<String, List<String>>
-        get() {
-            val expandableListDetail = LinkedHashMap<String, List<String>>()
+    /** Using LinkedHashMap to keep order of groups. */
+    private val data = LinkedHashMap<String, List<String>>()
 
-            val general: MutableList<String> = ArrayList()
-            general.add(context.resources.getString(R.string.help_intro))
-            expandableListDetail[context.resources.getString(R.string.help_overview_heading)] = general
+    val dataGeneral: Map<String, List<String>>
+        get() = data
 
-            val features: MutableList<String> = ArrayList()
-            features.add(context.resources.getString(R.string.help_todo_lists))
-            features.add(context.resources.getString(R.string.help_subtasks))
-            features.add(context.resources.getString(R.string.help_deadline_reminder))
-            expandableListDetail[context.resources.getString(R.string.help_group_lists)] = features
+    init {
+        addGroup(R.string.help_overview_heading, R.string.help_intro)
+        addGroup(R.string.help_group_lists, R.string.help_todo_lists, R.string.help_subtasks, R.string.help_deadline_reminder)
+        addGroup(R.string.help_group_app, R.string.help_pin, R.string.help_sound)
+        addGroup(R.string.help_group_privacy, R.string.help_permissions)
+        addGroup(R.string.help_group_data_backup, R.string.help_data_backup)
+        addGroup(R.string.help_group_export_import, R.string.help_export, R.string.help_import)
+        addGroup(R.string.help_group_widget, R.string.help_widget)
+    }
 
-            val settings: MutableList<String> = ArrayList()
-            settings.add(context.resources.getString(R.string.help_pin))
-            settings.add(context.resources.getString(R.string.help_sound))
-            expandableListDetail[context.resources.getString(R.string.help_group_app)] = settings
-
-            val permissions: MutableList<String> = ArrayList()
-            permissions.add(context.resources.getString(R.string.help_permissions))
-            expandableListDetail[context.resources.getString(R.string.help_group_privacy)] = permissions
-
-            val dataBackup: MutableList<String> = ArrayList()
-            dataBackup.add(context.resources.getString(R.string.help_data_backup))
-            expandableListDetail[context.resources.getString(R.string.help_group_data_backup)] = dataBackup
-
-            val widget: MutableList<String> = ArrayList()
-            widget.add(context.resources.getString(R.string.help_widget))
-            expandableListDetail["Widget"] = widget
-
-            return expandableListDetail
+    private fun addGroup(groupId: Int, vararg entryIds: Int) {
+        val group = ArrayList<String>()
+        for (entryId in entryIds) {
+            group.add(context.resources.getString(entryId))
         }
+        data[context.resources.getString(groupId)] = group
+    }
 }

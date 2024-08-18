@@ -19,7 +19,6 @@ package org.secuso.privacyfriendlytodolist.model
 import android.content.Context
 import android.os.Handler
 import kotlinx.coroutines.CoroutineScope
-import org.secuso.privacyfriendlytodolist.model.impl.ModelServicesImpl
 import org.secuso.privacyfriendlytodolist.model.impl.TodoListImpl
 import org.secuso.privacyfriendlytodolist.model.impl.TodoSubtaskImpl
 import org.secuso.privacyfriendlytodolist.model.impl.TodoTaskImpl
@@ -37,7 +36,7 @@ object Model {
      */
     @JvmStatic
     fun createServices(context: Context, coroutineScope: CoroutineScope, resultHandler: Handler): ModelServices {
-        return ModelServicesImpl(context, coroutineScope, resultHandler)
+        return ModelServices(context, coroutineScope, resultHandler)
     }
 
     @JvmStatic

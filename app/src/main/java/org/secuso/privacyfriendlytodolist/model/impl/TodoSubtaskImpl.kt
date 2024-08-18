@@ -94,6 +94,10 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         return -1L != data.doneTime
     }
 
+    override fun setDoneTime(doneTime: Long) {
+        data.doneTime = doneTime
+    }
+
     override fun getDoneTime(): Long {
         return data.doneTime
     }

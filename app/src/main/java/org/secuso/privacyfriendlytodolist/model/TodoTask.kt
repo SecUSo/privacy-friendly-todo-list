@@ -81,6 +81,7 @@ interface TodoTask : BaseTodo, Parcelable {
 
     fun setId(id: Int)
     fun getId(): Int
+    fun setCreationTime(creationTime: Long)
     fun getCreationTime(): Long
     fun setName(name: String)
     fun getName(): String
@@ -132,6 +133,7 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
+    fun setDoneTime(doneTime: Long)
     fun getDoneTime(): Long
 
     /**

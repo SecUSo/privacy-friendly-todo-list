@@ -87,7 +87,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         get() = (sortType and SortTypes.PRIORITY.value) == 1
     private val filteredTasks: MutableList<TodoTask> = ArrayList() // data after filtering process
     private val priorityBarPositions = HashMap<TodoTask.Priority, Int>()
-    private var listNames = HashMap<Int, String>(0)
+    private var listNames: Map<Int, String> = HashMap(0)
 
     init {
         val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS")

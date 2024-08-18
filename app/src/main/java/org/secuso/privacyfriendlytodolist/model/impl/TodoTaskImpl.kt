@@ -95,6 +95,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.id
     }
 
+    override fun setCreationTime(creationTime: Long) {
+        data.creationTime = creationTime
+    }
+
     override fun getCreationTime(): Long {
         return data.creationTime
     }
@@ -257,6 +261,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun isDone(): Boolean {
         return -1L != data.doneTime
+    }
+
+    override fun setDoneTime(doneTime: Long) {
+        data.doneTime = doneTime
     }
 
     override fun getDoneTime(): Long {

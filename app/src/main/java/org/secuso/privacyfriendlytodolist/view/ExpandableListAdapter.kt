@@ -15,7 +15,7 @@ import org.secuso.privacyfriendlytodolist.R
  * Helper for HelpActivity, creating a FAQ-style layout
  */
 class ExpandableListAdapter(private val context: Context, private val expandableListTitle: List<String>,
-    private val expandableListDetail: HashMap<String, List<String>>) : BaseExpandableListAdapter() {
+    private val expandableListDetail: Map<String, List<String>>) : BaseExpandableListAdapter() {
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         return expandableListDetail[expandableListTitle[listPosition]]!![expandedListPosition]
     }
