@@ -45,8 +45,7 @@
     <string name="help_pin_title">Contraseña</string>
     <string name="help_pin">Abrir los ajustes  para instalar la contraseña. La contraseña tiene que contener 4 cifras. Hay que introducir la contraseña cada vez al abrir la aplicación.</string>
     <string name="help_group_privacy">Información sobre la privacidad</string>
-    <string name="help_permissions_title">Permisio RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
 
     <!-- About -->
     <string name="about">Sobre nosotros</string>

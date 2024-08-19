@@ -51,13 +51,16 @@
     <string name="help_pin">Im Einstellungsmenü kann eine mindestens vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem Start der App eingegeben werden.</string>
     <string name="help_sound">Zudem kann im Einstellungsmenü gewählt werden, ob beim Erscheinen einer Notification ein Benachrichtigungston abgespielt wird.</string>
     <string name="help_group_privacy">Privatsphäre</string>
-    <string name="help_permissions_title">Berechtigung RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte. Ansonsten verwendet die "To-Do Liste" kein Tracking, Werbung oder sonstige Berechtigungen, die Ihre Privatsphäre verletzen würden.</string>
+    <string name="help_privacy">Diese App enthält weder Tracking noch Werbung. Andere Berechtigungen als die unten aufgeführten werden nicht verwendet.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Aufgaben erinnert werden möchte.</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS: Diese Berechtigung wird benötigt, um Benachrichtigungen über anstehende Aufgaben anzuzeigen.</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: Diese Berechtigung wird benötigt, um Benachrichtigungen präzise zu einem bestimmten Zeitpunkt anzuzeigen.</string>
     <string name="help_group_data_backup">Datensicherung</string>
     <string name="help_data_backup">Sie können die separate Privacy Friendly Backup-App verwenden, um die Daten und Einstellungen dieser Anwendung zu sichern und wiederherzustellen. Dies kann auch verwendet werden, um Ihre Daten auf ein anderes Gerät zu übertragen.</string>
     <string name="help_group_export_import">Daten Export / Import</string>
     <string name="help_export">Die Daten dieser Anwendung können im CSV Format (comma separated values, encoding UTF-8) exportiert werden, um in anderen Anwendungen weiterverarbeitet zu werden.</string>
     <string name="help_import">Die Daten dieser Anwendung können aus einer Datei im CSV Format importiert werden. Das Format dieser Datei entspricht dem Format der CSV-Export-Datei.</string>
+    <string name="help_group_widget">Widget</string>
     <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App. Ein Tippen auf den Aktualisierungs-Button aktualisiert die Liste.</string>
 
     <!-- About -->
@@ -173,6 +176,10 @@
     <string name="set_pin">PIN festlegen</string>
     <string name="auto_progress">Fortschritt durch Teilaufgaben</string>
     <string name="notify">Benachrichtigungston</string>
+
+    <!-- Permission request dialog -->
+    <string name="dialog_need_permission_exact_alarm_title">Genaue Erinnerungen aktivieren</string>
+    <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung, um Erinnerungen zeitlich genau zu melden wird benötigt. Andernfalls erfolgen die Erinnerungen zeitlich ungenau.</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Termin rückt näher: %1$s</string>

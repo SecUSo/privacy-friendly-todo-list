@@ -20,11 +20,13 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
-import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
@@ -36,23 +38,34 @@ import kotlin.time.toDuration
 object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
     private val TAG = LogTag.create(this::class.java)
-    private var model: ModelServices? = null
     private var manager: AlarmManager? = null
-
-    private fun getModel(context: Context): ModelServices {
-        if (model == null) {
-            val viewModel = CustomViewModel(context)
-            model = viewModel.model
-        }
-        return model!!
-    }
-
 
     private fun getManager(context: Context): AlarmManager {
         if (manager == null) {
             manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         }
         return manager!!
+    }
+
+    fun checkForPermissions(context: Context) {
+        val sysAlarmMgr = getManager(context)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            Log.d(TAG, "SDK version is ${Build.VERSION.SDK_INT}. Exact alarms can be scheduled always.")
+        } else if (sysAlarmMgr.canScheduleExactAlarms()) {
+            Log.d(TAG, "Permission to schedule exact alarms is granted.")
+        } else {
+            Log.i(TAG, "Requesting permission to schedule exact alarms.")
+            AlertDialog.Builder(context)
+                .setMessage(R.string.dialog_need_permission_exact_alarm_message)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    context.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                }
+                .setNegativeButton(R.string.no) { _, _ ->
+                }
+                .setTitle(R.string.dialog_need_permission_exact_alarm_title)
+                .create()
+                .show()
+        }
     }
 
     /**
@@ -96,7 +109,8 @@ object AlarmMgr {
                         "${Helper.createCanonicalDateTimeString(reminderTime)}.")
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setChanged()
-                getModel(context).saveTodoTaskInDb(todoTask) {
+                val viewModel = CustomViewModel(context)
+                viewModel.model.saveTodoTaskInDb(todoTask) {
                     Model.notifyDataChangedFromOutside(context)
                 }
             }
@@ -119,9 +133,9 @@ object AlarmMgr {
             return null
         }
 
-        setAlarm(context, alarmId, alarmTime)
+        val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
         var timestamp = Helper.createCanonicalDateTimeString(alarmTime)
-        Log.i(TAG, "Alarm set for $todoTask at $timestamp which is in $duration ($logDetail).")
+        Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $timestamp which is in $duration ($logDetail).")
         timestamp = Helper.createLocalizedDateTimeString(alarmTime)
         val message = context.getString(R.string.alarm_set_for_task, timestamp, duration.toString(), todoTask.getName())
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -132,15 +146,24 @@ object AlarmMgr {
         // Use task's database ID as unique alarm ID.
         cancelAlarmForTask(context, todoTaskId)
 
-        setAlarm(context, todoTaskId, alarmTime)
-        Log.i(TAG, "Alarm set for task $todoTaskId at ${Helper.createCanonicalDateTimeString(alarmTime)}.")
+        val kindOfAlarm = setAlarm(context, todoTaskId, alarmTime)
+        Log.i(TAG, "$kindOfAlarm alarm set for task $todoTaskId at ${Helper.createCanonicalDateTimeString(alarmTime)}.")
         return todoTaskId
     }
 
-    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long) {
+    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
         // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
-        getManager(context)[AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime)] = pendingIntent
+        val sysAlarmMgr = getManager(context)
+        // On targets with SDK_INT < VERSION_CODES.S exact alarms can always be scheduled.
+        // On targets with SDK_INT >= VERSION_CODES.S exact alarms can be scheduled if user grants permissions.
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || sysAlarmMgr.canScheduleExactAlarms()) {
+            sysAlarmMgr.setExact(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+            "Exact"
+        } else {
+            sysAlarmMgr.set(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+            "Inexact"
+        }
     }
 
     private fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {

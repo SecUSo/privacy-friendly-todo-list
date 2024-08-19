@@ -51,8 +51,10 @@
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with at least 4 digits. You are asked for it every time you start the application.</string>
     <string name="help_sound">Moreover you can choose if a notification sound should be played by receiving a notification.</string>
     <string name="help_group_privacy">Privacy Info</string>
-    <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline. Tracking, advertisement or other permissions do not exist.</string>
+    <string name="help_privacy">This app contains no tracking or advertising. No permissions other than those listed below are used.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline.</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS: This permission allows the app to show reminders for approaching tasks.</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: This permission allows the app to show reminders with exact timing.</string>
     <string name="help_group_data_backup">Data Backup</string>
     <string name="help_data_backup">You can use the separate Privacy Friendly Backup app to backup and restore this application\'s data and settings. This can also be used to transfer your data to another device.</string>
     <string name="help_group_export_import">Data Export / Import</string>
@@ -192,6 +194,10 @@
     <string name="auto_progress">Progress by subtasks</string>
     <string name="notify">Enable notification sound</string>
 
+    <!-- Permission request dialog -->
+    <string name="dialog_need_permission_exact_alarm_title">Enable exact reminders</string>
+    <string name="dialog_need_permission_exact_alarm_message">Permission to schedule exact reminders is needed. Otherwise reminders are inexact.</string>
+
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
     <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
@@ -233,7 +239,7 @@
     <string name="tutorial">Tutorial</string>
 
     <string name="slide1_heading">Welcome!</string>
-    <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app does not use any permissions.</string>
+    <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app contains no tracking or advertising.</string>
 
     <string name="slide2_heading">Lists</string>
     <string name="slide2_text">You can manage your tasks in labeled To-Do lists.</string>

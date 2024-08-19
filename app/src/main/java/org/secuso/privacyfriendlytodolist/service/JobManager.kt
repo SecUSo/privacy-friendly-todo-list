@@ -40,7 +40,11 @@ object JobManager {
     private var jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
 
     fun processAutoStart(context: Context): Int {
-        return scheduleJob(context, AutoStartJob::class.java)
+        return scheduleJob(context, ReloadAlarmsJob::class.java)
+    }
+
+    fun processAlarmPermissionStateChanged(context: Context): Int {
+        return scheduleJob(context, ReloadAlarmsJob::class.java)
     }
 
     fun processAlarm(context: Context, alarmId: Int): Int {

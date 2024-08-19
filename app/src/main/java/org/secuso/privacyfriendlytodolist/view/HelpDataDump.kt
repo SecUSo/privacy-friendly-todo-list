@@ -35,7 +35,10 @@ class HelpDataDump(private val context: Context) {
         addGroup(R.string.help_overview_heading, R.string.help_intro)
         addGroup(R.string.help_group_lists, R.string.help_todo_lists, R.string.help_subtasks, R.string.help_deadline_reminder)
         addGroup(R.string.help_group_app, R.string.help_pin, R.string.help_sound)
-        addGroup(R.string.help_group_privacy, R.string.help_permissions)
+        addGroup(R.string.help_group_privacy, R.string.help_privacy,
+            R.string.help_permission_receive_boot_completed,
+            R.string.help_permission_post_notifications,
+            R.string.help_permission_schedule_exact_alarm)
         addGroup(R.string.help_group_data_backup, R.string.help_data_backup)
         addGroup(R.string.help_group_export_import, R.string.help_export, R.string.help_import)
         addGroup(R.string.help_group_widget, R.string.help_widget)

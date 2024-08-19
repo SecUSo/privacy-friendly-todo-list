@@ -46,8 +46,7 @@
     <string name="help_pin_title">PIN 保護</string>
     <string name="help_pin">設定メニューを開いてアプリケーションの PIN 保護を設定します。 PIN は 4 桁の数字でなければなりません。 アプリケーションを起動するたびに入力を求められます。</string>
     <string name="help_group_privacy">プライバシー情報</string>
-    <string name="help_permissions_title">アクセス許可 RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">このアクセス許可は、ユーザーに予定されている期限を知らせたい場合に、デバイスの起動直後にアプリがチェックできるようにします。</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: このアクセス許可は、ユーザーに予定されている期限を知らせたい場合に、デバイスの起動直後にアプリがチェックできるようにします。</string>
 
     <!-- About -->
     <string name="about">アプリについて</string>

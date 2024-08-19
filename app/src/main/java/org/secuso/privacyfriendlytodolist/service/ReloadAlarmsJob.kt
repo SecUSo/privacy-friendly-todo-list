@@ -32,7 +32,7 @@ import org.secuso.privacyfriendlytodolist.util.NotificationMgr
  * JobManager avoids ID collision by design. See JobManager#JOB_SCHEDULER_JOB_ID_RANGE_BEGIN.
  */
 @SuppressLint("SpecifyJobSchedulerIdRange")
-class AutoStartJob : JobBase() {
+class ReloadAlarmsJob : JobBase() {
 
     override fun onStartJob(params: JobParameters): Boolean {
         super.onStartJob(params)

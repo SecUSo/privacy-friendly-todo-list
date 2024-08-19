@@ -46,8 +46,7 @@
     <string name="help_pin_title">PIN bescherming</string>
     <string name="help_pin">Open het instellingsmenu om PIN bescherming in te stellen. De PIN moet een nummer zijn met 4 cijfers. Je zal ernaar gevraagd worden elke keer je de applicatie opent.</string>
     <string name="help_group_privacy">Privacy Info</string>
-    <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
 
     <!-- About -->
     <string name="about">Over</string>

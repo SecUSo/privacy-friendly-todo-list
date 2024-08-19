@@ -38,7 +38,6 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
-import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoTask
 import org.secuso.privacyfriendlytodolist.model.ModelObserver
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
@@ -774,6 +773,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     showHints()
                     // show List if created in certain list, else show all tasks
                     showTasksOfListOrAllTasks(todoList?.getId())
+                    if (todoTask.getReminderTime() != -1L) {
+                        AlarmMgr.checkForPermissions(this)
+                    }
                 }
             }
             pt.show()
@@ -905,7 +907,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun updateTodoFromPomodoro() {
-        val todoRe = createNewTodoTask()
+        val todoRe = Model.createNewTodoTask()
         todoRe.setChangedFromPomodoro()
         //todoRe.setPriority(TodoTask.Priority.HIGH);
         todoRe.setName(intent.getStringExtra("todo_name")!!)
