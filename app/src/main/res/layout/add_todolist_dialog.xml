@@ -23,6 +23,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
+        android:minHeight="48dip"
         android:hint="@string/name"
         android:inputType="text"
         android:autofillHints="" />
@@ -32,13 +33,34 @@
         android:layout_height="1dp"
         android:background="@color/lightgrey" />
 
+
+    <Button
+        android:id="@+id/bt_todo_list_export"
+        style="?android:attr/buttonBarButtonStyle"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="48dip"
+        android:text="@string/export_list" />
+
+    <Button
+        android:id="@+id/bt_todo_list_delete"
+        style="?android:attr/buttonBarButtonStyle"
+        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:minHeight="48dip"
+        android:text="@string/delete_list" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/lightgrey" />
 
     <LinearLayout
-        android:layout_width="315dp"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:layout_gravity="end">
 
@@ -59,15 +81,6 @@
             android:layout_weight="1"
             android:minHeight="48dip"
             android:text="@string/ok" />
-
-        <Button
-            android:id="@+id/bt_todo_list_delete"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="48dip"
-            android:text="@string/delete" />
 
     </LinearLayout>
 

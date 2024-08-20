@@ -79,6 +79,7 @@
     <string name="no_next_deadline">Keine Termine</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
+    <string name="export_list">To-Do Liste exportieren</string>
     <string name="delete_list">To-Do Liste löschen</string>
     <string name="delete_list_feedback">%1$s gelöscht</string>
 

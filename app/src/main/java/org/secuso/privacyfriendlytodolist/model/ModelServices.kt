@@ -25,8 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.secuso.privacyfriendlytodolist.model.impl.CSVExporter
-import org.secuso.privacyfriendlytodolist.model.impl.CSVImporter
 import org.secuso.privacyfriendlytodolist.model.impl.ModelServicesImpl
 import org.secuso.privacyfriendlytodolist.util.LogTag
 
@@ -184,6 +182,15 @@ class ModelServices(
         }
     }
 
+    fun getAllToDoTasksOfList(todoListId: Int,
+                              deliveryOption: DeliveryOption = DeliveryOption.POST,
+                              resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val todoTasks = services.getAllToDoTasksOfList(todoListId)
+            dispatchResult(deliveryOption, resultConsumer, todoTasks)
+        }
+    }
+
     fun getRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
@@ -276,11 +283,11 @@ class ModelServices(
         }
     }
 
-    fun exportCSVData(hasAutoProgress: Boolean, csvDataUri: Uri,
+    fun exportCSVData(listId: Int?, hasAutoProgress: Boolean, csvDataUri: Uri,
                       deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<String?>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val errorMessage = services.exportCSVData(hasAutoProgress, csvDataUri)
+            val errorMessage = services.exportCSVData(listId, hasAutoProgress, csvDataUri)
             dispatchResult(deliveryOption, resultConsumer, errorMessage)
         }
     }

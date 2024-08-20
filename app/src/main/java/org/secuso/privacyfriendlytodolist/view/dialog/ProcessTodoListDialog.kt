@@ -34,7 +34,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
  * Defines the dialog that lets the user create a list
  */
 class ProcessTodoListDialog(context: Context) :
-    FullScreenDialog<ResultCallback<TodoList?>>(context, R.layout.add_todolist_dialog) {
+    FullScreenDialog<ProcessTodoListCallback>(context, R.layout.add_todolist_dialog) {
     private lateinit var todoList: TodoList
     private var editExistingList = false
 
@@ -48,8 +48,9 @@ class ProcessTodoListDialog(context: Context) :
 
         val tvTitle = findViewById<TextView>(R.id.tv_todo_list_title)
         val etName = findViewById<EditText>(R.id.et_todo_list_name)
-        val buttonOkay = findViewById<Button>(R.id.bt_todo_list_ok)
+        val buttonExport = findViewById<Button>(R.id.bt_todo_list_export)
         val buttonDelete = findViewById<Button>(R.id.bt_todo_list_delete)
+        val buttonOkay = findViewById<Button>(R.id.bt_todo_list_ok)
         val buttonCancel = findViewById<Button>(R.id.bt_todo_list_cancel)
 
         // Request focus for first input field.
@@ -61,8 +62,19 @@ class ProcessTodoListDialog(context: Context) :
             tvTitle.text = context.getString(R.string.edit_todo_list)
             etName.setText(todoList.getName())
             etName.selectAll()
+
+            buttonExport.setOnClickListener {
+                getDialogCallback().onFinish(todoList, ProcessTodoListCallback.Action.EXPORT)
+                dismiss()
+            }
+
+            buttonDelete.setOnClickListener {
+                getDialogCallback().onFinish(todoList, ProcessTodoListCallback.Action.DELETE)
+                dismiss()
+            }
         } else {
             todoList = Model.createNewTodoList()
+            buttonExport.visibility = View.GONE
             buttonDelete.visibility = View.GONE
         }
 
@@ -76,15 +88,10 @@ class ProcessTodoListDialog(context: Context) :
                 // check if real changes were made
                 if (todoList.getName() != listName) {
                     todoList.setName(listName)
-                    getDialogCallback().onFinish(todoList)
+                    getDialogCallback().onFinish(todoList, ProcessTodoListCallback.Action.APPLY)
                 }
                 dismiss()
             }
-        }
-
-        buttonDelete.setOnClickListener {
-            getDialogCallback().onFinish(null)
-            dismiss()
         }
 
         buttonCancel.setOnClickListener {

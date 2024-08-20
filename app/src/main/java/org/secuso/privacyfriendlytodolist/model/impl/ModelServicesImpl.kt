@@ -144,6 +144,13 @@ class ModelServicesImpl(private val context: Context) {
         return data as MutableList<TodoTask>
     }
 
+    suspend fun getAllToDoTasksOfList(listId: Int): MutableList<TodoTask> {
+        val dataArray = db.getTodoTaskDao().getByListIdNotInRecycleBin(listId)
+        val data = loadTasksSubtasks(false, *dataArray)
+        @Suppress("UNCHECKED_CAST")
+        return data as MutableList<TodoTask>
+    }
+
     suspend fun getRecycleBin(): MutableList<TodoTask> {
         val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
         val data = loadTasksSubtasks(true, *dataArray)
@@ -277,9 +284,17 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
-    suspend fun exportCSVData(hasAutoProgress: Boolean, csvDataUri: Uri): String? {
-        val todoLists = getAllToDoLists()
-        val todoTasks = getAllToDoTasks()
+    suspend fun exportCSVData(listId: Int?, hasAutoProgress: Boolean, csvDataUri: Uri): String? {
+        val todoLists: MutableList<TodoList>
+        val todoTasks: MutableList<TodoTask>
+        if (null == listId) {
+            todoLists = getAllToDoLists()
+            todoTasks = getAllToDoTasks()
+        } else {
+            val todoList = getToDoListById(listId) ?: return "Todo list with ID $listId not found."
+            todoLists = mutableListOf(todoList)
+            todoTasks = getAllToDoTasksOfList(listId)
+        }
         val outputStream: OutputStream?
         try {
             outputStream = context.contentResolver.openOutputStream(csvDataUri, "wt")
