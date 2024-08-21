@@ -113,12 +113,6 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         view.setOnClickPendingIntent(R.id.root_layout, pendingIntent)
 
-        // Intent to trigger the update of the widget by clicking on the update icon.
-        intent = createWidgetUpdateIntent(context, appWidgetId)
-        pendingIntent = PendingIntent.getBroadcast(context, uniqueRequestCode, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        view.setOnClickPendingIntent(R.id.bt_widget_update, pendingIntent)
-
         view.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget)
         if (null != title) {
             view.setTextViewText(R.id.widget_title, title)
