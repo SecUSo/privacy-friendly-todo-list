@@ -63,7 +63,7 @@
     <string name="no_next_deadline">No hay fechas límite</string>
     <string name="add_list_feedback">%1$s agregado</string>
     <string name="edit_todo_list">Editar la lista de tareas</string>
-    <string name="delete_list">Eliminar la lista de tareas</string>
+    <string name="delete_list">Eliminar la lista</string>
     <string name="delete_list_feedback">%1$s eliminado</string>
 
     <!-- Create/Edit To-Do list dialog -->

@@ -13,7 +13,7 @@
     <string name="show_all_tasks">Show all tasks</string>
     <string name="calendar_view">Calendar</string>
     <string name="settings">Settings</string>
-    <string name="export_tasks">Export tasks</string>
+    <string name="export_all_tasks">Export all tasks</string>
     <string name="import_tasks">Import tasks</string>
     <string name="other">Other</string>
     <string name="help">Help</string>
@@ -82,8 +82,8 @@
     <string name="no_next_deadline">No upcoming deadline</string>
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
-    <string name="export_list">Export To-Do list</string>
-    <string name="delete_list">Delete To-Do list</string>
+    <string name="export_list">Export list</string>
+    <string name="delete_list">Delete list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
 
     <!-- Create/Edit To-Do list dialog -->

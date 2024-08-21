@@ -44,7 +44,7 @@
             android:id="@+id/nav_export"
             android:checkable="false"
             android:icon="@drawable/ic_import_export_black_24"
-            android:title="@string/export_tasks" />
+            android:title="@string/export_all_tasks" />
 
         <item
             android:id="@+id/nav_import"

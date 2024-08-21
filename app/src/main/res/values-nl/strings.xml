@@ -64,7 +64,7 @@
     <string name="no_next_deadline">Geen volgende deadline</string>
     <string name="add_list_feedback">%1$s toegevoegd</string>
     <string name="edit_todo_list">Bewerk To-Do lijst</string>
-    <string name="delete_list">Verwijder To-Do lijst</string>
+    <string name="delete_list">Verwijder lijst</string>
     <string name="delete_list_feedback">%1$s verwijderd</string>
 
     <!-- Create/Edit To-Do list dialog -->

@@ -64,7 +64,7 @@
     <string name="no_next_deadline">予定の期限はありません</string>
     <string name="add_list_feedback">%1$s を追加しました</string>
     <string name="edit_todo_list">To-Do リストを編集</string>
-    <string name="delete_list">To-Do リストを削除</string>
+    <string name="delete_list">リストを削除</string>
     <string name="delete_list_feedback">%1$s を削除しました</string>
 
     <!-- Create/Edit To-Do list dialog -->
