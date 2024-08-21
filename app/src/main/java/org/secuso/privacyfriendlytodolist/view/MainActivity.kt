@@ -627,12 +627,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val item = navMenu.add(R.id.drawer_group2, todoListId, 1, name)
             item.setCheckable(true)
             item.setIcon(R.drawable.ic_label_black_24dp)
-            val v = ImageButton(this, null, R.style.BorderlessButtonStyle)
-            v.setImageResource(R.drawable.ic_edit_black_24dp)
-            v.setOnClickListener { view ->
+            item.setActionView(R.layout.list_action_view)
+            val editButton: ImageButton = item.actionView!!.findViewById(R.id.image_button_edit)
+            editButton.setOnClickListener {
                 startEditListDialog(todoList)
             }
-            item.setActionView(v)
         }
     }
 
