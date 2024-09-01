@@ -25,9 +25,9 @@
     </group>
 
     <group android:checkableBehavior="single"
-        android:id="@+id/drawer_group2"
+        android:id="@+id/menu_group_todo_lists"
         android:orderInCategory="1">
-        <!-- Gets filled by Lists -->
+        <!-- Gets filled with to-do list items -->
     </group>
 
     <group android:checkableBehavior="single"

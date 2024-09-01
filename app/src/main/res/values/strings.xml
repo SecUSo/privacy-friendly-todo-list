@@ -82,6 +82,7 @@
     <string name="no_next_deadline">No upcoming deadline</string>
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
+    <string name="edit_list">Edit list</string>
     <string name="export_list">Export list</string>
     <string name="delete_list">Delete list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
@@ -106,8 +107,8 @@
     <string name="edit_todo_task">Edit To-Do task</string>
     <string name="deadline_dd">Deadline:</string>
     <string name="no_deadline">No Deadline</string>
-    <string name="edit_task">Edit To-Do Task</string>
-    <string name="delete_task">Delete To-Do Task</string>
+    <string name="edit_task">Edit task</string>
+    <string name="delete_task">Delete task</string>
     <string name="task_removed">Task put into recycle bin</string>
     <string name="deadline">Deadline</string>
     <string name="recurrence_pattern">Recurrence pattern</string>

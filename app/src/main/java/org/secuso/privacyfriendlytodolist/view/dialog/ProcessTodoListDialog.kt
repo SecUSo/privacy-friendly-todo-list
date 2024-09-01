@@ -18,7 +18,6 @@ package org.secuso.privacyfriendlytodolist.view.dialog
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -34,7 +33,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
  * Defines the dialog that lets the user create a list
  */
 class ProcessTodoListDialog(context: Context) :
-    FullScreenDialog<ProcessTodoListCallback>(context, R.layout.add_todolist_dialog) {
+    FullScreenDialog<ResultCallback<TodoList>>(context, R.layout.add_todolist_dialog) {
     private lateinit var todoList: TodoList
     private var editExistingList = false
 
@@ -48,8 +47,6 @@ class ProcessTodoListDialog(context: Context) :
 
         val tvTitle = findViewById<TextView>(R.id.tv_todo_list_title)
         val etName = findViewById<EditText>(R.id.et_todo_list_name)
-        val buttonExport = findViewById<Button>(R.id.bt_todo_list_export)
-        val buttonDelete = findViewById<Button>(R.id.bt_todo_list_delete)
         val buttonOkay = findViewById<Button>(R.id.bt_todo_list_ok)
         val buttonCancel = findViewById<Button>(R.id.bt_todo_list_cancel)
 
@@ -62,20 +59,8 @@ class ProcessTodoListDialog(context: Context) :
             tvTitle.text = context.getString(R.string.edit_todo_list)
             etName.setText(todoList.getName())
             etName.selectAll()
-
-            buttonExport.setOnClickListener {
-                getDialogCallback().onFinish(todoList, ProcessTodoListCallback.Action.EXPORT)
-                dismiss()
-            }
-
-            buttonDelete.setOnClickListener {
-                getDialogCallback().onFinish(todoList, ProcessTodoListCallback.Action.DELETE)
-                dismiss()
-            }
         } else {
             todoList = Model.createNewTodoList()
-            buttonExport.visibility = View.GONE
-            buttonDelete.visibility = View.GONE
         }
 
         buttonOkay.setOnClickListener {
@@ -88,7 +73,7 @@ class ProcessTodoListDialog(context: Context) :
                 // check if real changes were made
                 if (todoList.getName() != listName) {
                     todoList.setName(listName)
-                    getDialogCallback().onFinish(todoList, ProcessTodoListCallback.Action.APPLY)
+                    getDialogCallback().onFinish(todoList)
                 }
                 dismiss()
             }

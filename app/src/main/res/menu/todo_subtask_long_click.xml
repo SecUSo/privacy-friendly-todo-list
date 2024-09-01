@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/change_subtask" android:title="@string/edit_subtask"/>
+    <item android:id="@+id/edit_subtask" android:title="@string/edit_subtask"/>
     <item android:id="@+id/delete_subtask" android:title="@string/delete_subtask"/>
     <item android:id="@+id/work_subtask" android:title="@string/work_subtask" android:visible="false"/>
 </menu>
