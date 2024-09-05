@@ -68,7 +68,8 @@
     <string name="about">About</string>
     <string name="version_number">Version v%s</string>
     <string name="about_author">Authors:</string>
-    <string name="about_author_names" translatable="false">Sebastian Lutz, Dominik Püllen, Simon Breitfelder</string>
+    <!-- Using no-break-space character \u00A0 between first and last name. -->
+    <string name="about_author_names" translatable="false">Sebastian\u00A0Lutz, Dominik\u00A0Püllen, Simon\u00A0Breitfelder, Christian\u00A0Adams</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">In affiliation with</string>
     <string name="privacy_friendly">This application belongs to the group of Privacy Friendly Apps developed by Karlsruhe Institute of Technology. Sourcecode licensed under Apache license. Images copyright KIT and Google Inc.</string>
