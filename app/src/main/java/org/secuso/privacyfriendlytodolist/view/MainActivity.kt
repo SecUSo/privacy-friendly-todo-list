@@ -47,6 +47,7 @@ import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
@@ -60,6 +61,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ResultCallback
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
+import java.io.StringWriter
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -252,16 +254,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (intent.getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
             updateTodoFromPomodoro()
         }
-    }
-
-    private fun initiateExport(listId: Int? = null) {
-        exportListId = listId
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/comma-separated-values"
-            putExtra(Intent.EXTRA_TITLE, if (null == listId) "ToDo Data.csv" else "ToDo List.csv")
-        }
-        exportTasksLauncher.launch(intent)
     }
 
     private fun doExport(uri: Uri) {
@@ -467,8 +459,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
                 startActivity(intent)
             }
+            R.id.nav_share -> {
+                shareAllTasks()
+            }
             R.id.nav_export -> {
-                initiateExport()
+                initiateTaskExport()
             }
             R.id.nav_import -> {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -624,7 +619,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             item.setIcon(R.drawable.ic_label_black_24dp)
             item.setActionView(R.layout.list_action_view)
             val actionButton: ImageButton = item.actionView!!.findViewById(R.id.action_button)
-            actionButton.tag = todoList
+            actionButton.tag = todoList.getId()
             actionButton.setOnClickListener {
                 registerForContextMenu(actionButton)
                 openContextMenu(actionButton)
@@ -724,19 +719,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.setChecked(item.itemId == listId)
             }
         }
-        model!!.getToDoListById(listId) { todoList: TodoList? ->
-            if (null != todoList) {
-                toolbar?.setTitle(todoList.getName())
-                expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(
-                    this, model!!, todoList.getTasks(), false)
-                exLv!!.setAdapter(expandableTodoTaskAdapter)
-                exLv!!.setEmptyView(emptyView)
-                optionFab!!.visibility = View.VISIBLE
-                initFAB(todoList)
-            } else {
-                Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
-                showAllTasks()
-            }
+        val todoList = todoLists.find { currentTodoList ->
+            currentTodoList.getId() == listId
+        }
+        if (null != todoList) {
+            toolbar?.setTitle(todoList.getName())
+            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(
+                this, model!!, todoList.getTasks(), false)
+            exLv!!.setAdapter(expandableTodoTaskAdapter)
+            exLv!!.setEmptyView(emptyView)
+            optionFab!!.visibility = View.VISIBLE
+            initFAB(todoList)
+        } else {
+            Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
+            showAllTasks()
         }
     }
 
@@ -775,11 +771,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (pomodoroInstalled) {
                 menu.findItem(workItemId).setVisible(true)
             }
-        } else if (v.tag is TodoList) {
-            selectedTodoList = v.tag as TodoList
-            val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
-            menu.setHeaderView(menuHeader)
-            menuInflater.inflate(R.menu.todo_list_long_click, menu)
+        } else if (v.tag is Int) {
+            val selectedTodoListId = v.tag as Int
+            selectedTodoList = todoLists.find { currentTodoList ->
+                currentTodoList.getId() == selectedTodoListId
+            }
+            if (null != selectedTodoList) {
+                val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
+                menu.setHeaderView(menuHeader)
+                menuInflater.inflate(R.menu.todo_list_long_click, menu)
+            } else {
+                Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
+            }
         } else {
             Log.w(TAG, "Unhandled context menu owner: ${v.javaClass.simpleName}")
         }
@@ -794,10 +797,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
+            R.id.share_list -> {
+                val todoList = selectedTodoList
+                if (null != todoList) {
+                    shareList(todoList)
+                }
+            }
+
             R.id.export_list -> {
                 val todoList = selectedTodoList
                 if (null != todoList) {
-                    initiateExport(todoList.getId())
+                    initiateTaskExport(todoList.getId())
                 }
             }
 
@@ -808,45 +818,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
-            R.id.edit_subtask -> {
-                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
-                if (null != todoSubtask) {
-                    val dialog = ProcessTodoSubtaskDialog(this, todoSubtask)
-                    dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
-                        model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter: Int? ->
-                            expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                            Log.i(TAG, "Subtask altered")
-                        }
-                    })
-                    dialog.show()
-                }
-            }
-
-            R.id.delete_subtask -> {
-                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
-                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
-                if (null != todoTask && null != todoSubtask) {
-                    model!!.deleteTodoSubtask(todoSubtask) { counter: Int ->
-                        todoTask.getSubtasks().remove(todoSubtask)
-                        if (counter == 1) {
-                            Toast.makeText(baseContext, getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?")
-                        }
-                        expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                    }
-                }
-            }
-
             R.id.edit_task -> {
                 val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
                 if (null != todoTask) {
-                    var todoList: TodoList? = null
-                    for (currentTodoList in todoLists) {
-                        if (currentTodoList.getId() == todoTask.getListId()) {
-                            todoList = currentTodoList
-                            break
-                        }
+                    val todoList = todoLists.find { currentTodoList ->
+                        currentTodoList.getId() == todoTask.getListId()
                     }
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoList, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { todoTask2: TodoTask ->
@@ -857,6 +833,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         }
                     })
                     editTaskDialog.show()
+                }
+            }
+
+            R.id.share_task -> {
+                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
+                if (null != todoTask) {
+                    shareTask(todoTask)
                 }
             }
 
@@ -890,6 +873,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
+            R.id.edit_subtask -> {
+                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
+                if (null != todoSubtask) {
+                    val dialog = ProcessTodoSubtaskDialog(this, todoSubtask)
+                    dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
+                        model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter: Int? ->
+                            expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                            Log.i(TAG, "Subtask altered")
+                        }
+                    })
+                    dialog.show()
+                }
+            }
+
+            R.id.delete_subtask -> {
+                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
+                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
+                if (null != todoTask && null != todoSubtask) {
+                    model!!.deleteTodoSubtask(todoSubtask) { counter: Int ->
+                        todoTask.getSubtasks().remove(todoSubtask)
+                        if (counter == 1) {
+                            Toast.makeText(baseContext, getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?")
+                        }
+                        expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                    }
+                }
+            }
+
             R.id.work_subtask -> {
                 val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
                 if (null != todoSubtask) {
@@ -903,12 +916,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onContextItemSelected(item)
     }
 
+    private fun shareList(todoList: TodoList) {
+        val text = StringWriter()
+        val builder = MarkdownBuilder(text, getString(R.string.deadline))
+        builder.addList(todoList)
+        shareMarkdownText(text.toString())
+    }
+
     private fun deleteList(todoList: TodoList) {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setMessage(R.string.alert_list_delete)
         alertBuilder.setCancelable(true)
         alertBuilder.setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
-            todoLists.remove(todoList)
+            if (!todoLists.remove(todoList)) {
+                Log.w(TAG, "Unable to remove todo-list from list. todo-list not found.")
+            }
             model!!.deleteTodoList(todoList.getId()) { counter: Int ->
                 if (counter == 1) {
                     Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
@@ -930,6 +952,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             dialog.cancel()
         }
         alertBuilder.create().show()
+    }
+
+    private fun shareTask(todoTask: TodoTask) {
+        val text = StringWriter()
+        val builder = MarkdownBuilder(text, getString(R.string.deadline))
+        builder.addTask(todoTask)
+        shareMarkdownText(text.toString())
+    }
+
+    private fun shareAllTasks() {
+        model!!.getAllToDoTasks { todoTasks ->
+            val text = StringWriter()
+            val builder = MarkdownBuilder(text, getString(R.string.deadline))
+            for (todoTask in todoTasks) {
+                builder.addTask(todoTask)
+            }
+            shareMarkdownText(text.toString())
+        }
+    }
+
+    private fun shareMarkdownText(text: String) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/markdown"
+        }
+
+        val shareIntent = Intent.createChooser(intent, null)
+        startActivity(shareIntent)
+    }
+
+    private fun initiateTaskExport(listId: Int? = null) {
+        exportListId = listId
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/comma-separated-values"
+            putExtra(Intent.EXTRA_TITLE, if (null == listId) "ToDo Data.csv" else "ToDo List.csv")
+        }
+        exportTasksLauncher.launch(intent)
     }
 
     private fun sendToPomodoro(task: TodoTask) {

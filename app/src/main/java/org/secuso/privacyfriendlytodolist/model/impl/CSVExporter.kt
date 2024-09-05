@@ -28,8 +28,8 @@ class CSVExporter {
             var todoList: TodoList? = null
             val todoListId = todoTask.getListId()
             if (null != todoListId) {
-                todoList = todoLists.find { list ->
-                    list.getId() == todoListId
+                todoList = todoLists.find { currentTodoList ->
+                    currentTodoList.getId() == todoListId
                 }
             }
             if (todoTask.getSubtasks().isEmpty()) {

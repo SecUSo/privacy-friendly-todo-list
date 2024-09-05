@@ -41,15 +41,21 @@
             android:title="@string/settings" />
 
         <item
+            android:id="@+id/nav_share"
+            android:checkable="false"
+            android:icon="@drawable/ic_share_black_24dp"
+            android:title="@string/share_all_tasks" />
+
+        <item
             android:id="@+id/nav_export"
             android:checkable="false"
-            android:icon="@drawable/ic_import_export_black_24"
+            android:icon="@drawable/ic_import_export_black_24dp"
             android:title="@string/export_all_tasks" />
 
         <item
             android:id="@+id/nav_import"
             android:checkable="false"
-            android:icon="@drawable/ic_import_export_black_24"
+            android:icon="@drawable/ic_import_export_black_24dp"
             android:title="@string/import_tasks" />
 
         <item

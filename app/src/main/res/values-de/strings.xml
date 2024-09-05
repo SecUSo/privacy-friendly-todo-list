@@ -13,6 +13,7 @@
     <string name="show_all_tasks">Alle Aufgaben</string>
     <string name="calendar_view">Kalenderansicht</string>
     <string name="settings">Einstellungen</string>
+    <string name="share_all_tasks">Alle Aufgaben teilen</string>
     <string name="export_all_tasks">Alle Aufgaben exportieren</string>
     <string name="import_tasks">Aufgaben importieren</string>
     <string name="other">Andere</string>
@@ -81,6 +82,7 @@
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
     <string name="edit_list">Liste bearbeiten</string>
     <string name="export_list">Liste exportieren</string>
+    <string name="share_list">Liste teilen</string>
     <string name="delete_list">Liste löschen</string>
     <string name="delete_list_feedback">%1$s gelöscht</string>
 
@@ -105,6 +107,7 @@
     <string name="deadline_dd">Termin:</string>
     <string name="no_deadline">Kein Termin</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
+    <string name="share_task">Aufgabe teilen</string>
     <string name="delete_task">Aufgabe löschen</string>
     <string name="task_removed">Aufgabe ist im Papierkorb</string>
     <string name="deadline">Termin</string>
