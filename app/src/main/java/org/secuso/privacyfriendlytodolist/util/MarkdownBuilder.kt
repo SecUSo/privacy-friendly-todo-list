@@ -9,7 +9,6 @@ class MarkdownBuilder(private val writer: Writer, private val deadlineString: St
         writer.append("### ")
         writer.appendLine(todoList.getName())
         for (task in todoList.getTasks()) {
-            writer.appendLine()
             addTask(task)
         }
     }

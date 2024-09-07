@@ -63,6 +63,7 @@ import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 import java.io.StringWriter
 
+
 /**
  * Created by Sebastian Lutz on 12.03.2018.
  *
@@ -274,20 +275,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
         model!!.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
-            val id = if (null == errorMessage) {
-                R.string.import_succeeded
-            } else {
-                Log.e(TAG, "CSV import failed: $errorMessage")
-                R.string.import_failed
-            }
-
             model!!.getAllToDoLists { allTodoLists ->
                 todoLists = allTodoLists
                 showHints()
                 addTodoListsToNavigationMenu()
                 showAllTasks()
 
-                Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
+                if (null == errorMessage) {
+                    Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.e(TAG, "CSV import failed: $errorMessage")
+                    AlertDialog.Builder(this).apply {
+                        setTitle(R.string.import_failed)
+                        setMessage(errorMessage)
+                        setPositiveButton(R.string.ok) { dialog, which ->
+                        }
+                        show()
+                    }
+                }
             }
         }
     }
@@ -470,20 +475,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "text/comma-separated-values"
                 }
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle(R.string.import_question_title)
-                builder.setMessage(R.string.import_question_text)
-                builder.setPositiveButton(R.string.delete_existing_data) { dialog, which ->
-                    deleteAllDataBeforeImport = true
-                    importTasksLauncher.launch(intent)
+                AlertDialog.Builder(this).apply {
+                    setTitle(R.string.import_question_title)
+                    setMessage(R.string.import_question_text)
+                    setPositiveButton(R.string.delete_existing_data) { dialog, which ->
+                        deleteAllDataBeforeImport = true
+                        importTasksLauncher.launch(intent)
+                    }
+                    setNegativeButton(R.string.keep_existing_data) { dialog, which ->
+                        deleteAllDataBeforeImport = false
+                        importTasksLauncher.launch(intent)
+                    }
+                    setNeutralButton(R.string.abort) { dialog, which ->
+                    }
+                    show()
                 }
-                builder.setNegativeButton(R.string.keep_existing_data) { dialog, which ->
-                    deleteAllDataBeforeImport = false
-                    importTasksLauncher.launch(intent)
-                }
-                builder.setNeutralButton(R.string.abort) { dialog, which ->
-                }
-                builder.show()
             }
             R.id.nav_tutorial -> {
                 uncheckNavigationEntries()
@@ -579,23 +585,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (null != activeListId) {
             showAllTasks()
         } else {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            builder.setMessage(R.string.exit_app);
-//            builder.setCancelable(true);
-//            builder.setPositiveButton(R.string.exit_positive, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    finish();
-//                }
-//            });
-//            builder.setNegativeButton(R.string.exit_negative, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.cancel();
-//                }
-//            });
-//            AlertDialog alert = builder.create();
-//            alert.show();
             super.onBackPressed()
         }
     }
@@ -924,34 +913,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun deleteList(todoList: TodoList) {
-        val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setMessage(R.string.alert_list_delete)
-        alertBuilder.setCancelable(true)
-        alertBuilder.setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
-            if (!todoLists.remove(todoList)) {
-                Log.w(TAG, "Unable to remove todo-list from list. todo-list not found.")
-            }
-            model!!.deleteTodoList(todoList.getId()) { counter: Int ->
-                if (counter == 1) {
-                    Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
-                    val text = getString(R.string.delete_list_feedback, todoList.getName())
-                    Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
-                } else {
-                    Log.e(TAG, "Failed to delete list with ID ${todoList.getId()}.")
+        AlertDialog.Builder(this).apply {
+            setMessage(R.string.alert_list_delete)
+            setCancelable(true)
+            setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
+                if (!todoLists.remove(todoList)) {
+                    Log.w(TAG, "Unable to remove todo-list from list. todo-list not found.")
                 }
+                model!!.deleteTodoList(todoList.getId()) { counter: Int ->
+                    if (counter == 1) {
+                        Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
+                        val text = getString(R.string.delete_list_feedback, todoList.getName())
+                        Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
+                    } else {
+                        Log.e(TAG, "Failed to delete list with ID ${todoList.getId()}.")
+                    }
+                }
+                showHints()
+                addTodoListsToNavigationMenu()
+                if (activeListId == todoList.getId()) {
+                    // Currently active list was deleted
+                    showAllTasks()
+                }
+                dialog.cancel()
             }
-            showHints()
-            addTodoListsToNavigationMenu()
-            if (activeListId == todoList.getId()) {
-                // Currently active list was deleted
-                showAllTasks()
+            setNegativeButton(R.string.alert_delete_no) { dialog, id ->
+                dialog.cancel()
             }
-            dialog.cancel()
+            create().show()
         }
-        alertBuilder.setNegativeButton(R.string.alert_delete_no) { dialog, id ->
-            dialog.cancel()
-        }
-        alertBuilder.create().show()
     }
 
     private fun shareTask(todoTask: TodoTask) {

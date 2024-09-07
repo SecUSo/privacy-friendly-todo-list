@@ -22,15 +22,20 @@ class CSVImporter {
     val tasks = HashMap<Int, Tuple<TodoList?, TodoTask>>()
     val subtasks = HashMap<Int, Tuple<TodoTask, TodoSubtask>>()
     private var rowNumber = 0
+    private var columnIndex = 0
 
     fun import(reader: Reader) {
         lists.clear()
         tasks.clear()
         subtasks.clear()
 
-        val csvParser = CSVParser()
-        val rows = csvParser.parse(reader)
-        parseRows(rows)
+        try {
+            val csvParser = CSVParser()
+            val rows = csvParser.parse(reader)
+            parseRows(rows)
+        } catch (e: Exception) {
+            throw ParseException("CSV parsing failed at row $rowNumber, column ${columnIndex + 1}: ${e.message}", e)
+        }
     }
 
     private fun parseRows(rows: List<List<String>>) {
@@ -123,7 +128,8 @@ class CSVImporter {
     }
 
     private fun getId(row: List<String>, offset: Int, index: Int = 0): Int? {
-        val idString = row[offset + index].trim()
+        columnIndex = offset + index
+        val idString = row[columnIndex].trim()
         var id: Int? = null
         if (idString.isNotEmpty()) {
             id = idString.toInt()
@@ -132,58 +138,63 @@ class CSVImporter {
     }
 
     private fun getName(row: List<String>, offset: Int, index: Int = 1): String {
-        val colIndex = offset + index
-        val text = row[colIndex].trim()
+        columnIndex = offset + index
+        val text = row[columnIndex].trim()
         if (text.isEmpty()) {
-            throw IllegalFormatException("Row $rowNumber, column ${colIndex + 1}: Name is empty.")
+            throw IllegalFormatException("Row $rowNumber, column ${columnIndex + 1}: Name is empty.")
         }
         return text
     }
 
     private fun getText(row: List<String>, offset: Int, index: Int): String {
-        return row[offset + index].trim()
+        columnIndex = offset + index
+        return row[columnIndex].trim()
     }
 
     private fun getTimestamp(row: List<String>, offset: Int, index: Int): Long {
-        val colIndex = offset + index
-        val text = row[colIndex].trim()
+        columnIndex = offset + index
+        val text = row[columnIndex].trim()
         var result = -1L
         if (text.isNotEmpty()) {
             val date = CSVBuilder.DATE_TIME_FORMAT.parse(text)
             result = TimeUnit.MILLISECONDS.toSeconds(date!!.time)
-            if (result < 0L) {
-                throw IllegalFormatException("Row $rowNumber, column ${colIndex + 1}: Timestamp results in a negative integer.")
+            if (result == -1L) {
+                // -1 is a special value which shall not be used. Replace by -2.
+                result = -2L
             }
         }
         return result
     }
 
     private fun getProgress(row: List<String>, offset: Int, index: Int): Int {
-        val colIndex = offset + index
-        val text = row[colIndex].trim()
+        columnIndex = offset + index
+        val text = row[columnIndex].trim()
         var result = 0
         if (text.isNotEmpty()) {
             result = text.toInt()
             if (result < 0 || result > 100) {
-                throw IllegalFormatException("Row $rowNumber, column ${colIndex + 1}: Progress not in range 0..100.")
+                throw IllegalFormatException("Progress not in range 0..100.")
             }
         }
         return result
     }
 
     private fun getInteger(row: List<String>, offset: Int, index: Int): Int {
-        val text = row[offset + index].trim()
+        columnIndex = offset + index
+        val text = row[columnIndex].trim()
         return text.toInt()
     }
 
-    private inline fun <reified T : Enum<T>> getEnumValue(row: List<String>, offset: Int, index: Int,
+    private inline fun <reified T : Enum<T>> getEnumValue(row: List<String>,
+                                                          offset: Int,
+                                                          index: Int,
                                                           defaultValue: T): T {
-        val colIndex = offset + index
-        val text = row[colIndex].trim()
+        columnIndex = offset + index
+        val text = row[columnIndex].trim()
         var result = defaultValue
         if (text.isNotEmpty()) {
             result = enumValues<T>().firstOrNull { it.name == text }
-                ?: throw IllegalFormatException("Row $rowNumber, column ${colIndex + 1}: Invalid ${result.declaringJavaClass.simpleName} value.")
+                ?: throw IllegalFormatException("Invalid ${result.declaringJavaClass.simpleName} value.")
         }
         return result
     }

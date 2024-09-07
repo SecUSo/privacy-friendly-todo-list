@@ -123,6 +123,7 @@
     <string name="zero_percent">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
+    <string name="select_no_list">Keine Liste</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
@@ -276,12 +277,6 @@
     <string name="snack_check">Status geändert</string>
     <string name="snack_undo">Rückgängig machen</string>
     <string name="snack_clear">Papierkorb geleert</string>
-
-    <!-- ### EXIT ### -->
-    <string name="exit_app">To-Do Liste beenden?</string>
-    <string name="exit_positive">Ja</string>
-    <string name="exit_negative">Nein</string>
-    <string name="select_no_list">Keine Liste</string>
 
     <!-- TO-DO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>

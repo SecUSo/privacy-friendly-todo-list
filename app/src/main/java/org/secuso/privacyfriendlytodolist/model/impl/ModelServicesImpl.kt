@@ -329,7 +329,7 @@ class ModelServicesImpl(private val context: Context) {
                 csvImporter.import(reader)
             }
         } catch (e: Exception) {
-            return e.toString()
+            return e.message
         }
 
         if (deleteAllDataBeforeImport) {

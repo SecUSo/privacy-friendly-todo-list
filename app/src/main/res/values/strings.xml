@@ -127,6 +127,7 @@
     <string name="zero_percent">0 %</string>
     <string name="select_priority">Select a priority:</string>
     <string name="select_list">Select a list:</string>
+    <string name="select_no_list">No list</string>
     <string name="new_todo_subtask">New subtask</string>
     <string name="todo_name_must_not_be_empty">Please enter a task name.</string>
     <string name="edit_subtask">Edit subtask</string>
@@ -299,12 +300,6 @@
     <string name="snack_check">Task changed status</string>
     <string name="snack_undo">Undo action</string>
     <string name="snack_clear">Recycle bin is now cleared</string>
-
-    <!-- ### EXIT ### -->
-    <string name="exit_app">Exit To-Do List?</string>
-    <string name="exit_positive">Yes</string>
-    <string name="exit_negative">No</string>
-    <string name="select_no_list">No list</string>
 
     <!-- POMODORO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>
