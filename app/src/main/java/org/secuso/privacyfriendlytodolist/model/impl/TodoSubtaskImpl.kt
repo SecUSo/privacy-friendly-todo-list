@@ -47,7 +47,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         data = TodoSubtaskData()
         data.id = parcel.readInt()
         data.name = parcel.readString()!!
-        data.doneTime = parcel.readLong()
+        data.doneTime = parcel.readValue(Long::class.java.classLoader) as Long?
         data.isInRecycleBin = parcel.readByte().toInt() != 0
         data.taskId = parcel.readInt()
         // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
@@ -57,7 +57,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(data.id)
         dest.writeString(data.name)
-        dest.writeLong(data.doneTime)
+        dest.writeValue(data.doneTime)
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.taskId)
     }
@@ -87,18 +87,18 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
     }
 
     override fun setDone(isDone: Boolean) {
-        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else -1L
+        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else null
     }
 
     override fun isDone(): Boolean {
-        return -1L != data.doneTime
+        return data.doneTime != null
     }
 
-    override fun setDoneTime(doneTime: Long) {
+    override fun setDoneTime(doneTime: Long?) {
         data.doneTime = doneTime
     }
 
-    override fun getDoneTime(): Long {
+    override fun getDoneTime(): Long? {
         return data.doneTime
     }
 

@@ -97,8 +97,8 @@ interface TodoTask : BaseTodo, Parcelable {
      * @return The ID of the associated list or null if no list is associated.
      */
     fun getListId(): Int?
-    fun setDeadline(deadline: Long)
-    fun getDeadline(): Long
+    fun setDeadline(deadline: Long?)
+    fun getDeadline(): Long?
     fun hasDeadline(): Boolean
     fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
     fun getRecurrencePattern(): RecurrencePattern
@@ -126,15 +126,16 @@ interface TodoTask : BaseTodo, Parcelable {
      * @return The progress of the task in percent (values in range 0 - 100).
      */
     fun getProgress(computeProgress: Boolean): Int
-    fun setReminderTime(reminderTime: Long)
-    fun getReminderTime(): Long
+    fun setReminderTime(reminderTime: Long?)
+    fun getReminderTime(): Long?
+    fun hasReminderTime(): Boolean
     fun reminderTimeChanged(): Boolean
     fun resetReminderTimeChangedStatus()
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
-    fun setDoneTime(doneTime: Long)
-    fun getDoneTime(): Long
+    fun setDoneTime(doneTime: Long?)
+    fun getDoneTime(): Long?
 
     /**
      * A task is done if the user manually sets it done or when all subtasks are done.

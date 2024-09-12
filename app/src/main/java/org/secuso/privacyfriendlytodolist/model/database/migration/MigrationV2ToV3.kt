@@ -15,7 +15,7 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         db.execSQL("INSERT INTO $TABLE_NAME (id, name) SELECT _id, name FROM todo_list")
 
         TABLE_NAME = "todoTasks"
-        db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `listId` INTEGER, `listPosition` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `priority` INTEGER NOT NULL, `deadline` INTEGER NOT NULL, `recurrencePattern` INTEGER NOT NULL, `reminderTime` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `creationTime` INTEGER NOT NULL, `doneTime` INTEGER NOT NULL, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`listId`) REFERENCES `todoLists`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `listId` INTEGER, `listPosition` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `priority` INTEGER NOT NULL, `deadline` INTEGER, `recurrencePattern` INTEGER NOT NULL, `reminderTime` INTEGER, `progress` INTEGER NOT NULL, `creationTime` INTEGER NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`listId`) REFERENCES `todoLists`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )")
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_todoTasks_listId` ON `${TABLE_NAME}` (`listId`)")
         // Copy existing columns, fill new columns with any integer that is not null to fulfill not-null constraint.
         db.execSQL("INSERT INTO $TABLE_NAME (creationTime, recurrencePattern, id, listId, listPosition, name, description, priority, deadline, reminderTime, progress, doneTime, isInRecycleBin) " +
@@ -28,22 +28,25 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         db.execSQL("UPDATE `${TABLE_NAME}` SET `listId` = null WHERE `listId` NOT IN (SELECT `id` FROM `todoLists`)")
         // listPosition (position_in_todo_list) was not used before. Ensure same initial value of -1.
         db.execSQL("UPDATE `${TABLE_NAME}` SET `listPosition` = -1")
-        // Boolean done (0 or 1) has changed to doneTime (-1 or timestamp when set as done).
+        // "No timestamp" was -1 and is now NULL.
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `deadline` = NULL WHERE `deadline` = -1")
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `reminderTime` = NULL WHERE `reminderTime` = -1")
+        // Boolean done (0 or 1) has changed to doneTime (timestamp if done, otherwise null).
         val now = Helper.getCurrentTimestamp()
         db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = $now WHERE `doneTime` <> 0")
-        db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = -1 WHERE `doneTime` = 0")
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = NULL WHERE `doneTime` = 0")
         // Set default value for new column creationTime which is the current time in seconds.
         db.execSQL("UPDATE `${TABLE_NAME}` SET `creationTime` = $now")
         // Set default value for new column recurrencePattern which is zero.
         db.execSQL("UPDATE `${TABLE_NAME}` SET `recurrencePattern` = 0")
 
         TABLE_NAME = "todoSubtasks"
-        db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `taskId` INTEGER NOT NULL, `name` TEXT NOT NULL, `doneTime` INTEGER NOT NULL, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`taskId`) REFERENCES `todoTasks`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `taskId` INTEGER NOT NULL, `name` TEXT NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`taskId`) REFERENCES `todoTasks`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_todoSubtasks_taskId` ON `${TABLE_NAME}` (`taskId`)")
         db.execSQL("INSERT INTO $TABLE_NAME (id, taskId, name, doneTime, isInRecycleBin) SELECT _id, todo_task_id, title, done, in_trash FROM todo_subtask")
-        // Boolean done (0 or 1) has changed to doneTime (-1 or timestamp when set as done).
+        // Boolean done (0 or 1) has changed to doneTime (timestamp if done, otherwise null).
         db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = $now WHERE `doneTime` <> 0")
-        db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = -1 WHERE `doneTime` = 0")
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = NULL WHERE `doneTime` = 0")
 
         db.execSQL("DROP TABLE todo_subtask")
         db.execSQL("DROP TABLE todo_task")

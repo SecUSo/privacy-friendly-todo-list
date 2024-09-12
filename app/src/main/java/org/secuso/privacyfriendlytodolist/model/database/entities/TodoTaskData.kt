@@ -47,11 +47,11 @@ data class TodoTaskData(
     var name: String = "",
     var description: String = "",
     var priority: Priority = Priority.DEFAULT_VALUE,
-    var deadline: Long = -1,
+    var deadline: Long? = null,
     var recurrencePattern: RecurrencePattern = RecurrencePattern.NONE,
-    var reminderTime: Long = -1,
+    var reminderTime: Long? = null,
     var progress: Int = 0,
     var creationTime: Long = Helper.getCurrentTimestamp(),
-    var doneTime: Long = -1,
+    var doneTime: Long? = null,
     var isInRecycleBin: Boolean = false
 )

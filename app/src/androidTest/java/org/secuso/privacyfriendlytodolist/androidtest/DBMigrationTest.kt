@@ -129,7 +129,9 @@ class DBMigrationTest {
                 // Create the scenario where tasks have listId's that do not point to a list.
                 // Seen with listId 0 or -3. Use different not existing values here, if listCounter is 3.
                 val listId = if (listCounter != 3) listCounter else 1 - task
-                query += "('$id', '$listId', '$task', 'Test task $id', 'Test task description $id', '${id + TASK_PRIORITY_BASE}', '${id + TASK_DEADLINE_BASE}', '${id % 2}', '${id + TASK_PROGRESS_BASE}', '${id + TASK_NUM_SUBTASKS_BASE}', '${id + TASK_DEADLINE_WARNING_TIME_BASE}'), "
+                val deadline = if (id % 2 == 0) id + TASK_DEADLINE_BASE else -1L
+                val reminderTime = if (id % 2 != 0) id + TASK_DEADLINE_WARNING_TIME_BASE else -1L
+                query += "('$id', '$listId', '$task', 'Test task $id', 'Test task description $id', '${id + TASK_PRIORITY_BASE}', '$deadline', '${id % 2}', '${id + TASK_PROGRESS_BASE}', '${id + TASK_NUM_SUBTASKS_BASE}', '$reminderTime'), "
             }
         }
         query = query.removeSuffix(", ")
@@ -190,6 +192,8 @@ class DBMigrationTest {
                         assertTrue(cursor.moveToNext())
                     }
                     val listId: Int? = if (listCounter != 3) listCounter else null
+                    val deadline = if (id % 2 == 0) id + TASK_DEADLINE_BASE else null
+                    val reminderTime = if (id % 2 != 0) id + TASK_DEADLINE_WARNING_TIME_BASE else null
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(listId, cursor.getIntOrNull(col++))
@@ -197,15 +201,15 @@ class DBMigrationTest {
                     assertEquals("Test task $id", cursor.getStringOrNull(col++))
                     assertEquals("Test task description $id", cursor.getStringOrNull(col++))
                     assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
-                    assertEquals(id + TASK_DEADLINE_BASE, cursor.getIntOrNull(col++))
+                    assertEquals(deadline, cursor.getIntOrNull(col++))
                     assertEquals(0, cursor.getIntOrNull(col++)) // RecurrencePattern
-                    assertEquals(id + TASK_DEADLINE_WARNING_TIME_BASE, cursor.getIntOrNull(col++))
+                    assertEquals(reminderTime, cursor.getIntOrNull(col++))
                     assertEquals(id + TASK_PROGRESS_BASE, cursor.getIntOrNull(col++))
                     assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // creationTime
                     if (id % 2 != 0) {
                         assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime
                     } else {
-                        assertEquals(-1, cursor.getIntOrNull(col++))
+                        assertEquals(null, cursor.getIntOrNull(col++))
                     }
                     assertEquals(0, cursor.getIntOrNull(col)) // isInRecycleBin
                     assertTrue(listId == null || listIds.contains(listId))
@@ -238,7 +242,7 @@ class DBMigrationTest {
                     if (id % 2 != 0) {
                         assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime
                     } else {
-                        assertEquals(-1, cursor.getIntOrNull(col++))
+                        assertEquals(null, cursor.getIntOrNull(col++))
                     }
                     assertEquals(0, cursor.getIntOrNull(col))
                     assertTrue(taskIds.contains(taskId))

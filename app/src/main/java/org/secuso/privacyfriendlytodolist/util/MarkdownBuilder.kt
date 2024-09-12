@@ -17,10 +17,11 @@ class MarkdownBuilder(private val writer: Writer, private val deadlineString: St
         writer.append("- [")
         writer.append(if (todoTask.isDone()) "x" else " ")
         writer.append("] ")
-        if (todoTask.hasDeadline()) {
+        val deadline = todoTask.getDeadline()
+        if (deadline != null) {
             writer.append(deadlineString)
             writer.append(" ")
-            writer.append(Helper.createLocalizedDateString(todoTask.getDeadline()))
+            writer.append(Helper.createLocalizedDateString(deadline))
             writer.append(": ")
         }
         writer.append(todoTask.getName())

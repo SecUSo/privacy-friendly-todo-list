@@ -38,21 +38,16 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     constructor(parcel: Parcel) {
         data = TodoTaskData()
         data.id = parcel.readInt()
-        if (0 != parcel.readByte().toInt()) {
-            data.listId = parcel.readInt()
-        } else {
-            parcel.readInt()
-            data.listId = null
-        }
+        data.listId = parcel.readValue(Int::class.java.classLoader) as Int?
         data.name = parcel.readString()!!
         data.description = parcel.readString()!!
         data.creationTime = parcel.readLong()
-        data.doneTime = parcel.readLong()
+        data.doneTime = parcel.readValue(Long::class.java.classLoader) as Long?
         data.isInRecycleBin = parcel.readByte() != 0.toByte()
         data.progress = parcel.readInt()
-        data.deadline = parcel.readLong()
+        data.deadline = parcel.readValue(Long::class.java.classLoader) as Long?
         data.recurrencePattern = RecurrencePattern.fromOrdinal(parcel.readInt())!!
-        data.reminderTime = parcel.readLong()
+        data.reminderTime = parcel.readValue(Long::class.java.classLoader) as Long?
         reminderTimeChanged = parcel.readByte() != 0.toByte()
         reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
         data.listPosition = parcel.readInt()
@@ -64,22 +59,16 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(data.id)
-        if (null != data.listId) {
-            dest.writeByte(1.toByte())
-            dest.writeInt(data.listId!!)
-        } else {
-            dest.writeByte(0.toByte())
-            dest.writeInt(0)
-        }
+        dest.writeValue(data.listId)
         dest.writeString(data.name)
         dest.writeString(data.description)
         dest.writeLong(data.creationTime)
-        dest.writeLong(data.doneTime)
+        dest.writeValue(data.doneTime)
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.progress)
-        dest.writeLong(data.deadline)
+        dest.writeValue(data.deadline)
         dest.writeInt(data.recurrencePattern.ordinal)
-        dest.writeLong(data.reminderTime)
+        dest.writeValue(data.reminderTime)
         dest.writeByte((if (reminderTimeChanged) 1 else 0).toByte())
         dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
         dest.writeInt(data.listPosition)
@@ -127,16 +116,16 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.listId
     }
 
-    override fun setDeadline(deadline: Long) {
+    override fun setDeadline(deadline: Long?) {
         data.deadline = deadline
     }
 
-    override fun getDeadline(): Long {
+    override fun getDeadline(): Long? {
         return data.deadline
     }
 
     override fun hasDeadline(): Boolean {
-        return data.deadline > 0
+        return data.deadline != null
     }
 
     override fun setRecurrencePattern(recurrencePattern: RecurrencePattern) {
@@ -170,7 +159,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     override fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors {
         var color = DeadlineColors.BLUE
         var deadline = data.deadline
-        if (!isDone() && deadline > 0) {
+        if (!isDone() && deadline != null) {
             val now = Helper.getCurrentTimestamp()
             val finalReminderTimeSpan: Long
             if (isRecurring()) {
@@ -178,7 +167,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
                 finalReminderTimeSpan = reminderTimeSpan
             } else {
                 val reminderTime = data.reminderTime
-                finalReminderTimeSpan = if (reminderTime in 1..<deadline)
+                finalReminderTimeSpan = if (reminderTime != null && reminderTime < deadline)
                     deadline - reminderTime else reminderTimeSpan
             }
 
@@ -227,7 +216,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return 0
     }
 
-    override fun setReminderTime(reminderTime: Long) {
+    override fun setReminderTime(reminderTime: Long?) {
         data.reminderTime = reminderTime
 
         // check if reminder time was already set and now changed -> important for reminder service
@@ -237,8 +226,12 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         reminderTimeWasInitialized = true
     }
 
-    override fun getReminderTime(): Long {
+    override fun getReminderTime(): Long? {
         return data.reminderTime
+    }
+
+    override fun hasReminderTime(): Boolean {
+        return data.reminderTime != null
     }
 
     override fun reminderTimeChanged(): Boolean {
@@ -256,18 +249,18 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun setDone(isDone: Boolean) {
-        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else -1L
+        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else null
     }
 
     override fun isDone(): Boolean {
-        return -1L != data.doneTime
+        return data.doneTime != null
     }
 
-    override fun setDoneTime(doneTime: Long) {
+    override fun setDoneTime(doneTime: Long?) {
         data.doneTime = doneTime
     }
 
-    override fun getDoneTime(): Long {
+    override fun getDoneTime(): Long? {
         return data.doneTime
     }
 

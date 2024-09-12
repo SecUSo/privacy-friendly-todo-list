@@ -114,18 +114,15 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return counter
     }
 
-    override fun getNextDeadline(): Long {
-        var minDeadLine: Long = -1
-        for (i in tasks.indices) {
-            val currentTask = tasks[i]
-            if (!currentTask.isDone()) {
-                if (minDeadLine == -1L && currentTask.getDeadline() > 0) minDeadLine =
-                    currentTask.getDeadline() else {
-                    val possNewDeadline = currentTask.getDeadline()
-                    if (possNewDeadline in 1..<minDeadLine) {
-                        minDeadLine = possNewDeadline
-                    }
-                }
+    override fun getNextDeadline(): Long? {
+        var minDeadLine: Long? = null
+        for (currentTask in tasks) {
+            val currentDeadline = currentTask.getDeadline()
+            if (currentTask.isDone() || currentDeadline == null) {
+                continue
+            }
+            if (minDeadLine == null || currentDeadline < minDeadLine) {
+                minDeadLine = currentDeadline
             }
         }
         return minDeadLine

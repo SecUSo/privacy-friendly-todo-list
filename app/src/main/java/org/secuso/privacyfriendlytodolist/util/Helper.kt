@@ -47,9 +47,14 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
     }
 
+    fun tryGetNextRecurringDate(recurringDate: Long?, recurrencePattern: RecurrencePattern, now: Long): Long? {
+        return if (recurringDate != null && recurrencePattern != RecurrencePattern.NONE)
+            getNextRecurringDate(recurringDate, recurrencePattern, now) else recurringDate
+    }
+
     fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern, now: Long): Long {
         var result = recurringDate
-        if (recurringDate != -1L && recurrencePattern != RecurrencePattern.NONE) {
+        if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
             recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(recurringDate))
             val nowCal = Calendar.getInstance()

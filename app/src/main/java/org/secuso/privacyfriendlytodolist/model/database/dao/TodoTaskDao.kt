@@ -52,13 +52,13 @@ interface TodoTaskDao {
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND listId = :todoListId")
     suspend fun getByListIdNotInRecycleBin(todoListId: Int): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime = -1 AND reminderTime > 0 AND reminderTime > :now ORDER BY ABS(reminderTime - :now) LIMIT 1")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime > :now ORDER BY ABS(reminderTime - :now) LIMIT 1")
     suspend fun getNextDueTask(now: Long): TodoTaskData?
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime > 0 AND reminderTime <= :now")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL AND reminderTime <= :now")
     suspend fun getAllRecurringWithReminder(now: Long): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime = -1 AND reminderTime > 0 AND reminderTime <= :now")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now")
     suspend fun getAllToRemind(now: Long): Array<TodoTaskData>
 
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0")
@@ -71,5 +71,5 @@ interface TodoTaskDao {
     suspend fun getAllOfListNotInRecycleBin(listId: Int): Array<TodoTaskData>
 
     @Query("UPDATE todoTasks SET name = :name, progress = :progress, doneTime = :doneTime WHERE id = :id")
-    suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Long): Int
+    suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Long?): Int
 }

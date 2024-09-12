@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Others
     private var isUnlocked = false
-    private var unlockUntil: Long = -1
+    private var unlockUntil: Long = -1L
     private var activeListId: Int? = null
 
     //Pomodoro
@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             restore(savedInstanceState)
         } else {
             isUnlocked = false
-            unlockUntil = -1
+            unlockUntil = -1L
         }
         setContentView(R.layout.activity_main)
         exLv = findViewById(R.id.exlv_tasks)
@@ -329,7 +329,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (PinUtil.hasPin(this) && !isUnlocked && (unlockUntil == -1L || System.currentTimeMillis() > unlockUntil)) {
             clearTaskListView()
             isUnlocked = false
-            unlockUntil = -1
+            unlockUntil = -1L
             val dialog = PinDialog(this, true)
             dialog.setDialogCallback(object : PinCallback {
                 override fun accepted() {
@@ -567,7 +567,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!isUnlocked && unlockUntil != -1L && System.currentTimeMillis() <= unlockUntil) {
             isUnlocked = true
         }
-        unlockUntil = -1
+        unlockUntil = -1L
 
         authAndGuiInit()
     }
@@ -735,7 +735,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     showHints()
                     // show List if created in certain list, else show all tasks
                     showTasksOfListOrAllTasks(todoList?.getId())
-                    if (todoTask.getReminderTime() != -1L) {
+                    if (todoTask.hasReminderTime()) {
                         AlarmMgr.checkForPermissions(this)
                     }
                 }

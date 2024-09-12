@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
  */
 class CalendarGridAdapter(context: Context, resource: Int) :
     ArrayAdapter<Date?>(context, resource, ArrayList()) {
-    private val inflater: LayoutInflater
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
     private var oldColors: ColorStateList? = null
     private var currentMonth = -1
@@ -37,10 +37,6 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     private var todoTasks: List<TodoTask>? = null
     private var tasksPerDay = HashMap<Long, ArrayList<TodoTask>>(0)
     private var tasksPerDayNeedUpdate = false
-
-    init {
-        inflater = LayoutInflater.from(context)
-    }
 
     fun setTodoTasks(todoTasks: List<TodoTask>) {
         this.todoTasks = todoTasks
@@ -141,13 +137,10 @@ class CalendarGridAdapter(context: Context, resource: Int) :
 
         tasksPerDay.clear()
         for (todoTask in allTodoTasks) {
-            var deadline = todoTask.getDeadline()
-            if (deadline == -1L) {
-                continue
-            }
+            var deadline: Long = todoTask.getDeadline() ?: continue
             if (todoTask.isRecurring()) {
                 val recurringDateCal = Calendar.getInstance()
-                recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(todoTask.getDeadline()))
+                recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline))
                 Helper.getNextRecurringDate(recurringDateCal, todoTask.getRecurrencePattern(), startCal)
                 while (recurringDateCal < endCal) {
                     deadline = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)

@@ -36,11 +36,14 @@ class ModelServicesImpl(private val context: Context) {
     suspend fun getNextDueTask(now: Long): TodoTask? {
         // Get next due task in recurring tasks.
         var nextRecurringDueTaskData: TodoTaskData? = null
-        var nextRecurringDueTaskReminderTime = -1L
+        var nextRecurringDueTaskReminderTime: Long? = null
         val dataArray = db.getTodoTaskDao().getAllRecurringWithReminder(now)
         for (data in dataArray) {
-            val nextDate = Helper.getNextRecurringDate(data.reminderTime, data.recurrencePattern, now)
-            if (nextRecurringDueTaskData == null || nextDate < nextRecurringDueTaskReminderTime) {
+            // Note: getAllRecurringWithReminder() ensures that reminderTime and recurrencePattern is set.
+            val nextDate = Helper.getNextRecurringDate(data.reminderTime!!, data.recurrencePattern, now)
+            if (   nextRecurringDueTaskData == null
+                || nextRecurringDueTaskReminderTime == null
+                || nextDate < nextRecurringDueTaskReminderTime) {
                 nextRecurringDueTaskData = data
                 nextRecurringDueTaskReminderTime = nextDate
             }
@@ -50,8 +53,9 @@ class ModelServicesImpl(private val context: Context) {
         var nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
 
         // Take the earliest of the two due tasks.
-        if (nextDueTaskData == null || (nextRecurringDueTaskData != null &&
-            nextDueTaskData.reminderTime > nextRecurringDueTaskReminderTime)) {
+        val nextDueTaskReminderTime = nextDueTaskData?.reminderTime
+        if (   nextDueTaskReminderTime == null
+            || (nextRecurringDueTaskReminderTime != null && nextRecurringDueTaskReminderTime < nextDueTaskReminderTime)) {
             nextDueTaskData = nextRecurringDueTaskData
         }
 

@@ -58,9 +58,9 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         FullScreenDialog<ResultCallback<TodoTask>>(context, R.layout.add_task_dialog) {
     private val editExistingTask: Boolean
     private var todoTask: TodoTask
-    private var deadline: Long
+    private var deadline: Long?
     private var recurrencePattern: RecurrencePattern
-    private var reminderTime: Long
+    private var reminderTime: Long?
     private var taskProgress: Int
     private var taskPriority: TodoTask.Priority
 
@@ -97,13 +97,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         if (editExistingTask) {
             taskName.setText(todoTask.getName())
             taskDescription.setText(todoTask.getDescription())
-            deadlineTextView.text = if (todoTask.getDeadline() <= 0)
-                context.getString(R.string.deadline) else createLocalizedDateString(deadline)
+            deadlineTextView.text = if (deadline == null)
+                context.getString(R.string.deadline) else createLocalizedDateString(deadline!!)
             updateRecurrencePatternText()
-            reminderTextView.text = if (todoTask.getReminderTime() <= 0)
-                context.getString(R.string.reminder) else createLocalizedDateTimeString(reminderTime)
-            progressSelector.progress = todoTask.getProgress(false)
-            prioritySelector.text = priorityToString(context, todoTask.getPriority())
+            reminderTextView.text = if (reminderTime == null)
+                context.getString(R.string.reminder) else createLocalizedDateTimeString(reminderTime!!)
+            progressSelector.progress = taskProgress
+            prioritySelector.text = priorityToString(context, taskPriority)
         }
     }
 
@@ -173,7 +173,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             if (name.isEmpty()) {
                 Toast.makeText(context, context.getString(R.string.todo_name_must_not_be_empty),
                     Toast.LENGTH_SHORT).show()
-            } else if (recurrencePattern != RecurrencePattern.NONE && deadline == -1L) {
+            } else if (recurrencePattern != RecurrencePattern.NONE && deadline == null) {
                 Toast.makeText(context, context.getString(R.string.set_deadline_if_recurring),
                     Toast.LENGTH_SHORT).show()
             } else {
@@ -205,7 +205,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 }
 
                 override fun removeDeadline() {
-                    deadline = -1
+                    deadline = null
                     deadlineTextView.text = context.resources.getString(R.string.deadline)
                 }
             })
@@ -227,11 +227,12 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             reminderDialog.setDialogCallback(object : ReminderCallback {
                 override fun setReminderTime(selectedReminderTime: Long) {
                     var resIdErrorMsg = 0
+                    val deadlineCopy = deadline
                     if (recurrencePattern == RecurrencePattern.NONE) {
-                        /* if (deadline == -1L) {
+                        /* if (deadline == null) {
                             resIdErrorMsg = R.string.set_deadline_before_reminder
                         } else */
-                        if (deadline != -1L && deadline < selectedReminderTime) {
+                        if (deadlineCopy != null && deadlineCopy < selectedReminderTime) {
                             resIdErrorMsg = R.string.deadline_smaller_reminder
                         } else if (selectedReminderTime < getCurrentTimestamp()) {
                             resIdErrorMsg = R.string.reminder_smaller_now
@@ -239,14 +240,14 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                     }
                     if (resIdErrorMsg == 0) {
                         reminderTime = selectedReminderTime
-                        reminderTextView.text = createLocalizedDateTimeString(reminderTime)
+                        reminderTextView.text = createLocalizedDateTimeString(selectedReminderTime)
                     } else {
                         Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun removeReminderTime() {
-                    reminderTime = -1L
+                    reminderTime = null
                     val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
                     reminderTextView.text = context.resources.getString(R.string.reminder)
                 }

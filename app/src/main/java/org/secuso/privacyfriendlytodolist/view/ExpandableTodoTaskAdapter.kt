@@ -180,11 +180,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val prioritySorting = isPriorityGroupingEnabled
         val deadlineSorting = sortType and SortTypes.DEADLINE.value != 0
         Collections.sort(filteredTasks, object : Comparator<TodoTask> {
-            private fun compareDeadlines(d1: Long, d2: Long): Int {
+            private fun compareDeadlines(d1: Long?, d2: Long?): Int {
                 // tasks with deadlines always first
-                if (d1 == -1L && d2 == -1L) return 0
-                if (d1 == -1L) return 1
-                if (d2 == -1L) return -1
+                if (d1 == null && d2 == null) return 0
+                if (d1 == null) return 1
+                if (d2 == null) return -1
                 if (d1 < d2) return -1
                 return if (d1 == d2) 0 else 1
             }
@@ -391,17 +391,18 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         vh2.listName!!.visibility = View.VISIBLE
                     }
                 }
-                var deadline: String
-                    if (currentTask.getDeadline() == -1L) {
-                        deadline = context.resources.getString(R.string.no_deadline)
+                val deadline = currentTask.getDeadline()
+                var deadlineStr: String
+                    if (deadline == null) {
+                        deadlineStr = context.resources.getString(R.string.no_deadline)
                     } else {
-                        deadline = context.resources.getString(R.string.deadline_dd) + " " +
-                                createLocalizedDateString(currentTask.getDeadline())
+                        deadlineStr = context.resources.getString(R.string.deadline_dd) + " " +
+                                createLocalizedDateString(deadline)
                         if (currentTask.isRecurring()) {
-                            deadline += " (" + Helper.recurrencePatternToString(context, currentTask.getRecurrencePattern()) + ")"
+                            deadlineStr += " (" + Helper.recurrencePatternToString(context, currentTask.getRecurrencePattern()) + ")"
                         }
                     }
-                vh2.deadline!!.text = deadline
+                vh2.deadline!!.text = deadlineStr
                 vh2.deadlineColorBar!!.setBackgroundColor(
                     getDeadlineColor(context, currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
                 vh2.done!!.setChecked(currentTask.isDone())

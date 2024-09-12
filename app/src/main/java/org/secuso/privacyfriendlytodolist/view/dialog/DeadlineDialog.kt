@@ -30,13 +30,13 @@ interface DeadlineCallback {
     fun removeDeadline()
 }
 
-class DeadlineDialog(context: Context, private val deadline: Long) :
+class DeadlineDialog(context: Context, private val deadline: Long?) :
     FullScreenDialog<DeadlineCallback>(context, R.layout.deadline_dialog) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val calendar1 = GregorianCalendar.getInstance()
-        if (deadline != -1L) {
+        if (deadline != null) {
             calendar1.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline))
         } else {
             calendar1.setTime(Calendar.getInstance().time)

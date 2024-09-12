@@ -58,7 +58,6 @@ class CSVExporter {
         csvBuilder.addField("TaskName")
         csvBuilder.addField("TaskCreationTime")
         csvBuilder.addField("TaskDoneTime")
-        csvBuilder.addField("TaskIsDone")
         csvBuilder.addField("TaskListPosition")
         csvBuilder.addField("TaskDescription")
         csvBuilder.addField("TaskDeadline")
@@ -70,7 +69,6 @@ class CSVExporter {
         csvBuilder.addField("SubtaskId")
         csvBuilder.addField("SubtaskName")
         csvBuilder.addField("SubtaskDoneTime")
-        csvBuilder.addField("SubtaskIsDone")
 
         csvBuilder.startNewRow()
     }

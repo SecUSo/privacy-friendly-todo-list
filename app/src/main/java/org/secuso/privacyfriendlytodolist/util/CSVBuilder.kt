@@ -36,9 +36,9 @@ class CSVBuilder(private val writer: Writer) {
         writer.write(escapedContent)
     }
 
-    fun addTimeField(time: Long) {
+    fun addTimeField(time: Long?) {
         addFieldSeparator()
-        if (time > 0) {
+        if (time != null) {
             val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
             val dateTimeString = DATE_TIME_FORMAT.format(dateTime)
             writer.write(dateTimeString)

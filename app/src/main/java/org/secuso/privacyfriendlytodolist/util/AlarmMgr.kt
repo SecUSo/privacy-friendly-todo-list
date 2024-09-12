@@ -86,7 +86,7 @@ object AlarmMgr {
         cancelAlarmForTask(context, alarmId)
 
         var reminderTime = todoTask.getReminderTime()
-        if (reminderTime == -1L) {
+        if (reminderTime == null) {
             Log.i(TAG, "No alarm set because $todoTask has no reminder time.")
             return null
         }

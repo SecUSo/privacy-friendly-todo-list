@@ -91,7 +91,10 @@ class CSVImporter {
                 }
                 // Task ID is not set. It gets set while saving in DB.
                 task.setName(getName(row, TASK))
-                task.setCreationTime(getTimestamp(row, TASK, 2))
+                val creationTime = getTimestamp(row, TASK, 2)
+                if (null != creationTime) {
+                    task.setCreationTime(creationTime)
+                }
                 task.setDoneTime(getTimestamp(row, TASK, 3))
                 task.setListPosition(getInteger(row, TASK, 4))
                 task.setDescription(getText(row, TASK, 5))
@@ -101,7 +104,7 @@ class CSVImporter {
                 task.setProgress(getProgress(row, TASK, 9))
                 task.setPriority(getEnumValue<Priority>(row, TASK, 10, Priority.DEFAULT_VALUE))
 
-                if (task.isRecurring() && task.getDeadline() == -1L) {
+                if (task.isRecurring() && task.getDeadline() == null) {
                     throw IllegalFormatException("Row $rowNumber: Task with ID $id is recurring but has no deadline.")
                 }
             }
@@ -151,17 +154,13 @@ class CSVImporter {
         return row[columnIndex].trim()
     }
 
-    private fun getTimestamp(row: List<String>, offset: Int, index: Int): Long {
+    private fun getTimestamp(row: List<String>, offset: Int, index: Int): Long? {
         columnIndex = offset + index
         val text = row[columnIndex].trim()
-        var result = -1L
+        var result: Long? = null
         if (text.isNotEmpty()) {
             val date = CSVBuilder.DATE_TIME_FORMAT.parse(text)
             result = TimeUnit.MILLISECONDS.toSeconds(date!!.time)
-            if (result == -1L) {
-                // -1 is a special value which shall not be used. Replace by -2.
-                result = -2L
-            }
         }
         return result
     }

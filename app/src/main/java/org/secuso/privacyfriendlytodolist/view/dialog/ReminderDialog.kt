@@ -37,7 +37,7 @@ interface ReminderCallback {
 }
 
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-class ReminderDialog(context: Context, private val reminderTime: Long, private val deadline: Long) :
+class ReminderDialog(context: Context, private val reminderTime: Long?, private val deadline: Long?) :
     FullScreenDialog<ReminderCallback>(context, R.layout.reminder_dialog) {
 
     private lateinit var layoutDate: LinearLayout
@@ -49,13 +49,13 @@ class ReminderDialog(context: Context, private val reminderTime: Long, private v
         layoutDate = findViewById(R.id.ll_reminder_date)
         layoutTime = findViewById(R.id.ll_reminder_time)
 
-        val forDeadline = deadline - DEFAULT_REMINDER_TIME_OFFSET
         val now = Helper.getCurrentTimestamp()
+        @Suppress("IfThenToElvis")
         val reminderTimeSuggestion =
-            if (reminderTime != -1L) {
+            if (reminderTime != null) {
                 reminderTime
-            } else if (deadline != -1L && forDeadline >= now) {
-                forDeadline
+            } else if (deadline != null && deadline - DEFAULT_REMINDER_TIME_OFFSET >= now) {
+                deadline - DEFAULT_REMINDER_TIME_OFFSET
             } else {
                 now + PreferenceMgr.getDefaultReminderTimeSpan(context)
             }

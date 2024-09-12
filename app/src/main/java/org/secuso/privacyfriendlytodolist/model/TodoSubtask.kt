@@ -27,8 +27,8 @@ interface TodoSubtask : BaseTodo, Parcelable {
     fun getTaskId(): Int
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
-    fun setDoneTime(doneTime: Long)
-    fun getDoneTime(): Long
+    fun setDoneTime(doneTime: Long?)
+    fun getDoneTime(): Long?
     fun setInRecycleBin(isInRecycleBin: Boolean)
     fun isInRecycleBin(): Boolean
     fun checkQueryMatch(query: String?): Boolean
