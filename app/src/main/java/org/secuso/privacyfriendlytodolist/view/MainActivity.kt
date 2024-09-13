@@ -279,17 +279,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 todoLists = allTodoLists
                 showHints()
                 addTodoListsToNavigationMenu()
-                showAllTasks()
 
                 if (null == errorMessage) {
                     Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
+                    // Renew alarms. Might be a due- or overdue-task was imported.
+                    AlarmMgr.setAlarmForAllTasks(this)
                 } else {
                     Log.e(TAG, "CSV import failed: $errorMessage")
                     AlertDialog.Builder(this).apply {
                         setTitle(R.string.import_failed)
                         setMessage(errorMessage)
-                        setPositiveButton(R.string.ok) { dialog, which ->
-                        }
+                        setPositiveButton(R.string.ok) { dialog, which -> }
                         show()
                     }
                 }

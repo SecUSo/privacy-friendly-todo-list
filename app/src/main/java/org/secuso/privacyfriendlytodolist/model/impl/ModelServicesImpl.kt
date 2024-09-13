@@ -34,50 +34,50 @@ class ModelServicesImpl(private val context: Context) {
         return todoTask
     }
 
-    suspend fun getNextDueTask(now: Long): TodoTask? {
-        // Get next due task in recurring tasks.
-        var nextRecurringDueTaskData: TodoTaskData? = null
-        var nextRecurringDueTaskReminderTime: Long? = null
-        val dataArray = db.getTodoTaskDao().getAllRecurringTasksWithReminder(now)
-        for (data in dataArray) {
-            // Note: getAllRecurringWithReminder() ensures that reminderTime and recurrencePattern is set.
-            val nextDate = Helper.getNextRecurringDate(data.reminderTime!!, data.recurrencePattern, now)
-            if (   nextRecurringDueTaskData == null
-                || nextRecurringDueTaskReminderTime == null
-                || nextDate < nextRecurringDueTaskReminderTime) {
-                nextRecurringDueTaskData = data
-                nextRecurringDueTaskReminderTime = nextDate
+    private suspend fun updateReminderTimeOfRecurringTasks(now: Long): Int {
+        val dataArray = db.getTodoTaskDao().getOverdueRecurringTasks(now)
+        val todoTasks = loadTasksSubtasks(false, *dataArray)
+        for (todoTask in todoTasks) {
+            // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
+            val oldReminderTime = todoTask.getReminderTime()!!
+            // Get the upcoming due date of the recurring task.
+            val newReminderTime = Helper.getNextRecurringDate(oldReminderTime, todoTask.getRecurrencePattern(), now)
+            todoTask.setReminderTime(newReminderTime)
+            todoTask.setChanged()
+            if (saveTodoTaskInDb(todoTask) > 0) {
+                Log.i(TAG, "Updating reminder time of $todoTask from " +
+                        "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
+                        "${Helper.createCanonicalDateTimeString(newReminderTime)}.")
+            } else {
+                Log.e(TAG, "Failed to save $todoTask after updating reminder time.")
             }
         }
-
-        // Get next due task in regular tasks.
-        var nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
-
-        // Take the earliest of the two due tasks.
-        val nextDueTaskReminderTime = nextDueTaskData?.reminderTime
-        if (   nextDueTaskReminderTime == null
-            || (nextRecurringDueTaskReminderTime != null && nextRecurringDueTaskReminderTime < nextDueTaskReminderTime)) {
-            nextDueTaskData = nextRecurringDueTaskData
-        }
-
-        var nextDueTask: TodoTask? = null
-        if (null != nextDueTaskData) {
-            nextDueTask = loadTasksSubtasks(false, nextDueTaskData)[0]
-        }
-        return nextDueTask
+        return todoTasks.size
     }
 
-    suspend fun getNextDueTaskAndOverdueTasks(now: Long): MutableList<TodoTask> {
+    suspend fun getNextDueTask(now: Long): Tuple<TodoTask?, Int> {
+        // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
+        val updatedTasks = updateReminderTimeOfRecurringTasks(now)
+        // Get next due task.
+        val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
+        var todoTask: TodoTask? = null
+        if (null != nextDueTaskData) {
+            todoTask = loadTasksSubtasks(false, nextDueTaskData)[0]
+        }
+        return Tuple(todoTask, updatedTasks)
+    }
+
+    suspend fun getNextDueTaskAndOverdueTasks(now: Long): Tuple<MutableList<TodoTask>, Int> {
         val dataArray = db.getTodoTaskDao().getOverdueTasks(now)
         val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
         // get task that is next due
         val nextDueTask = getNextDueTask(now)
-        if (nextDueTask != null) {
-            tasksToRemind.add(nextDueTask as TodoTaskImpl)
+        if (nextDueTask.left != null) {
+            tasksToRemind.add(nextDueTask.left as TodoTaskImpl)
         }
         @Suppress("UNCHECKED_CAST")
-        return tasksToRemind as MutableList<TodoTask>
+        return Tuple(tasksToRemind as MutableList<TodoTask>, nextDueTask.right)
     }
 
     suspend fun deleteTodoList(todoListId: Int): Int {
@@ -318,31 +318,32 @@ class ModelServicesImpl(private val context: Context) {
         return null
     }
 
-    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri): String? {
+    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri): Tuple<String?, Int> {
         val inputStream: InputStream?
         try {
             inputStream = context.contentResolver.openInputStream(csvDataUri)
         } catch (e: FileNotFoundException) {
-            return "Input file not found."
+            return Tuple("Input file not found.", 0)
         }
         if (null == inputStream) {
-            return "Failed to open input file."
+            return Tuple("Failed to open input file.", 0)
         }
         try {
             inputStream.bufferedReader().use { reader ->
                 csvImporter.import(reader)
             }
         } catch (e: Exception) {
-            return e.message
+            return Tuple(e.message, 0)
         }
 
+        var counter = 0
         if (deleteAllDataBeforeImport) {
             Log.i(TAG, "Deleting all data due to CSV data import.")
-            deleteAllData()
+            counter += deleteAllData()
         }
 
         for (list in csvImporter.lists.values) {
-            saveTodoListInDb(list)
+            counter += saveTodoListInDb(list)
         }
         for (task in csvImporter.tasks.values) {
             // The tasks list gets its ID while saving it in DB.
@@ -350,18 +351,15 @@ class ModelServicesImpl(private val context: Context) {
             if (null != task.left) {
                 task.right.setListId(task.left.getId())
             }
-            saveTodoTaskInDb(task.right)
+            counter += saveTodoTaskInDb(task.right)
         }
         for (subtask in csvImporter.subtasks.values) {
             // The subtasks task gets its ID while saving it in DB.
             // So update the task ID at the subtask after the task was saved in DB.
             subtask.right.setTaskId(subtask.left.getId())
-            saveTodoSubtaskInDb(subtask.right)
+            counter += saveTodoSubtaskInDb(subtask.right)
         }
-
-        // Renew alarms. Might be a due- or overdue-task was imported.
-        AlarmMgr.setAlarmForAllTasks(context)
-        return null
+        return Tuple(null, counter)
     }
 
     private suspend fun loadListsTasksSubtasks(vararg dataArray: TodoListData): MutableList<TodoListImpl> {

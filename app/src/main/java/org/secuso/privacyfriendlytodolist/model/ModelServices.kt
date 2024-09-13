@@ -89,7 +89,8 @@ class ModelServices(
                        resultConsumer: ResultConsumer<TodoTask?>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTask = services.getNextDueTask(now)
-            dispatchResult(deliveryOption, resultConsumer, todoTask)
+            dispatchResult(deliveryOption, resultConsumer, todoTask.left)
+            notifyDataChanged(todoTask.right)
         }
     }
 
@@ -107,7 +108,8 @@ class ModelServices(
                          resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val tasksToRemind = services.getNextDueTaskAndOverdueTasks(now)
-            dispatchResult(deliveryOption, resultConsumer, tasksToRemind)
+            dispatchResult(deliveryOption, resultConsumer, tasksToRemind.left)
+            notifyDataChanged(tasksToRemind.right)
         }
     }
 
@@ -296,8 +298,9 @@ class ModelServices(
                       deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<String?>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val errorMessage = services.importCSVData(deleteAllDataBeforeImport, csvDataUri)
-            dispatchResult(deliveryOption, resultConsumer, errorMessage)
+            val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri)
+            dispatchResult(deliveryOption, resultConsumer, result.left)
+            notifyDataChanged(result.right)
         }
     }
 
@@ -318,6 +321,9 @@ class ModelServices(
         }
     }
 
+    /**
+     * Do always post, never direct. Model changes always need to be handled in GUI thread.
+     */
     private fun notifyDataChanged(changedItems: Int) {
         if (changedItems > 0) {
             if (!resultHandler.post { Model.notifyDataChanged(context) }) {

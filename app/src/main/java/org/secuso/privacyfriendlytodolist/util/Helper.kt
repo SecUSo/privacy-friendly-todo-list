@@ -47,11 +47,6 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
     }
 
-    fun tryGetNextRecurringDate(recurringDate: Long?, recurrencePattern: RecurrencePattern, now: Long): Long? {
-        return if (recurringDate != null && recurrencePattern != RecurrencePattern.NONE)
-            getNextRecurringDate(recurringDate, recurrencePattern, now) else recurringDate
-    }
-
     fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern, now: Long): Long {
         var result = recurringDate
         if (recurrencePattern != RecurrencePattern.NONE) {
@@ -73,7 +68,7 @@ object Helper {
             if (recurringDate[Calendar.YEAR] < previousYear) {
                 recurringDate[Calendar.YEAR] = previousYear
             }
-            while (recurringDate < now) {
+            while (recurringDate <= now) {
                 addInterval(recurringDate, recurrencePattern)
             }
         }
