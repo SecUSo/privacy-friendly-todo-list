@@ -80,7 +80,7 @@ class NotificationJob : JobBase() {
                 todoTask.setDone(true)
                 todoTask.setChanged()
                 model!!.saveTodoTaskInDb(todoTask) { counter ->
-                    if (counter == 1) {
+                    if (counter > 0) {
                         Log.i(TAG, "Set task with ID $todoTaskId as done.")
                         Model.notifyDataChangedFromOutside(this)
                     } else {

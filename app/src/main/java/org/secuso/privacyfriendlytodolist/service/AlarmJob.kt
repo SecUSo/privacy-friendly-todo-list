@@ -112,7 +112,7 @@ class AlarmJob : JobBase() {
                 return@saveTodoTaskInDb
             }
 
-            if (counter == 1) {
+            if (counter > 0) {
                 Log.i(TAG, "Set $task automatically as undone because its re-occurring soon.")
                 Model.notifyDataChangedFromOutside(this)
             } else {

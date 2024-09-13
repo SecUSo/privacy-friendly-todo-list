@@ -103,10 +103,10 @@ class ModelServices(
      * @param resultConsumer Result consumer that will be notified when the asynchronous database
      * access has finished.
      */
-    fun getTasksToRemind(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
+    fun getNextDueTaskAndOverdueTasks(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
                          resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val tasksToRemind = services.getTasksToRemind(now)
+            val tasksToRemind = services.getNextDueTaskAndOverdueTasks(now)
             dispatchResult(deliveryOption, resultConsumer, tasksToRemind)
         }
     }

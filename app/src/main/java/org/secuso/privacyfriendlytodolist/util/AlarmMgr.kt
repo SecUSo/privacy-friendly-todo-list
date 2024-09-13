@@ -68,6 +68,16 @@ object AlarmMgr {
         }
     }
 
+    fun setAlarmForAllTasks(context: Context) {
+        val now = Helper.getCurrentTimestamp()
+        val viewModel = CustomViewModel(context)
+        viewModel.model.getNextDueTaskAndOverdueTasks(now) { dueTasks ->
+            for (dueTask in dueTasks) {
+                setAlarmForTask(context, dueTask, true)
+            }
+        }
+    }
+
     /**
      * Sets an alarm for the given task if it is not done and has a reminder time.
      *
@@ -142,13 +152,13 @@ object AlarmMgr {
         return alarmId
     }
 
-    fun setAlarmForTask(context: Context, todoTaskId: Int, alarmTime: Long): Int {
+    fun setAlarmForTask(context: Context, alarmId: Int, alarmTime: Long): Int {
         // Use task's database ID as unique alarm ID.
-        cancelAlarmForTask(context, todoTaskId)
+        cancelAlarmForTask(context, alarmId)
 
-        val kindOfAlarm = setAlarm(context, todoTaskId, alarmTime)
-        Log.i(TAG, "$kindOfAlarm alarm set for task $todoTaskId at ${Helper.createCanonicalDateTimeString(alarmTime)}.")
-        return todoTaskId
+        val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
+        Log.i(TAG, "$kindOfAlarm alarm set for task $alarmId at ${Helper.createCanonicalDateTimeString(alarmTime)}.")
+        return alarmId
     }
 
     private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
@@ -166,15 +176,16 @@ object AlarmMgr {
         }
     }
 
-    private fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {
+    fun cancelAlarmForTask(context: Context, alarmId: Int): Boolean {
         val pendingIntent = getPendingAlarmIntent(context, alarmId, false)
-        var alarmWasSet = false
-        if (pendingIntent != null) {
-            alarmWasSet = true
+        return if (pendingIntent != null) {
             getManager(context).cancel(pendingIntent)
             Log.i(TAG, "Alarm $alarmId cancelled.")
+            true
+        } else {
+            Log.d(TAG, "Failed to cancel alarm. No alarm with ID $alarmId was found.")
+            false
         }
-        return alarmWasSet
     }
 
     private fun getPendingAlarmIntent(context: Context, alarmId: Int, createIfNotExist: Boolean): PendingIntent? {

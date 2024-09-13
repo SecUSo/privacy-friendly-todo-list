@@ -2,6 +2,7 @@ package org.secuso.privacyfriendlytodolist.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ContextMenu
 import android.view.ContextMenu.ContextMenuInfo
 import android.view.Menu
@@ -17,7 +18,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 
 /**
@@ -57,8 +60,13 @@ class RecyclerActivity : AppCompatActivity() {
         if (null != longClickedTodo) {
             val todoTask = longClickedTodo.left
             if (item.itemId == R.id.restore) {
-                model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter: Int? ->
-                    updateAdapter()
+                model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
+                    if (counter > 0) {
+                        AlarmMgr.setAlarmForTask(this, todoTask)
+                        updateAdapter()
+                    } else {
+                        Log.w(TAG, "Failed to restore $todoTask from recycle bin.")
+                    }
                 }
             }
         }
@@ -80,7 +88,7 @@ class RecyclerActivity : AppCompatActivity() {
                 builder1.setMessage(R.string.alert_clear)
                 builder1.setCancelable(true)
                 builder1.setPositiveButton(R.string.yes) { dialog, which ->
-                    model.clearRecycleBin { counter: Int? ->
+                    model.clearRecycleBin { counter ->
                         dialog.cancel()
                         updateAdapter()
                     }
@@ -132,5 +140,9 @@ class RecyclerActivity : AppCompatActivity() {
         startActivity(intent)
 
         super.onBackPressed()
+    }
+
+    companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

@@ -624,7 +624,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val pl = ProcessTodoListDialog(this)
             pl.setDialogCallback { todoList ->
                 todoLists.add(todoList)
-                model!!.saveTodoListInDb(todoList) { counter: Int? ->
+                model!!.saveTodoListInDb(todoList) { counter ->
                     showHints()
                     addTodoListsToNavigationMenu()
                     Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} added.")
@@ -639,7 +639,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val pl = ProcessTodoListDialog(this, existingTodoList)
         pl.setDialogCallback { todoList ->
             todoList.setChanged()
-            model!!.saveTodoListInDb(todoList) { counter: Int ->
+            model!!.saveTodoListInDb(todoList) { counter ->
                 showHints()
                 addTodoListsToNavigationMenu()
                 expandableTodoTaskAdapter?.notifyDataSetChanged()
@@ -647,7 +647,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     // In case of changed list name:
                     toolbar?.setTitle(todoList.getName())
                 }
-                if (counter == 1) {
+                if (counter > 0) {
                     Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} changed.")
                 } else {
                     Log.e(TAG, "Failed to save list with ID ${todoList.getId()}.")
@@ -730,7 +730,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         optionFab!!.setOnClickListener { v: View? ->
             val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists, todoList)
             pt.setDialogCallback { todoTask ->
-                model!!.saveTodoTaskInDb(todoTask) { counter: Int? ->
+                model!!.saveTodoTaskInDb(todoTask) { counter ->
                     onTaskChange(todoTask)
                     showHints()
                     // show List if created in certain list, else show all tasks
@@ -815,7 +815,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoList, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { todoTask2: TodoTask ->
-                        model!!.saveTodoTaskInDb(todoTask2) { counter: Int? ->
+                        model!!.saveTodoTaskInDb(todoTask2) { counter ->
                             onTaskChange(todoTask2)
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
                             showTasksOfListOrAllTasks(activeListId)
@@ -837,19 +837,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (null != todoTask) {
                     val snackBar = Snackbar.make(optionFab!!, R.string.task_removed, Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
-                        model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter: Int? ->
-                            showTasksOfListOrAllTasks(activeListId)
-                            showHints()
+                        model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
+                            if (counter > 0) {
+                                if (null != todoTask.getListId()) {
+                                    val todoList = todoLists.find { currentTodoList ->
+                                        currentTodoList.getId() == todoTask.getListId()
+                                    }
+                                    todoList?.getTasks()?.add(todoTask)
+                                }
+                                AlarmMgr.setAlarmForTask(this, todoTask)
+                                showTasksOfListOrAllTasks(activeListId)
+                                showHints()
+                            } else {
+                                Log.w(TAG, "Task was not removed from the database.")
+                            }
                         }
                     }
-                    model!!.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter: Int ->
-                        if (counter == 1) {
+                    model!!.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter ->
+                        if (counter > 0) {
+                            if (null != todoTask.getListId()) {
+                                val todoList = todoLists.find { currentTodoList ->
+                                    currentTodoList.getId() == todoTask.getListId()
+                                }
+                                todoList?.getTasks()?.remove(todoTask)
+                            }
+                            AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
+                            showTasksOfListOrAllTasks(activeListId)
                             showHints()
+                            snackBar.show()
                         } else {
-                            Log.d(TAG, "Task was not removed from the database. Maybe it was not added beforehand (then this is no error)?")
+                            Log.w(TAG, "Task was not removed from the database.")
                         }
-                        showTasksOfListOrAllTasks(activeListId)
-                        snackBar.show()
                     }
                 }
             }
@@ -867,7 +885,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (null != todoSubtask) {
                     val dialog = ProcessTodoSubtaskDialog(this, todoSubtask)
                     dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
-                        model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter: Int? ->
+                        model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter ->
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
                             Log.i(TAG, "Subtask altered")
                         }
@@ -880,9 +898,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
                 val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
                 if (null != todoTask && null != todoSubtask) {
-                    model!!.deleteTodoSubtask(todoSubtask) { counter: Int ->
+                    model!!.deleteTodoSubtask(todoSubtask) { counter ->
                         todoTask.getSubtasks().remove(todoSubtask)
-                        if (counter == 1) {
+                        if (counter > 0) {
                             Toast.makeText(baseContext, getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show()
                         } else {
                             Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?")
@@ -920,8 +938,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (!todoLists.remove(todoList)) {
                     Log.w(TAG, "Unable to remove todo-list from list. todo-list not found.")
                 }
-                model!!.deleteTodoList(todoList.getId()) { counter: Int ->
-                    if (counter == 1) {
+                model!!.deleteTodoList(todoList.getId()) { counter ->
+                    if (counter > 0) {
                         Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
                         val text = getString(R.string.delete_list_feedback, todoList.getName())
                         Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
@@ -1022,7 +1040,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (progress != -1) {
             // Update the existing entry, if no subtask
-            model!!.saveTodoTaskInDb(todoRe) { counter: Int? -> onTaskChange(todoRe) }
+            model!!.saveTodoTaskInDb(todoRe) { counter ->
+                onTaskChange(todoRe)
+            }
         }
     }
 

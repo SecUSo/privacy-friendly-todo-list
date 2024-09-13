@@ -48,9 +48,9 @@ class ReloadAlarmsJob : JobBase() {
         // First cancel all alarms
         NotificationMgr.cancelAll(this)
         
-        model!!.getTasksToRemind(Helper.getCurrentTimestamp()) { tasksToRemind ->
+        model!!.getNextDueTaskAndOverdueTasks(Helper.getCurrentTimestamp()) { tasksToRemind ->
             if (isJobStopped()) {
-                return@getTasksToRemind
+                return@getNextDueTaskAndOverdueTasks
             }
 
             // Then set alarms, if there are tasks to remind.

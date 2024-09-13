@@ -12,6 +12,7 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.RequiredDBAction
+import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.FileNotFoundException
@@ -37,7 +38,7 @@ class ModelServicesImpl(private val context: Context) {
         // Get next due task in recurring tasks.
         var nextRecurringDueTaskData: TodoTaskData? = null
         var nextRecurringDueTaskReminderTime: Long? = null
-        val dataArray = db.getTodoTaskDao().getAllRecurringWithReminder(now)
+        val dataArray = db.getTodoTaskDao().getAllRecurringTasksWithReminder(now)
         for (data in dataArray) {
             // Note: getAllRecurringWithReminder() ensures that reminderTime and recurrencePattern is set.
             val nextDate = Helper.getNextRecurringDate(data.reminderTime!!, data.recurrencePattern, now)
@@ -66,8 +67,8 @@ class ModelServicesImpl(private val context: Context) {
         return nextDueTask
     }
 
-    suspend fun getTasksToRemind(now: Long): MutableList<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getAllToRemind(now)
+    suspend fun getNextDueTaskAndOverdueTasks(now: Long): MutableList<TodoTask> {
+        val dataArray = db.getTodoTaskDao().getOverdueTasks(now)
         val tasksToRemind = loadTasksSubtasks(false, *dataArray)
 
         // get task that is next due
@@ -80,58 +81,57 @@ class ModelServicesImpl(private val context: Context) {
     }
 
     suspend fun deleteTodoList(todoListId: Int): Int {
-        var counter = 0
+        var counterLists = 0
+        var counterTasks = 0
         val todoListData = db.getTodoListDao().getById(todoListId)
         if (null != todoListData) {
             val todoList = loadListsTasksSubtasks(todoListData)[0]
             for (task in todoList.getTasks()) {
-                counter += setTaskAndSubtasksInRecycleBin(task, true)
+                counterTasks += setTaskAndSubtasksInRecycleBin(task, true)
             }
-            Log.i(TAG, "$counter tasks put into recycle bin while removing list")
-            counter = db.getTodoListDao().delete(todoList.data)
+            counterLists = db.getTodoListDao().delete(todoList.data)
         }
-        Log.i(TAG, "$counter lists removed from database")
-        return counter
+        Log.i(TAG, "$counterLists list with $counterTasks tasks/subtasks removed from database.")
+        return counterLists + counterTasks
     }
 
     suspend fun deleteTodoTask(todoTask: TodoTask): Int {
-        var counter = 0
+        var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
-            counter += deleteTodoSubtask(subtask)
+            counterSubtasks += deleteTodoSubtask(subtask)
         }
-        Log.i(TAG, "$counter subtasks removed from database while removing task")
         val todoTaskImpl = todoTask as TodoTaskImpl
-        counter = db.getTodoTaskDao().delete(todoTaskImpl.data)
-        Log.i(TAG, "$counter tasks removed from database")
-        return counter
+        val counterTasks = db.getTodoTaskDao().delete(todoTaskImpl.data)
+        Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks removed from database.")
+        return counterTasks + counterSubtasks
     }
 
     suspend fun deleteTodoSubtask(subtask: TodoSubtask): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
         val counter = db.getTodoSubtaskDao().delete(todoSubtaskImpl.data)
-        Log.i(TAG, "$counter subtasks removed from database")
+        Log.i(TAG, "$counter subtask removed from database.")
         return counter
     }
 
     suspend fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean): Int {
-        var counter = 0
+        var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
-            counter += setSubtaskInRecycleBin(subtask, inRecycleBin)
+            counterSubtasks += setSubtaskInRecycleBin(subtask, inRecycleBin)
         }
-        Log.i(TAG, "$counter subtasks put into recycle bin while putting task into recycle bin")
         val todoTaskImpl = todoTask as TodoTaskImpl
         todoTaskImpl.setInRecycleBin(inRecycleBin)
-        counter = db.getTodoTaskDao().update(todoTaskImpl.data)
-        Log.i(TAG, "$counter tasks put into recycle bin")
-        return counter
+        val counterTasks = db.getTodoTaskDao().update(todoTaskImpl.data)
+        val action = if (inRecycleBin) "put into" else "restored from"
+        Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks $action recycle bin.")
+        return counterTasks + counterSubtasks
     }
 
-    suspend fun setSubtaskInRecycleBin(subtask: TodoSubtask,
-                                                       inRecycleBin: Boolean): Int {
+    suspend fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
         todoSubtaskImpl.setInRecycleBin(inRecycleBin)
         val counter = db.getTodoSubtaskDao().update(todoSubtaskImpl.data)
-        Log.i(TAG, "$counter subtasks put into recycle bin")
+        val action = if (inRecycleBin) "put into" else "restored from"
+        Log.i(TAG, "$counter subtask $action recycle bin.")
         return counter
     }
 
@@ -359,6 +359,8 @@ class ModelServicesImpl(private val context: Context) {
             saveTodoSubtaskInDb(subtask.right)
         }
 
+        // Renew alarms. Might be a due- or overdue-task was imported.
+        AlarmMgr.setAlarmForAllTasks(context)
         return null
     }
 
