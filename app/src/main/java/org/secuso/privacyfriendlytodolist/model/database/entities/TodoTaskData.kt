@@ -43,7 +43,7 @@ data class TodoTaskData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var listId: Int? = null,
-    var listPosition: Int = -1,
+    var sortOrder: Int = Int.MAX_VALUE,
     var name: String = "",
     var description: String = "",
     var priority: Priority = Priority.DEFAULT_VALUE,

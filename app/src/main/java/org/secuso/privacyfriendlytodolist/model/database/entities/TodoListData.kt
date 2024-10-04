@@ -24,5 +24,6 @@ import androidx.room.PrimaryKey
 data class TodoListData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
+    var sortOrder: Int = Int.MAX_VALUE,
     var name: String = ""
 )

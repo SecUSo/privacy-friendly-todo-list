@@ -134,6 +134,8 @@
     <string name="list_colon">Liste:</string>
     <string name="work_subtask">An Unteraufgabe arbeiten</string>
     <string name="work_task">An Aufgabe arbeiten</string>
+    <string name="move_up">Hochschieben</string>
+    <string name="move_down">Runterschieben</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>

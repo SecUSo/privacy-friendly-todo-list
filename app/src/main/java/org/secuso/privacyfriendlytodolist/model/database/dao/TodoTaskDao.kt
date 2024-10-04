@@ -49,26 +49,48 @@ interface TodoTaskDao {
     @Query("SELECT * FROM todoTasks WHERE id = :todoTaskId LIMIT 1")
     suspend fun getById(todoTaskId: Int): TodoTaskData?
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND listId = :todoListId")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND listId = :todoListId ORDER BY sortOrder ASC")
     suspend fun getByListIdNotInRecycleBin(todoListId: Int): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime > :now ORDER BY ABS(reminderTime - :now) LIMIT 1")
+    @Query("SELECT * FROM todoTasks" +
+            " WHERE isInRecycleBin = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime > :now" +
+            " ORDER BY ABS(reminderTime - :now)" +
+            " LIMIT 1")
     suspend fun getNextDueTask(now: Long): TodoTaskData?
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL AND reminderTime <= :now")
+    @Query("SELECT todoTasks.* FROM todoTasks" +
+            " LEFT JOIN todoLists" +
+            " ON todoTasks.listId = todoLists.id" +
+            " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL AND reminderTime <= :now" +
+            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getOverdueRecurringTasks(now: Long): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now")
+    @Query("SELECT todoTasks.* FROM todoTasks" +
+            " LEFT JOIN todoLists" +
+            " ON todoTasks.listId = todoLists.id" +
+            " WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now" +
+            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getOverdueTasks(now: Long): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0")
+    @Query("SELECT todoTasks.* FROM todoTasks" +
+            " LEFT JOIN todoLists" +
+            " ON todoTasks.listId = todoLists.id" +
+            " WHERE isInRecycleBin = 0" +
+            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getAllNotInRecycleBin(): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin <> 0")
+    @Query("SELECT todoTasks.* FROM todoTasks" +
+            " LEFT JOIN todoLists" +
+            " ON todoTasks.listId = todoLists.id" +
+            " WHERE isInRecycleBin <> 0" +
+            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getAllInRecycleBin(): Array<TodoTaskData>
 
-    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND listId = :listId")
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND listId = :listId ORDER BY sortOrder ASC")
     suspend fun getAllOfListNotInRecycleBin(listId: Int): Array<TodoTaskData>
+
+    @Query("UPDATE todoTasks SET sortOrder = :sortOrder WHERE id = :id")
+    suspend fun updateSortOrder(id: Int, sortOrder: Int): Int
 
     @Query("UPDATE todoTasks SET name = :name, progress = :progress, doneTime = :doneTime WHERE id = :id")
     suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Long?): Int

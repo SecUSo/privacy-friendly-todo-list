@@ -276,6 +276,36 @@ class ModelServices(
         }
     }
 
+    fun saveTodoListsSortOrderInDb(todoLists: List<TodoList>,
+                                      deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                      resultConsumer: ResultConsumer<Int>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.saveTodoListsSortOrderInDb(todoLists)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
+        }
+    }
+
+    fun saveTodoTasksSortOrderInDb(todoTasks: List<TodoTask>,
+                                      deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                      resultConsumer: ResultConsumer<Int>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.saveTodoTasksSortOrderInDb(todoTasks)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
+        }
+    }
+
+    fun saveTodoSubtasksSortOrderInDb(todoSubtasks: List<TodoSubtask>,
+                                         deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                         resultConsumer: ResultConsumer<Int>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.saveTodoSubtasksSortOrderInDb(todoSubtasks)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter)
+        }
+    }
+
     fun deleteAllData(deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<Int>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {

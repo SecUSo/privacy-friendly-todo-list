@@ -53,8 +53,9 @@ class TodoListImpl : BaseTodoImpl, TodoList {
     constructor(parcel: Parcel) {
         data = TodoListData()
         data.id = parcel.readInt()
-        isDummyList = parcel.readByte().toInt() != 0
+        data.sortOrder = parcel.readInt()
         data.name = parcel.readString()!!
+        isDummyList = parcel.readByte().toInt() != 0
         parcel.readTypedList(tasks, TodoTaskImpl.CREATOR)
         // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
         // ensure that DB action gets done. So keep initial value RequiredDBAction.NONE.
@@ -62,8 +63,9 @@ class TodoListImpl : BaseTodoImpl, TodoList {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(data.id)
-        dest.writeByte((if (isDummyList) 1 else 0).toByte())
+        dest.writeInt(data.sortOrder)
         dest.writeString(data.name)
+        dest.writeByte((if (isDummyList) 1 else 0).toByte())
         dest.writeTypedList(tasks)
     }
 
@@ -78,6 +80,10 @@ class TodoListImpl : BaseTodoImpl, TodoList {
 
     override fun isDummyList(): Boolean {
         return isDummyList
+    }
+
+    override fun getSortOrder(): Int {
+        return data.sortOrder
     }
 
     override fun setName(name: String) {

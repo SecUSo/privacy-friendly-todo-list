@@ -154,8 +154,6 @@ class DBMigrationTest {
         val listIds = ArrayList<Int>()
         var cursor = db.query("SELECT * FROM todoLists")
         cursor.use {
-            // Check if "description" column was removed
-            assertEquals(2, cursor.columnCount)
             // Check values
             for (id in 1 .. 3) {
                 if (id == 1) {
@@ -166,7 +164,9 @@ class DBMigrationTest {
 
                 var col = 0
                 assertEquals(id, cursor.getIntOrNull(col++))
-                assertEquals("Test list $id", cursor.getStringOrNull(col))
+                assertEquals(id, cursor.getIntOrNull(col++)) // sortOrder
+                assertEquals("Test list $id", cursor.getStringOrNull(col++))
+                assertEquals(col, cursor.columnCount)
                 listIds.add(id)
             }
             assertFalse(cursor.moveToNext())
@@ -178,7 +178,6 @@ class DBMigrationTest {
         val taskIds = ArrayList<Int>()
         cursor = db.query("SELECT * FROM todoTasks")
         cursor.use {
-            assertEquals(13, cursor.columnCount)
             // Check values
             var pos = 0
             var id = 0
@@ -197,7 +196,7 @@ class DBMigrationTest {
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(listId, cursor.getIntOrNull(col++))
-                    assertEquals(-1, cursor.getIntOrNull(col++)) // listPosition
+                    assertEquals(id, cursor.getIntOrNull(col++)) // sortOrder
                     assertEquals("Test task $id", cursor.getStringOrNull(col++))
                     assertEquals("Test task description $id", cursor.getStringOrNull(col++))
                     assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
@@ -211,7 +210,8 @@ class DBMigrationTest {
                     } else {
                         assertEquals(null, cursor.getIntOrNull(col++))
                     }
-                    assertEquals(0, cursor.getIntOrNull(col)) // isInRecycleBin
+                    assertEquals(0, cursor.getIntOrNull(col++)) // isInRecycleBin
+                    assertEquals(col, cursor.columnCount)
                     assertTrue(listId == null || listIds.contains(listId))
                     taskIds.add(id)
                 }
@@ -221,7 +221,6 @@ class DBMigrationTest {
 
         cursor = db.query("SELECT * FROM todoSubtasks")
         cursor.use {
-            assertEquals(5, cursor.columnCount)
             // Check values
             assertTrue(cursor.moveToFirst())
             var id = 0
@@ -238,13 +237,15 @@ class DBMigrationTest {
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(taskId, cursor.getIntOrNull(col++))
+                    assertEquals(id, cursor.getIntOrNull(col++)) // sortOrder
                     assertEquals("Test subtask $id", cursor.getStringOrNull(col++))
                     if (id % 2 != 0) {
                         assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime
                     } else {
                         assertEquals(null, cursor.getIntOrNull(col++))
                     }
-                    assertEquals(0, cursor.getIntOrNull(col))
+                    assertEquals(0, cursor.getIntOrNull(col++))
+                    assertEquals(col, cursor.columnCount)
                     assertTrue(taskIds.contains(taskId))
                 }
             }

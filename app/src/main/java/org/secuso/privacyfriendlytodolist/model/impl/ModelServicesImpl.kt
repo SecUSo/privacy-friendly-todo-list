@@ -12,7 +12,6 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.RequiredDBAction
-import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.FileNotFoundException
@@ -278,6 +277,39 @@ class ModelServicesImpl(private val context: Context) {
             else -> {}
         }
         todoSubtaskImpl.setUnchanged()
+        return counter
+    }
+
+    suspend fun saveTodoListsSortOrderInDb(todoLists: List<TodoList>): Int {
+        var counter = 0
+        for ((sortOrder, todoList) in todoLists.withIndex()) {
+            val todoListImpl = todoList as TodoListImpl
+            todoListImpl.data.sortOrder = sortOrder
+            counter += db.getTodoListDao().updateSortOrder(todoList.getId(), sortOrder)
+        }
+        Log.d(TAG, "List position of $counter todo lists was updated in DB.")
+        return counter
+    }
+
+    suspend fun saveTodoTasksSortOrderInDb(todoTasks: List<TodoTask>): Int {
+        var counter = 0
+        for ((sortOrder, todoTask) in todoTasks.withIndex()) {
+            val todoTaskImpl = todoTask as TodoTaskImpl
+            todoTaskImpl.data.sortOrder = sortOrder
+            counter += db.getTodoTaskDao().updateSortOrder(todoTask.getId(), sortOrder)
+        }
+        Log.d(TAG, "List position of $counter todo tasks was updated in DB.")
+        return counter
+    }
+
+    suspend fun saveTodoSubtasksSortOrderInDb(todoSubtasks: List<TodoSubtask>): Int {
+        var counter = 0
+        for ((sortOrder, todoSubtask) in todoSubtasks.withIndex()) {
+            val todoSubtaskImpl = todoSubtask as TodoSubtaskImpl
+            todoSubtaskImpl.data.sortOrder = sortOrder
+            counter += db.getTodoSubtaskDao().updateSortOrder(todoSubtask.getId(), todoSubtaskImpl.data.sortOrder)
+        }
+        Log.d(TAG, "List position of $counter todo subtasks was updated in DB.")
         return counter
     }
 

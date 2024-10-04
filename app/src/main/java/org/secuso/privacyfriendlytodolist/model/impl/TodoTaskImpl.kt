@@ -50,7 +50,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.reminderTime = parcel.readValue(Long::class.java.classLoader) as Long?
         reminderTimeChanged = parcel.readByte() != 0.toByte()
         reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
-        data.listPosition = parcel.readInt()
+        data.sortOrder = parcel.readInt()
         data.priority = Priority.fromOrdinal(parcel.readInt())!!
         parcel.readTypedList(subtasks, TodoSubtaskImpl.CREATOR)
         // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
@@ -71,7 +71,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeValue(data.reminderTime)
         dest.writeByte((if (reminderTimeChanged) 1 else 0).toByte())
         dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
-        dest.writeInt(data.listPosition)
+        dest.writeInt(data.sortOrder)
         dest.writeInt(data.priority.ordinal)
         dest.writeTypedList(subtasks)
     }
@@ -140,12 +140,8 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.recurrencePattern != RecurrencePattern.NONE
     }
 
-    override fun setListPosition(position: Int) {
-        data.listPosition = position
-    }
-
-    override fun getListPosition(): Int {
-        return data.listPosition
+    override fun getSortOrder(): Int {
+        return data.sortOrder
     }
 
     override fun setSubtasks(subtasks: MutableList<TodoSubtask>) {

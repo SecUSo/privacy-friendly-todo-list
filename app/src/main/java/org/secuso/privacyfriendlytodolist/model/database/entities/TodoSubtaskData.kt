@@ -39,6 +39,7 @@ data class TodoSubtaskData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var taskId: Int = 0,
+    var sortOrder: Int = Int.MAX_VALUE,
     var name: String = "",
     var doneTime: Long? = null,
     var isInRecycleBin: Boolean = false

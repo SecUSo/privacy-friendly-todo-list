@@ -51,7 +51,6 @@ import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.SortTypes
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
 import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
@@ -77,7 +76,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
     private var initialAlert: TextView? = null
     private var secondAlert: TextView? = null
-    private var optionFab: FloatingActionButton? = null
+    private var fabNewTodoTask: FloatingActionButton? = null
     private var model: ModelServices? = null
     private var mPref: SharedPreferences? = null
 
@@ -145,9 +144,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var checked = false
-        var sortType: SortTypes
-        sortType = SortTypes.DEADLINE
         collapseAll()
         when (item.itemId) {
             R.id.ac_add -> {
@@ -176,25 +172,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.ac_group_by_prio -> {
-                checked = !item.isChecked
-                item.setChecked(checked)
-                sortType = SortTypes.PRIORITY
-                mPref!!.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, checked).apply()
+                item.isChecked = !item.isChecked
+                expandableTodoTaskAdapter!!.isGroupingByPriority = item.isChecked
+                mPref!!.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked).apply()
             }
 
             R.id.ac_sort_by_deadline -> {
-                checked = !item.isChecked
-                item.setChecked(checked)
-                sortType = SortTypes.DEADLINE
-                mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, checked).apply()
+                item.isChecked = !item.isChecked
+                expandableTodoTaskAdapter!!.isSortingByDeadline = item.isChecked
+                mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
             }
 
             else -> return super.onOptionsItemSelected(item)
-        }
-        if (checked) {
-            expandableTodoTaskAdapter!!.addSortCondition(sortType)
-        } else {
-            expandableTodoTaskAdapter!!.removeSortCondition(sortType)
         }
         expandableTodoTaskAdapter!!.notifyDataSetChanged()
         return true
@@ -219,7 +208,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         exLv = findViewById(R.id.exlv_tasks)
         emptyView = findViewById(R.id.tv_empty_view_no_tasks)
-        optionFab = findViewById(R.id.fab_new_task)
+        fabNewTodoTask = findViewById(R.id.fab_new_task)
         initialAlert = findViewById(R.id.initial_alert)
         secondAlert = findViewById(R.id.second_alert)
         showHints()
@@ -694,8 +683,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             exLv!!.setAdapter(expandableTodoTaskAdapter)
             exLv!!.setEmptyView(emptyView)
-            optionFab!!.visibility = View.VISIBLE
-            initFAB(null)
+            fabNewTodoTask!!.visibility = View.VISIBLE
+            initFABNewTodoTask(null)
             showHints()
         }
     }
@@ -717,24 +706,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 this, model!!, todoList.getTasks(), false)
             exLv!!.setAdapter(expandableTodoTaskAdapter)
             exLv!!.setEmptyView(emptyView)
-            optionFab!!.visibility = View.VISIBLE
-            initFAB(todoList)
+            fabNewTodoTask!!.visibility = View.VISIBLE
+            initFABNewTodoTask(todoList)
         } else {
             Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
             showAllTasks()
         }
     }
 
-    // todoListId != null means id is given from list. otherwise new task was created in all-tasks.
-    private fun initFAB(todoList: TodoList?) {
-        optionFab!!.setOnClickListener { v: View? ->
+    /**
+     * (Re-)Initializes the floating-action-button to add a new to-do task.
+     *
+     * @param todoList If null, the new to-do task shall be added to all-tasks.
+     * If not null, the new to-do task shall be added to this list.
+     */
+    private fun initFABNewTodoTask(todoList: TodoList?) {
+        fabNewTodoTask!!.setOnClickListener { v: View? ->
             val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists, todoList)
             pt.setDialogCallback { todoTask ->
                 model!!.saveTodoTaskInDb(todoTask) { counter ->
                     onTaskChange(todoTask)
                     showHints()
-                    // show List if created in certain list, else show all tasks
-                    showTasksOfListOrAllTasks(todoList?.getId())
+                    showTasksOfListOrAllTasks(todoTask.getListId())
                     if (todoTask.hasReminderTime()) {
                         AlarmMgr.checkForPermissions(this)
                     }
@@ -814,11 +807,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         currentTodoList.getId() == todoTask.getListId()
                     }
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoList, todoTask)
-                    editTaskDialog.setDialogCallback(ResultCallback { todoTask2: TodoTask ->
-                        model!!.saveTodoTaskInDb(todoTask2) { counter ->
-                            onTaskChange(todoTask2)
+                    editTaskDialog.setDialogCallback(ResultCallback { changedTodoTask: TodoTask ->
+                        model!!.saveTodoTaskInDb(changedTodoTask) { counter ->
+                            onTaskChange(changedTodoTask)
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                            showTasksOfListOrAllTasks(activeListId)
+                            showTasksOfListOrAllTasks(changedTodoTask.getListId())
                         }
                     })
                     editTaskDialog.show()
@@ -835,7 +828,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.delete_task -> {
                 val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
                 if (null != todoTask) {
-                    val snackBar = Snackbar.make(optionFab!!, R.string.task_removed, Snackbar.LENGTH_LONG)
+                    val snackBar = Snackbar.make(fabNewTodoTask!!, R.string.task_removed, Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
                         model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                             if (counter > 0) {
