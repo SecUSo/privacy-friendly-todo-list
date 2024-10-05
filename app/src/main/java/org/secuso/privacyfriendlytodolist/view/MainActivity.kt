@@ -677,6 +677,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         homeMenuEntry.setChecked(true)
         model!!.getAllToDoTasks { todoTasks ->
             expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks, true)
+            exLv!!.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
+                expandableTodoTaskAdapter!!.onClickSubtask(groupPosition, position)
+                return@setOnChildClickListener false
+            }
             exLv!!.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
                 val groupPosition = ExpandableListView.getPackedPositionGroup(id)
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
@@ -686,7 +690,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     expandableTodoTaskAdapter!!.setLongClickedTaskByPos(groupPosition)
                 }
                 registerForContextMenu(exLv)
-                false
+                return@setOnItemLongClickListener false
             }
             exLv!!.setAdapter(expandableTodoTaskAdapter)
             exLv!!.setEmptyView(emptyView)

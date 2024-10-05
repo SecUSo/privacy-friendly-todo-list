@@ -119,6 +119,22 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
     }
 
+    fun onClickSubtask(groupPosition: Int, childPosition: Int) {
+        val taskHolder = getTaskByPosition(groupPosition)
+        var subtaskMetaData: SubtaskMetaData? = null
+        if (null != taskHolder) {
+            val index = childPosition - 1
+            subtaskMetaData = taskHolder.getSubtaskMetaData(index)
+            if (null != subtaskMetaData) {
+                subtaskMetaData.toggleMoveButtonsVisibility()
+                notifyDataSetChanged()
+            }
+        }
+        if (null == subtaskMetaData) {
+            Log.w(TAG, "Unable to get subtask by position $groupPosition, $childPosition")
+        }
+    }
+
     /**
      * filter tasks by "done" criterion (show "all", only "open" or only "completed" tasks)
      * If the user changes the filter, it is crucial to call "sortTasks" again.
@@ -217,7 +233,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
     }
 
-    /***
+    /**
      * @param groupPosition position of current row. For that reason the offset to the task must be
      * computed taking into account all preceding dividing priority bars
      * @return null if there is no task at @param groupPosition (but a divider row) or the wanted task
@@ -529,11 +545,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 vh3.moveDownButton!!.setOnClickListener {
                     moveSubtask(currentTaskHolder, subtaskIndex, false)
                 }
-                actualConvertView!!.setOnClickListener {
-                    currentSubtaskMetaData.toggleMoveButtonsVisibility()
-                    vh3.moveUpButton!!.visibility = currentSubtaskMetaData.moveButtonsVisibility
-                    vh3.moveDownButton!!.visibility = currentSubtaskMetaData.moveButtonsVisibility
-                }
             }
         }
         return actualConvertView
@@ -541,8 +552,15 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     private fun moveSubtask(taskHolder: TaskHolder, subtaskIndex: Int, moveUp: Boolean) {
         val subtasks = taskHolder.todoTask.getSubtasks()
-        val newIndex = subtaskIndex + if (moveUp) -1 else 1
-        if (subtaskIndex >= 0 && subtaskIndex < subtasks.size && newIndex >= 0 && newIndex < subtasks.size) {
+        var newIndex = subtaskIndex + if (moveUp) -1 else 1
+        // Wrap around
+        if (newIndex < 0) {
+            newIndex = subtasks.size - 1
+        }
+        if (newIndex >= subtasks.size) {
+            newIndex = 0
+        }
+        if (subtaskIndex >= 0 && subtaskIndex < subtasks.size && newIndex >= 0) {
             // Swap subtasks in dataset
             val subtaskA = subtasks[subtaskIndex]
             val subtaskB = subtasks[newIndex]
