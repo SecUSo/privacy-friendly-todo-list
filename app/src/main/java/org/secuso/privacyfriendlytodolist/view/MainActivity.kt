@@ -39,7 +39,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.ModelObserver
 import org.secuso.privacyfriendlytodolist.model.ModelServices
-import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
@@ -81,9 +80,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mPref: SharedPreferences? = null
 
     // TodoList administration
-    var todoLists: MutableList<TodoList> = ArrayList(0)
-        private set
-    private var selectedTodoList: TodoList? = null
+    private var selectedTodoListId: Int = -1
 
     // GUI
     private var navigationView: NavigationView? = null
@@ -214,6 +211,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showHints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
+        fabNewTodoTask!!.setOnClickListener { v: View? ->
+            val pt = ProcessTodoTaskDialog(this@MainActivity, activeListId)
+            pt.setDialogCallback { todoTask ->
+                model!!.saveTodoTaskInDb(todoTask) { counter ->
+                    onTaskChange(todoTask)
+                    showHints()
+                    showTasksOfListOrAllTasks(todoTask.getListId())
+                    if (todoTask.hasReminderTime()) {
+                        AlarmMgr.checkForPermissions(this)
+                    }
+                }
+            }
+            pt.show()
+        }
+
         exportTasksLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
                 val uri = result.data?.data
@@ -264,23 +276,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
         model!!.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
-            model!!.getAllToDoLists { allTodoLists ->
-                todoLists = allTodoLists
-                showHints()
-                addTodoListsToNavigationMenu()
+            showHints()
+            addTodoListsToNavigationMenu()
 
-                if (null == errorMessage) {
-                    Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
-                    // Renew alarms. Might be a due- or overdue-task was imported.
-                    AlarmMgr.setAlarmForAllTasks(this)
-                } else {
-                    Log.e(TAG, "CSV import failed: $errorMessage")
-                    AlertDialog.Builder(this).apply {
-                        setTitle(R.string.import_failed)
-                        setMessage(errorMessage)
-                        setPositiveButton(R.string.ok) { dialog, which -> }
-                        show()
-                    }
+            if (null == errorMessage) {
+                Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
+                // Renew alarms. Might be a due- or overdue-task was imported.
+                AlarmMgr.setAlarmForAllTasks(this)
+            } else {
+                Log.e(TAG, "CSV import failed: $errorMessage")
+                AlertDialog.Builder(this).apply {
+                    setTitle(R.string.import_failed)
+                    setMessage(errorMessage)
+                    setPositiveButton(R.string.ok) { dialog, which -> }
+                    show()
                 }
             }
         }
@@ -288,13 +297,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val arrayList = if (todoLists is ArrayList<TodoList>) todoLists as ArrayList<TodoList> else ArrayList(todoLists)
-        outState.putParcelableArrayList(KEY_TODO_LISTS, arrayList)
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked)
         outState.putLong(KEY_UNLOCK_UNTIL, unlockUntil)
         if (activeListId != null) {
             outState.putByte(KEY_ACTIVE_LIST_IS_DUMMY, 0.toByte())
-            outState.putInt(KEY_ACTIVE_LIST, activeListId!!)
+            outState.putInt(KEY_ACTIVE_LIST_ID, activeListId!!)
         } else {
             outState.putByte(KEY_ACTIVE_LIST_IS_DUMMY, 1.toByte())
         }
@@ -307,11 +314,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun restore(savedInstanceState: Bundle) {
-        todoLists = savedInstanceState.getParcelableArrayList<TodoList>(KEY_TODO_LISTS) as MutableList<TodoList>
         isUnlocked = savedInstanceState.getBoolean(KEY_IS_UNLOCKED)
         unlockUntil = savedInstanceState.getLong(KEY_UNLOCK_UNTIL)
         activeListId = if (savedInstanceState.getByte(KEY_ACTIVE_LIST_IS_DUMMY).toInt() != 0)
-            null else savedInstanceState.getInt(KEY_ACTIVE_LIST)
+            null else savedInstanceState.getInt(KEY_ACTIVE_LIST_ID)
     }
 
     private fun authAndGuiInit() {
@@ -363,18 +369,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView = findViewById(R.id.nav_view)
         navigationView!!.setNavigationItemSelectedListener(this)
 
-        model!!.getAllToDoLists { allTodoLists ->
-            todoLists = allTodoLists
-            addTodoListsToNavigationMenu()
+        addTodoListsToNavigationMenu()
 
-            var tasksGetDisplayed = false
-            val extras = intent.extras
-            if (extras != null) {
-                tasksGetDisplayed = processExtras(extras)
-            }
-            if (!tasksGetDisplayed) {
-                showTasksOfListOrAllTasks(activeListId)
-            }
+        var tasksGetDisplayed = false
+        val extras = intent.extras
+        if (extras != null) {
+            tasksGetDisplayed = processExtras(extras)
+        }
+        if (!tasksGetDisplayed) {
+            showTasksOfListOrAllTasks(activeListId)
         }
     }
 
@@ -588,62 +591,66 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Adds To do-Lists to the navigation-drawer
     private fun addTodoListsToNavigationMenu() {
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navMenu = navView.menu
-        navMenu.removeGroup(R.id.menu_group_todo_lists)
-        for (todoList in todoLists) {
-            val item = navMenu.add(R.id.menu_group_todo_lists, todoList.getId(), 1, todoList.getName())
-            item.setCheckable(true)
-            item.setIcon(R.drawable.ic_label_black_24dp)
-            item.setActionView(R.layout.list_action_view)
-            val actionButton: ImageButton = item.actionView!!.findViewById(R.id.action_button)
-            actionButton.tag = todoList.getId()
-            actionButton.setOnClickListener {
-                registerForContextMenu(actionButton)
-                openContextMenu(actionButton)
-                unregisterForContextMenu(actionButton)
+        model!!.getAllToDoListNames { allTodoListNames ->
+            val navView: NavigationView = findViewById(R.id.nav_view)
+            val navMenu = navView.menu
+            navMenu.removeGroup(R.id.menu_group_todo_lists)
+            for (entry in allTodoListNames.entries) {
+                val item = navMenu.add(R.id.menu_group_todo_lists, entry.key, 1, entry.value)
+                item.setCheckable(true)
+                item.setIcon(R.drawable.ic_label_black_24dp)
+                item.setActionView(R.layout.list_action_view)
+                val actionButton: ImageButton = item.actionView!!.findViewById(R.id.action_button)
+                actionButton.tag = entry.key
+                actionButton.setOnClickListener {
+                    registerForContextMenu(actionButton)
+                    openContextMenu(actionButton)
+                    unregisterForContextMenu(actionButton)
+                }
             }
         }
     }
 
     // Method to add a new To do-List
     private fun startAddListDialog() {
-        model!!.getAllToDoLists { allTodoLists ->
-            todoLists = allTodoLists
-            val pl = ProcessTodoListDialog(this)
+        val pl = ProcessTodoListDialog(this)
+        pl.setDialogCallback { todoList ->
+            model!!.saveTodoListInDb(todoList) { counter ->
+                showHints()
+                addTodoListsToNavigationMenu()
+                Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} added.")
+            }
+        }
+        pl.show()
+    }
+
+    // Method to change an existing To do-List
+    private fun startEditListDialog() {
+        model!!.getToDoListById(selectedTodoListId) { existingTodoList ->
+            if (null == existingTodoList) {
+                Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
+                return@getToDoListById
+            }
+            val pl = ProcessTodoListDialog(this, existingTodoList)
             pl.setDialogCallback { todoList ->
-                todoLists.add(todoList)
+                todoList.setChanged()
                 model!!.saveTodoListInDb(todoList) { counter ->
                     showHints()
                     addTodoListsToNavigationMenu()
-                    Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} added.")
+                    expandableTodoTaskAdapter?.notifyDataSetChanged()
+                    if (activeListId == todoList.getId()) {
+                        // In case of changed list name:
+                        toolbar?.setTitle(todoList.getName())
+                    }
+                    if (counter > 0) {
+                        Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} changed.")
+                    } else {
+                        Log.e(TAG, "Failed to save list with ID ${todoList.getId()}.")
+                    }
                 }
             }
             pl.show()
         }
-    }
-
-    // Method to change an existing To do-List
-    private fun startEditListDialog(existingTodoList: TodoList) {
-        val pl = ProcessTodoListDialog(this, existingTodoList)
-        pl.setDialogCallback { todoList ->
-            todoList.setChanged()
-            model!!.saveTodoListInDb(todoList) { counter ->
-                showHints()
-                addTodoListsToNavigationMenu()
-                expandableTodoTaskAdapter?.notifyDataSetChanged()
-                if (activeListId == todoList.getId()) {
-                    // In case of changed list name:
-                    toolbar?.setTitle(todoList.getName())
-                }
-                if (counter > 0) {
-                    Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} changed.")
-                } else {
-                    Log.e(TAG, "Failed to save list with ID ${todoList.getId()}.")
-                }
-            }
-        }
-        pl.show()
     }
 
     // Method starting tutorial
@@ -683,8 +690,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             exLv!!.setAdapter(expandableTodoTaskAdapter)
             exLv!!.setEmptyView(emptyView)
-            fabNewTodoTask!!.visibility = View.VISIBLE
-            initFABNewTodoTask(null)
             showHints()
         }
     }
@@ -697,43 +702,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.setChecked(item.itemId == listId)
             }
         }
-        val todoList = todoLists.find { currentTodoList ->
-            currentTodoList.getId() == listId
-        }
-        if (null != todoList) {
-            toolbar?.setTitle(todoList.getName())
-            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(
-                this, model!!, todoList.getTasks(), false)
-            exLv!!.setAdapter(expandableTodoTaskAdapter)
-            exLv!!.setEmptyView(emptyView)
-            fabNewTodoTask!!.visibility = View.VISIBLE
-            initFABNewTodoTask(todoList)
-        } else {
-            Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
-            showAllTasks()
-        }
-    }
-
-    /**
-     * (Re-)Initializes the floating-action-button to add a new to-do task.
-     *
-     * @param todoList If null, the new to-do task shall be added to all-tasks.
-     * If not null, the new to-do task shall be added to this list.
-     */
-    private fun initFABNewTodoTask(todoList: TodoList?) {
-        fabNewTodoTask!!.setOnClickListener { v: View? ->
-            val pt = ProcessTodoTaskDialog(this@MainActivity, todoLists, todoList)
-            pt.setDialogCallback { todoTask ->
-                model!!.saveTodoTaskInDb(todoTask) { counter ->
-                    onTaskChange(todoTask)
-                    showHints()
-                    showTasksOfListOrAllTasks(todoTask.getListId())
-                    if (todoTask.hasReminderTime()) {
-                        AlarmMgr.checkForPermissions(this)
-                    }
-                }
+        model!!.getToDoListById(listId) { todoList ->
+            if (null != todoList) {
+                toolbar?.setTitle(todoList.getName())
+                expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(
+                    this, model!!, todoList.getTasks(), false)
+                exLv!!.setAdapter(expandableTodoTaskAdapter)
+                exLv!!.setEmptyView(emptyView)
+            } else {
+                Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
+                showAllTasks()
             }
-            pt.show()
         }
     }
 
@@ -754,17 +733,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 menu.findItem(workItemId).setVisible(true)
             }
         } else if (v.tag is Int) {
-            val selectedTodoListId = v.tag as Int
-            selectedTodoList = todoLists.find { currentTodoList ->
-                currentTodoList.getId() == selectedTodoListId
-            }
-            if (null != selectedTodoList) {
-                val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
-                menu.setHeaderView(menuHeader)
-                menuInflater.inflate(R.menu.todo_list_long_click, menu)
-            } else {
-                Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
-            }
+            selectedTodoListId = v.tag as Int
+            val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
+            menu.setHeaderView(menuHeader)
+            menuInflater.inflate(R.menu.todo_list_long_click, menu)
         } else {
             Log.w(TAG, "Unhandled context menu owner: ${v.javaClass.simpleName}")
         }
@@ -773,40 +745,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.edit_list -> {
-                val todoList = selectedTodoList
-                if (null != todoList) {
-                    startEditListDialog(todoList)
-                }
+                startEditListDialog()
             }
 
             R.id.share_list -> {
-                val todoList = selectedTodoList
-                if (null != todoList) {
-                    shareList(todoList)
-                }
+                shareList()
             }
 
             R.id.export_list -> {
-                val todoList = selectedTodoList
-                if (null != todoList) {
-                    initiateTaskExport(todoList.getId())
-                }
+                initiateTaskExport(selectedTodoListId)
             }
 
             R.id.delete_list -> {
-                val todoList = selectedTodoList
-                if (null != todoList) {
-                    deleteList(todoList)
-                }
+                deleteList()
             }
 
             R.id.edit_task -> {
                 val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
                 if (null != todoTask) {
-                    val todoList = todoLists.find { currentTodoList ->
-                        currentTodoList.getId() == todoTask.getListId()
-                    }
-                    val editTaskDialog = ProcessTodoTaskDialog(this, todoLists, todoList, todoTask)
+                    val editTaskDialog = ProcessTodoTaskDialog(this, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { changedTodoTask: TodoTask ->
                         model!!.saveTodoTaskInDb(changedTodoTask) { counter ->
                             onTaskChange(changedTodoTask)
@@ -832,12 +789,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
                         model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                             if (counter > 0) {
-                                if (null != todoTask.getListId()) {
-                                    val todoList = todoLists.find { currentTodoList ->
-                                        currentTodoList.getId() == todoTask.getListId()
-                                    }
-                                    todoList?.getTasks()?.add(todoTask)
-                                }
                                 AlarmMgr.setAlarmForTask(this, todoTask)
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
@@ -848,12 +799,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     model!!.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter ->
                         if (counter > 0) {
-                            if (null != todoTask.getListId()) {
-                                val todoList = todoLists.find { currentTodoList ->
-                                    currentTodoList.getId() == todoTask.getListId()
-                                }
-                                todoList?.getTasks()?.remove(todoTask)
-                            }
                             AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
                             showTasksOfListOrAllTasks(activeListId)
                             showHints()
@@ -916,42 +861,51 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onContextItemSelected(item)
     }
 
-    private fun shareList(todoList: TodoList) {
-        val text = StringWriter()
-        val builder = MarkdownBuilder(text, getString(R.string.deadline))
-        builder.addList(todoList)
-        shareMarkdownText(text.toString())
+    private fun shareList() {
+        model!!.getToDoListById(selectedTodoListId) { todoList ->
+            if (null == todoList) {
+                Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
+                return@getToDoListById
+            }
+            val text = StringWriter()
+            val builder = MarkdownBuilder(text, getString(R.string.deadline))
+            builder.addList(todoList)
+            shareMarkdownText(text.toString())
+        }
     }
 
-    private fun deleteList(todoList: TodoList) {
-        AlertDialog.Builder(this).apply {
-            setMessage(R.string.alert_list_delete)
-            setCancelable(true)
-            setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
-                if (!todoLists.remove(todoList)) {
-                    Log.w(TAG, "Unable to remove todo-list from list. todo-list not found.")
-                }
-                model!!.deleteTodoList(todoList.getId()) { counter ->
-                    if (counter > 0) {
-                        Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
-                        val text = getString(R.string.delete_list_feedback, todoList.getName())
-                        Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
-                    } else {
-                        Log.e(TAG, "Failed to delete list with ID ${todoList.getId()}.")
+    private fun deleteList() {
+        model!!.getToDoListById(selectedTodoListId) { todoList ->
+            if (null == todoList) {
+                Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
+                return@getToDoListById
+            }
+            AlertDialog.Builder(this).apply {
+                setMessage(R.string.alert_list_delete)
+                setCancelable(true)
+                setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
+                    model!!.deleteTodoList(todoList.getId()) { counter ->
+                        if (counter > 0) {
+                            Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
+                            val text = getString(R.string.delete_list_feedback, todoList.getName())
+                            Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
+                        } else {
+                            Log.e(TAG, "Failed to delete list with ID ${todoList.getId()}.")
+                        }
+                        showHints()
+                        addTodoListsToNavigationMenu()
+                        if (activeListId == todoList.getId()) {
+                            // Currently active list was deleted
+                            showAllTasks()
+                        }
+                        dialog.cancel()
                     }
                 }
-                showHints()
-                addTodoListsToNavigationMenu()
-                if (activeListId == todoList.getId()) {
-                    // Currently active list was deleted
-                    showAllTasks()
+                setNegativeButton(R.string.alert_delete_no) { dialog, id ->
+                    dialog.cancel()
                 }
-                dialog.cancel()
+                create().show()
             }
-            setNegativeButton(R.string.alert_delete_no) { dialog, id ->
-                dialog.cancel()
-            }
-            create().show()
         }
     }
 
@@ -1080,11 +1034,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val COMMAND_UPDATE = 3
 
         // Keys
-        private const val KEY_TODO_LISTS = "restore_todo_list_key_with_savedinstancestate"
         private const val KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate"
         private const val KEY_UNLOCK_UNTIL = "restore_unlock_until_key_with_savedinstancestate"
         private const val KEY_ACTIVE_LIST_IS_DUMMY = "KEY_ACTIVE_LIST_IS_DUMMY"
-        private const val KEY_ACTIVE_LIST = "KEY_ACTIVE_LIST"
+        private const val KEY_ACTIVE_LIST_ID = "KEY_ACTIVE_LIST_ID"
         private const val POMODORO_ACTION = "org.secuso.privacyfriendlytodolist.TODO_ACTION"
         /** keep the app unlocked for 30 seconds after switching to another activity (settings/help/about) */
         private const val UNLOCK_PERIOD: Long = 30000

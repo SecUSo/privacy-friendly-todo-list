@@ -34,7 +34,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
-import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateString
@@ -44,6 +43,7 @@ import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
 import org.secuso.privacyfriendlytodolist.util.Helper.recurrencePatternToString
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
 /**
  * This class creates a dialog that lets the user create/edit a task.
@@ -52,17 +52,18 @@ import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ProcessTodoTaskDialog(context: FragmentActivity,
-                            private val todoLists: List<TodoList>,
-                            private var selectedTodoList: TodoList? = null,
-                            taskToEdit: TodoTask? = null):
+                            private var todoTask: TodoTask):
         FullScreenDialog<ResultCallback<TodoTask>>(context, R.layout.add_task_dialog) {
-    private val editExistingTask: Boolean
-    private var todoTask: TodoTask
+
     private var deadline: Long?
     private var recurrencePattern: RecurrencePattern
     private var reminderTime: Long?
     private var taskProgress: Int
     private var taskPriority: TodoTask.Priority
+    private var assignedTodoListId: Int?
+
+    private var todoLists: Map<Int, String> = mapOf()
+    private var editExistingTask: Boolean = true
 
     // GUI elements
     private lateinit var taskName: EditText
@@ -75,25 +76,30 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     private lateinit var prioritySelector: TextView
     private lateinit var listSelector: TextView
 
+    private enum class GroupId {
+        RECURRENCE_PATTERN, TASK_PRIORITY, NO_TASK_LIST, TASK_LIST_CHOOSE
+    }
+
     init {
-        if (null != taskToEdit) {
-            editExistingTask = true
-            todoTask = taskToEdit
-        } else {
-            editExistingTask = false
-            todoTask = Model.createNewTodoTask()
-        }
         deadline = todoTask.getDeadline()
         recurrencePattern = todoTask.getRecurrencePattern()
         reminderTime = todoTask.getReminderTime()
         taskProgress = todoTask.getProgress(false)
         taskPriority = todoTask.getPriority()
+        assignedTodoListId = todoTask.getListId()
+    }
+
+    constructor(context: FragmentActivity,
+                todoListId: Int?) : this(context, Model.createNewTodoTask()) {
+        assignedTodoListId = todoListId
+        editExistingTask = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         initGui()
+
         if (editExistingTask) {
             taskName.setText(todoTask.getName())
             taskDescription.setText(todoTask.getDescription())
@@ -104,6 +110,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 context.getString(R.string.reminder) else createLocalizedDateTimeString(reminderTime!!)
             progressSelector.progress = taskProgress
             prioritySelector.text = priorityToString(context, taskPriority)
+        }
+
+        val viewModel = CustomViewModel(context)
+        val model = viewModel.model
+        model.getAllToDoListNames { allToDoListNames ->
+            todoLists = allToDoListNames
+            updateListSelector()
         }
     }
 
@@ -141,7 +154,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             openContextMenu(listSelector)
         }
         listSelector.setOnCreateContextMenuListener(this)
-        updateListSelector()
 
         progressPercent = findViewById(R.id.tv_task_progress)
 
@@ -184,7 +196,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setProgress(taskProgress)
                 todoTask.setPriority(taskPriority)
-                todoTask.setListId(selectedTodoList?.getId())
+                todoTask.setListId(assignedTodoListId)
                 todoTask.setChanged()
                 getDialogCallback().onFinish(todoTask)
                 dismiss()
@@ -261,25 +273,22 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             R.id.tv_task_recurrence_pattern -> {
                 menu.setHeaderTitle(R.string.select_recurrence_pattern)
                 for (pattern in RecurrencePattern.entries) {
-                    menu.add(v.id, pattern.ordinal, Menu.NONE, recurrencePatternToString(context, pattern))
+                    menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE, recurrencePatternToString(context, pattern))
                 }
             }
 
             R.id.tv_task_priority -> {
                 menu.setHeaderTitle(R.string.select_priority)
                 for (priority in TodoTask.Priority.entries) {
-                    menu.add(v.id, priority.ordinal, Menu.NONE, priorityToString(context, priority))
+                    menu.add(GroupId.TASK_PRIORITY.ordinal, priority.ordinal, Menu.NONE, priorityToString(context, priority))
                 }
             }
 
             R.id.tv_task_list_choose -> {
                 menu.setHeaderTitle(R.string.select_list)
-                menu.add(v.id, -1, Menu.NONE, R.string.select_no_list)
-                var i = 0
-                while (i < todoLists.size) {
-                    val todoList = todoLists[i]
-                    menu.add(v.id, i, Menu.NONE, todoList.getName())
-                    ++i
+                menu.add(GroupId.NO_TASK_LIST.ordinal, Menu.NONE, Menu.NONE, R.string.select_no_list)
+                for (entry in todoLists.entries) {
+                    menu.add(GroupId.TASK_LIST_CHOOSE.ordinal, entry.key, Menu.NONE, entry.value)
                 }
             }
         }
@@ -287,19 +296,23 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
 
     override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
         when (item.groupId) {
-            R.id.tv_task_recurrence_pattern -> {
+            GroupId.RECURRENCE_PATTERN.ordinal -> {
                 recurrencePattern = RecurrencePattern.fromOrdinal(item.itemId)!!
                 updateRecurrencePatternText()
             }
 
-            R.id.tv_task_priority -> {
+            GroupId.TASK_PRIORITY.ordinal -> {
                 taskPriority = TodoTask.Priority.fromOrdinal(item.itemId)!!
                 prioritySelector.text = priorityToString(context, taskPriority)
             }
 
-            R.id.tv_task_list_choose -> {
-                val index = item.itemId
-                selectedTodoList = if (index >= 0 && index < todoLists.size) todoLists[index] else null
+            GroupId.NO_TASK_LIST.ordinal -> {
+                assignedTodoListId = null
+                updateListSelector()
+            }
+
+            GroupId.TASK_LIST_CHOOSE.ordinal -> {
+                assignedTodoListId = item.itemId
                 updateListSelector()
             }
 
@@ -312,11 +325,15 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     }
 
     private fun updateListSelector() {
-        listSelector.text = if (null != selectedTodoList) {
-            selectedTodoList!!.getName()
-        } else {
-            context.getString(R.string.click_to_choose)
+        var text: String? = null
+        if (null != assignedTodoListId) {
+            text = todoLists[assignedTodoListId]
         }
+        if (null == text) {
+            assignedTodoListId = null
+            text = context.getString(R.string.click_to_choose)
+        }
+        listSelector.text = text
     }
 
     private fun updateRecurrencePatternText() {
