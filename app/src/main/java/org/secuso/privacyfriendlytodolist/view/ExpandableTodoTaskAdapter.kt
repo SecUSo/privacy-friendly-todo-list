@@ -87,8 +87,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     var isGroupingByPriority: Boolean
     var isSortingByDeadline: Boolean
     private val filteredTasks: MutableList<TaskHolder> = ArrayList() // data after filtering process
-    private val priorityBarPositions = HashMap<TodoTask.Priority, Int>()
-    private var listNames: Map<Int, String> = HashMap(0)
+    private val priorityBarPositions = mutableMapOf<TodoTask.Priority, Int>()
+    private var listNames = mapOf<Int, String>()
 
     init {
         val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, Filter.ALL_TASKS.name)

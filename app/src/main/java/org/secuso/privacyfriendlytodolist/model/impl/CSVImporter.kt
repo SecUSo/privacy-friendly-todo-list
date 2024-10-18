@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit
  */
 @Suppress("SameParameterValue")
 class CSVImporter {
-    val lists = HashMap<Int, TodoList>()
-    val tasks = HashMap<Int, Tuple<TodoList?, TodoTask>>()
-    val subtasks = HashMap<Int, Tuple<TodoTask, TodoSubtask>>()
+    val lists = mutableMapOf<Int, TodoList>()
+    val tasks = mutableMapOf<Int, Tuple<TodoList?, TodoTask>>()
+    val subtasks = mutableMapOf<Int, Tuple<TodoTask, TodoSubtask>>()
     private var rowNumber = 0
     private var columnIndex = 0
 

@@ -44,7 +44,7 @@ class PrefMetaData(
  * This class is used to help create Preference hierarchies for the tutorial.
  */
 object PreferenceMgr {
-    val ALL_PREFERENCES = HashMap<String, PrefMetaData>()
+    val ALL_PREFERENCES = mutableMapOf<String, PrefMetaData>()
 
     // Note: Preference names must match with names in attributes at app/src/main/res/xml/settings.xml
     private val P_IS_FIRST_TIME_LAUNCH = PrefMetaData("isFirstTimeLaunch", PrefDataType.BOOLEAN)

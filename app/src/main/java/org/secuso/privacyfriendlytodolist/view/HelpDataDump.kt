@@ -25,8 +25,8 @@ import org.secuso.privacyfriendlytodolist.R
  * This class handles the FAQ-style help menu.
  */
 class HelpDataDump(private val context: Context) {
-    /** Using LinkedHashMap to keep order of groups. */
-    private val data = LinkedHashMap<String, List<String>>()
+    /** Important: The map preserves the entry iteration order. */
+    private val data = mutableMapOf<String, List<String>>()
 
     val dataGeneral: Map<String, List<String>>
         get() = data

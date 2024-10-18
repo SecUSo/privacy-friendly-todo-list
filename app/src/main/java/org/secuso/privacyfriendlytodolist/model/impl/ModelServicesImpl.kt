@@ -178,7 +178,8 @@ class ModelServicesImpl(private val context: Context) {
 
     suspend fun getAllToDoListNames(): Map<Int, String> {
         val dataArray = db.getTodoListDao().getAllNames()
-        val map = HashMap<Int, String>(dataArray.size)
+        /** Important: The map preserves the entry iteration order. */
+        val map = mutableMapOf<Int, String>()
         for (tuple in dataArray) {
             map[tuple.id] = tuple.name
         }
