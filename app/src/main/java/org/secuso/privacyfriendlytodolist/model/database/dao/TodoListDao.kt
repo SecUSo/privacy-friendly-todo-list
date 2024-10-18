@@ -52,4 +52,7 @@ interface TodoListDao {
 
     @Query("UPDATE todoLists SET sortOrder = :sortOrder WHERE id = :id")
     suspend fun updateSortOrder(id: Int, sortOrder: Int): Int
+
+    @Query("UPDATE todoLists SET sortOrder = COALESCE((SELECT MAX(sortOrder) + 1 FROM todoLists), 0) WHERE id = :id")
+    suspend fun updateSortOrderToLast(id: Int): Int
 }

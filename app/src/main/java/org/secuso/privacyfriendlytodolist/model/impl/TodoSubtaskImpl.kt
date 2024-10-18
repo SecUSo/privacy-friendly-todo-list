@@ -88,6 +88,10 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         return data.taskId
     }
 
+    override fun setSortOrder(sortOrder: Int) {
+        data.sortOrder = sortOrder
+    }
+
     override fun getSortOrder(): Int {
         return data.sortOrder
     }

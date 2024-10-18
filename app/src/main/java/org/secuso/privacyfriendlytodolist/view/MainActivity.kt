@@ -211,6 +211,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showHints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
+        exLv!!.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
+            expandableTodoTaskAdapter?.onClickSubtask(groupPosition, position)
+            return@setOnChildClickListener false
+        }
+        exLv!!.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+            val groupPosition = ExpandableListView.getPackedPositionGroup(id)
+            if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+                val childPosition = ExpandableListView.getPackedPositionChild(id)
+                expandableTodoTaskAdapter?.setLongClickedSubtaskByPos(groupPosition, childPosition)
+            } else {
+                expandableTodoTaskAdapter?.setLongClickedTaskByPos(groupPosition)
+            }
+            registerForContextMenu(exLv)
+            return@setOnItemLongClickListener false
+        }
+
         fabNewTodoTask!!.setOnClickListener { v: View? ->
             val pt = ProcessTodoTaskDialog(this@MainActivity, activeListId)
             pt.setDialogCallback { todoTask ->
@@ -676,24 +692,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         homeMenuEntry.setCheckable(true)
         homeMenuEntry.setChecked(true)
         model!!.getAllToDoTasks { todoTasks ->
-            expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks, true)
-            exLv!!.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
-                expandableTodoTaskAdapter!!.onClickSubtask(groupPosition, position)
-                return@setOnChildClickListener false
-            }
-            exLv!!.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-                val groupPosition = ExpandableListView.getPackedPositionGroup(id)
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    val childPosition = ExpandableListView.getPackedPositionChild(id)
-                    expandableTodoTaskAdapter!!.setLongClickedSubtaskByPos(groupPosition, childPosition)
-                } else {
-                    expandableTodoTaskAdapter!!.setLongClickedTaskByPos(groupPosition)
-                }
-                registerForContextMenu(exLv)
-                return@setOnItemLongClickListener false
-            }
-            exLv!!.setAdapter(expandableTodoTaskAdapter)
-            exLv!!.setEmptyView(emptyView)
+            createExpandableTodoTaskAdapter(todoTasks, true)
             showHints()
         }
     }
@@ -709,15 +708,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         model!!.getToDoListById(listId) { todoList ->
             if (null != todoList) {
                 toolbar?.setTitle(todoList.getName())
-                expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(
-                    this, model!!, todoList.getTasks(), false)
-                exLv!!.setAdapter(expandableTodoTaskAdapter)
-                exLv!!.setEmptyView(emptyView)
+                createExpandableTodoTaskAdapter(todoList.getTasks(), false)
             } else {
                 Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
                 showAllTasks()
             }
         }
+    }
+
+    private fun createExpandableTodoTaskAdapter(todoTasks: MutableList<TodoTask>, showListNames: Boolean) {
+        expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks, showListNames)
+        expandableTodoTaskAdapter!!.setOnTasksSwappedListener { groupPositionA: Int, groupPositionB: Int ->
+            if (null != exLv) {
+                val isGroupAExpanded = exLv!!.isGroupExpanded(groupPositionA)
+                val isGroupBExpanded = exLv!!.isGroupExpanded(groupPositionB)
+                if (isGroupAExpanded != isGroupBExpanded) {
+                    if (isGroupAExpanded) {
+                        exLv!!.collapseGroup(groupPositionA)
+                        exLv!!.expandGroup(groupPositionB, false)
+                    } else {
+                        exLv!!.expandGroup(groupPositionA, false)
+                        exLv!!.collapseGroup(groupPositionB)
+                    }
+                }
+            }
+        }
+        exLv!!.setAdapter(expandableTodoTaskAdapter)
+        exLv!!.setEmptyView(emptyView)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {

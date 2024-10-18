@@ -24,6 +24,10 @@ import androidx.room.PrimaryKey
 data class TodoListData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
-    var sortOrder: Int = Int.MAX_VALUE,
+    /**
+     * Sort order should start with 0. Use -1 as initial value. First entry will get
+     * MAX(sortOrder)+1 after inserting, which results in 0.
+     */
+    var sortOrder: Int = -1,
     var name: String = ""
 )

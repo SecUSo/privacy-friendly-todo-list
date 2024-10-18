@@ -1,98 +1,96 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_exlv_task_group_root"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_exlv_task_group_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:descendantFocusability="blocksDescendants" >
 
     <View
         android:id="@+id/v_urgency_task"
         android:layout_width="5dp"
-        android:layout_height="0px"
-        android:layout_alignBottom="@+id/v_exlv_header_align_anchor"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
         android:background="@color/colorPrimary" />
 
-    <LinearLayout
-        android:id="@+id/ll_cb_task_done"
+    <CheckBox
+        android:id="@+id/cb_task_done"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="17dp">
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_marginLeft="9dp"
+        android:paddingRight="8dp" />
 
-        <CheckBox
-            android:id="@+id/cb_task_done"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_exlv_task_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="Task Name"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/bt_task_move_up"
+                style="@style/BorderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:padding="4dp"
+                android:contentDescription="@string/move_up"
+                app:srcCompat="@drawable/ic_arrow_up_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/bt_task_move_down"
+                style="@style/BorderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:padding="4dp"
+                android:layout_marginRight="6dp"
+                android:contentDescription="@string/move_down"
+                app:srcCompat="@drawable/ic_arrow_down_black_24dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_exlv_task_list_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:focusable="false" />
+            android:text="List name" />
+
+        <TextView
+            android:id="@+id/tv_exlv_task_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task Deadline" />
+
+        <ProgressBar
+            android:id="@+id/pb_task_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:progress="50"
+            android:max="100"
+            android:indeterminate="false" />
+
+        <View
+            android:id="@+id/v_exlv_header_separator"
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/lightgrey" />
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/v_urgency_indicator_task"
-        android:layout_width="5dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
-
-    <TextView
-        android:id="@+id/tv_exlv_task_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ll_cb_task_done"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="10dp"
-        android:text="Task Name"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-
-    <TextView
-        android:id="@+id/tv_exlv_task_list_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_exlv_task_name"
-        android:layout_alignLeft="@+id/tv_exlv_task_name"
-        android:visibility="gone"
-        android:text="List name: " />
-
-
-    <TextView
-        android:id="@+id/tv_exlv_task_deadline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_exlv_task_list_name"
-        android:layout_alignLeft="@+id/tv_exlv_task_name"
-        android:text="Task Deadline" />
-
-    <ProgressBar
-        android:id="@+id/pb_task_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:progress="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_exlv_task_deadline"
-        android:layout_below="@+id/tv_exlv_task_deadline"
-        android:layout_marginRight="10dp"
-        android:max="100"
-        android:indeterminate="false"
-         />
-
-    <View
-        android:id="@+id/v_exlv_header_separator"
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:layout_below="@+id/pb_task_progress"
-        android:layout_toRightOf="@+id/v_urgency_task"
-        android:background="@color/lightgrey" />
-
-    <View
-        android:id="@+id/v_exlv_header_align_anchor"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_below="@+id/v_exlv_header_separator"
-        android:layout_toRightOf="@+id/v_urgency_task" />
-
-</RelativeLayout>
+</LinearLayout>

@@ -155,6 +155,7 @@ class DBMigrationTest {
         var cursor = db.query("SELECT * FROM todoLists")
         cursor.use {
             // Check values
+            var listSortOrder = 0
             for (id in 1 .. 3) {
                 if (id == 1) {
                     assertTrue(cursor.moveToFirst())
@@ -164,7 +165,7 @@ class DBMigrationTest {
 
                 var col = 0
                 assertEquals(id, cursor.getIntOrNull(col++))
-                assertEquals(id, cursor.getIntOrNull(col++)) // sortOrder
+                assertEquals(listSortOrder++, cursor.getIntOrNull(col++))
                 assertEquals("Test list $id", cursor.getStringOrNull(col++))
                 assertEquals(col, cursor.columnCount)
                 listIds.add(id)
@@ -181,6 +182,7 @@ class DBMigrationTest {
             // Check values
             var pos = 0
             var id = 0
+            val sortOrders = mutableMapOf<Int?, Int>()
             for (listCounter in 1..3) {
                 ++pos
                 for (task in 1..4) {
@@ -191,12 +193,21 @@ class DBMigrationTest {
                         assertTrue(cursor.moveToNext())
                     }
                     val listId: Int? = if (listCounter != 3) listCounter else null
+                    var taskSortOrder = sortOrders[listId]
+                    if (null == taskSortOrder) {
+                        taskSortOrder = 0
+                        sortOrders[listId] = taskSortOrder
+                    } else {
+                        ++taskSortOrder
+                        sortOrders[listId] = taskSortOrder
+                    }
                     val deadline = if (id % 2 == 0) id + TASK_DEADLINE_BASE else null
                     val reminderTime = if (id % 2 != 0) id + TASK_DEADLINE_WARNING_TIME_BASE else null
+
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(listId, cursor.getIntOrNull(col++))
-                    assertEquals(id, cursor.getIntOrNull(col++)) // sortOrder
+                    assertEquals(taskSortOrder, cursor.getIntOrNull(col++))
                     assertEquals("Test task $id", cursor.getStringOrNull(col++))
                     assertEquals("Test task description $id", cursor.getStringOrNull(col++))
                     assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
@@ -224,6 +235,7 @@ class DBMigrationTest {
             // Check values
             assertTrue(cursor.moveToFirst())
             var id = 0
+            val sortOrders = mutableMapOf<Int, Int>()
             for (taskId in 1..12) {
                 val subtaskCount = taskId % 3
                 for (subtask in 1..subtaskCount) {
@@ -233,11 +245,19 @@ class DBMigrationTest {
                     } else {
                         assertTrue(cursor.moveToNext())
                     }
+                    var subtaskSortOrder = sortOrders[taskId]
+                    if (null == subtaskSortOrder) {
+                        subtaskSortOrder = 0
+                        sortOrders[taskId] = subtaskSortOrder
+                    } else {
+                        ++subtaskSortOrder
+                        sortOrders[taskId] = subtaskSortOrder
+                    }
 
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(taskId, cursor.getIntOrNull(col++))
-                    assertEquals(id, cursor.getIntOrNull(col++)) // sortOrder
+                    assertEquals(subtaskSortOrder, cursor.getIntOrNull(col++))
                     assertEquals("Test subtask $id", cursor.getStringOrNull(col++))
                     if (id % 2 != 0) {
                         assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime

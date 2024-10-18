@@ -140,6 +140,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.recurrencePattern != RecurrencePattern.NONE
     }
 
+    override fun setSortOrder(sortOrder: Int) {
+        data.sortOrder = sortOrder
+    }
+
     override fun getSortOrder(): Int {
         return data.sortOrder
     }

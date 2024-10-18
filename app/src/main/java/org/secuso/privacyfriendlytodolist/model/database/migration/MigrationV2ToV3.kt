@@ -14,12 +14,13 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         // Use ID as sort order. This keeps original order.
         db.execSQL("INSERT INTO $TABLE_NAME (id, sortOrder, name)" +
                 " SELECT _id, _id, name FROM todo_list")
+        // Set sort order by ascending ID which keeps original order.
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = newSortOrder - 1 FROM (SELECT id AS cloneId, ROW_NUMBER() OVER (ORDER BY `id`) AS newSortOrder FROM ${TABLE_NAME}) WHERE id = cloneId")
 
         TABLE_NAME = "todoTasks"
         db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `listId` INTEGER, `sortOrder` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `priority` INTEGER NOT NULL, `deadline` INTEGER, `recurrencePattern` INTEGER NOT NULL, `reminderTime` INTEGER, `progress` INTEGER NOT NULL, `creationTime` INTEGER NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`listId`) REFERENCES `todoLists`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )")
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_todoTasks_listId` ON `${TABLE_NAME}` (`listId`)")
         // Copy existing columns, fill new columns with any integer that is not null to fulfill not-null constraint.
-        // Use ID as sort order. This keeps original order. position_in_todo_list was never used so ignore it.
         db.execSQL("INSERT INTO $TABLE_NAME (creationTime, recurrencePattern, id, listId, sortOrder, name, description, priority, deadline, reminderTime, progress, doneTime, isInRecycleBin)" +
                 " SELECT _id, _id, _id, todo_list_id, _id, name, description, priority, deadline, deadline_warning_time, progress, done, in_trash FROM todo_task")
         // In v2 the listId can be a non-existing list-ID (0 or -3 occurs) to show that task does not
@@ -39,6 +40,8 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         db.execSQL("UPDATE `${TABLE_NAME}` SET `creationTime` = $now")
         // Set default value in new column recurrencePattern.
         db.execSQL("UPDATE `${TABLE_NAME}` SET `recurrencePattern` = 0")
+        // Set sort order by ascending ID which keeps original order. position_in_todo_list was never used so ignore it.
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = newSortOrder - 1 FROM (SELECT id AS cloneId, ROW_NUMBER() OVER (PARTITION BY `listId` ORDER BY `id`) AS newSortOrder FROM ${TABLE_NAME}) WHERE id = cloneId")
 
         TABLE_NAME = "todoSubtasks"
         db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `taskId` INTEGER NOT NULL, `sortOrder` INTEGER NOT NULL, `name` TEXT NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`taskId`) REFERENCES `todoTasks`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
@@ -49,6 +52,8 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         // Boolean done (0 or 1) has changed to doneTime (timestamp if done, otherwise null).
         db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = $now WHERE `doneTime` <> 0")
         db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = NULL WHERE `doneTime` = 0")
+        // Set sort order by ascending ID which keeps original order.
+        db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = newSortOrder - 1 FROM (SELECT id AS cloneId, ROW_NUMBER() OVER (PARTITION BY `taskId` ORDER BY `id`) AS newSortOrder FROM ${TABLE_NAME}) WHERE id = cloneId")
 
         db.execSQL("DROP TABLE todo_subtask")
         db.execSQL("DROP TABLE todo_task")

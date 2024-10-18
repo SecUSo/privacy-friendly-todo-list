@@ -111,7 +111,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         intent.putExtra(EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())
         pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        view.setOnClickPendingIntent(R.id.root_layout, pendingIntent)
+        view.setOnClickPendingIntent(R.id.ll_todo_list_widget_root, pendingIntent)
 
         view.setEmptyView(R.id.listview_widget, R.id.tv_empty_widget)
         if (null != title) {

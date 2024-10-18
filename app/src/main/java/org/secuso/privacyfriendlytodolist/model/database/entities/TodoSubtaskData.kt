@@ -39,7 +39,11 @@ data class TodoSubtaskData(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var taskId: Int = 0,
-    var sortOrder: Int = Int.MAX_VALUE,
+    /**
+     * Sort order should start with 0. Use -1 as initial value. First entry will get
+     * MAX(sortOrder)+1 after inserting, which results in 0.
+     */
+    var sortOrder: Int = -1,
     var name: String = "",
     var doneTime: Long? = null,
     var isInRecycleBin: Boolean = false

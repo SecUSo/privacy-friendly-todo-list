@@ -92,6 +92,9 @@ interface TodoTaskDao {
     @Query("UPDATE todoTasks SET sortOrder = :sortOrder WHERE id = :id")
     suspend fun updateSortOrder(id: Int, sortOrder: Int): Int
 
+    @Query("UPDATE todoTasks SET sortOrder = COALESCE((SELECT MAX(sortOrder) + 1 FROM todoTasks WHERE listId = :listId OR (listId IS NULL AND :listId IS NULL)), 0) WHERE id = :id")
+    suspend fun updateSortOrderToLast(id: Int, listId: Int?): Int
+
     @Query("UPDATE todoTasks SET name = :name, progress = :progress, doneTime = :doneTime WHERE id = :id")
     suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Long?): Int
 }

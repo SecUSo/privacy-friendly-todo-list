@@ -82,6 +82,10 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return isDummyList
     }
 
+    override fun setSortOrder(sortOrder: Int) {
+        data.sortOrder = sortOrder
+    }
+
     override fun getSortOrder(): Int {
         return data.sortOrder
     }

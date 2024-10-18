@@ -47,4 +47,7 @@ interface TodoSubtaskDao {
 
     @Query("UPDATE todoSubtasks SET sortOrder = :sortOrder WHERE id = :id")
     suspend fun updateSortOrder(id: Int, sortOrder: Int): Int
+
+    @Query("UPDATE todoSubtasks SET sortOrder = COALESCE((SELECT MAX(sortOrder) + 1 FROM todoSubtasks WHERE taskId = :taskId OR (taskId IS NULL AND :taskId IS NULL)), 0) WHERE id = :id")
+    suspend fun updateSortOrderToLast(id: Int, taskId: Int): Int
 }
