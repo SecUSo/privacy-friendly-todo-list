@@ -17,6 +17,7 @@
 
 package org.secuso.privacyfriendlytodolist.androidtest
 
+import android.database.sqlite.SQLiteDatabaseLockedException
 import android.util.Log
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
@@ -46,6 +47,7 @@ import java.io.IOException
 class DBMigrationTest {
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
+        private const val TEST_DB_NAME = "TodoDatabaseForMigrationTest.db"
         private const val TASK_PRIORITY_BASE = 1000
         private const val TASK_DEADLINE_BASE = 2000
         private const val TASK_PROGRESS_BASE = 3000
@@ -63,18 +65,31 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun allMigrationsTest() {
-        val dbName = "allMigrationsTest.db"
-        val db1 = helper.createDatabase(dbName, 1)
+        val db1 = helper.createDatabase(TEST_DB_NAME, 1)
         db1.use {
             populateDBv1(db1)
         }
 
         // Open latest version of the database. Room validates the schema once all migrations execute.
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, dbName)
+        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
             .addMigrations(*TodoListDatabase.ALL_MIGRATIONS)
             .build()
-        val db2 = todoListDatabase.openHelper.readableDatabase
+        var db2: SupportSQLiteDatabase? = null
+        for (counter in 1..10) {
+            try {
+                db2 = todoListDatabase.openHelper.readableDatabase
+            } catch (e: SQLiteDatabaseLockedException) {
+                System.gc()
+                Thread.sleep(1000)
+                continue
+            }
+            break
+        }
+        if (null == db2) {
+            // Try the last time and do not catch exception.
+            db2 = todoListDatabase.openHelper.readableDatabase
+        }
         db2.use {
             checkDBv3(db2)
         }
@@ -94,8 +109,7 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun specificMigrationErrorTest() {
-        val dbName = "specificMigrationErrorTest.db"
-        val db1 = helper.createDatabase(dbName, 1)
+        val db1 = helper.createDatabase(TEST_DB_NAME, 1)
         db1.use {
             // Create a table v1
             populateDBv1(db1)
@@ -105,10 +119,24 @@ class DBMigrationTest {
 
         // Do the migration and migration checks.
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, dbName)
+        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
             .addMigrations(*TodoListDatabase.ALL_MIGRATIONS)
             .build()
-        val db2 = todoListDatabase.openHelper.readableDatabase
+        var db2: SupportSQLiteDatabase? = null
+        for (counter in 1..10) {
+            try {
+                db2 = todoListDatabase.openHelper.readableDatabase
+            } catch (e: SQLiteDatabaseLockedException) {
+                System.gc()
+                Thread.sleep(1000)
+                continue
+            }
+            break
+        }
+        if (null == db2) {
+            // Try the last time and do not catch exception.
+            db2 = todoListDatabase.openHelper.readableDatabase
+        }
         db2.use {
             checkDBv3(db2)
         }
