@@ -25,6 +25,8 @@ interface TodoSubtask : BaseTodo, Parcelable {
     fun getName(): String
     fun setTaskId(taskIdForeignKey: Int)
     fun getTaskId(): Int
+    fun setSortOrder(sortOrder: Int)
+    fun getSortOrder(): Int
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
     fun setDoneTime(doneTime: Long?)

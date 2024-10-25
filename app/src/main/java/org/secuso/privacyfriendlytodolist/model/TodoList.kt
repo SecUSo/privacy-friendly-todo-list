@@ -28,6 +28,8 @@ interface TodoList : BaseTodo, Parcelable {
     fun setId(id: Int)
     fun getId(): Int
     fun isDummyList(): Boolean
+    fun setSortOrder(sortOrder: Int)
+    fun getSortOrder(): Int
     fun setName(name: String)
     fun getName(): String
     fun getSize(): Int

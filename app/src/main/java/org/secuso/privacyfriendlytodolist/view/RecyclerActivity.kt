@@ -105,7 +105,7 @@ class RecyclerActivity : AppCompatActivity() {
         super.onCreateContextMenu(menu, v, menuInfo)
         val inflater = this.menuInflater
         menu.setHeaderView(getMenuHeader(baseContext, baseContext.getString(R.string.select_option)))
-        inflater.inflate(R.menu.deleted_task_long_click, menu)
+        inflater.inflate(R.menu.deleted_task_context, menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

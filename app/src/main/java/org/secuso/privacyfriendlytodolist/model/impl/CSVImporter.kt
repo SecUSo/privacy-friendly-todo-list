@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit
  */
 @Suppress("SameParameterValue")
 class CSVImporter {
-    val lists = HashMap<Int, TodoList>()
-    val tasks = HashMap<Int, Tuple<TodoList?, TodoTask>>()
-    val subtasks = HashMap<Int, Tuple<TodoTask, TodoSubtask>>()
+    val lists = mutableMapOf<Int, TodoList>()
+    val tasks = mutableMapOf<Int, Tuple<TodoList?, TodoTask>>()
+    val subtasks = mutableMapOf<Int, Tuple<TodoTask, TodoSubtask>>()
     private var rowNumber = 0
     private var columnIndex = 0
 
@@ -59,7 +59,7 @@ class CSVImporter {
 
     private fun parseList(row: List<String>): TodoList? {
         var list: TodoList? = null
-        val id = getId(row, LIST)
+        val id = getId(row, CSVExporter.START_COLUMN_LIST)
         if (null != id) {
             list = lists[id]
             // CSV file can contain duplicates of a list, one for each task and its subtasks.
@@ -69,7 +69,7 @@ class CSVImporter {
                 list = Model.createNewTodoList()
                 lists[id] = list
                 // List ID is not set. It gets set while saving in DB.
-                list.setName(getName(row, LIST))
+                list.setName(getName(row, CSVExporter.START_COLUMN_LIST))
             }
         }
         return list
@@ -77,7 +77,7 @@ class CSVImporter {
 
     private fun parseTask(row: List<String>, list: TodoList?): TodoTask? {
         var task: TodoTask? = null
-        val id = getId(row, TASK)
+        val id = getId(row, CSVExporter.START_COLUMN_TASK)
         if (null != id) {
             task = tasks[id]?.right
             // CSV file can contain duplicates of a task, one for each subtasks.
@@ -90,19 +90,18 @@ class CSVImporter {
                     task.setListId(list.getId())
                 }
                 // Task ID is not set. It gets set while saving in DB.
-                task.setName(getName(row, TASK))
-                val creationTime = getTimestamp(row, TASK, 2)
+                task.setName(getName(row, CSVExporter.START_COLUMN_TASK))
+                val creationTime = getTimestamp(row, CSVExporter.START_COLUMN_TASK, 2)
                 if (null != creationTime) {
                     task.setCreationTime(creationTime)
                 }
-                task.setDoneTime(getTimestamp(row, TASK, 3))
-                task.setListPosition(getInteger(row, TASK, 4))
-                task.setDescription(getText(row, TASK, 5))
-                task.setDeadline(getTimestamp(row, TASK, 6))
-                task.setReminderTime(getTimestamp(row, TASK, 7))
-                task.setRecurrencePattern(getEnumValue<RecurrencePattern>(row, TASK, 8, RecurrencePattern.NONE))
-                task.setProgress(getProgress(row, TASK, 9))
-                task.setPriority(getEnumValue<Priority>(row, TASK, 10, Priority.DEFAULT_VALUE))
+                task.setDoneTime(getTimestamp(row, CSVExporter.START_COLUMN_TASK, 3))
+                task.setDescription(getText(row, CSVExporter.START_COLUMN_TASK, 4))
+                task.setDeadline(getTimestamp(row, CSVExporter.START_COLUMN_TASK, 5))
+                task.setReminderTime(getTimestamp(row, CSVExporter.START_COLUMN_TASK, 6))
+                task.setRecurrencePattern(getEnumValue<RecurrencePattern>(row, CSVExporter.START_COLUMN_TASK, 7, RecurrencePattern.NONE))
+                task.setProgress(getProgress(row, CSVExporter.START_COLUMN_TASK, 8))
+                task.setPriority(getEnumValue<Priority>(row, CSVExporter.START_COLUMN_TASK, 9, Priority.DEFAULT_VALUE))
 
                 if (task.isRecurring() && task.getDeadline() == null) {
                     throw IllegalFormatException("Row $rowNumber: Task with ID $id is recurring but has no deadline.")
@@ -113,7 +112,7 @@ class CSVImporter {
     }
 
     private fun parseSubtask(row: List<String>, task: TodoTask?) {
-        val id = getId(row, SUBTASK)
+        val id = getId(row, CSVExporter.START_COLUMN_SUBTASK)
         if (null != id) {
             if (null == task) {
                 throw IllegalFormatException("Row $rowNumber: Subtask with ID $id found but no task(-ID).")
@@ -125,8 +124,8 @@ class CSVImporter {
             subtasks[id] = Tuple(task, subtask)
             subtask.setTaskId(task.getId())
             // Subtask ID is not set. It gets set while saving in DB.
-            subtask.setName(getName(row, SUBTASK))
-            subtask.setDoneTime(getTimestamp(row, SUBTASK, 2))
+            subtask.setName(getName(row, CSVExporter.START_COLUMN_SUBTASK))
+            subtask.setDoneTime(getTimestamp(row, CSVExporter.START_COLUMN_SUBTASK, 2))
         }
     }
 
@@ -178,12 +177,6 @@ class CSVImporter {
         return result
     }
 
-    private fun getInteger(row: List<String>, offset: Int, index: Int): Int {
-        columnIndex = offset + index
-        val text = row[columnIndex].trim()
-        return text.toInt()
-    }
-
     private inline fun <reified T : Enum<T>> getEnumValue(row: List<String>,
                                                           offset: Int,
                                                           index: Int,
@@ -196,11 +189,5 @@ class CSVImporter {
                 ?: throw IllegalFormatException("Invalid ${result.declaringJavaClass.simpleName} value.")
         }
         return result
-    }
-
-    companion object {
-        private const val LIST = 0
-        private const val TASK = 2
-        private const val SUBTASK = 13
     }
 }

@@ -20,7 +20,6 @@ package org.secuso.privacyfriendlytodolist.androidtest
 import android.util.Log
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
@@ -64,22 +63,16 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun allMigrationsTest() {
-        val db1 = helper.createDatabase(TEST_DB_NAME, 1)
-        db1.use {
-            populateDBv1(db1)
+        val db = helper.createDatabase(TEST_DB_NAME, 1)
+        db.use {
+            populateDBv1(db)
+            // Migrate DB to latest DB format.
+            helper.runMigrationsAndValidate(TEST_DB_NAME, TodoListDatabase.VERSION,
+                false, *TodoListDatabase.ALL_MIGRATIONS)
+            // MigrationTestHelper automatically verifies the schema changes,
+            // but whether the data was migrated properly gets checked here:
+            checkDataAfterMigration(db)
         }
-
-        // Open latest version of the database. Room validates the schema once all migrations execute.
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
-            .addMigrations(*TodoListDatabase.ALL_MIGRATIONS)
-            .build()
-        val db2 = todoListDatabase.openHelper.readableDatabase
-        db2.use {
-            checkDBv3(db2)
-        }
-        // MigrationTestHelper automatically verifies the schema changes,
-        // but whether the data was migrated properly gets checked at checkDBv3().
     }
 
     /**
@@ -94,22 +87,17 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun specificMigrationErrorTest() {
-        val db1 = helper.createDatabase(TEST_DB_NAME, 1)
-        db1.use {
+        val db = helper.createDatabase(TEST_DB_NAME, 1)
+        db.use {
             // Create a table v1
-            populateDBv1(db1)
+            populateDBv1(db)
             // Migrate its content to v2 but DB still is marked as v1
-            TodoListDatabase.ALL_MIGRATIONS[0].migrate(db1)
-        }
-
-        // Do the migration and migration checks.
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
-            .addMigrations(*TodoListDatabase.ALL_MIGRATIONS)
-            .build()
-        val db2 = todoListDatabase.openHelper.readableDatabase
-        db2.use {
-            checkDBv3(db2)
+            TodoListDatabase.ALL_MIGRATIONS[0].migrate(db)
+            // Migrate DB to latest DB format.
+            helper.runMigrationsAndValidate(TEST_DB_NAME, TodoListDatabase.VERSION,
+                false, *TodoListDatabase.ALL_MIGRATIONS)
+            // Check if data was migrated correctly.
+            checkDataAfterMigration(db)
         }
     }
 
@@ -150,13 +138,12 @@ class DBMigrationTest {
         db.execSQL(query)
     }
 
-    private fun checkDBv3(db: SupportSQLiteDatabase) {
+    private fun checkDataAfterMigration(db: SupportSQLiteDatabase) {
         val listIds = ArrayList<Int>()
         var cursor = db.query("SELECT * FROM todoLists")
         cursor.use {
-            // Check if "description" column was removed
-            assertEquals(2, cursor.columnCount)
             // Check values
+            var listSortOrder = 0
             for (id in 1 .. 3) {
                 if (id == 1) {
                     assertTrue(cursor.moveToFirst())
@@ -166,7 +153,9 @@ class DBMigrationTest {
 
                 var col = 0
                 assertEquals(id, cursor.getIntOrNull(col++))
-                assertEquals("Test list $id", cursor.getStringOrNull(col))
+                assertEquals(listSortOrder++, cursor.getIntOrNull(col++))
+                assertEquals("Test list $id", cursor.getStringOrNull(col++))
+                assertEquals(col, cursor.columnCount)
                 listIds.add(id)
             }
             assertFalse(cursor.moveToNext())
@@ -178,10 +167,10 @@ class DBMigrationTest {
         val taskIds = ArrayList<Int>()
         cursor = db.query("SELECT * FROM todoTasks")
         cursor.use {
-            assertEquals(13, cursor.columnCount)
             // Check values
             var pos = 0
             var id = 0
+            val sortOrders = mutableMapOf<Int?, Int>()
             for (listCounter in 1..3) {
                 ++pos
                 for (task in 1..4) {
@@ -192,12 +181,21 @@ class DBMigrationTest {
                         assertTrue(cursor.moveToNext())
                     }
                     val listId: Int? = if (listCounter != 3) listCounter else null
+                    var taskSortOrder = sortOrders[listId]
+                    if (null == taskSortOrder) {
+                        taskSortOrder = 0
+                        sortOrders[listId] = taskSortOrder
+                    } else {
+                        ++taskSortOrder
+                        sortOrders[listId] = taskSortOrder
+                    }
                     val deadline = if (id % 2 == 0) id + TASK_DEADLINE_BASE else null
                     val reminderTime = if (id % 2 != 0) id + TASK_DEADLINE_WARNING_TIME_BASE else null
+
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(listId, cursor.getIntOrNull(col++))
-                    assertEquals(-1, cursor.getIntOrNull(col++)) // listPosition
+                    assertEquals(taskSortOrder, cursor.getIntOrNull(col++))
                     assertEquals("Test task $id", cursor.getStringOrNull(col++))
                     assertEquals("Test task description $id", cursor.getStringOrNull(col++))
                     assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
@@ -211,7 +209,8 @@ class DBMigrationTest {
                     } else {
                         assertEquals(null, cursor.getIntOrNull(col++))
                     }
-                    assertEquals(0, cursor.getIntOrNull(col)) // isInRecycleBin
+                    assertEquals(0, cursor.getIntOrNull(col++)) // isInRecycleBin
+                    assertEquals(col, cursor.columnCount)
                     assertTrue(listId == null || listIds.contains(listId))
                     taskIds.add(id)
                 }
@@ -221,10 +220,10 @@ class DBMigrationTest {
 
         cursor = db.query("SELECT * FROM todoSubtasks")
         cursor.use {
-            assertEquals(5, cursor.columnCount)
             // Check values
             assertTrue(cursor.moveToFirst())
             var id = 0
+            val sortOrders = mutableMapOf<Int, Int>()
             for (taskId in 1..12) {
                 val subtaskCount = taskId % 3
                 for (subtask in 1..subtaskCount) {
@@ -234,23 +233,33 @@ class DBMigrationTest {
                     } else {
                         assertTrue(cursor.moveToNext())
                     }
+                    var subtaskSortOrder = sortOrders[taskId]
+                    if (null == subtaskSortOrder) {
+                        subtaskSortOrder = 0
+                        sortOrders[taskId] = subtaskSortOrder
+                    } else {
+                        ++subtaskSortOrder
+                        sortOrders[taskId] = subtaskSortOrder
+                    }
 
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
                     assertEquals(taskId, cursor.getIntOrNull(col++))
+                    assertEquals(subtaskSortOrder, cursor.getIntOrNull(col++))
                     assertEquals("Test subtask $id", cursor.getStringOrNull(col++))
                     if (id % 2 != 0) {
                         assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // doneTime
                     } else {
                         assertEquals(null, cursor.getIntOrNull(col++))
                     }
-                    assertEquals(0, cursor.getIntOrNull(col))
+                    assertEquals(0, cursor.getIntOrNull(col++))
+                    assertEquals(col, cursor.columnCount)
                     assertTrue(taskIds.contains(taskId))
                 }
             }
             assertFalse(cursor.moveToNext())
         }
 
-        Log.i(TAG, "Check of DB migration to v3 passed.")
+        Log.i(TAG, "Check of DB migration to v${TodoListDatabase.VERSION} passed.")
     }
 }

@@ -1,33 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_add_subtask"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_add_subtask"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <View
         android:id="@+id/v_setting_deadline_color_bar"
         android:layout_width="5dp"
-        android:layout_height="0px"
-        android:layout_alignBottom="@+id/v_exlv_setting_separator"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
         android:background="@color/colorPrimary" />
-
 
     <TextView
         android:id="@+id/tv_add_subtask"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
         android:drawableLeft="@mipmap/plus_blue"
         android:text="@string/add_subtask" />
 
-    <View
-        android:id="@+id/v_exlv_setting_separator"
-        android:layout_below="@+id/tv_add_subtask"
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:background="@color/lightgrey" />
-
-</RelativeLayout>
+</LinearLayout>

@@ -12,7 +12,6 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.impl.BaseTodoImpl.RequiredDBAction
-import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.FileNotFoundException
@@ -22,8 +21,6 @@ import java.io.OutputStream
 class ModelServicesImpl(private val context: Context) {
 
     private var db = TodoListDatabase.getInstance(context)
-    private var csvExporter = CSVExporter()
-    private var csvImporter = CSVImporter()
 
     suspend fun getTaskById(todoTaskId: Int): TodoTask? {
         val todoTaskData = db.getTodoTaskDao().getById(todoTaskId)
@@ -172,20 +169,26 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
+    suspend fun getAllToDoListIds(): MutableList<Int> {
+        val dataArray = db.getTodoListDao().getAllIds()
+        return dataArray.toMutableList()
+    }
+
+    suspend fun getAllToDoListNames(): Map<Int, String> {
+        val dataArray = db.getTodoListDao().getAllNames()
+        /** Important: The map preserves the entry iteration order. */
+        val map = mutableMapOf<Int, String>()
+        for (tuple in dataArray) {
+            map[tuple.id] = tuple.name
+        }
+        return map
+    }
+
     suspend fun getAllToDoLists(): MutableList<TodoList> {
         val dataArray = db.getTodoListDao().getAll()
         val todoLists = loadListsTasksSubtasks(*dataArray)
         @Suppress("UNCHECKED_CAST")
         return todoLists as MutableList<TodoList>
-    }
-
-    suspend fun getAllToDoListNames(): Map<Int, String> {
-        val dataArray = db.getTodoListDao().getAllNames()
-        val map = HashMap<Int, String>(dataArray.size)
-        for (tuple in dataArray) {
-            map[tuple.id] = tuple.name
-        }
-        return map
     }
 
     suspend fun getToDoListById(todoListId: Int): TodoList? {
@@ -204,9 +207,13 @@ class ModelServicesImpl(private val context: Context) {
         var counter = 0
         when (todoListImpl.requiredDBAction) {
             RequiredDBAction.INSERT -> {
-                todoListImpl.setId(db.getTodoListDao().insert(data).toInt())
+                val listId = db.getTodoListDao().insert(data).toInt()
+                todoListImpl.setId(listId)
                 counter = 1
                 Log.d(TAG, "Todo list was inserted into DB: $data")
+                if (0 == db.getTodoListDao().updateSortOrderToLast(listId)) {
+                    Log.e(TAG, "Failed to update sort order for list.")
+                }
             }
 
             RequiredDBAction.UPDATE -> {
@@ -234,9 +241,13 @@ class ModelServicesImpl(private val context: Context) {
         var counter = 0
         when (todoTaskImpl.requiredDBAction) {
             RequiredDBAction.INSERT -> {
-                todoTaskImpl.setId(db.getTodoTaskDao().insert(data).toInt())
+                val taskId = db.getTodoTaskDao().insert(data).toInt()
+                todoTaskImpl.setId(taskId)
                 counter = 1
                 Log.d(TAG, "Todo task was inserted into DB: $data")
+                if (0 == db.getTodoTaskDao().updateSortOrderToLast(taskId, todoTaskImpl.getListId())) {
+                    Log.e(TAG, "Failed to update sort order for task.")
+                }
             }
 
             RequiredDBAction.UPDATE -> {
@@ -265,9 +276,13 @@ class ModelServicesImpl(private val context: Context) {
         var counter = 0
         when (todoSubtaskImpl.requiredDBAction) {
             RequiredDBAction.INSERT -> {
-                todoSubtaskImpl.setId(db.getTodoSubtaskDao().insert(data).toInt())
+                val subtaskId = db.getTodoSubtaskDao().insert(data).toInt()
+                todoSubtaskImpl.setId(subtaskId)
                 counter = 1
                 Log.d(TAG, "Todo subtask was inserted into DB: $data")
+                if (0 == db.getTodoSubtaskDao().updateSortOrderToLast(subtaskId, todoSubtaskImpl.getTaskId())) {
+                    Log.e(TAG, "Failed to update sort order for subtask.")
+                }
             }
 
             RequiredDBAction.UPDATE -> {
@@ -278,6 +293,37 @@ class ModelServicesImpl(private val context: Context) {
             else -> {}
         }
         todoSubtaskImpl.setUnchanged()
+        return counter
+    }
+
+    suspend fun saveTodoListsSortOrderInDb(todoListIds: List<Int>): Int {
+        var counter = 0
+        for ((sortOrder, todoListId) in todoListIds.withIndex()) {
+            counter += db.getTodoListDao().updateSortOrder(todoListId, sortOrder)
+        }
+        Log.d(TAG, "Sort order of $counter todo lists was updated in DB.")
+        return counter
+    }
+
+    suspend fun saveTodoTasksSortOrderInDb(todoTasks: List<TodoTask>): Int {
+        var counter = 0
+        for ((sortOrder, todoTask) in todoTasks.withIndex()) {
+            val todoTaskImpl = todoTask as TodoTaskImpl
+            todoTaskImpl.data.sortOrder = sortOrder
+            counter += db.getTodoTaskDao().updateSortOrder(todoTask.getId(), sortOrder)
+        }
+        Log.d(TAG, "Sort order of $counter todo tasks was updated in DB.")
+        return counter
+    }
+
+    suspend fun saveTodoSubtasksSortOrderInDb(todoSubtasks: List<TodoSubtask>): Int {
+        var counter = 0
+        for ((sortOrder, todoSubtask) in todoSubtasks.withIndex()) {
+            val todoSubtaskImpl = todoSubtask as TodoSubtaskImpl
+            todoSubtaskImpl.data.sortOrder = sortOrder
+            counter += db.getTodoSubtaskDao().updateSortOrder(todoSubtask.getId(), todoSubtaskImpl.data.sortOrder)
+        }
+        Log.d(TAG, "Sort order of $counter todo subtasks was updated in DB.")
         return counter
     }
 
@@ -310,6 +356,7 @@ class ModelServicesImpl(private val context: Context) {
         }
         try {
             outputStream.bufferedWriter().use { writer ->
+                val csvExporter = CSVExporter()
                 csvExporter.export(todoLists, todoTasks, hasAutoProgress, writer)
             }
         } catch (e: Exception) {
@@ -328,6 +375,7 @@ class ModelServicesImpl(private val context: Context) {
         if (null == inputStream) {
             return Tuple("Failed to open input file.", 0)
         }
+        val csvImporter = CSVImporter()
         try {
             inputStream.bufferedReader().use { reader ->
                 csvImporter.import(reader)

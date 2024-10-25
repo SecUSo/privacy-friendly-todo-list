@@ -35,7 +35,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     private var currentMonth = -1
     private var currentYear = -1
     private var todoTasks: List<TodoTask>? = null
-    private var tasksPerDay = HashMap<Long, ArrayList<TodoTask>>(0)
+    private var tasksPerDay = mutableMapOf<Long, ArrayList<TodoTask>>()
     private var tasksPerDayNeedUpdate = false
 
     fun setTodoTasks(todoTasks: List<TodoTask>) {

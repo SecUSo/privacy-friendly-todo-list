@@ -84,6 +84,8 @@
     <string name="no_next_deadline">No upcoming deadline</string>
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
+    <string name="move_up_list">Move up list</string>
+    <string name="move_down_list">Move down list</string>
     <string name="edit_list">Edit list</string>
     <string name="export_list">Export list</string>
     <string name="share_list">Share list</string>
@@ -138,6 +140,10 @@
     <string name="list_colon">List:</string>
     <string name="work_subtask">Work on this subtask</string>
     <string name="work_task">Work on this task</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="cant_move_task_if_diff_lists">Can\'t move task if different lists are shown.</string>
+    <string name="cant_move_task_if_filter_group_sort">Can\'t move task if filtering, grouping or sorting is active.</string>
 
     <!-- Select reminder dialog -->
     <string name="date">Date</string>

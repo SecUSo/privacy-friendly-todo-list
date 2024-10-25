@@ -36,12 +36,18 @@ interface TodoSubtaskDao {
     @Delete
     suspend fun delete(todoSubtaskData: TodoSubtaskData): Int
 
-    @Query("SELECT * FROM todoSubtasks WHERE taskId = :taskId")
-    suspend fun getAllOfTask(taskId: Int): Array<TodoSubtaskData>
-
-    @Query("SELECT * FROM todoSubtasks WHERE isInRecycleBin = 0 AND taskId = :taskId")
-    suspend fun getAllOfTaskNotInRecycleBin(taskId: Int): Array<TodoSubtaskData>
-
     @Query("DELETE FROM todoSubtasks")
     suspend fun deleteAll(): Int
+
+    @Query("SELECT * FROM todoSubtasks WHERE taskId = :taskId ORDER BY sortOrder ASC")
+    suspend fun getAllOfTask(taskId: Int): Array<TodoSubtaskData>
+
+    @Query("SELECT * FROM todoSubtasks WHERE isInRecycleBin = 0 AND taskId = :taskId ORDER BY sortOrder ASC")
+    suspend fun getAllOfTaskNotInRecycleBin(taskId: Int): Array<TodoSubtaskData>
+
+    @Query("UPDATE todoSubtasks SET sortOrder = :sortOrder WHERE id = :id")
+    suspend fun updateSortOrder(id: Int, sortOrder: Int): Int
+
+    @Query("UPDATE todoSubtasks SET sortOrder = COALESCE((SELECT MAX(sortOrder) + 1 FROM todoSubtasks WHERE taskId = :taskId OR (taskId IS NULL AND :taskId IS NULL)), 0) WHERE id = :id")
+    suspend fun updateSortOrderToLast(id: Int, taskId: Int): Int
 }

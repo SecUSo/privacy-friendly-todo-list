@@ -46,6 +46,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
     constructor(parcel: Parcel) {
         data = TodoSubtaskData()
         data.id = parcel.readInt()
+        data.sortOrder = parcel.readInt()
         data.name = parcel.readString()!!
         data.doneTime = parcel.readValue(Long::class.java.classLoader) as Long?
         data.isInRecycleBin = parcel.readByte().toInt() != 0
@@ -56,6 +57,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(data.id)
+        dest.writeInt(data.sortOrder)
         dest.writeString(data.name)
         dest.writeValue(data.doneTime)
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
@@ -84,6 +86,14 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
 
     override fun getTaskId(): Int {
         return data.taskId
+    }
+
+    override fun setSortOrder(sortOrder: Int) {
+        data.sortOrder = sortOrder
+    }
+
+    override fun getSortOrder(): Int {
+        return data.sortOrder
     }
 
     override fun setDone(isDone: Boolean) {

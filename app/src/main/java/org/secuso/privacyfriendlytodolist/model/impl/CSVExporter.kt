@@ -58,7 +58,6 @@ class CSVExporter {
         csvBuilder.addField("TaskName")
         csvBuilder.addField("TaskCreationTime")
         csvBuilder.addField("TaskDoneTime")
-        csvBuilder.addField("TaskListPosition")
         csvBuilder.addField("TaskDescription")
         csvBuilder.addField("TaskDeadline")
         csvBuilder.addField("TaskReminderTime")
@@ -79,7 +78,7 @@ class CSVExporter {
             csvBuilder.addField(todoList.getId())
             csvBuilder.addField(todoList.getName())
         } else {
-            for (i in 1..2) {
+            for (i in START_COLUMN_LIST..<START_COLUMN_TASK) {
                 csvBuilder.addEmptyField()
             }
         }
@@ -89,7 +88,6 @@ class CSVExporter {
             csvBuilder.addField(todoTask.getName())
             csvBuilder.addTimeField(todoTask.getCreationTime())
             csvBuilder.addTimeField(todoTask.getDoneTime())
-            csvBuilder.addField(todoTask.getListPosition())
             csvBuilder.addField(todoTask.getDescription())
             csvBuilder.addTimeField(todoTask.getDeadline())
             csvBuilder.addTimeField(todoTask.getReminderTime())
@@ -97,7 +95,7 @@ class CSVExporter {
             csvBuilder.addField(todoTask.getProgress(hasAutoProgress))
             csvBuilder.addField(todoTask.getPriority().toString())
         } else {
-            for (i in 1..11) {
+            for (i in START_COLUMN_TASK..<START_COLUMN_SUBTASK) {
                 csvBuilder.addEmptyField()
             }
         }
@@ -107,7 +105,7 @@ class CSVExporter {
             csvBuilder.addField(todoSubtask.getName())
             csvBuilder.addTimeField(todoSubtask.getDoneTime())
         } else {
-            for (i in 1..3) {
+            for (i in START_COLUMN_SUBTASK..<COLUMN_COUNT) {
                 csvBuilder.addEmptyField()
             }
         }
@@ -116,6 +114,12 @@ class CSVExporter {
     }
 
     companion object {
-        const val COLUMN_COUNT = 16
+        /** Zero-based index of first column with to-do list data. */
+        const val START_COLUMN_LIST = 0
+        /** Zero-based index of first column with to-do task data. */
+        const val START_COLUMN_TASK = 2
+        /** Zero-based index of first column with to-do subtask data. */
+        const val START_COLUMN_SUBTASK = 12
+        const val COLUMN_COUNT = 15
     }
 }

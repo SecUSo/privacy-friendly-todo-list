@@ -103,8 +103,8 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
     fun getRecurrencePattern(): RecurrencePattern
     fun isRecurring(): Boolean
-    fun setListPosition(position: Int)
-    fun getListPosition(): Int
+    fun setSortOrder(sortOrder: Int)
+    fun getSortOrder(): Int
     fun setSubtasks(subtasks: MutableList<TodoSubtask>)
     fun getSubtasks(): MutableList<TodoSubtask>
 

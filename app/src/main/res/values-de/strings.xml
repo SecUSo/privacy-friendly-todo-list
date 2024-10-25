@@ -80,6 +80,8 @@
     <string name="no_next_deadline">Keine Termine</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
+    <string name="move_up_list">Liste hochschieben</string>
+    <string name="move_down_list">Liste runterschieben</string>
     <string name="edit_list">Liste bearbeiten</string>
     <string name="export_list">Liste exportieren</string>
     <string name="share_list">Liste teilen</string>
@@ -134,6 +136,10 @@
     <string name="list_colon">Liste:</string>
     <string name="work_subtask">An Unteraufgabe arbeiten</string>
     <string name="work_task">An Aufgabe arbeiten</string>
+    <string name="move_up">Hochschieben</string>
+    <string name="move_down">Runterschieben</string>
+    <string name="cant_move_task_if_diff_lists">Tasks können nicht verschoben werden, wenn verschiedene Listen angezeigt werden.</string>
+    <string name="cant_move_task_if_filter_group_sort">Tasks können nicht verschoben werden, wenn Filter, Gruppierung oder Sortierung aktiv ist.</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>
