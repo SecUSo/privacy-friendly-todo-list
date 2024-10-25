@@ -69,6 +69,10 @@ class DBMigrationTest {
             populateDBv1(db1)
         }
 
+        // val db2 = todoListDatabase.openHelper.readableDatabase fails with DB locked. Try if it is a race condition and sleeping helps.
+        Thread.sleep(1000)
+        assertFalse(db1.isOpen)
+
         // Open latest version of the database. Room validates the schema once all migrations execute.
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, TEST_DB_NAME)
@@ -101,6 +105,10 @@ class DBMigrationTest {
             // Migrate its content to v2 but DB still is marked as v1
             TodoListDatabase.ALL_MIGRATIONS[0].migrate(db1)
         }
+
+        // val db2 = todoListDatabase.openHelper.readableDatabase fails with DB locked. Try if it is a race condition and sleeping helps.
+        Thread.sleep(1000)
+        assertFalse(db1.isOpen)
 
         // Do the migration and migration checks.
         val context = InstrumentationRegistry.getInstrumentation().targetContext
