@@ -20,7 +20,6 @@ package org.secuso.privacyfriendlytodolist.androidtest
 import android.util.Log
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
@@ -46,6 +45,7 @@ import java.io.IOException
 class DBMigrationTest {
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
+        private const val TEST_DB_NAME = "TodoDatabaseForMigrationTest.db"
         private const val TASK_PRIORITY_BASE = 1000
         private const val TASK_DEADLINE_BASE = 2000
         private const val TASK_PROGRESS_BASE = 3000
@@ -63,23 +63,16 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun allMigrationsTest() {
-        val dbName = "allMigrationsTest${System.currentTimeMillis()}.db"
-        val db1 = helper.createDatabase(dbName, 1)
-        db1.use {
-            populateDBv1(db1)
+        val db = helper.createDatabase(TEST_DB_NAME, 1)
+        db.use {
+            populateDBv1(db)
+            // Migrate DB to latest DB format.
+            helper.runMigrationsAndValidate(TEST_DB_NAME, TodoListDatabase.VERSION,
+                false, *TodoListDatabase.ALL_MIGRATIONS)
+            // MigrationTestHelper automatically verifies the schema changes,
+            // but whether the data was migrated properly gets checked here:
+            checkDataAfterMigration(db)
         }
-
-        // Open latest version of the database. Room validates the schema once all migrations execute.
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, dbName)
-            .addMigrations(*TodoListDatabase.ALL_MIGRATIONS)
-            .build()
-        val db2 = todoListDatabase.openHelper.readableDatabase
-        db2.use {
-            checkDBv3(db2)
-        }
-        // MigrationTestHelper automatically verifies the schema changes,
-        // but whether the data was migrated properly gets checked at checkDBv3().
     }
 
     /**
@@ -94,23 +87,17 @@ class DBMigrationTest {
     @Test
     @Throws(IOException::class)
     fun specificMigrationErrorTest() {
-        val dbName = "specificMigrationErrorTest${System.currentTimeMillis()}.db"
-        val db1 = helper.createDatabase(dbName, 1)
-        db1.use {
+        val db = helper.createDatabase(TEST_DB_NAME, 1)
+        db.use {
             // Create a table v1
-            populateDBv1(db1)
+            populateDBv1(db)
             // Migrate its content to v2 but DB still is marked as v1
-            TodoListDatabase.ALL_MIGRATIONS[0].migrate(db1)
-        }
-
-        // Do the migration and migration checks.
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val todoListDatabase = Room.databaseBuilder(context, TodoListDatabase::class.java, dbName)
-            .addMigrations(*TodoListDatabase.ALL_MIGRATIONS)
-            .build()
-        val db2 = todoListDatabase.openHelper.readableDatabase
-        db2.use {
-            checkDBv3(db2)
+            TodoListDatabase.ALL_MIGRATIONS[0].migrate(db)
+            // Migrate DB to latest DB format.
+            helper.runMigrationsAndValidate(TEST_DB_NAME, TodoListDatabase.VERSION,
+                false, *TodoListDatabase.ALL_MIGRATIONS)
+            // Check if data was migrated correctly.
+            checkDataAfterMigration(db)
         }
     }
 
@@ -151,7 +138,7 @@ class DBMigrationTest {
         db.execSQL(query)
     }
 
-    private fun checkDBv3(db: SupportSQLiteDatabase) {
+    private fun checkDataAfterMigration(db: SupportSQLiteDatabase) {
         val listIds = ArrayList<Int>()
         var cursor = db.query("SELECT * FROM todoLists")
         cursor.use {
@@ -273,6 +260,6 @@ class DBMigrationTest {
             assertFalse(cursor.moveToNext())
         }
 
-        Log.i(TAG, "Check of DB migration to v3 passed.")
+        Log.i(TAG, "Check of DB migration to v${TodoListDatabase.VERSION} passed.")
     }
 }
