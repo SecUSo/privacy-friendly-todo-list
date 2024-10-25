@@ -15,7 +15,16 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         db.execSQL("INSERT INTO $TABLE_NAME (id, sortOrder, name)" +
                 " SELECT _id, _id, name FROM todo_list")
         // Set sort order by ascending ID which keeps original order.
-        db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = newSortOrder - 1 FROM (SELECT id AS cloneId, ROW_NUMBER() OVER (ORDER BY `id`) AS newSortOrder FROM ${TABLE_NAME}) WHERE id = cloneId")
+        var cursor = db.query("SELECT id FROM $TABLE_NAME ORDER BY id ASC")
+        cursor.use {
+            var sortOrder1 = 0
+            var wasMoved = cursor.moveToFirst()
+            while (wasMoved) {
+                db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = $sortOrder1 WHERE id = ${cursor.getInt(0)}")
+                ++sortOrder1
+                wasMoved = cursor.moveToNext()
+            }
+        }
 
         TABLE_NAME = "todoTasks"
         db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `listId` INTEGER, `sortOrder` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `priority` INTEGER NOT NULL, `deadline` INTEGER, `recurrencePattern` INTEGER NOT NULL, `reminderTime` INTEGER, `progress` INTEGER NOT NULL, `creationTime` INTEGER NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`listId`) REFERENCES `todoLists`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )")
@@ -41,7 +50,22 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         // Set default value in new column recurrencePattern.
         db.execSQL("UPDATE `${TABLE_NAME}` SET `recurrencePattern` = 0")
         // Set sort order by ascending ID which keeps original order. position_in_todo_list was never used so ignore it.
-        db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = newSortOrder - 1 FROM (SELECT id AS cloneId, ROW_NUMBER() OVER (PARTITION BY `listId` ORDER BY `id`) AS newSortOrder FROM ${TABLE_NAME}) WHERE id = cloneId")
+        cursor = db.query("SELECT id, listId FROM $TABLE_NAME ORDER BY id ASC")
+        cursor.use {
+            val sortOrders = mutableMapOf<Int, Int>()
+            var wasMoved = cursor.moveToFirst()
+            while (wasMoved) {
+                val id = cursor.getInt(0)
+                val listId = cursor.getInt(1)
+                var sortOrder2 = sortOrders[listId]
+                if (null == sortOrder2) {
+                    sortOrder2 = 0
+                }
+                db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = $sortOrder2 WHERE id = $id")
+                sortOrders[listId] = sortOrder2 + 1
+                wasMoved = cursor.moveToNext()
+            }
+        }
 
         TABLE_NAME = "todoSubtasks"
         db.execSQL("CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `taskId` INTEGER NOT NULL, `sortOrder` INTEGER NOT NULL, `name` TEXT NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`taskId`) REFERENCES `todoTasks`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
@@ -53,7 +77,22 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = $now WHERE `doneTime` <> 0")
         db.execSQL("UPDATE `${TABLE_NAME}` SET `doneTime` = NULL WHERE `doneTime` = 0")
         // Set sort order by ascending ID which keeps original order.
-        db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = newSortOrder - 1 FROM (SELECT id AS cloneId, ROW_NUMBER() OVER (PARTITION BY `taskId` ORDER BY `id`) AS newSortOrder FROM ${TABLE_NAME}) WHERE id = cloneId")
+        cursor = db.query("SELECT id, taskId FROM $TABLE_NAME ORDER BY id ASC")
+        cursor.use {
+            val sortOrders = mutableMapOf<Int, Int>()
+            var wasMoved = cursor.moveToFirst()
+            while (wasMoved) {
+                val id = cursor.getInt(0)
+                val taskId = cursor.getInt(1)
+                var sortOrder3 = sortOrders[taskId]
+                if (null == sortOrder3) {
+                    sortOrder3 = 0
+                }
+                db.execSQL("UPDATE `${TABLE_NAME}` SET `sortOrder` = $sortOrder3 WHERE id = $id")
+                sortOrders[taskId] = sortOrder3 + 1
+                wasMoved = cursor.moveToNext()
+            }
+        }
 
         db.execSQL("DROP TABLE todo_subtask")
         db.execSQL("DROP TABLE todo_task")
