@@ -587,6 +587,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private fun moveTask(taskHolder: TaskHolder, groupPosition: Int, moveUp: Boolean) {
+        if (filteredTasks.size < 2) {
+            return
+        }
+
         // Can't move task if different lists are shown.
         var isFirst = true
         var otherListId: Int? = null
@@ -613,57 +617,83 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
             Log.e(TAG, "Task ${taskHolder.todoTask} not found.")
             return
         }
-        var newIndex = oldIndex + if (moveUp) -1 else 1
-        // Wrap around
+        val newIndex = oldIndex + if (moveUp) -1 else 1
         if (newIndex < 0) {
-            newIndex = todoTasks.size - 1
-        }
-        if (newIndex >= todoTasks.size) {
-            newIndex = 0
-        }
-        if (newIndex >= 0) {
-            // Swap tasks in data model
-            val taskA = todoTasks[oldIndex]
-            val taskB = todoTasks[newIndex]
-            todoTasks[oldIndex] = taskB
-            todoTasks[newIndex] = taskA
-            // Swap tasks on UI
-            onTasksSwappedListener?.onTasksSwapped(groupPosition, getPositionByTask(newIndex))
-            // Save changes
-            model.saveTodoTasksSortOrderInDb(todoTasks) {
-                // Notify view
-                notifyDataSetChanged()
+            // Shift all one up.
+            val lastIndex = todoTasks.size - 1
+            for (index in lastIndex - 1 downTo 0) {
+                swapTasks(lastIndex, index)
             }
+        } else if (newIndex >= todoTasks.size) {
+            // Shift all one down.
+            for (index in 1..<todoTasks.size) {
+                swapTasks(0, index)
+            }
+        } else {
+            swapTasks(oldIndex, newIndex, groupPosition, getPositionByTask(newIndex))
         }
+        // Save changes
+        model.saveTodoTasksSortOrderInDb(todoTasks) {
+            // Notify view
+            notifyDataSetChanged()
+        }
+    }
+
+    private fun swapTasks(indexA: Int, indexB: Int) {
+        swapTasks(indexA, indexB, getPositionByTask(indexA), getPositionByTask(indexB))
+    }
+
+    private fun swapTasks(indexA: Int, indexB: Int, positionA: Int, positionB: Int) {
+        // Swap tasks in data model
+        val taskA = todoTasks[indexA]
+        todoTasks[indexA] = todoTasks[indexB]
+        todoTasks[indexB] = taskA
+        // Swap tasks on UI
+        onTasksSwappedListener?.onTasksSwapped(positionA, positionB)
     }
 
     private fun moveSubtask(taskHolder: TaskHolder, subtaskIndex: Int, moveUp: Boolean) {
         val subtasks = taskHolder.todoTask.getSubtasks()
-        var newIndex = subtaskIndex + if (moveUp) -1 else 1
-        // Wrap around
+        if (subtasks.size < 2) {
+            return
+        }
+        if (subtaskIndex < 0 || subtaskIndex >= subtasks.size) {
+            Log.e(TAG, "Illegal subtask index $subtaskIndex with ${subtasks.size} subtasks.")
+            return
+        }
+        val newIndex = subtaskIndex + if (moveUp) -1 else 1
         if (newIndex < 0) {
-            newIndex = subtasks.size - 1
-        }
-        if (newIndex >= subtasks.size) {
-            newIndex = 0
-        }
-        if (subtaskIndex >= 0 && subtaskIndex < subtasks.size && newIndex >= 0) {
-            // Swap subtasks in dataset
-            val subtaskA = subtasks[subtaskIndex]
-            val subtaskB = subtasks[newIndex]
-            subtasks[subtaskIndex] = subtaskB
-            subtasks[newIndex] = subtaskA
-            // Swap meta data of subtasks
-            val metaDataA = taskHolder.getSubtaskMetaData(subtaskIndex)!!
-            val metaDataB = taskHolder.getSubtaskMetaData(newIndex)!!
-            taskHolder.setSubtaskMetaData(subtaskIndex, metaDataB)
-            taskHolder.setSubtaskMetaData(newIndex, metaDataA)
-            // Save changes
-            model.saveTodoSubtasksSortOrderInDb(taskHolder.todoTask.getSubtasks()) {
-                // Notify view
-                notifyDataSetChanged()
+            // Shift all one up.
+            val lastIndex = subtasks.size - 1
+            for (index in lastIndex - 1 downTo 0) {
+                swapSubtasks(taskHolder, subtasks, lastIndex, index)
             }
+        } else if (newIndex >= subtasks.size) {
+            // Shift all one down.
+            for (index in 1..<subtasks.size) {
+                swapSubtasks(taskHolder, subtasks, 0, index)
+            }
+        } else {
+            swapSubtasks(taskHolder, subtasks, subtaskIndex, newIndex)
         }
+        // Save changes
+        model.saveTodoSubtasksSortOrderInDb(taskHolder.todoTask.getSubtasks()) {
+            // Notify view
+            notifyDataSetChanged()
+        }
+    }
+
+    private fun swapSubtasks(taskHolder: TaskHolder, subtasks: MutableList<TodoSubtask>,
+                             indexA: Int, indexB: Int) {
+        // Swap subtasks in dataset
+        val subtaskA = subtasks[indexA]
+        subtasks[indexA] = subtasks[indexB]
+        subtasks[indexB] = subtaskA
+        // Swap meta data of subtasks
+        val metaDataA = taskHolder.getSubtaskMetaData(indexA)!!
+        val metaDataB = taskHolder.getSubtaskMetaData(indexB)!!
+        taskHolder.setSubtaskMetaData(indexA, metaDataB)
+        taskHolder.setSubtaskMetaData(indexB, metaDataA)
     }
 
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {

@@ -80,6 +80,8 @@
     <string name="no_next_deadline">Keine Termine</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
+    <string name="move_up_list">Liste hochschieben</string>
+    <string name="move_down_list">Liste runterschieben</string>
     <string name="edit_list">Liste bearbeiten</string>
     <string name="export_list">Liste exportieren</string>
     <string name="share_list">Liste teilen</string>

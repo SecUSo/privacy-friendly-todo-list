@@ -41,11 +41,14 @@ interface TodoListDao {
     @Query("SELECT COUNT(id) FROM todoLists")
     suspend fun getCount(): Int
 
-    @Query("SELECT * FROM todoLists ORDER BY sortOrder ASC")
-    suspend fun getAll(): Array<TodoListData>
+    @Query("SELECT id FROM todoLists ORDER BY sortOrder ASC")
+    suspend fun getAllIds(): Array<Int>
 
     @Query("SELECT id, name FROM todoLists ORDER BY sortOrder ASC")
     suspend fun getAllNames(): Array<IdNameTuple>
+
+    @Query("SELECT * FROM todoLists ORDER BY sortOrder ASC")
+    suspend fun getAll(): Array<TodoListData>
 
     @Query("SELECT * FROM todoLists WHERE id = :todoListId LIMIT 1")
     suspend fun getById(todoListId: Int): TodoListData?

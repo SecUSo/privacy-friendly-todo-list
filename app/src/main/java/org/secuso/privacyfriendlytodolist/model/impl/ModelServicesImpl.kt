@@ -169,11 +169,9 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
-    suspend fun getAllToDoLists(): MutableList<TodoList> {
-        val dataArray = db.getTodoListDao().getAll()
-        val todoLists = loadListsTasksSubtasks(*dataArray)
-        @Suppress("UNCHECKED_CAST")
-        return todoLists as MutableList<TodoList>
+    suspend fun getAllToDoListIds(): MutableList<Int> {
+        val dataArray = db.getTodoListDao().getAllIds()
+        return dataArray.toMutableList()
     }
 
     suspend fun getAllToDoListNames(): Map<Int, String> {
@@ -184,6 +182,13 @@ class ModelServicesImpl(private val context: Context) {
             map[tuple.id] = tuple.name
         }
         return map
+    }
+
+    suspend fun getAllToDoLists(): MutableList<TodoList> {
+        val dataArray = db.getTodoListDao().getAll()
+        val todoLists = loadListsTasksSubtasks(*dataArray)
+        @Suppress("UNCHECKED_CAST")
+        return todoLists as MutableList<TodoList>
     }
 
     suspend fun getToDoListById(todoListId: Int): TodoList? {
@@ -291,14 +296,12 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
-    suspend fun saveTodoListsSortOrderInDb(todoLists: List<TodoList>): Int {
+    suspend fun saveTodoListsSortOrderInDb(todoListIds: List<Int>): Int {
         var counter = 0
-        for ((sortOrder, todoList) in todoLists.withIndex()) {
-            val todoListImpl = todoList as TodoListImpl
-            todoListImpl.data.sortOrder = sortOrder
-            counter += db.getTodoListDao().updateSortOrder(todoList.getId(), sortOrder)
+        for ((sortOrder, todoListId) in todoListIds.withIndex()) {
+            counter += db.getTodoListDao().updateSortOrder(todoListId, sortOrder)
         }
-        Log.d(TAG, "List position of $counter todo lists was updated in DB.")
+        Log.d(TAG, "Sort order of $counter todo lists was updated in DB.")
         return counter
     }
 
@@ -309,7 +312,7 @@ class ModelServicesImpl(private val context: Context) {
             todoTaskImpl.data.sortOrder = sortOrder
             counter += db.getTodoTaskDao().updateSortOrder(todoTask.getId(), sortOrder)
         }
-        Log.d(TAG, "List position of $counter todo tasks was updated in DB.")
+        Log.d(TAG, "Sort order of $counter todo tasks was updated in DB.")
         return counter
     }
 
@@ -320,7 +323,7 @@ class ModelServicesImpl(private val context: Context) {
             todoSubtaskImpl.data.sortOrder = sortOrder
             counter += db.getTodoSubtaskDao().updateSortOrder(todoSubtask.getId(), todoSubtaskImpl.data.sortOrder)
         }
-        Log.d(TAG, "List position of $counter todo subtasks was updated in DB.")
+        Log.d(TAG, "Sort order of $counter todo subtasks was updated in DB.")
         return counter
     }
 

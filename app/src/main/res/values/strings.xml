@@ -84,6 +84,8 @@
     <string name="no_next_deadline">No upcoming deadline</string>
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
+    <string name="move_up_list">Move up list</string>
+    <string name="move_down_list">Move down list</string>
     <string name="edit_list">Edit list</string>
     <string name="export_list">Export list</string>
     <string name="share_list">Share list</string>

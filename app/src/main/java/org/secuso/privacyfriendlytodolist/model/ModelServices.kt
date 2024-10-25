@@ -210,11 +210,11 @@ class ModelServices(
         }
     }
 
-    fun getAllToDoLists(deliveryOption: DeliveryOption = DeliveryOption.POST,
-                        resultConsumer: ResultConsumer<MutableList<TodoList>>): Job {
+    fun getAllToDoListIds(deliveryOption: DeliveryOption = DeliveryOption.POST,
+                          resultConsumer: ResultConsumer<MutableList<Int>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoLists = services.getAllToDoLists()
-            dispatchResult(deliveryOption, resultConsumer, todoLists)
+            val result = services.getAllToDoListIds()
+            dispatchResult(deliveryOption, resultConsumer, result)
         }
     }
 
@@ -226,6 +226,14 @@ class ModelServices(
         }
     }
 
+    fun getAllToDoLists(deliveryOption: DeliveryOption = DeliveryOption.POST,
+                        resultConsumer: ResultConsumer<MutableList<TodoList>>): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val todoLists = services.getAllToDoLists()
+            dispatchResult(deliveryOption, resultConsumer, todoLists)
+        }
+    }
+    
     fun getToDoListById(todoListId: Int,
                         deliveryOption: DeliveryOption = DeliveryOption.POST,
                         resultConsumer: ResultConsumer<TodoList?>): Job {
@@ -276,11 +284,11 @@ class ModelServices(
         }
     }
 
-    fun saveTodoListsSortOrderInDb(todoLists: List<TodoList>,
+    fun saveTodoListsSortOrderInDb(todoListIds: List<Int>,
                                       deliveryOption: DeliveryOption = DeliveryOption.POST,
                                       resultConsumer: ResultConsumer<Int>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.saveTodoListsSortOrderInDb(todoLists)
+            val counter = services.saveTodoListsSortOrderInDb(todoListIds)
             dispatchResult(deliveryOption, resultConsumer, counter)
             notifyDataChanged(counter)
         }

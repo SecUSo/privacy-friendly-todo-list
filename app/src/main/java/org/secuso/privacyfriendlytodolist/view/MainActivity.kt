@@ -744,10 +744,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.setHeaderView(menuHeader)
             // context menu for child items
             val workItemId: Int = if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                menuInflater.inflate(R.menu.todo_subtask_long_click, menu)
+                menuInflater.inflate(R.menu.todo_subtask_context, menu)
                 R.id.work_subtask
             } else { // context menu for group items
-                menuInflater.inflate(R.menu.todo_task_long_click, menu)
+                menuInflater.inflate(R.menu.todo_task_context, menu)
                 R.id.work_task
             }
             if (pomodoroInstalled) {
@@ -757,7 +757,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             selectedTodoListId = v.tag as Int
             val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
             menu.setHeaderView(menuHeader)
-            menuInflater.inflate(R.menu.todo_list_long_click, menu)
+            menuInflater.inflate(R.menu.todo_list_context, menu)
         } else {
             Log.w(TAG, "Unhandled context menu owner: ${v.javaClass.simpleName}")
         }
@@ -765,6 +765,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.move_up_list -> {
+                moveList(true)
+            }
+
+            R.id.move_down_list -> {
+                moveList(false)
+            }
+
             R.id.edit_list -> {
                 startEditListDialog()
             }
@@ -880,6 +888,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else -> Log.e(TAG, "Unhandled context menu item ID: ${item.itemId}")
         }
         return super.onContextItemSelected(item)
+    }
+
+    private fun moveList(moveUp: Boolean) {
+        model!!.getAllToDoListIds { allTodoListIds ->
+            if (allTodoListIds.size < 2) {
+                return@getAllToDoListIds
+            }
+            val oldIndex = allTodoListIds.indexOf(selectedTodoListId)
+            if (oldIndex < 0) {
+                Log.e(TAG, "Selected todo list ID $selectedTodoListId not found in list IDs: $allTodoListIds.")
+                return@getAllToDoListIds
+            }
+            val newIndex = oldIndex + if (moveUp) -1 else 1
+            if (newIndex < 0) {
+                // Shift all one up.
+                val lastIndex = allTodoListIds.size - 1
+                for (index in lastIndex - 1 downTo 0) {
+                    swapListIds(allTodoListIds, lastIndex, index)
+                }
+            } else if (newIndex >= allTodoListIds.size) {
+                // Shift all one down.
+                for (index in 1..<allTodoListIds.size) {
+                    swapListIds(allTodoListIds, 0, index)
+                }
+            } else {
+                swapListIds(allTodoListIds, oldIndex, newIndex)
+            }
+            // Save changes
+            model!!.saveTodoListsSortOrderInDb(allTodoListIds) {
+                // Notify view
+                addTodoListsToNavigationMenu()
+            }
+        }
+    }
+
+    private fun swapListIds(listIds: MutableList<Int>, indexA: Int, indexB: Int) {
+        val listIdA = listIds[indexA]
+        listIds[indexA] = listIds[indexB]
+        listIds[indexB] = listIdA
     }
 
     private fun shareList() {
