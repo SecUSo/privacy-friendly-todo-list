@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2024  SECUSO (www.secuso.org)
+Copyright (C) 2018-2024  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import java.util.Locale
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
- *
  *
  * Class to set up To-Do subtasks and its parameters.
  */
