@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "4da3f07d192ec4454cd36af4d06b15fc",
+    "identityHash": "44798819088e5fccf4232e7609ef5d9d",
     "entities": [
       {
         "tableName": "todoLists",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "todoTasks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `listId` INTEGER, `sortOrder` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `priority` INTEGER NOT NULL, `deadline` INTEGER, `recurrencePattern` INTEGER NOT NULL, `reminderTime` INTEGER, `progress` INTEGER NOT NULL, `creationTime` INTEGER NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`listId`) REFERENCES `todoLists`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `listId` INTEGER, `sortOrder` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `priority` INTEGER NOT NULL, `deadline` INTEGER, `recurrencePattern` INTEGER NOT NULL, `recurrenceInterval` INTEGER NOT NULL, `reminderTime` INTEGER, `progress` INTEGER NOT NULL, `creationTime` INTEGER NOT NULL, `doneTime` INTEGER, `isInRecycleBin` INTEGER NOT NULL, FOREIGN KEY(`listId`) REFERENCES `todoLists`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -85,6 +85,12 @@
           {
             "fieldPath": "recurrencePattern",
             "columnName": "recurrencePattern",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recurrenceInterval",
+            "columnName": "recurrenceInterval",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -226,7 +232,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4da3f07d192ec4454cd36af4d06b15fc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '44798819088e5fccf4232e7609ef5d9d')"
     ]
   }
 }

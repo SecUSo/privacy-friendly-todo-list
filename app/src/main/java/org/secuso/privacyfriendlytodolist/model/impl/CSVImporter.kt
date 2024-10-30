@@ -117,8 +117,9 @@ class CSVImporter {
                 task.setDeadline(getTimestamp(row, CSVExporter.START_COLUMN_TASK, 5))
                 task.setReminderTime(getTimestamp(row, CSVExporter.START_COLUMN_TASK, 6))
                 task.setRecurrencePattern(getEnumValue<RecurrencePattern>(row, CSVExporter.START_COLUMN_TASK, 7, RecurrencePattern.NONE))
-                task.setProgress(getProgress(row, CSVExporter.START_COLUMN_TASK, 8))
-                task.setPriority(getEnumValue<Priority>(row, CSVExporter.START_COLUMN_TASK, 9, Priority.DEFAULT_VALUE))
+                task.setRecurrenceInterval(getInteger(row, CSVExporter.START_COLUMN_TASK, 8, 1, Int.MAX_VALUE))
+                task.setProgress(getInteger(row, CSVExporter.START_COLUMN_TASK, 9, 0, 100))
+                task.setPriority(getEnumValue<Priority>(row, CSVExporter.START_COLUMN_TASK, 10, Priority.DEFAULT_VALUE))
 
                 if (task.isRecurring() && task.getDeadline() == null) {
                     throw IllegalFormatException("Row $rowNumber: Task with ID $id is recurring but has no deadline.")
@@ -181,14 +182,14 @@ class CSVImporter {
         return result
     }
 
-    private fun getProgress(row: List<String>, offset: Int, index: Int): Int {
+    private fun getInteger(row: List<String>, offset: Int, index: Int, minValue: Int, maxValue: Int): Int {
         columnIndex = offset + index
         val text = row[columnIndex].trim()
         var result = 0
         if (text.isNotEmpty()) {
             result = text.toInt()
-            if (result < 0 || result > 100) {
-                throw IllegalFormatException("Progress not in range 0..100.")
+            if (result < minValue || result > maxValue) {
+                throw IllegalFormatException("Integer not in range $minValue..$maxValue.")
             }
         }
         return result

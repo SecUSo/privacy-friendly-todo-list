@@ -25,7 +25,7 @@
     <string name="navigation_drawer_open">Menü öffnen</string>
     <string name="navigation_drawer_close">Menü schließen</string>
     <string name="name">Name</string>
-    <string name="todo_list_description_hint">Beschreibung</string>
+    <string name="description_hint">Beschreibung</string>
     <string name="ok">Okay</string>
     <string name="delete">Löschen</string>
 
@@ -113,13 +113,16 @@
     <string name="delete_task">Aufgabe löschen</string>
     <string name="task_removed">Aufgabe ist im Papierkorb</string>
     <string name="deadline">Termin</string>
-    <string name="recurrence_pattern">Wiederholungsmuster</string>
+    <string name="recurrence_every">Wiederholung alle</string>
+    <string name="recurrence_interval_hint">1..n</string>
+    <string name="recurrence_pattern_hint">Wiederholungsmuster</string>
     <string name="select_recurrence_pattern">Wiederholungsmuster wählen:</string>
     <string name="reminder">Erinnerung</string>
     <string name="deadline_smaller_reminder">Der Termin darf nicht vor der Erinnerungszeit liegen.</string>
     <string name="reminder_smaller_now">Nur wiederkehrende Aufgaben können eine Erinnerungszeit in der Vergangenheit haben.</string>
     <string name="set_deadline_before_reminder">Bitte geben sie zuerst einen Termin an.</string>
     <string name="set_deadline_if_recurring">Eine wiederkehrende Aufgabe benötigt einen Termin.</string>
+    <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl >= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
     <string name="zero_percent">0 %</string>
@@ -229,6 +232,10 @@
     <string name="weekly">Wöchentlich</string>
     <string name="monthly">Monatlich</string>
     <string name="yearly">Jährlich</string>
+    <string name="days">Tag(e)</string>
+    <string name="weeks">Woche(n)</string>
+    <string name="months">Monat(e)</string>
+    <string name="years">Jahr(e)</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>

@@ -64,6 +64,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.progress = parcel.readInt()
         data.deadline = parcel.readValue(Long::class.java.classLoader) as Long?
         data.recurrencePattern = RecurrencePattern.fromOrdinal(parcel.readInt())!!
+        data.recurrenceInterval = parcel.readInt()
         data.reminderTime = parcel.readValue(Long::class.java.classLoader) as Long?
         reminderTimeChanged = parcel.readByte() != 0.toByte()
         reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
@@ -85,6 +86,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeInt(data.progress)
         dest.writeValue(data.deadline)
         dest.writeInt(data.recurrencePattern.ordinal)
+        dest.writeInt(data.recurrenceInterval)
         dest.writeValue(data.reminderTime)
         dest.writeByte((if (reminderTimeChanged) 1 else 0).toByte())
         dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
@@ -153,6 +155,14 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.recurrencePattern
     }
 
+    override fun setRecurrenceInterval(recurrenceInterval: Int) {
+        data.recurrenceInterval = recurrenceInterval
+    }
+
+    override fun getRecurrenceInterval(): Int {
+        return data.recurrenceInterval
+    }
+
     override fun isRecurring(): Boolean {
         return data.recurrencePattern != RecurrencePattern.NONE
     }
@@ -180,7 +190,8 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
             val now = Helper.getCurrentTimestamp()
             val finalReminderTimeSpan: Long
             if (isRecurring()) {
-                deadline = Helper.getNextRecurringDate(deadline, data.recurrencePattern, now)
+                deadline = Helper.getNextRecurringDate(deadline,
+                    data.recurrencePattern, data.recurrenceInterval, now)
                 finalReminderTimeSpan = reminderTimeSpan
             } else {
                 val reminderTime = data.reminderTime
@@ -334,7 +345,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun toString(): String {
-        return "TodoTask(name=${getName()}, id=${getId()}, r=${getRecurrencePattern()})"
+        return "TodoTask(name=${getName()}, id=${getId()}, rp=${getRecurrencePattern()}, ri=${getRecurrenceInterval()})"
     }
 
     companion object {

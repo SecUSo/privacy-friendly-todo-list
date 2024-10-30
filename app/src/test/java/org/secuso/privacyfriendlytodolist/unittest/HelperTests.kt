@@ -19,8 +19,8 @@ package org.secuso.privacyfriendlytodolist.unittest
 
 import org.junit.Assert
 import org.junit.Test
-import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper.computeRepetitions
+import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
+import org.secuso.privacyfriendlytodolist.util.Helper
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneOffset
@@ -31,16 +31,24 @@ import java.time.ZoneOffset
 class HelperTests {
     @Test
     fun computeRepetitionsTest() {
-        Assert.assertEquals((2 * 365).toLong(), computeRepetitions(
-                dateToSec("2001-03-12"), dateToSec("2003-03-12"), TodoTask.RecurrencePattern.DAILY))
-        Assert.assertEquals((3 * 365 + 1).toLong(), computeRepetitions(
-                dateToSec("2001-03-12"), dateToSec("2004-03-12"), TodoTask.RecurrencePattern.DAILY))
-        Assert.assertEquals((20 * 52 + 1).toLong(), computeRepetitions(
-                dateToSec("1984-03-12"), dateToSec("2004-03-19"), TodoTask.RecurrencePattern.WEEKLY))
-        Assert.assertEquals((20 * 12 + 8).toLong(), computeRepetitions(
-                dateToSec("1984-03-12"), dateToSec("2004-11-19"), TodoTask.RecurrencePattern.MONTHLY))
-        Assert.assertEquals(20, computeRepetitions(
-                dateToSec("1984-03-12"), dateToSec("2004-11-19"), TodoTask.RecurrencePattern.YEARLY))
+        for (interval in 1..100) {
+            Assert.assertEquals((2 * 365 / interval).toLong(), computeRepetitions(
+                "2001-03-12", "2003-03-12", RecurrencePattern.DAILY, interval))
+            Assert.assertEquals(((3 * 365 + 1) / interval).toLong(), computeRepetitions(
+                "2001-03-12", "2004-03-12", RecurrencePattern.DAILY, interval))
+            Assert.assertEquals(((20 * 52 + 1) / interval).toLong(), computeRepetitions(
+                "1984-03-12", "2004-03-19", RecurrencePattern.WEEKLY, interval))
+            Assert.assertEquals(((20 * 12 + 8) / interval).toLong(), computeRepetitions(
+                "1984-03-12", "2004-11-19", RecurrencePattern.MONTHLY, interval))
+            Assert.assertEquals((20 / interval).toLong(), computeRepetitions(
+                "1984-03-12", "2004-11-19", RecurrencePattern.YEARLY, interval))
+        }
+    }
+
+    private fun computeRepetitions(firstDate: String, followingDate: String,
+                                   recurrencePattern: RecurrencePattern, recurrenceInterval: Int): Long {
+        return Helper.computeRepetitions(dateToSec(firstDate), dateToSec(followingDate),
+            recurrencePattern, recurrenceInterval)
     }
 
     private fun dateToSec(dateStr: String): Long {

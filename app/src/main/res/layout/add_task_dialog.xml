@@ -20,11 +20,9 @@
     <EditText
         android:id="@+id/et_task_name"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:paddingVertical="12dp"
         android:autofillHints=""
         android:hint="@string/name"
         android:inputType="text" />
@@ -32,72 +30,91 @@
     <EditText
         android:id="@+id/et_task_description"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:paddingVertical="12dp"
         android:autofillHints=""
-        android:hint="@string/todo_list_description_hint"
+        android:hint="@string/description_hint"
         android:inputType="textMultiLine"
         android:maxLines="15"
         android:minLines="1" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:paddingVertical="5dp">
+
+        <TextView
+            android:id="@+id/tv_todo_list_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/deadline"
+            app:drawableStartCompat="@drawable/ic_calendar_month_24dp" />
+
+        <TextView
+            android:id="@+id/tv_todo_list_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/reminder"
+            app:drawableStartCompat="@drawable/ic_alarm_clock_24dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:paddingVertical="5dp">
+
+        <TextView
+            android:id="@+id/tv_task_recurring_str"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/recurrence_every"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/tv_task_recurrence_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="13dp"
+            android:autofillHints=""
+            android:hint="@string/recurrence_interval_hint"
+            android:inputType="numberDecimal"
+            android:textSize="16sp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/tv_task_recurrence_pattern"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/recurrence_pattern_hint"
+            app:drawableStartCompat="@drawable/ic_event_repeat_24dp" />
+    </LinearLayout>
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:stretchColumns="0,1">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tv_todo_list_deadline"
-                android:drawablePadding="5dp"
-                android:gravity="center_vertical"
-                android:text="@string/deadline"
-                app:drawableStartCompat="@drawable/ic_calendar_month_24dp" />
-
-            <TextView
-                android:id="@+id/tv_task_recurrence_pattern"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:drawablePadding="5dp"
-                android:gravity="center_vertical"
-                android:text="@string/recurrence_pattern"
-                app:drawableStartCompat="@drawable/ic_event_repeat_24dp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tv_todo_list_reminder"
-                android:drawablePadding="5dp"
-                android:gravity="center_vertical"
-                android:text="@string/reminder"
-                app:drawableStartCompat="@drawable/ic_alarm_clock_24dp" />
-        </TableRow>
-
-    </TableLayout>
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_marginHorizontal="10dp"
+        android:paddingVertical="5dp"
         android:shrinkColumns="0"
         android:stretchColumns="1">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="5dp">
+            android:paddingVertical="5dp">
 
             <TextView
                 android:id="@+id/tv_task_progress_str"
@@ -132,7 +149,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="5dp">
+            android:paddingVertical="5dp">
 
             <TextView
                 android:id="@+id/tv_task_priority_str"
@@ -156,7 +173,7 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="5dp">
+            android:paddingVertical="5dp">
 
             <TextView
                 android:id="@+id/tv_task_list_choose_str"

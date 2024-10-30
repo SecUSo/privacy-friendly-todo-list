@@ -112,7 +112,8 @@ object AlarmMgr {
             // Get the upcoming due date of the recurring task. The initial reminder time might not
             // be the right date for the alarm.
             val oldReminderTime = reminderTime
-            reminderTime = Helper.getNextRecurringDate(reminderTime, todoTask.getRecurrencePattern(), now)
+            reminderTime = Helper.getNextRecurringDate(reminderTime,
+                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
             if (oldReminderTime != reminderTime) {
                 // Store new reminder time to make it visible for the user.
                 Log.i(TAG, "Updating reminder time of $todoTask from " +

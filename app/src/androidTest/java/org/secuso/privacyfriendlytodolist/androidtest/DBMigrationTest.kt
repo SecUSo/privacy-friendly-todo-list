@@ -31,6 +31,7 @@ import junit.framework.TestCase.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -200,7 +201,8 @@ class DBMigrationTest {
                     assertEquals("Test task description $id", cursor.getStringOrNull(col++))
                     assertEquals(id + TASK_PRIORITY_BASE, cursor.getIntOrNull(col++))
                     assertEquals(deadline, cursor.getIntOrNull(col++))
-                    assertEquals(0, cursor.getIntOrNull(col++)) // RecurrencePattern
+                    assertEquals(TodoTask.RecurrencePattern.NONE.ordinal, cursor.getIntOrNull(col++))
+                    assertEquals(1, cursor.getIntOrNull(col++)) // Recurrence interval
                     assertEquals(reminderTime, cursor.getIntOrNull(col++))
                     assertEquals(id + TASK_PROGRESS_BASE, cursor.getIntOrNull(col++))
                     assertTrue(cursor.getIntOrNull(col++)?.toLong() in nowRange) // creationTime

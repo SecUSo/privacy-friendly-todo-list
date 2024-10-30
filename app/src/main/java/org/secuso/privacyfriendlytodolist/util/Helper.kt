@@ -64,20 +64,22 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
     }
 
-    fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern, now: Long): Long {
+    fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern,
+                             recurrenceInterval: Int, now: Long): Long {
         var result = recurringDate
         if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
             recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(recurringDate))
             val nowCal = Calendar.getInstance()
             nowCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(now))
-            getNextRecurringDate(recurringDateCal, recurrencePattern, nowCal)
+            getNextRecurringDate(recurringDateCal, recurrencePattern, recurrenceInterval, nowCal)
             result = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
         }
         return result
     }
 
-    fun getNextRecurringDate(recurringDate: Calendar, recurrencePattern: RecurrencePattern, now: Calendar) {
+    fun getNextRecurringDate(recurringDate: Calendar, recurrencePattern: RecurrencePattern,
+                             recurrenceInterval: Int, now: Calendar) {
         if (recurrencePattern != RecurrencePattern.NONE) {
             // TODO When API 26 can be used, use ChronoUnit for a better implementation of this method.
             // Jump to previous year to have less iterations.
@@ -86,27 +88,28 @@ object Helper {
                 recurringDate[Calendar.YEAR] = previousYear
             }
             while (recurringDate <= now) {
-                addInterval(recurringDate, recurrencePattern)
+                addInterval(recurringDate, recurrencePattern, recurrenceInterval)
             }
         }
     }
 
-    fun addInterval(date: Calendar, recurrencePattern: RecurrencePattern, amount: Int = 1) {
+    fun addInterval(date: Calendar, recurrencePattern: RecurrencePattern, recurrenceInterval: Int) {
         when (recurrencePattern) {
             RecurrencePattern.NONE -> Log.e(TAG, "Unable to add interval because no recurrence pattern set.")
-            RecurrencePattern.DAILY -> date.add(Calendar.DAY_OF_YEAR, amount)
-            RecurrencePattern.WEEKLY -> date.add(Calendar.WEEK_OF_YEAR, amount)
-            RecurrencePattern.MONTHLY -> date.add(Calendar.MONTH, amount)
-            RecurrencePattern.YEARLY -> date.add(Calendar.YEAR, amount)
+            RecurrencePattern.DAILY -> date.add(Calendar.DAY_OF_YEAR, recurrenceInterval)
+            RecurrencePattern.WEEKLY -> date.add(Calendar.WEEK_OF_YEAR, recurrenceInterval)
+            RecurrencePattern.MONTHLY -> date.add(Calendar.MONTH, recurrenceInterval)
+            RecurrencePattern.YEARLY -> date.add(Calendar.YEAR, recurrenceInterval)
         }
     }
 
-    fun computeRepetitions(firstDate: Long, followingDate: Long, recurrencePattern: RecurrencePattern): Long {
+    fun computeRepetitions(firstDate: Long, followingDate: Long,
+                           recurrencePattern: RecurrencePattern, recurrenceInterval: Int): Long {
         if (recurrencePattern == RecurrencePattern.NONE) {
             return 0
         }
         if (recurrencePattern == RecurrencePattern.DAILY) {
-            return TimeUnit.DAYS.convert(followingDate - firstDate, TimeUnit.SECONDS)
+            return TimeUnit.DAYS.convert(followingDate - firstDate, TimeUnit.SECONDS) / recurrenceInterval
         }
 
         val first = Calendar.getInstance()
@@ -118,15 +121,15 @@ object Helper {
             RecurrencePattern.WEEKLY -> {
                 val unitsFirst = 52 * first[Calendar.YEAR] + first[Calendar.WEEK_OF_YEAR]
                 val unitsFollowing = 52 * following[Calendar.YEAR] + following[Calendar.WEEK_OF_YEAR]
-                result = unitsFollowing - unitsFirst
+                result = (unitsFollowing - unitsFirst) / recurrenceInterval
             }
             RecurrencePattern.MONTHLY -> {
                 val unitsFirst = 12 * first[Calendar.YEAR] + first[Calendar.MONTH]
                 val unitsFollowing = 12 * following[Calendar.YEAR] + following[Calendar.MONTH]
-                result = unitsFollowing - unitsFirst
+                result = (unitsFollowing - unitsFirst) / recurrenceInterval
             }
             RecurrencePattern.YEARLY -> {
-                result = following[Calendar.YEAR] - first[Calendar.YEAR]
+                result = (following[Calendar.YEAR] - first[Calendar.YEAR]) / recurrenceInterval
             }
             else -> throw InternalError("Unhandled recurrence pattern: $recurrencePattern")
         }
@@ -142,13 +145,24 @@ object Helper {
         }
     }
 
-    fun recurrencePatternToString(context: Context, recurrencePattern: RecurrencePattern?): String {
+    fun recurrencePatternToAdverbString(context: Context, recurrencePattern: RecurrencePattern?): String {
         return when (recurrencePattern) {
             RecurrencePattern.NONE -> context.resources.getString(R.string.none)
             RecurrencePattern.DAILY -> context.resources.getString(R.string.daily)
             RecurrencePattern.WEEKLY -> context.resources.getString(R.string.weekly)
             RecurrencePattern.MONTHLY -> context.resources.getString(R.string.monthly)
             RecurrencePattern.YEARLY -> context.resources.getString(R.string.yearly)
+            else -> "Unknown recurrence pattern '$recurrencePattern'"
+        }
+    }
+
+    fun recurrencePatternToNounString(context: Context, recurrencePattern: RecurrencePattern?): String {
+        return when (recurrencePattern) {
+            RecurrencePattern.NONE -> context.resources.getString(R.string.none)
+            RecurrencePattern.DAILY -> context.resources.getString(R.string.days)
+            RecurrencePattern.WEEKLY -> context.resources.getString(R.string.weeks)
+            RecurrencePattern.MONTHLY -> context.resources.getString(R.string.months)
+            RecurrencePattern.YEARLY -> context.resources.getString(R.string.years)
             else -> "Unknown recurrence pattern '$recurrencePattern'"
         }
     }

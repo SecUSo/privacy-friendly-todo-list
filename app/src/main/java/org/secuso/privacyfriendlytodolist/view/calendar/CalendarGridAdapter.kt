@@ -158,11 +158,13 @@ class CalendarGridAdapter(context: Context, resource: Int) :
             if (todoTask.isRecurring()) {
                 val recurringDateCal = Calendar.getInstance()
                 recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline))
-                Helper.getNextRecurringDate(recurringDateCal, todoTask.getRecurrencePattern(), startCal)
+                Helper.getNextRecurringDate(recurringDateCal, todoTask.getRecurrencePattern(),
+                    todoTask.getRecurrenceInterval(), startCal)
                 while (recurringDateCal < endCal) {
                     deadline = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
                     addTaskOfDay(todoTask, deadline)
-                    Helper.addInterval(recurringDateCal, todoTask.getRecurrencePattern())
+                    Helper.addInterval(recurringDateCal,
+                        todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval())
                 }
             } else {
                 addTaskOfDay(todoTask, deadline)

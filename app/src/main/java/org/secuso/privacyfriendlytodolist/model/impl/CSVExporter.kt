@@ -79,6 +79,7 @@ class CSVExporter {
         csvBuilder.addField("TaskDeadline")
         csvBuilder.addField("TaskReminderTime")
         csvBuilder.addField("TaskRecurrencePattern")
+        csvBuilder.addField("TaskRecurrenceInterval")
         csvBuilder.addField("TaskProgress")
         csvBuilder.addField("TaskPriority")
 
@@ -109,6 +110,7 @@ class CSVExporter {
             csvBuilder.addTimeField(todoTask.getDeadline())
             csvBuilder.addTimeField(todoTask.getReminderTime())
             csvBuilder.addField(todoTask.getRecurrencePattern().toString())
+            csvBuilder.addField(todoTask.getRecurrenceInterval())
             csvBuilder.addField(todoTask.getProgress(hasAutoProgress))
             csvBuilder.addField(todoTask.getPriority().toString())
         } else {
@@ -136,7 +138,7 @@ class CSVExporter {
         /** Zero-based index of first column with to-do task data. */
         const val START_COLUMN_TASK = 2
         /** Zero-based index of first column with to-do subtask data. */
-        const val START_COLUMN_SUBTASK = 12
-        const val COLUMN_COUNT = 15
+        const val START_COLUMN_SUBTASK = 13
+        const val COLUMN_COUNT = 16
     }
 }

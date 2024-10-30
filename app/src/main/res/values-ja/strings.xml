@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">メニューを開く</string>
     <string name="navigation_drawer_close">メニューを閉じる</string>
     <string name="name">名前</string>
-    <string name="todo_list_description_hint">説明</string>
+    <string name="description_hint">説明</string>
     <string name="ok">OK</string>
 
     <!-- Common model strings -->

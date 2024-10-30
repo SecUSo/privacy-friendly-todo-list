@@ -413,7 +413,13 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         deadlineStr = context.resources.getString(R.string.deadline_dd) + " " +
                                 createLocalizedDateString(deadline)
                         if (currentTask.isRecurring()) {
-                            deadlineStr += " (" + Helper.recurrencePatternToString(context, currentTask.getRecurrencePattern()) + ")"
+                            val pattern = currentTask.getRecurrencePattern()
+                            val interval = currentTask.getRecurrenceInterval()
+                            deadlineStr += if (interval == 1) {
+                                " (" + Helper.recurrencePatternToAdverbString(context, pattern) + ")"
+                            } else {
+                                " ($interval " + Helper.recurrencePatternToNounString(context, pattern) + ")"
+                            }
                         }
                     }
                 tvh.deadline!!.text = deadlineStr

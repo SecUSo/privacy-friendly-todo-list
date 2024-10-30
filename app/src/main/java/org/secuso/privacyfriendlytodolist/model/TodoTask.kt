@@ -103,6 +103,8 @@ interface TodoTask : BaseTodo, Parcelable {
     fun hasDeadline(): Boolean
     fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
     fun getRecurrencePattern(): RecurrencePattern
+    fun setRecurrenceInterval(recurrenceInterval: Int)
+    fun getRecurrenceInterval(): Int
     fun isRecurring(): Boolean
     fun setSortOrder(sortOrder: Int)
     fun getSortOrder(): Int

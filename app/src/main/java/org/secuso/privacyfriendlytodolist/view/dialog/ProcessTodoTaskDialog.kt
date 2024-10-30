@@ -37,11 +37,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
-import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateString
-import org.secuso.privacyfriendlytodolist.util.Helper.createLocalizedDateTimeString
-import org.secuso.privacyfriendlytodolist.util.Helper.getCurrentTimestamp
-import org.secuso.privacyfriendlytodolist.util.Helper.priorityToString
-import org.secuso.privacyfriendlytodolist.util.Helper.recurrencePatternToString
+import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
@@ -58,6 +54,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
 
     private var deadline: Long?
     private var recurrencePattern: RecurrencePattern
+    private var recurrenceInterval: Int
     private var reminderTime: Long?
     private var taskProgress: Int
     private var taskPriority: TodoTask.Priority
@@ -71,6 +68,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     private lateinit var taskDescription: EditText
     private lateinit var deadlineTextView: TextView
     private lateinit var recurrencePatternTextView: TextView
+    private lateinit var recurrenceIntervalEditText: EditText
     private lateinit var reminderTextView: TextView
     private lateinit var progressSelector: SeekBar
     private lateinit var progressPercent: TextView
@@ -84,6 +82,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     init {
         deadline = todoTask.getDeadline()
         recurrencePattern = todoTask.getRecurrencePattern()
+        recurrenceInterval = todoTask.getRecurrenceInterval()
         reminderTime = todoTask.getReminderTime()
         taskProgress = todoTask.getProgress(false)
         taskPriority = todoTask.getPriority()
@@ -105,12 +104,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             taskName.setText(todoTask.getName())
             taskDescription.setText(todoTask.getDescription())
             deadlineTextView.text = if (deadline == null)
-                context.getString(R.string.deadline) else createLocalizedDateString(deadline!!)
+                context.getString(R.string.deadline) else Helper.createLocalizedDateString(deadline!!)
             updateRecurrencePatternText()
+            recurrenceIntervalEditText.setText(todoTask.getRecurrenceInterval().toString())
             reminderTextView.text = if (reminderTime == null)
-                context.getString(R.string.reminder) else createLocalizedDateTimeString(reminderTime!!)
+                context.getString(R.string.reminder) else Helper.createLocalizedDateTimeString(reminderTime!!)
             progressSelector.progress = taskProgress
-            prioritySelector.text = priorityToString(context, taskPriority)
+            prioritySelector.text = Helper.priorityToString(context, taskPriority)
         }
 
         val viewModel = CustomViewModel(context)
@@ -140,7 +140,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         }
         prioritySelector.setOnCreateContextMenuListener(this)
         taskPriority = TodoTask.Priority.DEFAULT_VALUE
-        prioritySelector.text = priorityToString(context, taskPriority)
+        prioritySelector.text = Helper.priorityToString(context, taskPriority)
 
         //initialize titles of the dialog
         val dialogTitle = findViewById<TextView>(R.id.dialog_title)
@@ -181,19 +181,25 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         // initialize buttons
         val okayButton: Button = findViewById(R.id.bt_process_task_ok)
         okayButton.setOnClickListener { v: View? ->
-            val name: String = taskName.getText().toString()
-            val description: String = taskDescription.getText().toString()
+            val name = taskName.getText().toString()
+            val description = taskDescription.getText().toString()
+            val recurrenceIntervalText = recurrenceIntervalEditText.getText().toString()
+            val recurrenceInterval = recurrenceIntervalText.toIntOrNull()
             if (name.isEmpty()) {
                 Toast.makeText(context, context.getString(R.string.todo_name_must_not_be_empty),
                     Toast.LENGTH_SHORT).show()
             } else if (recurrencePattern != RecurrencePattern.NONE && deadline == null) {
                 Toast.makeText(context, context.getString(R.string.set_deadline_if_recurring),
                     Toast.LENGTH_SHORT).show()
+            } else if (recurrenceInterval == null || recurrenceInterval < 1) {
+                Toast.makeText(context, context.getString(R.string.recurrence_interval_invalid),
+                    Toast.LENGTH_SHORT).show()
             } else {
                 todoTask.setName(name)
                 todoTask.setDescription(description)
                 todoTask.setDeadline(deadline)
                 todoTask.setRecurrencePattern(recurrencePattern)
+                todoTask.setRecurrenceInterval(recurrenceInterval)
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setProgress(taskProgress)
                 todoTask.setPriority(taskPriority)
@@ -214,7 +220,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             deadlineDialog.setDialogCallback(object : DeadlineCallback {
                 override fun setDeadline(selectedDeadline: Long) {
                     deadline = selectedDeadline
-                    deadlineTextView.text = createLocalizedDateString(selectedDeadline)
+                    deadlineTextView.text = Helper.createLocalizedDateString(selectedDeadline)
                 }
 
                 override fun removeDeadline() {
@@ -232,6 +238,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             openContextMenu(recurrencePatternTextView)
         }
         recurrencePatternTextView.setOnCreateContextMenuListener(this)
+        recurrenceIntervalEditText = findViewById(R.id.tv_task_recurrence_interval)
 
         reminderTextView = findViewById(R.id.tv_todo_list_reminder)
         reminderTextView.setTextColor(okayButton.currentTextColor)
@@ -247,13 +254,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                         } else */
                         if (deadlineCopy != null && deadlineCopy < selectedReminderTime) {
                             resIdErrorMsg = R.string.deadline_smaller_reminder
-                        } else if (selectedReminderTime < getCurrentTimestamp()) {
+                        } else if (selectedReminderTime < Helper.getCurrentTimestamp()) {
                             resIdErrorMsg = R.string.reminder_smaller_now
                         }
                     }
                     if (resIdErrorMsg == 0) {
                         reminderTime = selectedReminderTime
-                        reminderTextView.text = createLocalizedDateTimeString(selectedReminderTime)
+                        reminderTextView.text = Helper.createLocalizedDateTimeString(selectedReminderTime)
                     } else {
                         Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
                     }
@@ -274,14 +281,16 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             R.id.tv_task_recurrence_pattern -> {
                 menu.setHeaderTitle(R.string.select_recurrence_pattern)
                 for (pattern in RecurrencePattern.entries) {
-                    menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE, recurrencePatternToString(context, pattern))
+                    menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE,
+                        Helper.recurrencePatternToAdverbString(context, pattern))
                 }
             }
 
             R.id.tv_task_priority -> {
                 menu.setHeaderTitle(R.string.select_priority)
                 for (priority in TodoTask.Priority.entries) {
-                    menu.add(GroupId.TASK_PRIORITY.ordinal, priority.ordinal, Menu.NONE, priorityToString(context, priority))
+                    menu.add(GroupId.TASK_PRIORITY.ordinal, priority.ordinal, Menu.NONE,
+                        Helper.priorityToString(context, priority))
                 }
             }
 
@@ -304,7 +313,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
 
             GroupId.TASK_PRIORITY.ordinal -> {
                 taskPriority = TodoTask.Priority.fromOrdinal(item.itemId)!!
-                prioritySelector.text = priorityToString(context, taskPriority)
+                prioritySelector.text = Helper.priorityToString(context, taskPriority)
             }
 
             GroupId.NO_TASK_LIST.ordinal -> {
@@ -338,10 +347,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     }
 
     private fun updateRecurrencePatternText() {
-        recurrencePatternTextView.text = if (recurrencePattern == RecurrencePattern.NONE) {
-            context.getString(R.string.recurrence_pattern)
+        if (recurrencePattern == RecurrencePattern.NONE) {
+            recurrencePatternTextView.text = context.getString(R.string.recurrence_pattern_hint)
         } else {
-            recurrencePatternToString(context, recurrencePattern)
+            recurrencePatternTextView.text = Helper.recurrencePatternToNounString(context, recurrencePattern)
+            if (recurrenceIntervalEditText.getText().isEmpty()) {
+                recurrenceIntervalEditText.setText(recurrenceInterval.toString())
+            }
         }
     }
 

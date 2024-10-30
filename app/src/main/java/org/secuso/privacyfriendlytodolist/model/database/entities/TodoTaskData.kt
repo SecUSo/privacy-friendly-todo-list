@@ -53,6 +53,7 @@ data class TodoTaskData(
     var priority: Priority = Priority.DEFAULT_VALUE,
     var deadline: Long? = null,
     var recurrencePattern: RecurrencePattern = RecurrencePattern.NONE,
+    var recurrenceInterval: Int = 1,
     var reminderTime: Long? = null,
     var progress: Int = 0,
     var creationTime: Long = Helper.getCurrentTimestamp(),

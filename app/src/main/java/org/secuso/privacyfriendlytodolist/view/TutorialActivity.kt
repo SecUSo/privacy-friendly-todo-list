@@ -157,12 +157,12 @@ class TutorialActivity : AppCompatActivity() {
             return layouts!!.size
         }
 
-        override fun isViewFromObject(view: View, `object`: Any): Boolean {
-            return view === `object`
+        override fun isViewFromObject(view: View, anObject: Any): Boolean {
+            return view === anObject
         }
 
-        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            val view = `object` as View
+        override fun destroyItem(container: ViewGroup, position: Int, anObject: Any) {
+            val view = anObject as View
             container.removeView(view)
         }
     }

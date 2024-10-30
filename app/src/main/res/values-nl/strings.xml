@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Sluit menu</string>
     <string name="name">Naam</string>
-    <string name="todo_list_description_hint">Beschrijving</string>
+    <string name="description_hint">Beschrijving</string>
     <string name="ok">Okay</string>
 
     <!-- Common model strings -->

@@ -55,7 +55,8 @@ class ModelServicesImpl(private val context: Context) {
             // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
             val oldReminderTime = todoTask.getReminderTime()!!
             // Get the upcoming due date of the recurring task.
-            val newReminderTime = Helper.getNextRecurringDate(oldReminderTime, todoTask.getRecurrencePattern(), now)
+            val newReminderTime = Helper.getNextRecurringDate(oldReminderTime,
+                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
             todoTask.setReminderTime(newReminderTime)
             todoTask.setChanged()
             if (saveTodoTaskInDb(todoTask) > 0) {

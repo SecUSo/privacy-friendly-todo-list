@@ -25,7 +25,7 @@
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
     <string name="name">Name</string>
-    <string name="todo_list_description_hint">Description</string>
+    <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
     <string name="delete">Delete</string>
 
@@ -117,13 +117,16 @@
     <string name="delete_task">Delete task</string>
     <string name="task_removed">Task put into recycle bin</string>
     <string name="deadline">Deadline</string>
-    <string name="recurrence_pattern">Recurrence pattern</string>
+    <string name="recurrence_every">Recurrence every</string>
+    <string name="recurrence_interval_hint">1..n</string>
+    <string name="recurrence_pattern_hint">Recurrence pattern</string>
     <string name="select_recurrence_pattern">Select a recurrence pattern:</string>
     <string name="reminder">Reminder</string>
     <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
     <string name="reminder_smaller_now">Only recurring tasks can have reminder time in the past.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="set_deadline_if_recurring">A recurring task needs a deadline.</string>
+    <string name="recurrence_interval_invalid">Recurrence interval is no integer >= 1.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0 %</string>
@@ -247,6 +250,10 @@
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
+    <string name="days">Day(s)</string>
+    <string name="weeks">Week(s)</string>
+    <string name="months">Month(s)</string>
+    <string name="years">Year(s)</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>

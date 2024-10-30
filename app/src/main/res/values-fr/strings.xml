@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">Ouvrir le menu</string>
     <string name="navigation_drawer_close">Fermer le menu</string>
     <string name="name">Nom</string>
-    <string name="todo_list_description_hint">Description</string>
+    <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
 
     <!-- Common model strings -->
