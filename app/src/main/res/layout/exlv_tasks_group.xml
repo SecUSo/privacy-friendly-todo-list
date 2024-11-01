@@ -69,11 +69,53 @@
             android:layout_height="wrap_content"
             android:text="List name" />
 
-        <TextView
-            android:id="@+id/tv_exlv_task_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Task Deadline" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_exlv_task_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/deadline"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                app:srcCompat="@drawable/ic_calendar_month_24dp" />
+
+            <TextView
+                android:id="@+id/tv_exlv_task_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="5dp"
+                android:text="@string/deadline" />
+
+            <!-- This invisible view enables the right-alignment of the reminder. -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_exlv_task_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/reminder" />
+
+            <ImageView
+                android:id="@+id/iv_exlv_task_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="5dp"
+                android:paddingEnd="10dp"
+                android:contentDescription="@string/reminder"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                app:srcCompat="@drawable/ic_alarm_clock_24dp" />
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/pb_task_progress"
