@@ -79,7 +79,8 @@ class RecyclerActivity : AppCompatActivity() {
             if (item.itemId == R.id.restore) {
                 model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                     if (counter > 0) {
-                        AlarmMgr.setAlarmForTask(this, todoTask)
+                        AlarmMgr.setAlarmForTask(this, todoTask,
+                            setAlarmEvenIfItIsInPast = false, showMessage = true)
                         updateAdapter()
                     } else {
                         Log.w(TAG, "Failed to restore $todoTask from recycle bin.")

@@ -106,7 +106,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             deadlineTextView.text = if (deadline == null)
                 context.getString(R.string.deadline) else Helper.createLocalizedDateString(deadline!!)
             updateRecurrencePatternText()
-            recurrenceIntervalEditText.setText(todoTask.getRecurrenceInterval().toString())
             reminderTextView.text = if (reminderTime == null)
                 context.getString(R.string.reminder) else Helper.createLocalizedDateTimeString(reminderTime!!)
             progressSelector.progress = taskProgress
@@ -185,13 +184,14 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             val description = taskDescription.getText().toString()
             val recurrenceIntervalText = recurrenceIntervalEditText.getText().toString()
             val recurrenceInterval = recurrenceIntervalText.toIntOrNull()
+            val isRecurrenceIntervalBad = recurrenceInterval == null || recurrenceInterval < 1
             if (name.isEmpty()) {
                 Toast.makeText(context, context.getString(R.string.todo_name_must_not_be_empty),
                     Toast.LENGTH_SHORT).show()
             } else if (recurrencePattern != RecurrencePattern.NONE && deadline == null) {
                 Toast.makeText(context, context.getString(R.string.set_deadline_if_recurring),
                     Toast.LENGTH_SHORT).show()
-            } else if (recurrenceInterval == null || recurrenceInterval < 1) {
+            } else if (recurrencePattern != RecurrencePattern.NONE && isRecurrenceIntervalBad) {
                 Toast.makeText(context, context.getString(R.string.recurrence_interval_invalid),
                     Toast.LENGTH_SHORT).show()
             } else {
@@ -199,7 +199,9 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 todoTask.setDescription(description)
                 todoTask.setDeadline(deadline)
                 todoTask.setRecurrencePattern(recurrencePattern)
-                todoTask.setRecurrenceInterval(recurrenceInterval)
+                if ( ! isRecurrenceIntervalBad && null != recurrenceInterval) {
+                    todoTask.setRecurrenceInterval(recurrenceInterval)
+                }
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setProgress(taskProgress)
                 todoTask.setPriority(taskPriority)
@@ -349,6 +351,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     private fun updateRecurrencePatternText() {
         if (recurrencePattern == RecurrencePattern.NONE) {
             recurrencePatternTextView.text = context.getString(R.string.recurrence_pattern_hint)
+            recurrenceIntervalEditText.setText("")
         } else {
             recurrencePatternTextView.text = Helper.recurrencePatternToNounString(context, recurrencePattern)
             if (recurrenceIntervalEditText.getText().isEmpty()) {

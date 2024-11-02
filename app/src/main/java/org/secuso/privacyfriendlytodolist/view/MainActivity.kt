@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mPref: SharedPreferences? = null
 
     // TodoList administration
+    private var activeListId: Int? = null
     private var selectedTodoListId: Int = -1
 
     // GUI
@@ -112,9 +113,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var deleteAllDataBeforeImport = false
 
     // Others
+    /** Stores if a new intent was received. An intent should be processed only once and not on
+     * every resume. This flag is used to realize that. */
+    private var isNewIntent = false
     private var isUnlocked = false
     private var unlockUntil: Long = -1L
-    private var activeListId: Int? = null
 
     //Pomodoro
     private var pomodoroInstalled = false
@@ -204,7 +207,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate() action: ${intent?.action}, savedInstanceState: ${null != savedInstanceState}, extras: ${intent?.extras?.keySet()?.joinToString()}")
+        Log.d(TAG, "onCreate() isNewIntent: $isNewIntent, action: ${intent?.action}, savedInstanceState: ${null != savedInstanceState}, extras: ${intent?.extras?.keySet()?.joinToString()}")
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
@@ -309,8 +312,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
         model!!.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
-            showHints()
             addTodoListsToNavigationMenu()
+            showAllTasks()
+            showHints()
 
             if (null == errorMessage) {
                 Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
@@ -406,7 +410,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         var tasksGetDisplayed = false
         val extras = intent.extras
-        if (extras != null) {
+        if (isNewIntent && extras != null) {
+            isNewIntent = false
             tasksGetDisplayed = processExtras(extras)
         }
         if (!tasksGetDisplayed) {
@@ -571,15 +576,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Model.unregisterModelObserver(this)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        Log.d(TAG, "onNewIntent() action: ${intent?.action}, extras: ${intent?.extras?.keySet()?.joinToString()}")
-        super.onNewIntent(intent)
+    override fun onNewIntent(newIntent: Intent?) {
+        Log.d(TAG, "onNewIntent() action: ${newIntent?.action}, extras: ${newIntent?.extras?.keySet()?.joinToString()}")
+        super.onNewIntent(newIntent)
         // Store intent to process it via onResume() and authAndGuiInit().
-        setIntent(intent)
+        intent = newIntent
+        isNewIntent = true
     }
 
     override fun onResume() {
-        Log.d(TAG, "onResume() action: ${intent?.action}, extras: ${intent?.extras?.keySet()?.joinToString()}")
+        Log.d(TAG, "onResume() isNewIntent: $isNewIntent, action: ${intent?.action}, extras: ${intent?.extras?.keySet()?.joinToString()}")
         super.onResume()
 
         Model.registerModelObserver(this)
@@ -619,7 +625,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d(TAG, "$todoTask changed. Setting its alarm.")
         // Direct user action lead to task change. So no need to set alarm if it is in the past.
         // User should see that.
-        AlarmMgr.setAlarmForTask(this, todoTask)
+        AlarmMgr.setAlarmForTask(this, todoTask,
+            setAlarmEvenIfItIsInPast = false, showMessage = true)
     }
 
     // Adds To do-Lists to the navigation-drawer
@@ -814,7 +821,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         model!!.saveTodoTaskInDb(changedTodoTask) { counter ->
                             onTaskChange(changedTodoTask)
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                            showTasksOfListOrAllTasks(changedTodoTask.getListId())
+                            showTasksOfListOrAllTasks(activeListId)
                         }
                     })
                     editTaskDialog.show()
@@ -835,7 +842,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
                         model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                             if (counter > 0) {
-                                AlarmMgr.setAlarmForTask(this, todoTask)
+                                AlarmMgr.setAlarmForTask(this, todoTask,
+                                    setAlarmEvenIfItIsInPast = false, showMessage = true)
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
                             } else {

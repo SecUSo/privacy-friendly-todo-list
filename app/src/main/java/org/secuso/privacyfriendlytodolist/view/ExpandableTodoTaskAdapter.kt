@@ -462,7 +462,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.deadline.visibility = View.GONE
                 }
                 var reminderTime = currentTask.getReminderTime()
-                if (reminderTime != null) {
+                if (isExpanded && reminderTime != null) {
                     if (currentTask.isRecurring()) {
                         reminderTime = Helper.getNextRecurringDate(reminderTime,
                             currentTask.getRecurrencePattern(),
@@ -495,7 +495,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                                 subtask.setDone(inverted)
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
-                                AlarmMgr.setAlarmForTask(context, currentTask)
+                                AlarmMgr.setAlarmForTask(context, currentTask,
+                                    setAlarmEvenIfItIsInPast = false, showMessage = true)
                             }
                         }
                         snackBar.show()
@@ -509,7 +510,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             notifyDataSetChanged()
                         }
                         model.saveTodoTaskInDb(currentTask) {
-                            AlarmMgr.setAlarmForTask(context, currentTask)
+                            AlarmMgr.setAlarmForTask(context, currentTask,
+                                setAlarmEvenIfItIsInPast = false, showMessage = true)
                         }
                     }
                 }
@@ -620,7 +622,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
                         currentSubtask.setDone(buttonView.isChecked)
-                        // check if entire task is now (when all subtasks are done)
+                        // check if entire task is done now (when all subtasks are done)
                         val doneStatusChanged = currentTask.doneStatusChanged()
                         currentSubtask.setChanged()
                         model.saveTodoSubtaskInDb(currentSubtask) { counter1: Int? ->
@@ -628,7 +630,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             model.saveTodoTaskInDb(currentTask) {
                                 counter2: Int? -> notifyDataSetChanged()
                                 if (doneStatusChanged) {
-                                    AlarmMgr.setAlarmForTask(context, currentTask)
+                                    AlarmMgr.setAlarmForTask(context, currentTask,
+                                        setAlarmEvenIfItIsInPast = false, showMessage = true)
                                 }
                             }
                         }

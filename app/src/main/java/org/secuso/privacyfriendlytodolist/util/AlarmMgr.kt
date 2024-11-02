@@ -88,10 +88,18 @@ object AlarmMgr {
      *      - Otherwise, if setAlarmEvenItsInPast is true, current time gets used
      *      - Otherwise no alarm gets set
      *
+     * @param context
+     * @param todoTask
+     * @param setAlarmEvenIfItIsInPast Set alarm even if reminder time is in past. In this case
+     * 'now' gets used as alarm time.
+     * @param showMessage A message gets shown to the user that notifies about a created alarm.
+     * 
      * @return If an alarm gets set the alarm ID gets returned (task ID gets used as alarm ID).
      * If no alarm gets set null gets returned.
      */
-    fun setAlarmForTask(context: Context, todoTask: TodoTask, setAlarmEvenIfItIsInPast: Boolean = false): Int? {
+    fun setAlarmForTask(context: Context, todoTask: TodoTask,
+                        setAlarmEvenIfItIsInPast: Boolean = false,
+                        showMessage: Boolean = false): Int? {
         // Use task's database ID as unique alarm ID.
         val alarmId = todoTask.getId()
         cancelAlarmForTask(context, alarmId)
@@ -148,9 +156,11 @@ object AlarmMgr {
         val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
         var timestamp = Helper.createCanonicalDateTimeString(alarmTime)
         Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $timestamp which is in $duration ($logDetail).")
-        timestamp = Helper.createLocalizedDateTimeString(alarmTime)
-        val message = context.getString(R.string.alarm_set_for_task, timestamp, duration.toString(), todoTask.getName())
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        if (showMessage) {
+            timestamp = Helper.createLocalizedDateTimeString(alarmTime)
+            val message = context.getString(R.string.alarm_set_for_task, timestamp, duration.toString(), todoTask.getName())
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
         return alarmId
     }
 
