@@ -37,8 +37,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.Tuple
-import org.secuso.privacyfriendlytodolist.model.Tuple.Companion.makePair
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -61,16 +59,21 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val todoTasks: MutableList<TodoTask>, private val showListNames: Boolean) : BaseExpandableListAdapter() {
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    /**
-     * left item: task that was long clicked,
-     * right item: subtask that was long clicked
-     */
-    var longClickedTodo: Tuple<TodoTask, TodoSubtask?>? = null
-        private set
+    fun interface OnTaskMenuClickListener {
+        fun onTaskMenuClicked(todoTask: TodoTask)
+    }
+
+    fun interface OnSubtaskMenuClickListener {
+        fun onSubtaskMenuClicked(todoTask: TodoTask, todoSubtask: TodoSubtask)
+    }
 
     fun interface OnTasksSwappedListener {
         fun onTasksSwapped(groupPositionA: Int, groupPositionB: Int)
     }
+
+    private var onTaskMenuClickListener: OnTaskMenuClickListener? = null
+
+    private var onSubtaskMenuClickListener: OnSubtaskMenuClickListener? = null
 
     private var onTasksSwappedListener: OnTasksSwappedListener? = null
 
@@ -112,29 +115,12 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         notifyDataSetChanged()
     }
 
-    fun setLongClickedTaskByPos(position: Int) {
-        longClickedTodo = null
-        val todoTask = getTaskByPosition(position)?.todoTask
-        if (null != todoTask) {
-            longClickedTodo = makePair(todoTask, null)
-        } else {
-            Log.w(TAG, "Unable to get task by position $position.")
-        }
+    fun setOnTaskMenuClickListener(onTaskMenuClickListener: OnTaskMenuClickListener?) {
+        this.onTaskMenuClickListener = onTaskMenuClickListener
     }
 
-    fun setLongClickedSubtaskByPos(groupPosition: Int, childPosition: Int) {
-        longClickedTodo = null
-        val todoTask = getTaskByPosition(groupPosition)?.todoTask
-        if (null != todoTask) {
-            val subtasks: List<TodoSubtask> = todoTask.getSubtasks()
-            val index = childPosition - 1
-            if (index >= 0 && index < subtasks.size) {
-                longClickedTodo = makePair(todoTask, subtasks[index])
-            }
-        }
-        if (null == longClickedTodo) {
-            Log.w(TAG, "Unable to get subtask by position $groupPosition, $childPosition.")
-        }
+    fun setOnSubtaskMenuClickListener(onSubtaskMenuClickListener: OnSubtaskMenuClickListener?) {
+        this.onSubtaskMenuClickListener = onSubtaskMenuClickListener
     }
 
     fun onClickSubtask(groupPosition: Int, childPosition: Int) {
@@ -420,6 +406,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         actualConvertView.findViewById(R.id.tv_exlv_task_name),
                         actualConvertView.findViewById(R.id.bt_task_move_up),
                         actualConvertView.findViewById(R.id.bt_task_move_down),
+                        actualConvertView.findViewById(R.id.bt_task_menu),
                         actualConvertView.findViewById(R.id.iv_exlv_task_deadline),
                         actualConvertView.findViewById(R.id.tv_exlv_task_deadline),
                         actualConvertView.findViewById(R.id.iv_exlv_task_reminder),
@@ -442,6 +429,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 tvh.moveDownButton.setOnClickListener {
                     moveTask(currentTaskHolder, groupPosition, false)
+                }
+                tvh.taskMenuButton.setOnClickListener {
+                    onTaskMenuClickListener?.onTaskMenuClicked(currentTask)
                 }
                 tvh.progressBar.progress = currentTask.getProgress(hasAutoProgress())
                 tvh.listName.visibility = View.GONE
@@ -611,7 +601,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         actualConvertView.findViewById(R.id.cb_subtask_done),
                         actualConvertView.findViewById(R.id.v_subtask_deadline_color_bar),
                         actualConvertView.findViewById(R.id.bt_subtask_move_up),
-                        actualConvertView.findViewById(R.id.bt_subtask_move_down)
+                        actualConvertView.findViewById(R.id.bt_subtask_move_down),
+                        actualConvertView.findViewById(R.id.bt_subtask_menu)
                     )
                     actualConvertView.tag = svh
                 }
@@ -645,6 +636,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 svh.moveDownButton.setOnClickListener {
                     moveSubtask(currentTaskHolder, subtaskIndex, false)
+                }
+                svh.subtaskMenuButton.setOnClickListener {
+                    onSubtaskMenuClickListener?.onSubtaskMenuClicked(currentTask, currentSubtask)
                 }
             }
         }
@@ -775,6 +769,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val name: TextView,
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
+        val taskMenuButton: ImageButton,
         val deadlineIcon: ImageView,
         val deadline: TextView,
         val reminderIcon: ImageView,
@@ -794,7 +789,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val done: CheckBox,
         val deadlineColorBar: View,
         val moveUpButton: ImageButton,
-        val moveDownButton: ImageButton
+        val moveDownButton: ImageButton,
+        val subtaskMenuButton: ImageButton
     )
 
     private inner class TaskDescriptionViewHolder(

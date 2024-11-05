@@ -34,6 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:padding="4dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80"
         android:contentDescription="@string/move_up"
         app:srcCompat="@drawable/ic_arrow_up_black_24dp" />
 
@@ -42,9 +44,22 @@
         style="@style/BorderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginRight="6dp"
         android:padding="4dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80"
         android:contentDescription="@string/move_down"
         app:srcCompat="@drawable/ic_arrow_down_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/bt_subtask_menu"
+        style="@style/BorderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="11dp"
+        android:padding="4dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80"
+        android:contentDescription="@string/move_down"
+        app:srcCompat="@drawable/ic_menu_black_24dp" />
 
 </LinearLayout>

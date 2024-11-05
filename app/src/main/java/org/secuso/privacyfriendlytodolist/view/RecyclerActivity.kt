@@ -25,7 +25,6 @@ import android.view.ContextMenu.ContextMenuInfo
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ExpandableListView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -35,6 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
+import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -49,15 +49,16 @@ import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 class RecyclerActivity : AppCompatActivity() {
     private lateinit var model: ModelServices
     private lateinit var tv: TextView
-    private lateinit var lv: ExpandableListView
+    private lateinit var exLv: ExpandableListView
     private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
+    private var contextMenuTodoTask: TodoTask? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
         setContentView(R.layout.activity_recycler)
-        lv = findViewById(R.id.recycle_bin_tasks)
+        exLv = findViewById(R.id.recycle_bin_tasks)
         tv = findViewById(R.id.bin_empty)
         val toolbar: Toolbar = findViewById(R.id.toolbar_recycle_bin)
         toolbar.setTitle(R.string.bin_toolbar)
@@ -73,9 +74,8 @@ class RecyclerActivity : AppCompatActivity() {
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val longClickedTodo = expandableTodoTaskAdapter!!.longClickedTodo
-        if (null != longClickedTodo) {
-            val todoTask = longClickedTodo.left
+        val todoTask = contextMenuTodoTask
+        if (null != todoTask) {
             if (item.itemId == R.id.restore) {
                 model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                     if (counter > 0) {
@@ -135,19 +135,14 @@ class RecyclerActivity : AppCompatActivity() {
     private fun updateAdapter() {
         model.getRecycleBin { todoTasks ->
             expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model, todoTasks, true)
-            lv.setAdapter(expandableTodoTaskAdapter)
-            lv.setEmptyView(tv)
-            lv.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-                val groupPosition = ExpandableListView.getPackedPositionGroup(id)
-                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                    val childPosition = ExpandableListView.getPackedPositionChild(id)
-                    expandableTodoTaskAdapter!!.setLongClickedSubtaskByPos(groupPosition, childPosition)
-                } else {
-                    expandableTodoTaskAdapter!!.setLongClickedTaskByPos(groupPosition)
-                }
-                registerForContextMenu(lv)
-                false
+            expandableTodoTaskAdapter!!.setOnTaskMenuClickListener { todoTask: TodoTask ->
+                contextMenuTodoTask = todoTask
+                registerForContextMenu(exLv)
+                exLv.isLongClickable = false
+                openContextMenu(exLv)
             }
+            exLv.setAdapter(expandableTodoTaskAdapter)
+            exLv.setEmptyView(tv)
         }
     }
 

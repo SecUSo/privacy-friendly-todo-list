@@ -90,6 +90,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var exLv: ExpandableListView? = null
     private var emptyView: TextView? = null
     private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
+    private var contextMenuTodoTask: TodoTask? = null
+    private var contextMenuTodoSubtask: TodoSubtask? = null
     private var initialAlert: TextView? = null
     private var secondAlert: TextView? = null
     private var fabNewTodoTask: FloatingActionButton? = null
@@ -234,17 +236,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         exLv!!.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
             expandableTodoTaskAdapter?.onClickSubtask(groupPosition, position)
             return@setOnChildClickListener false
-        }
-        exLv!!.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            val groupPosition = ExpandableListView.getPackedPositionGroup(id)
-            if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                val childPosition = ExpandableListView.getPackedPositionChild(id)
-                expandableTodoTaskAdapter?.setLongClickedSubtaskByPos(groupPosition, childPosition)
-            } else {
-                expandableTodoTaskAdapter?.setLongClickedTaskByPos(groupPosition)
-            }
-            registerForContextMenu(exLv)
-            return@setOnItemLongClickListener false
         }
 
         fabNewTodoTask!!.setOnClickListener { v: View? ->
@@ -757,22 +748,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         }
+        expandableTodoTaskAdapter!!.setOnTaskMenuClickListener { todoTask: TodoTask ->
+            contextMenuTodoTask = todoTask
+            contextMenuTodoSubtask = null
+            registerForContextMenu(exLv)
+            exLv!!.isLongClickable = false
+            openContextMenu(exLv)
+        }
+        expandableTodoTaskAdapter!!.setOnSubtaskMenuClickListener { todoTask: TodoTask, todoSubtask: TodoSubtask ->
+            contextMenuTodoTask = todoTask
+            contextMenuTodoSubtask = todoSubtask
+            registerForContextMenu(exLv)
+            exLv!!.isLongClickable = false
+            openContextMenu(exLv)
+        }
         exLv!!.setAdapter(expandableTodoTaskAdapter)
         exLv!!.setEmptyView(emptyView)
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
         if (menuInfo is ExpandableListContextMenuInfo) {
-            val type = ExpandableListView.getPackedPositionType(menuInfo.packedPosition)
             val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
             menu.setHeaderView(menuHeader)
-            // context menu for child items
-            val workItemId: Int = if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-                menuInflater.inflate(R.menu.todo_subtask_context, menu)
-                R.id.work_subtask
-            } else { // context menu for group items
+            val workItemId: Int = if (null == contextMenuTodoSubtask) {
+                // context menu for task
                 menuInflater.inflate(R.menu.todo_task_context, menu)
                 R.id.work_task
+            } else {
+                // context menu for subtask
+                menuInflater.inflate(R.menu.todo_subtask_context, menu)
+                R.id.work_subtask
             }
             if (pomodoroInstalled) {
                 menu.findItem(workItemId).setVisible(true)
@@ -814,7 +819,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.edit_task -> {
-                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
+                val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { changedTodoTask: TodoTask ->
@@ -829,14 +834,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.share_task -> {
-                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
+                val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     shareTask(todoTask)
                 }
             }
 
             R.id.delete_task -> {
-                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
+                val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     val snackBar = Snackbar.make(fabNewTodoTask!!, R.string.task_removed, Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
@@ -865,7 +870,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.work_task -> {
-                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
+                val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     Log.i(TAG, "START TASK")
                     sendToPomodoro(todoTask)
@@ -873,7 +878,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.edit_subtask -> {
-                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
+                val todoSubtask = contextMenuTodoSubtask
                 if (null != todoSubtask) {
                     val dialog = ProcessTodoSubtaskDialog(this, todoSubtask)
                     dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
@@ -887,8 +892,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.delete_subtask -> {
-                val todoTask = expandableTodoTaskAdapter?.longClickedTodo?.left
-                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
+                val todoTask = contextMenuTodoTask
+                val todoSubtask = contextMenuTodoSubtask
                 if (null != todoTask && null != todoSubtask) {
                     model!!.deleteTodoSubtask(todoSubtask) { counter ->
                         todoTask.getSubtasks().remove(todoSubtask)
@@ -903,7 +908,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.work_subtask -> {
-                val todoSubtask = expandableTodoTaskAdapter?.longClickedTodo?.right
+                val todoSubtask = contextMenuTodoSubtask
                 if (null != todoSubtask) {
                     Log.i(TAG, "START SUBTASK")
                     sendToPomodoro(todoSubtask)
