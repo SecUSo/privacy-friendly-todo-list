@@ -22,6 +22,7 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.JOB_SCHEDULER_SERVICE
+import android.os.Build
 import android.os.PersistableBundle
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.service.JobFactory.JobType
@@ -42,7 +43,7 @@ object JobManager {
 
     fun startUpdateAlarmJob(context: Context, alsoTriggerAlarmsForOverdueTasks: Boolean = false): Int {
         val extras = PersistableBundle()
-        extras.putBoolean(UpdateAlarmsJob.KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, alsoTriggerAlarmsForOverdueTasks)
+        extras.putInt(UpdateAlarmsJob.KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, if (alsoTriggerAlarmsForOverdueTasks) 1 else 0)
         return scheduleJob(context, JobType.UpdateAlarmsJob, extras)
     }
 
@@ -66,6 +67,10 @@ object JobManager {
         val allExtras = extras ?: PersistableBundle()
         allExtras.putInt(KEY_JOB_TYPE, jobType.ordinal)
         builder.setExtras(allExtras)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            // Set some constraint to avoid java.lang.IllegalArgumentException: You're trying to build a job with no constraints, this is not allowed.
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+        }
         val jobInfo = builder.build()
         val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
         val result = jobScheduler.schedule(jobInfo)

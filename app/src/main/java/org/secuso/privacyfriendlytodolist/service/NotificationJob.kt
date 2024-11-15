@@ -61,7 +61,7 @@ class NotificationJob : ModelJobBase("Notification job") {
         NotificationMgr.cancelNotification(context, todoTaskId)
 
         // Serialize actions to be sure that both actions are done before calling jobFinished.
-        model!!.getTaskById(todoTaskId) { todoTask ->
+        model.getTaskById(todoTaskId) { todoTask ->
             if (isJobStopped()) {
                 return@getTaskById
             }
@@ -73,7 +73,7 @@ class NotificationJob : ModelJobBase("Notification job") {
             } else {
                 todoTask.setDone(true)
                 todoTask.setChanged()
-                model!!.saveTodoTaskInDb(todoTask) { counter ->
+                model.saveTodoTaskInDb(todoTask) { counter ->
                     if (counter > 0) {
                         Log.i(TAG, "$logPrefix Set task with ID $todoTaskId as done.")
                         Model.notifyDataChangedFromOutside(context)

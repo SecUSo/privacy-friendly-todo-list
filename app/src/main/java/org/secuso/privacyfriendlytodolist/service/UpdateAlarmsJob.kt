@@ -31,15 +31,15 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarms job") {
     override fun onStartJob(): Boolean {
         super.onStartJob()
 
-        doUpdateNextAlarm(params.extras.getBoolean(KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, false))
+        doUpdateNextAlarm(params.extras.getInt(KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, 0))
 
         // Return true, if job still runs asynchronously.
         // If returning true, jobFinished() shall be called after asynchronous job has been finished.
         return isJobOngoing()
     }
 
-    private fun doUpdateNextAlarm(alsoTriggerAlarmsForOverdueTasks: Boolean) {
-        model!!.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
+    private fun doUpdateNextAlarm(alsoTriggerAlarmsForOverdueTasks: Int) {
+        model.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
             if (isJobStopped()) {
                 return@getNextDueTask
             }
@@ -50,7 +50,7 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarms job") {
                 Log.d(TAG, "$logPrefix No next due task so no alarm to set.")
             }
 
-            if (alsoTriggerAlarmsForOverdueTasks) {
+            if (alsoTriggerAlarmsForOverdueTasks != 0) {
                 triggerAlarmsForOverdueTasks()
             } else {
                 jobFinished()
@@ -59,7 +59,7 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarms job") {
     }
 
     private fun triggerAlarmsForOverdueTasks() {
-        model!!.getOverdueTasks(Helper.getCurrentTimestamp()) { overdueTasks ->
+        model.getOverdueTasks(Helper.getCurrentTimestamp()) { overdueTasks ->
             if (isJobStopped()) {
                 return@getOverdueTasks
             }

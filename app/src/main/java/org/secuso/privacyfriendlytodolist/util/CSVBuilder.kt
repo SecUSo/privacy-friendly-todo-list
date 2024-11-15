@@ -45,7 +45,7 @@ class CSVBuilder(private val writer: Writer) {
 
     fun addField(content: String) {
         addFieldSeparator()
-        var escapedContent = content.replace(Regex("\\R"), " ")
+        var escapedContent = content.replace(System.lineSeparator(), " ")
         if (escapedContent.contains(Regex("[,\"']"))) {
             escapedContent = escapedContent.replace("\"", "\"\"")
             escapedContent = "\"" + escapedContent + "\""

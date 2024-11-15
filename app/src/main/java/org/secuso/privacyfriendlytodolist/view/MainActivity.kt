@@ -33,7 +33,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.AdapterView
 import android.widget.ExpandableListView
-import android.widget.ExpandableListView.ExpandableListContextMenuInfo
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -765,7 +764,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
-        if (menuInfo is ExpandableListContextMenuInfo) {
+        // Check for to-do tasks in expandable list view.
+        if (v is ExpandableListView) {
             val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
             menu.setHeaderView(menuHeader)
             val workItemId: Int = if (null == contextMenuTodoSubtask) {
@@ -780,6 +780,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (pomodoroInstalled) {
                 menu.findItem(workItemId).setVisible(true)
             }
+        // Check for to-do lists in main menu.
         } else if (v.tag is Int) {
             selectedTodoListId = v.tag as Int
             val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
