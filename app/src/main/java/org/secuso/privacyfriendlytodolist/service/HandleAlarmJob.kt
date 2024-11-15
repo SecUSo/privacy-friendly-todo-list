@@ -17,8 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.service
 
-import android.annotation.SuppressLint
-import android.app.job.JobParameters
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
@@ -30,35 +28,31 @@ import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 
 /**
  * A job service that handles an alarm which means showing a reminder notification.
- *
- * Regarding @SuppressLint("SpecifyJobSchedulerIdRange"):
- * JobManager avoids ID collision by design. See JobManager#JOB_SCHEDULER_JOB_ID_RANGE_BEGIN.
  */
-@SuppressLint("SpecifyJobSchedulerIdRange")
-class AlarmJob : JobBase() {
-    override fun onStartJob(params: JobParameters): Boolean {
-        super.onStartJob(params)
+class HandleAlarmJob : ModelJobBase("Handle-alarm job") {
+    override fun onStartJob(): Boolean {
+        super.onStartJob()
 
         if (params.extras.containsKey(AlarmMgr.KEY_ALARM_ID)) {
             doAlarm(params.extras.getInt(AlarmMgr.KEY_ALARM_ID))
         } else {
-            Log.e(TAG, "Job $currentJobId started without alarm ID.")
+            Log.e(TAG, "$logPrefix Started without alarm ID.")
         }
         
         // Return true, if job still runs asynchronously.
         // If returning true, jobFinished() shall be called after asynchronous job has been finished.
-        return !isJobFinished
+        return isJobOngoing()
     }
 
     private fun doAlarm(todoTaskId: Int) {
         // Serialize actions to be sure that all actions are done before calling jobFinished.
-        model!!.getTaskById(todoTaskId) { todoTask ->
+        model.getTaskById(todoTaskId) { todoTask ->
             if (isJobStopped()) {
                 return@getTaskById
             }
 
             if (null != todoTask) {
-                Log.i(TAG, "Notifying about alarm for $todoTask.")
+                Log.i(TAG, "$logPrefix Notifying about alarm for $todoTask.")
                 val title = todoTask.getName()
                 var message: String? = null
                 val deadline = todoTask.getDeadline()
@@ -77,25 +71,23 @@ class AlarmJob : JobBase() {
                         applicationContext.resources.getString(R.string.deadline_approaching, deadlineStr)
                     }
                 }
-                NotificationMgr.postTaskNotification(this, title, message, todoTask)
+                NotificationMgr.postTaskNotification(context, title, message, todoTask)
 
                 setNextAlarm(todoTask)
             } else {
-                Log.e(TAG, "Unable to process alarm. No task with ID $todoTaskId was found.")
+                Log.e(TAG, "$logPrefix Unable to process alarm. No task with ID $todoTaskId was found.")
             }
         }
     }
 
     private fun setNextAlarm(task: TodoTask) {
-        model!!.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
+        model.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
             if (isJobStopped()) {
                 return@getNextDueTask
             }
 
             if (null != nextDueTask) {
-                // Set alarm even if it is in the past. But should not occur because
-                // getNextDueTask returns only tasks where reminder time is in the future.
-                AlarmMgr.setAlarmForTask(this, nextDueTask, true)
+                AlarmMgr.setAlarmForNextDueTask(context, nextDueTask)
             }
 
             if (task.isRecurring() && task.isDone()) {
@@ -109,16 +101,16 @@ class AlarmJob : JobBase() {
     private fun setTaskUndone(task: TodoTask) {
         task.setDone(false)
         task.setChanged()
-        model!!.saveTodoTaskInDb(task) { counter ->
+        model.saveTodoTaskInDb(task) { counter ->
             if (isJobStopped()) {
                 return@saveTodoTaskInDb
             }
 
             if (counter > 0) {
-                Log.i(TAG, "Set $task automatically as undone because its re-occurring soon.")
-                Model.notifyDataChangedFromOutside(this)
+                Log.i(TAG, "$logPrefix Set $task automatically as undone because its re-occurring soon.")
+                Model.notifyDataChangedFromOutside(context)
             } else {
-                Log.e(TAG, "Failed to set $task as undone. Result: $counter")
+                Log.e(TAG, "$logPrefix Failed to set $task as undone. Result: $counter")
             }
             jobFinished()
         }

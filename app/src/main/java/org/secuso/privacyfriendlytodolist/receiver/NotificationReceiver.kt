@@ -43,7 +43,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val taskId = extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
         Log.i(TAG, "Received intent with action $action for task $taskId.")
-        JobManager.processNotificationAction(context, action, taskId)
+        JobManager.startNotificationJob(context, action, taskId)
     }
 
     companion object {

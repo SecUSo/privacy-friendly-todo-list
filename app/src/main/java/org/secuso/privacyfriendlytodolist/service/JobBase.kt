@@ -17,72 +17,72 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.service
 
-import android.annotation.SuppressLint
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.content.Context
 import android.util.Log
-import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.util.LogTag
-import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
 /**
- * A job service that handles an alarm which means showing a reminder notification.
- *
- * Regarding @SuppressLint("SpecifyJobSchedulerIdRange"):
- * JobManager avoids ID collision by design. See JobManager#JOB_SCHEDULER_JOB_ID_RANGE_BEGIN.
+ * Job base class.
  */
-@SuppressLint("SpecifyJobSchedulerIdRange")
-abstract class JobBase : JobService() {
-    private var viewModel: CustomViewModel? = null
-    protected var model: ModelServices? = null
-    protected var currentJobParams: JobParameters? = null
-    protected var currentJobId = 0
-    protected var isJobFinished = false
+abstract class JobBase(private val jobName: String) {
+    private lateinit var commonJobService: JobService
+    protected lateinit var context: Context
+    protected lateinit var applicationContext: Context
+    protected lateinit var params: JobParameters
 
-    override fun onCreate() {
-        super.onCreate()
+    private var isJobStopped = false
+    private var isJobFinished = false
 
-        Log.d(TAG, "Job created.")
-        viewModel = CustomViewModel(applicationContext)
-        model = viewModel!!.model
+    protected val logPrefix: String
+        get() = "$jobName #${params.jobId}:"
+
+    fun initialize(jobService: JobService, params: JobParameters) {
+        commonJobService = jobService
+        context = jobService
+        applicationContext = jobService.applicationContext
+        this.params = params
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        model = null
-        viewModel!!.destroy()
-        viewModel = null
-        Log.d(TAG, "Job destroyed.")
+    open fun onCreate() {
     }
 
-    override fun onStartJob(params: JobParameters): Boolean {
-        currentJobParams = params
-        currentJobId = params.jobId
-        isJobFinished = false
-        Log.d(TAG, "Job $currentJobId started.")
+    open fun onDestroy() {
+    }
+
+    open fun onStartJob(): Boolean {
+        Log.d(TAG, "$logPrefix Started.")
         return false
     }
 
-    override fun onStopJob(params: JobParameters): Boolean {
-        currentJobParams = null
-        Log.w(TAG, "Job $currentJobId gets stopped. Finished: $isJobFinished. Rescheduling: ${!isJobFinished}.")
+    open fun onStopJob(): Boolean {
+        isJobStopped = true
+        Log.w(TAG, "$logPrefix Gets stopped. Finished: $isJobFinished. Rescheduling: ${!isJobFinished}.")
         // Return true, if job should be rescheduled.
-        return !isJobFinished
+        return isJobOngoing()
     }
 
     protected fun isJobStopped(): Boolean {
-        return null == currentJobParams
+        return isJobStopped
     }
 
     protected fun jobFinished() {
         isJobFinished = true
         if (isJobStopped()) {
-            Log.w(TAG, "Job $currentJobId finished while job is already inactive.")
+            Log.w(TAG, "$logPrefix Finished while job was already stopped.")
         } else {
-            Log.d(TAG, "Job $currentJobId finished regularly.")
-            jobFinished(currentJobParams, false)
+            Log.d(TAG, "$logPrefix Finished regularly.")
+            commonJobService.jobFinished(params, false)
         }
+    }
+
+    protected fun isJobOngoing(): Boolean {
+        return !isJobFinished
+    }
+
+    protected fun isJobFinished(): Boolean {
+        return isJobFinished
     }
 
     companion object {

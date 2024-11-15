@@ -33,7 +33,7 @@ class PermissionStateReceiver : BroadcastReceiver() {
         }
 
         Log.i(TAG, "Received intent with action $action. Reloading alarms.")
-        JobManager.processAlarmPermissionStateChanged(context)
+        JobManager.startUpdateAlarmJob(context)
     }
 
     companion object {

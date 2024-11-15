@@ -82,17 +82,11 @@ class ModelServicesImpl(private val context: Context) {
         return Tuple(todoTask, updatedTasks)
     }
 
-    suspend fun getNextDueTaskAndOverdueTasks(now: Long): Tuple<MutableList<TodoTask>, Int> {
+    suspend fun getOverdueTasks(now: Long): MutableList<TodoTask> {
         val dataArray = db.getTodoTaskDao().getOverdueTasks(now)
-        val tasksToRemind = loadTasksSubtasks(false, *dataArray)
-
-        // get task that is next due
-        val nextDueTask = getNextDueTask(now)
-        if (nextDueTask.left != null) {
-            tasksToRemind.add(nextDueTask.left as TodoTaskImpl)
-        }
+        val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
-        return Tuple(tasksToRemind as MutableList<TodoTask>, nextDueTask.right)
+        return data as MutableList<TodoTask>
     }
 
     suspend fun deleteTodoList(todoListId: Int): Int {

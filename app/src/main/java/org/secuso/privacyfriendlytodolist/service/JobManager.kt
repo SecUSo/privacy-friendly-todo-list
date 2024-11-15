@@ -24,13 +24,14 @@ import android.content.Context
 import android.content.Context.JOB_SCHEDULER_SERVICE
 import android.os.PersistableBundle
 import android.util.Log
+import org.secuso.privacyfriendlytodolist.service.JobFactory.JobType
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 
 object JobManager {
+    const val KEY_JOB_TYPE = "KEY_JOB_TYPE"
     private val TAG = LogTag.create(this::class.java)
-
     /**
      * WorkManager uses ID range 0 .. Integer#MAX_VALUE. The JobInfo ID range must not overlap with
      * this range. See androidx.work.Configuration.Builder#setJobSchedulerJobIdRange() for details.
@@ -39,34 +40,32 @@ object JobManager {
     private const val JOB_SCHEDULER_JOB_ID_RANGE_END = -10000
     private var jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
 
-    fun processAutoStart(context: Context): Int {
-        return scheduleJob(context, ReloadAlarmsJob::class.java)
+    fun startUpdateAlarmJob(context: Context, alsoTriggerAlarmsForOverdueTasks: Boolean = false): Int {
+        val extras = PersistableBundle()
+        extras.putBoolean(UpdateAlarmsJob.KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, alsoTriggerAlarmsForOverdueTasks)
+        return scheduleJob(context, JobType.UpdateAlarmsJob, extras)
     }
 
-    fun processAlarmPermissionStateChanged(context: Context): Int {
-        return scheduleJob(context, ReloadAlarmsJob::class.java)
-    }
-
-    fun processAlarm(context: Context, alarmId: Int): Int {
+    fun startHandleAlarmJob(context: Context, alarmId: Int): Int {
         val extras = PersistableBundle()
         extras.putInt(AlarmMgr.KEY_ALARM_ID, alarmId)
-        return scheduleJob(context, AlarmJob::class.java, extras)
+        return scheduleJob(context, JobType.HandleAlarmJob, extras)
     }
 
-    fun processNotificationAction(context: Context, action: String, taskId: Int): Int {
+    fun startNotificationJob(context: Context, action: String, taskId: Int): Int {
         val extras = PersistableBundle()
         extras.putInt(action, 0)
         extras.putInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID, taskId)
-        return scheduleJob(context, NotificationJob::class.java, extras)
+        return scheduleJob(context, JobType.NotificationJob, extras)
     }
 
-    private fun scheduleJob(context: Context, jobClass: Class<*>, extras: PersistableBundle? = null): Int {
-        val componentName = ComponentName(context, jobClass)
+    private fun scheduleJob(context: Context, jobType: JobType, extras: PersistableBundle? = null): Int {
+        val componentName = ComponentName(context, JobInstanceMultiplier::class.java)
         var jobId = getNextJobId()
         val builder = JobInfo.Builder(jobId, componentName)
-        if (null != extras) {
-            builder.setExtras(extras)
-        }
+        val allExtras = extras ?: PersistableBundle()
+        allExtras.putInt(KEY_JOB_TYPE, jobType.ordinal)
+        builder.setExtras(allExtras)
         val jobInfo = builder.build()
         val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
         val result = jobScheduler.schedule(jobInfo)

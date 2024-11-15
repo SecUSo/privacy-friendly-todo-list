@@ -134,13 +134,7 @@
         </receiver>
 
         <service
-            android:name=".service.ReloadAlarmsJob"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name=".service.AlarmJob"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name=".service.NotificationJob"
+            android:name=".service.JobInstanceMultiplier"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".view.widget.TodoListWidgetViewsService"

@@ -37,7 +37,7 @@ class AlarmReceiver : BroadcastReceiver() {
         if (null != extras && extras.containsKey(AlarmMgr.KEY_ALARM_ID)) {
             val alarmId = extras.getInt(AlarmMgr.KEY_ALARM_ID)
             Log.i(TAG, "Received intent with action $action and alarm ID $alarmId. Starting reminder service.")
-            JobManager.processAlarm(context, alarmId)
+            JobManager.startHandleAlarmJob(context, alarmId)
         } else {
             Log.e(TAG, "Received alarm without alarm ID.")
         }

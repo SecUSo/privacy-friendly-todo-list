@@ -28,6 +28,7 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -45,7 +46,9 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity
  */
 object NotificationMgr {
     const val EXTRA_NOTIFICATION_TASK_ID = "EXTRA_NOTIFICATION_TASK_ID"
+    private val TAG = LogTag.create(this::class.java)
     private const val CHANNEL_ID = "my_channel_01"
+    private var uniqueRequestCode = 0
     private var manager: NotificationManager? = null
 
     private fun getManager(context: Context): NotificationManager {
@@ -92,7 +95,6 @@ object NotificationMgr {
         }
 
         // Main Action -> Show task in MainActivity
-        var uniqueRequestCode = 0
         var intent = Intent(context, MainActivity::class.java)
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         val stackBuilder = TaskStackBuilder.create(context)
@@ -121,15 +123,16 @@ object NotificationMgr {
 
         val notificationId = task.getId()
         val notification = builder.build()
+        Log.d(TAG, "Posting task notification with ID $notificationId.")
         getManager(context).notify(notificationId, notification)
         return notificationId
     }
 
-    fun cancel(context: Context, notificationId: Int) {
-        getManager(context).cancel(notificationId)
+    fun cancelAllNotifications(context: Context) {
+        getManager(context).cancelAll()
     }
 
-    fun cancelAll(context: Context) {
-        getManager(context).cancelAll()
+    fun cancelNotification(context: Context, notificationId: Int) {
+        getManager(context).cancel(notificationId)
     }
 }

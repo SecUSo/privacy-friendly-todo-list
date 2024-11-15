@@ -59,6 +59,7 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
+import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
@@ -309,8 +310,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             if (null == errorMessage) {
                 Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
-                // Renew alarms. Might be a due- or overdue-task was imported.
-                AlarmMgr.setAlarmForAllTasks(this)
+                // Update next alarm. Might be a due- or overdue-task was imported.
+                JobManager.startUpdateAlarmJob(this, true)
             } else {
                 Log.e(TAG, "CSV import failed: $errorMessage")
                 AlertDialog.Builder(this).apply {
@@ -613,11 +614,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onTaskChange(todoTask: TodoTask) {
         // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        Log.d(TAG, "$todoTask changed. Setting its alarm.")
-        // Direct user action lead to task change. So no need to set alarm if it is in the past.
-        // User should see that.
-        AlarmMgr.setAlarmForTask(this, todoTask,
-            setAlarmEvenIfItIsInPast = false, showMessage = true)
+        Log.d(TAG, "$todoTask changed. Updating next alarm.")
+        JobManager.startUpdateAlarmJob(this)
     }
 
     // Adds To do-Lists to the navigation-drawer
@@ -847,8 +845,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
                         model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                             if (counter > 0) {
-                                AlarmMgr.setAlarmForTask(this, todoTask,
-                                    setAlarmEvenIfItIsInPast = false, showMessage = true)
+                                JobManager.startUpdateAlarmJob(this)
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
                             } else {

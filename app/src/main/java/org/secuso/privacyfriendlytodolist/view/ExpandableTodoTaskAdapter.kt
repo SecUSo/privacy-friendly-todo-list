@@ -37,6 +37,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -485,8 +486,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                                 subtask.setDone(inverted)
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
-                                AlarmMgr.setAlarmForTask(context, currentTask,
-                                    setAlarmEvenIfItIsInPast = false, showMessage = true)
+                                JobManager.startUpdateAlarmJob(context)
                             }
                         }
                         snackBar.show()
@@ -500,8 +500,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             notifyDataSetChanged()
                         }
                         model.saveTodoTaskInDb(currentTask) {
-                            AlarmMgr.setAlarmForTask(context, currentTask,
-                                setAlarmEvenIfItIsInPast = false, showMessage = true)
+                            JobManager.startUpdateAlarmJob(context)
                         }
                     }
                 }
@@ -621,8 +620,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             model.saveTodoTaskInDb(currentTask) {
                                 counter2: Int? -> notifyDataSetChanged()
                                 if (doneStatusChanged) {
-                                    AlarmMgr.setAlarmForTask(context, currentTask,
-                                        setAlarmEvenIfItIsInPast = false, showMessage = true)
+                                    JobManager.startUpdateAlarmJob(context)
                                 }
                             }
                         }

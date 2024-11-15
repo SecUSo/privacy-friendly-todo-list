@@ -33,7 +33,7 @@ class AutoStartReceiver : BroadcastReceiver() {
         }
 
         Log.i(TAG, "Received intent with action $action. Starting reminder service.")
-        JobManager.processAutoStart(context)
+        JobManager.startUpdateAlarmJob(context, true)
     }
 
     companion object {

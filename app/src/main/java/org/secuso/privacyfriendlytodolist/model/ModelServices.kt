@@ -95,21 +95,17 @@ class ModelServices(
     }
 
     /**
-     * Returns a list of tasks
-     *
-     * -   which are not fulfilled and whose reminder time is prior to the current time
-     * -   the task which is next due
+     * Returns a list of tasks which are not done and whose reminder time is prior to the current time.
      *
      * @param now Current time.
      * @param resultConsumer Result consumer that will be notified when the asynchronous database
      * access has finished.
      */
-    fun getNextDueTaskAndOverdueTasks(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
+    fun getOverdueTasks(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
                          resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val tasksToRemind = services.getNextDueTaskAndOverdueTasks(now)
-            dispatchResult(deliveryOption, resultConsumer, tasksToRemind.left)
-            notifyDataChanged(tasksToRemind.right)
+            val todoTasks = services.getOverdueTasks(now)
+            dispatchResult(deliveryOption, resultConsumer, todoTasks)
         }
     }
 

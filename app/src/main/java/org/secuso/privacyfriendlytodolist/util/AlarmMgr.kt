@@ -32,7 +32,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -40,6 +39,8 @@ object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
     private val TAG = LogTag.create(this::class.java)
     private var manager: AlarmManager? = null
+    private var lastDueTaskAlarmID: Int? = null
+    private var lastDueTaskAlarmTime: Long = 0
 
     private fun getManager(context: Context): AlarmManager {
         if (manager == null) {
@@ -69,41 +70,17 @@ object AlarmMgr {
         }
     }
 
-    fun setAlarmForAllTasks(context: Context) {
-        val now = Helper.getCurrentTimestamp()
-        val viewModel = CustomViewModel(context)
-        viewModel.model.getNextDueTaskAndOverdueTasks(now) { dueTasks ->
-            for (dueTask in dueTasks) {
-                setAlarmForTask(context, dueTask, true)
-            }
-        }
-    }
-
     /**
-     * Sets an alarm for the given task if it is not done and has a reminder time.
-     *
-     * Timestamp of alarm is determined as follows:
-     * - If task has reminder time:
-     *      - If it is later than current time it gets used
-     *      - Otherwise, if setAlarmEvenItsInPast is true, current time gets used
-     *      - Otherwise no alarm gets set
+     * Sets an alarm for the given next due task if it is not done and has a reminder time in the future.
+     * If an alarm for a due task was set before it gets cancelled.
      *
      * @param context
      * @param todoTask
-     * @param setAlarmEvenIfItIsInPast Set alarm even if reminder time is in past. In this case
-     * 'now' gets used as alarm time.
-     * @param showMessage A message gets shown to the user that notifies about a created alarm.
-     * 
+     *
      * @return If an alarm gets set the alarm ID gets returned (task ID gets used as alarm ID).
      * If no alarm gets set null gets returned.
      */
-    fun setAlarmForTask(context: Context, todoTask: TodoTask,
-                        setAlarmEvenIfItIsInPast: Boolean = false,
-                        showMessage: Boolean = false): Int? {
-        // Use task's database ID as unique alarm ID.
-        val alarmId = todoTask.getId()
-        cancelAlarmForTask(context, alarmId)
-
+    fun setAlarmForNextDueTask(context: Context, todoTask: TodoTask): Int? {
         var reminderTime = todoTask.getReminderTime()
         if (reminderTime == null) {
             Log.i(TAG, "No alarm set because $todoTask has no reminder time.")
@@ -136,34 +113,52 @@ object AlarmMgr {
             }
         }
 
-        val alarmTime: Long
-        val duration: Duration
-        val logDetail: String
-        if (reminderTime > now) {
-            // Get full minutes as alarm time.
-            alarmTime = reminderTime - (reminderTime % 60)
-            duration = (reminderTime - now).toDuration(DurationUnit.SECONDS)
-            logDetail = "reminder time"
-        } else if (setAlarmEvenIfItIsInPast) {
-            alarmTime = now
-            duration = Duration.ZERO
-            logDetail = "reminder time is in the past, using 'now'"
-        } else {
+        if (reminderTime < now) {
             Log.i(TAG, "No alarm set because reminder time of $todoTask is in the past.")
             return null
         }
 
-        val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
-        var timestamp = Helper.createCanonicalDateTimeString(alarmTime)
-        Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $timestamp which is in $duration ($logDetail).")
-        if (showMessage) {
-            timestamp = Helper.createLocalizedDateTimeString(alarmTime)
-            val message = context.getString(R.string.alarm_set_for_task, timestamp, duration.toString(), todoTask.getName())
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        // Use task's database ID as unique alarm ID.
+        val alarmId = todoTask.getId()
+        // Get next full minute as alarm time.
+        val rest = reminderTime % 60
+        val alarmTime = if (rest == 0L) reminderTime else reminderTime - rest + 60
+        val canonicalTimestamp = Helper.createCanonicalDateTimeString(alarmTime)
+
+        if (lastDueTaskAlarmID == alarmId && lastDueTaskAlarmTime == alarmTime) {
+            Log.i(TAG, "Alarm with ID $alarmId and alarm time $canonicalTimestamp is already set.")
+            return null
         }
+
+        if (lastDueTaskAlarmID != null) {
+            Log.i(TAG, "Cancelling alarm of old next-due-task with ID $lastDueTaskAlarmID.")
+            cancelAlarmForTask(context, lastDueTaskAlarmID!!)
+        }
+
+        val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
+        // Logging.
+        val durationAsInt = TimeUnit.SECONDS.toMinutes(reminderTime - now)
+        val duration = durationAsInt.toDuration(DurationUnit.MINUTES)
+        Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $canonicalTimestamp which is in $duration.")
+        // Message to the user if something changed at next-due-task-alarm.
+        val localizedTimestamp = Helper.createLocalizedDateTimeString(alarmTime)
+        val message = context.getString(R.string.next_reminder, localizedTimestamp, duration.toString(), todoTask.getName())
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+        lastDueTaskAlarmID = alarmId
+        lastDueTaskAlarmTime = alarmTime
         return alarmId
     }
 
+    /**
+     * Sets an alarm with the given alarm ID and alarm time without any further checks.
+     *
+     * @param context
+     * @param alarmId The alarm ID.
+     * @param alarmTime The alarm time in seconds.
+     *
+     * @return The alarm ID as given to this method.
+     */
     fun setAlarmForTask(context: Context, alarmId: Int, alarmTime: Long): Int {
         // Use task's database ID as unique alarm ID.
         cancelAlarmForTask(context, alarmId)
