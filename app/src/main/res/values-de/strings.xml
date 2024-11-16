@@ -13,9 +13,9 @@
     <string name="show_all_tasks">Alle Aufgaben</string>
     <string name="calendar_view">Kalenderansicht</string>
     <string name="settings">Einstellungen</string>
-    <string name="share_all_tasks">Alle Aufgaben teilen</string>
-    <string name="export_all_tasks">Alle Aufgaben exportieren</string>
-    <string name="import_tasks">Aufgaben importieren</string>
+    <string name="share_all_tasks">Daten teilen</string>
+    <string name="export_all_tasks">Daten exportieren</string>
+    <string name="import_tasks">Daten importieren</string>
     <string name="other">Andere</string>
 	<string name="help">Hilfe</string>
 	<string name="menu_about">Über</string>
@@ -46,7 +46,7 @@
     <string name="help_subtasks_title">Unteraufgaben</string>
     <string name="help_subtasks">Unteraufgaben können an Aufgaben angehängt werden, um kleinere Einzelschritte zu protokollieren. Sie können nach Antippen einer Aufgabe in der aufgeklappten Ansicht erstellt werden. In den Einstellungen können Sie wählen, ob der Fortschritt einer Aufgabe von der Anzahl erledigter Unteraufgaben abhängt.</string>
     <string name="help_deadline_reminder_title">Fälligkeitsdatum und Erinnerungen</string>
-    <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden. Das Bearbeiten einer Aufgabe ist möglich, indem diese länger angetippt wird.</string>
+    <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden.</string>
     <string name="help_group_app">Einstellungen</string>
     <string name="help_pin_title">PIN-Schutz</string>
     <string name="help_pin">Im Einstellungsmenü kann eine mindestens vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem Start der App eingegeben werden.</string>

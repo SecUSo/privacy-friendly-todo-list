@@ -13,9 +13,9 @@
     <string name="show_all_tasks">Show all tasks</string>
     <string name="calendar_view">Calendar</string>
     <string name="settings">Settings</string>
-    <string name="share_all_tasks">Share all tasks</string>
-    <string name="export_all_tasks">Export all tasks</string>
-    <string name="import_tasks">Import tasks</string>
+    <string name="share_all_tasks">Share data</string>
+    <string name="export_all_tasks">Export data</string>
+    <string name="import_tasks">Import data</string>
     <string name="other">Other</string>
     <string name="help">Help</string>
     <string name="menu_about">About</string>
@@ -46,7 +46,7 @@
     <string name="help_subtasks_title">Subtasks</string>
     <string name="help_subtasks">Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
     <string name="help_deadline_reminder_title">Deadlines and reminders</string>
-    <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it. Hold on a task for a while to edit it.</string>
+    <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it.</string>
     <string name="help_group_app">Settings</string>
     <string name="help_pin_title">Settings</string>
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with at least 4 digits. You are asked for it every time you start the application.</string>
