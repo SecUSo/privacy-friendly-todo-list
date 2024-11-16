@@ -29,7 +29,7 @@ import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 /**
  * A job service that handles an alarm which means showing a reminder notification.
  */
-class HandleAlarmJob : ModelJobBase("Handle-alarm job") {
+class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
     override fun onStartJob(): Boolean {
         super.onStartJob()
 
@@ -108,7 +108,7 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm job") {
 
             if (counter > 0) {
                 Log.i(TAG, "$logPrefix Set $task automatically as undone because its re-occurring soon.")
-                Model.notifyDataChangedFromOutside(context)
+                Model.notifyDataChangedFromOutside(context, 0, counter, 0)
             } else {
                 Log.e(TAG, "$logPrefix Failed to set $task as undone. Result: $counter")
             }

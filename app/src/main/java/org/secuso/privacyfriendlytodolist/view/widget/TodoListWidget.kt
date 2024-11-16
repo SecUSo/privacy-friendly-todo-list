@@ -62,7 +62,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         Model.unregisterModelObserver(this)
     }
 
-    override fun onTodoDataChanged(context: Context) {
+    override fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.getName())
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)

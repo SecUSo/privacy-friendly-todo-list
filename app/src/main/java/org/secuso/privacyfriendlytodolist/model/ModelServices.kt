@@ -90,7 +90,7 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTask = services.getNextDueTask(now)
             dispatchResult(deliveryOption, resultConsumer, todoTask.left)
-            notifyDataChanged(todoTask.right)
+            notifyDataChanged(0, todoTask.right, 0)
         }
     }
 
@@ -111,21 +111,21 @@ class ModelServices(
 
     fun deleteTodoList(todoListId: Int,
                        deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<Int>? = null): Job {
+                       resultConsumer: ResultConsumer<Triple<Int, Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.deleteTodoList(todoListId)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(counter.first, counter.second, counter.third)
         }
     }
 
     fun deleteTodoTask(todoTask: TodoTask,
                        deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<Int>? = null): Job {
+                       resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.deleteTodoTask(todoTask)
+            val counter = services.deleteTodoTaskAndSubtasks(todoTask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, counter.left, counter.right)
         }
     }
 
@@ -135,18 +135,18 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.deleteTodoSubtask(subtask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, 0, counter)
         }
     }
 
     fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask,
                                        inRecycleBin: Boolean,
                                        deliveryOption: DeliveryOption = DeliveryOption.POST,
-                                       resultConsumer: ResultConsumer<Int>? = null): Job {
+                                       resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.setTaskAndSubtasksInRecycleBin(todoTask, inRecycleBin)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, counter.left, counter.right)
         }
     }
 
@@ -157,7 +157,7 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.setSubtaskInRecycleBin(subtask, inRecycleBin)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, 0, counter)
         }
     }
 
@@ -198,11 +198,11 @@ class ModelServices(
     }
 
     fun clearRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST,
-                        resultConsumer: ResultConsumer<Int>? = null): Job {
+                        resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.clearRecycleBin()
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, counter.left, counter.right)
         }
     }
 
@@ -246,7 +246,7 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoListInDb(todoList)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(counter, 0, 0)
         }
     }
 
@@ -256,17 +256,17 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoTaskInDb(todoTask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, counter, 0)
         }
     }
 
     fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask,
                                     deliveryOption: DeliveryOption = DeliveryOption.POST,
-                                    resultConsumer: ResultConsumer<Int>? = null): Job {
+                                    resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoTaskAndSubtasksInDb(todoTask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, counter.left, counter.right)
         }
     }
 
@@ -276,7 +276,7 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoSubtaskInDb(todoSubtask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, 0, counter)
         }
     }
 
@@ -286,7 +286,7 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoListsSortOrderInDb(todoListIds)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(counter, 0, 0)
         }
     }
 
@@ -296,7 +296,7 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoTasksSortOrderInDb(todoTasks)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, counter, 0)
         }
     }
 
@@ -306,16 +306,16 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoSubtasksSortOrderInDb(todoSubtasks)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(0, 0, counter)
         }
     }
 
     fun deleteAllData(deliveryOption: DeliveryOption = DeliveryOption.POST,
-                      resultConsumer: ResultConsumer<Int>? = null): Job {
+                      resultConsumer: ResultConsumer<Triple<Int, Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.deleteAllData()
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(counter)
+            notifyDataChanged(counter.first, counter.second, counter.third)
         }
     }
 
@@ -334,7 +334,8 @@ class ModelServices(
         return coroutineScope.launch(Dispatchers.IO) {
             val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri)
             dispatchResult(deliveryOption, resultConsumer, result.left)
-            notifyDataChanged(result.right)
+            val counter = result.right
+            notifyDataChanged(counter.first, counter.second, counter.third)
         }
     }
 
@@ -358,9 +359,12 @@ class ModelServices(
     /**
      * Do always post, never direct. Model changes always need to be handled in GUI thread.
      */
-    private fun notifyDataChanged(changedItems: Int) {
-        if (changedItems > 0) {
-            if (!resultHandler.post { Model.notifyDataChanged(context) }) {
+    private fun notifyDataChanged(changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+        if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
+            val success = resultHandler.post {
+                Model.notifyDataChanged(context, changedLists, changedTasks, changedSubtasks)
+            }
+            if (!success) {
                 Log.e(TAG, "Failed to post Model.notifyDataChanged().")
             }
         }

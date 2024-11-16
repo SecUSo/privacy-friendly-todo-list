@@ -26,7 +26,7 @@ import org.secuso.privacyfriendlytodolist.util.LogTag
  * A job service that ensures that an alarm is set for the next due task.
  * Optionally it triggers alarms for all overdue tasks immediately.
  */
-class UpdateAlarmsJob : ModelJobBase("Update-alarms job") {
+class UpdateAlarmsJob : ModelJobBase("Update-alarm-job") {
 
     override fun onStartJob(): Boolean {
         super.onStartJob()

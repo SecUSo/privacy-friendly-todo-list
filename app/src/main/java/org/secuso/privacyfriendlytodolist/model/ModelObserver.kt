@@ -23,9 +23,9 @@ interface ModelObserver {
     /**
      * Gets called when a the data in the data model (lists, tasks, subtasks) gets changed.
      *
-     * For example if a task gets changed and saved.
+     * For example if a task gets changed by the user and saved.
      */
-    fun onTodoDataChanged(context: Context) {
+    fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
     }
 
     /**
@@ -34,6 +34,6 @@ interface ModelObserver {
      *
      * For example if a task gets changed and saved by a reminder notification action.
      */
-    fun onTodoDataChangedFromOutside(context: Context) {
+    fun onTodoDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
     }
 }

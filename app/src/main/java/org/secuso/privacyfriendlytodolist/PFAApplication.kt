@@ -23,6 +23,8 @@ import androidx.work.Configuration
 import org.secuso.privacyfriendlybackup.api.pfa.BackupManager
 import org.secuso.privacyfriendlytodolist.backup.BackupCreator
 import org.secuso.privacyfriendlytodolist.backup.BackupRestorer
+import org.secuso.privacyfriendlytodolist.model.Model
+import org.secuso.privacyfriendlytodolist.observer.TaskChangeObserver
 import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 
@@ -38,5 +40,6 @@ class PFAApplication : Application(), Configuration.Provider {
         // When the application exits, its alarms get cancelled by the OS.
         // So ensure here that an alarm is set for the next due task:
         JobManager.startUpdateAlarmJob(this)
+        Model.registerModelObserver(TaskChangeObserver)
     }
 }

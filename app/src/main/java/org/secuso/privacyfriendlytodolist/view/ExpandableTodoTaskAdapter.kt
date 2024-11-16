@@ -481,12 +481,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             currentTask.setAllSubtasksDone(inverted)
                             currentTask.getProgress(hasAutoProgress())
                             currentTask.setChanged()
-                            notifyDataSetChanged()
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                                 subtask.setDone(inverted)
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
-                                JobManager.startUpdateAlarmJob(context)
+                                notifyDataSetChanged()
                             }
                         }
                         snackBar.show()
@@ -494,13 +493,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         currentTask.setAllSubtasksDone(buttonView.isChecked)
                         currentTask.getProgress(hasAutoProgress())
                         currentTask.setChanged()
-                        notifyDataSetChanged()
                         for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                             subtask.setChanged()
-                            notifyDataSetChanged()
                         }
                         model.saveTodoTaskInDb(currentTask) {
-                            JobManager.startUpdateAlarmJob(context)
+                            notifyDataSetChanged()
                         }
                     }
                 }
@@ -612,16 +609,16 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
                         currentSubtask.setDone(buttonView.isChecked)
-                        // check if entire task is done now (when all subtasks are done)
-                        val doneStatusChanged = currentTask.doneStatusChanged()
                         currentSubtask.setChanged()
-                        model.saveTodoSubtaskInDb(currentSubtask) { counter1: Int? ->
-                            currentTask.getProgress(hasAutoProgress())
-                            model.saveTodoTaskInDb(currentTask) {
-                                counter2: Int? -> notifyDataSetChanged()
-                                if (doneStatusChanged) {
-                                    JobManager.startUpdateAlarmJob(context)
+                        model.saveTodoSubtaskInDb(currentSubtask) {
+                            if (hasAutoProgress()) {
+                                // If having auto-progress, update the progress and save it.
+                                currentTask.getProgress(true)
+                                model.saveTodoTaskInDb(currentTask) {
+                                    notifyDataSetChanged()
                                 }
+                            } else {
+                                notifyDataSetChanged()
                             }
                         }
                     }

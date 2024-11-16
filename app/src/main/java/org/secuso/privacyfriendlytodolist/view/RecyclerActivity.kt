@@ -36,7 +36,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.service.JobManager
-import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
@@ -79,8 +78,7 @@ class RecyclerActivity : AppCompatActivity() {
         if (null != todoTask) {
             if (item.itemId == R.id.restore) {
                 model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
-                    if (counter > 0) {
-                        JobManager.startUpdateAlarmJob(this)
+                    if (counter.left > 0) {
                         updateAdapter()
                     } else {
                         Log.w(TAG, "Failed to restore $todoTask from recycle bin.")

@@ -58,7 +58,6 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.Tuple
-import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
@@ -242,7 +241,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val pt = ProcessTodoTaskDialog(this@MainActivity, activeListId)
             pt.setDialogCallback { todoTask ->
                 model!!.saveTodoTaskInDb(todoTask) { counter ->
-                    onTaskChange(todoTask)
                     showHints()
                     showTasksOfListOrAllTasks(todoTask.getListId())
                     if (todoTask.hasReminderTime()) {
@@ -309,8 +307,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             if (null == errorMessage) {
                 Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
-                // Update next alarm. Might be a due- or overdue-task was imported.
-                JobManager.startUpdateAlarmJob(this, true)
             } else {
                 Log.e(TAG, "CSV import failed: $errorMessage")
                 AlertDialog.Builder(this).apply {
@@ -550,7 +546,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStop()
     }
 
-    override fun onTodoDataChangedFromOutside(context: Context) {
+    override fun onTodoDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         Log.i(TAG, "Refreshing task list view because data model was changed from outside.")
         showTasksOfListOrAllTasks(activeListId)
     }
@@ -609,12 +605,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
         }
-    }
-
-    private fun onTaskChange(todoTask: TodoTask) {
-        // TODO add more granularity: You don't need to change the alarm if the name or the description of the task were changed. You actually need this perform the following steps if the reminder time or the "done" status were modified.
-        Log.d(TAG, "$todoTask changed. Updating next alarm.")
-        JobManager.startUpdateAlarmJob(this)
     }
 
     // Adds To do-Lists to the navigation-drawer
@@ -823,7 +813,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { changedTodoTask: TodoTask ->
                         model!!.saveTodoTaskInDb(changedTodoTask) { counter ->
-                            onTaskChange(changedTodoTask)
                             expandableTodoTaskAdapter!!.notifyDataSetChanged()
                             showTasksOfListOrAllTasks(activeListId)
                         }
@@ -845,8 +834,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val snackBar = Snackbar.make(fabNewTodoTask!!, R.string.task_removed, Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
                         model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
-                            if (counter > 0) {
-                                JobManager.startUpdateAlarmJob(this)
+                            if (counter.left > 0) {
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
                             } else {
@@ -855,7 +843,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         }
                     }
                     model!!.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter ->
-                        if (counter > 0) {
+                        if (counter.left > 0) {
                             AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
                             showTasksOfListOrAllTasks(activeListId)
                             showHints()
@@ -981,7 +969,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setCancelable(true)
                 setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
                     model!!.deleteTodoList(todoList.getId()) { counter ->
-                        if (counter > 0) {
+                        if (counter.first > 0) {
                             Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
                             val text = getString(R.string.delete_list_feedback, todoList.getName())
                             Toast.makeText(baseContext, text, Toast.LENGTH_SHORT).show()
@@ -1083,9 +1071,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (progress != -1) {
             // Update the existing entry, if no subtask
-            model!!.saveTodoTaskInDb(todoRe) { counter ->
-                onTaskChange(todoRe)
-            }
+            model!!.saveTodoTaskInDb(todoRe)
         }
     }
 

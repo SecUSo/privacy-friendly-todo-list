@@ -67,15 +67,19 @@ object Model {
         modelObservers.remove(modelObserver)
     }
 
-    fun notifyDataChanged(context: Context) {
-        for (modelObserver in modelObservers) {
-            modelObserver.onTodoDataChanged(context)
+    fun notifyDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+        if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
+            for (modelObserver in modelObservers) {
+                modelObserver.onTodoDataChanged(context, changedLists, changedTasks, changedSubtasks)
+            }
         }
     }
 
-    fun notifyDataChangedFromOutside(context: Context) {
-        for (modelObserver in modelObservers) {
-            modelObserver.onTodoDataChangedFromOutside(context)
+    fun notifyDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+        if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
+            for (modelObserver in modelObservers) {
+                modelObserver.onTodoDataChangedFromOutside(context, changedLists, changedTasks, changedSubtasks)
+            }
         }
     }
 }

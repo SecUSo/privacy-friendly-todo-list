@@ -217,7 +217,6 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
     <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
-    <string name="next_reminder">%1$s (in %2$s): %3$s</string>
 
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Task Reminder</string>
