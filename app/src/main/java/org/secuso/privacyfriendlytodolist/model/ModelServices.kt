@@ -229,7 +229,7 @@ class ModelServices(
             dispatchResult(deliveryOption, resultConsumer, todoLists)
         }
     }
-    
+
     fun getToDoListById(todoListId: Int,
                         deliveryOption: DeliveryOption = DeliveryOption.POST,
                         resultConsumer: ResultConsumer<TodoList?>): Job {

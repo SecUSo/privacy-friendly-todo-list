@@ -172,11 +172,11 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                
+
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
         }
-        
+
         // initialize buttons
         val okayButton: Button = findViewById(R.id.bt_process_task_ok)
         okayButton.setOnClickListener { v: View? ->

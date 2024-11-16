@@ -43,7 +43,7 @@ class NotificationJob : ModelJobBase("Notification job") {
         } else {
             Log.e(TAG, "$logPrefix Started without (known) notification action).")
         }
-        
+
         // Return true, if job still runs asynchronously.
         // If returning true, jobFinished() shall be called after asynchronous job has been finished.
         return isJobOngoing()

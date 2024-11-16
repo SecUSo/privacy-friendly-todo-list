@@ -83,10 +83,10 @@ Improvement of User Interface
 ## [Privacy Friendly To-Do List v1.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v1.0) - 19 Nov 2016
 
 Privacy Friendly To-Do List is an Android app for creating and managing tasks and To-Do lists.
-Each  task can be subdivided into subtasks. It is possible to assign deadlines and a reminder service to get informed when a deadline is approaching. 
-Colours indicate if a tasks is due. A calendar view gives a quick overview about monthly tasks. A search function enables the user to look for To-Do lists, To-Do tasks and subtasks. 
+Each  task can be subdivided into subtasks. It is possible to assign deadlines and a reminder service to get informed when a deadline is approaching.
+Colours indicate if a tasks is due. A calendar view gives a quick overview about monthly tasks. A search function enables the user to look for To-Do lists, To-Do tasks and subtasks.
 
-Privacy Friendly To-Do List belongs to the Privacy Friendly Apps group which are developed by the research group SECUSO at Technische Universität Darmstadt, Germany. 
+Privacy Friendly To-Do List belongs to the Privacy Friendly Apps group which are developed by the research group SECUSO at Technische Universität Darmstadt, Germany.
 
 
 [Changes][v1.0]

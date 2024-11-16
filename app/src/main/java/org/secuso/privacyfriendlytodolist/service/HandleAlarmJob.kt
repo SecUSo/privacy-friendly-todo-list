@@ -38,7 +38,7 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
         } else {
             Log.e(TAG, "$logPrefix Started without alarm ID.")
         }
-        
+
         // Return true, if job still runs asynchronously.
         // If returning true, jobFinished() shall be called after asynchronous job has been finished.
         return isJobOngoing()
