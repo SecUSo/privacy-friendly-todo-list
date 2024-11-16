@@ -57,7 +57,6 @@ import org.secuso.privacyfriendlytodolist.model.ModelObserver
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
@@ -834,7 +833,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val snackBar = Snackbar.make(fabNewTodoTask!!, R.string.task_removed, Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
                         model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
-                            if (counter.left > 0) {
+                            if (counter.first > 0) {
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
                             } else {
@@ -843,7 +842,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         }
                     }
                     model!!.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter ->
-                        if (counter.left > 0) {
+                        if (counter.first > 0) {
                             AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
                             showTasksOfListOrAllTasks(activeListId)
                             showHints()
@@ -1076,9 +1075,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showHints() {
-        model!!.getNumberOfAllListsAndTasks { tuple: Tuple<Int, Int> ->
-            val numberOfLists = tuple.left
-            val numberOfTasksNotInRecycleBin = tuple.right
+        model!!.getNumberOfAllListsAndTasks { tuple: Pair<Int, Int> ->
+            val numberOfLists = tuple.first
+            val numberOfTasksNotInRecycleBin = tuple.second
             val anim: Animation = AlphaAnimation(0.0f, 1.0f)
             if (numberOfLists == 0 && numberOfTasksNotInRecycleBin == 0) {
                 initialAlert!!.visibility = View.VISIBLE

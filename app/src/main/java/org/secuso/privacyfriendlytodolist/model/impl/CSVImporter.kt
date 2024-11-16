@@ -23,7 +23,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
-import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.util.CSVBuilder
 import org.secuso.privacyfriendlytodolist.util.CSVParser
 import java.io.Reader
@@ -36,8 +35,8 @@ import java.util.concurrent.TimeUnit
 @Suppress("SameParameterValue")
 class CSVImporter {
     val lists = mutableMapOf<Int, TodoList>()
-    val tasks = mutableMapOf<Int, Tuple<TodoList?, TodoTask>>()
-    val subtasks = mutableMapOf<Int, Tuple<TodoTask, TodoSubtask>>()
+    val tasks = mutableMapOf<Int, Pair<TodoList?, TodoTask>>()
+    val subtasks = mutableMapOf<Int, Pair<TodoTask, TodoSubtask>>()
     private var rowNumber = 0
     private var columnIndex = 0
 
@@ -96,13 +95,13 @@ class CSVImporter {
         var task: TodoTask? = null
         val id = getId(row, CSVExporter.START_COLUMN_TASK)
         if (null != id) {
-            task = tasks[id]?.right
+            task = tasks[id]?.second
             // CSV file can contain duplicates of a task, one for each subtasks.
             // Parse only first task, identified by its ID.
             // But return task in both cases, if parsed and if found in list.
             if (null == task) {
                 task = Model.createNewTodoTask()
-                tasks[id] = Tuple(list, task)
+                tasks[id] = Pair(list, task)
                 if (null != list) {
                     task.setListId(list.getId())
                 }
@@ -139,7 +138,7 @@ class CSVImporter {
                 throw IllegalFormatException("Row $rowNumber: Subtask with ID $id occurs more than once.")
             }
             val subtask = Model.createNewTodoSubtask()
-            subtasks[id] = Tuple(task, subtask)
+            subtasks[id] = Pair(task, subtask)
             subtask.setTaskId(task.getId())
             // Subtask ID is not set. It gets set while saving in DB.
             subtask.setName(getName(row, CSVExporter.START_COLUMN_SUBTASK))

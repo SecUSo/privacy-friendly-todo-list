@@ -23,7 +23,6 @@ import android.util.Log
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
@@ -70,7 +69,7 @@ class ModelServicesImpl(private val context: Context) {
         return todoTasks.size
     }
 
-    suspend fun getNextDueTask(now: Long): Tuple<TodoTask?, Int> {
+    suspend fun getNextDueTask(now: Long): Pair<TodoTask?, Int> {
         // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
         val updatedTasks = updateReminderTimeOfRecurringTasks(now)
         // Get next due task.
@@ -79,7 +78,7 @@ class ModelServicesImpl(private val context: Context) {
         if (null != nextDueTaskData) {
             todoTask = loadTasksSubtasks(false, nextDueTaskData)[0]
         }
-        return Tuple(todoTask, updatedTasks)
+        return Pair(todoTask, updatedTasks)
     }
 
     suspend fun getOverdueTasks(now: Long): MutableList<TodoTask> {
@@ -98,8 +97,8 @@ class ModelServicesImpl(private val context: Context) {
             val todoList = loadListsTasksSubtasks(todoListData)[0]
             for (task in todoList.getTasks()) {
                 val counter = setTaskAndSubtasksInRecycleBin(task, true)
-                counterTasks += counter.left
-                counterSubtasks += counter.right
+                counterTasks += counter.first
+                counterSubtasks += counter.second
             }
             counterLists += db.getTodoListDao().delete(todoList.data)
         }
@@ -107,7 +106,7 @@ class ModelServicesImpl(private val context: Context) {
         return Triple(counterLists, counterTasks, counterSubtasks)
     }
 
-    suspend fun deleteTodoTaskAndSubtasks(todoTask: TodoTask): Tuple<Int, Int> {
+    suspend fun deleteTodoTaskAndSubtasks(todoTask: TodoTask): Pair<Int, Int> {
         var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
             counterSubtasks += deleteTodoSubtask(subtask)
@@ -115,7 +114,7 @@ class ModelServicesImpl(private val context: Context) {
         val todoTaskImpl = todoTask as TodoTaskImpl
         val counterTasks = db.getTodoTaskDao().delete(todoTaskImpl.data)
         Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks removed from database.")
-        return Tuple(counterTasks, counterSubtasks)
+        return Pair(counterTasks, counterSubtasks)
     }
 
     suspend fun deleteTodoSubtask(subtask: TodoSubtask): Int {
@@ -125,7 +124,7 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
-    suspend fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean): Tuple<Int, Int> {
+    suspend fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean): Pair<Int, Int> {
         var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
             counterSubtasks += setSubtaskInRecycleBin(subtask, inRecycleBin)
@@ -135,7 +134,7 @@ class ModelServicesImpl(private val context: Context) {
         val counterTasks = db.getTodoTaskDao().update(todoTaskImpl.data)
         val action = if (inRecycleBin) "put into" else "restored from"
         Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks $action recycle bin.")
-        return Tuple(counterTasks, counterSubtasks)
+        return Pair(counterTasks, counterSubtasks)
     }
 
     suspend fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean): Int {
@@ -147,10 +146,10 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
-    suspend fun getNumberOfAllListsAndTasks(): Tuple<Int, Int> {
+    suspend fun getNumberOfAllListsAndTasks(): Pair<Int, Int> {
         val numberOfLists = db.getTodoListDao().getCount()
         val numberOfTasksNotInRecycleBin = db.getTodoTaskDao().getCountNotInRecycleBin()
-        return Tuple(numberOfLists, numberOfTasksNotInRecycleBin)
+        return Pair(numberOfLists, numberOfTasksNotInRecycleBin)
     }
 
     suspend fun getAllToDoTasks(): MutableList<TodoTask> {
@@ -174,17 +173,17 @@ class ModelServicesImpl(private val context: Context) {
         return data as MutableList<TodoTask>
     }
 
-    suspend fun clearRecycleBin(): Tuple<Int, Int> {
+    suspend fun clearRecycleBin(): Pair<Int, Int> {
         var counterTasks = 0
         var counterSubtasks = 0
         val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
         val todoTasks = loadTasksSubtasks(true, *dataArray)
         for (todoTask in todoTasks) {
             val counter = deleteTodoTaskAndSubtasks(todoTask)
-            counterTasks += counter.left
-            counterSubtasks += counter.right
+            counterTasks += counter.first
+            counterSubtasks += counter.second
         }
-        return Tuple(counterTasks, counterSubtasks)
+        return Pair(counterTasks, counterSubtasks)
     }
 
     suspend fun getAllToDoListIds(): MutableList<Int> {
@@ -245,13 +244,13 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
-    suspend fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask): Tuple<Int, Int> {
+    suspend fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask): Pair<Int, Int> {
         val counterTasks = saveTodoTaskInDb(todoTask)
         var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
             counterSubtasks += saveTodoSubtaskInDb(subtask)
         }
-        return Tuple(counterTasks, counterSubtasks)
+        return Pair(counterTasks, counterSubtasks)
     }
 
     suspend fun saveTodoTaskInDb(todoTask: TodoTask): Int {
@@ -384,15 +383,15 @@ class ModelServicesImpl(private val context: Context) {
         return null
     }
 
-    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri): Tuple<String?, Triple<Int, Int, Int>> {
+    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri): Pair<String?, Triple<Int, Int, Int>> {
         val inputStream: InputStream?
         try {
             inputStream = context.contentResolver.openInputStream(csvDataUri)
         } catch (e: FileNotFoundException) {
-            return Tuple("Input file not found.", Triple(0, 0, 0))
+            return Pair("Input file not found.", Triple(0, 0, 0))
         }
         if (null == inputStream) {
-            return Tuple("Failed to open input file.", Triple(0, 0, 0))
+            return Pair("Failed to open input file.", Triple(0, 0, 0))
         }
         val csvImporter = CSVImporter()
         try {
@@ -400,7 +399,7 @@ class ModelServicesImpl(private val context: Context) {
                 csvImporter.import(reader)
             }
         } catch (e: Exception) {
-            return Tuple(e.message, Triple(0, 0, 0))
+            return Pair(e.message, Triple(0, 0, 0))
         }
 
         if (deleteAllDataBeforeImport) {
@@ -416,19 +415,20 @@ class ModelServicesImpl(private val context: Context) {
         for (task in csvImporter.tasks.values) {
             // The tasks list gets its ID while saving it in DB.
             // So update the list ID at the task after the list was saved in DB.
-            if (null != task.left) {
-                task.right.setListId(task.left.getId())
+            val list = task.first
+            if (null != list) {
+                task.second.setListId(list.getId())
             }
-            counterTasks += saveTodoTaskInDb(task.right)
+            counterTasks += saveTodoTaskInDb(task.second)
         }
         var counterSubtasks = 0
         for (subtask in csvImporter.subtasks.values) {
             // The subtasks task gets its ID while saving it in DB.
             // So update the task ID at the subtask after the task was saved in DB.
-            subtask.right.setTaskId(subtask.left.getId())
-            counterSubtasks += saveTodoSubtaskInDb(subtask.right)
+            subtask.second.setTaskId(subtask.first.getId())
+            counterSubtasks += saveTodoSubtaskInDb(subtask.second)
         }
-        return Tuple(null, Triple(counterLists, counterTasks, counterSubtasks))
+        return Pair(null, Triple(counterLists, counterTasks, counterSubtasks))
     }
 
     private suspend fun loadListsTasksSubtasks(vararg dataArray: TodoListData): MutableList<TodoListImpl> {

@@ -89,8 +89,8 @@ class ModelServices(
                        resultConsumer: ResultConsumer<TodoTask?>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTask = services.getNextDueTask(now)
-            dispatchResult(deliveryOption, resultConsumer, todoTask.left)
-            notifyDataChanged(0, todoTask.right, 0)
+            dispatchResult(deliveryOption, resultConsumer, todoTask.first)
+            notifyDataChanged(0, todoTask.second, 0)
         }
     }
 
@@ -121,11 +121,11 @@ class ModelServices(
 
     fun deleteTodoTask(todoTask: TodoTask,
                        deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
+                       resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.deleteTodoTaskAndSubtasks(todoTask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter.left, counter.right)
+            notifyDataChanged(0, counter.first, counter.second)
         }
     }
 
@@ -142,11 +142,11 @@ class ModelServices(
     fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask,
                                        inRecycleBin: Boolean,
                                        deliveryOption: DeliveryOption = DeliveryOption.POST,
-                                       resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
+                                       resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.setTaskAndSubtasksInRecycleBin(todoTask, inRecycleBin)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter.left, counter.right)
+            notifyDataChanged(0, counter.first, counter.second)
         }
     }
 
@@ -165,7 +165,7 @@ class ModelServices(
      * Returns the number of all to-do-lists (left in tuple) and all to-do-tasks that are not in recycle bin (right in tuple).
      */
     fun getNumberOfAllListsAndTasks(deliveryOption: DeliveryOption = DeliveryOption.POST,
-                                    resultConsumer: ResultConsumer<Tuple<Int, Int>>): Job {
+                                    resultConsumer: ResultConsumer<Pair<Int, Int>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val result = services.getNumberOfAllListsAndTasks()
             dispatchResult(deliveryOption, resultConsumer, result)
@@ -198,11 +198,11 @@ class ModelServices(
     }
 
     fun clearRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST,
-                        resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
+                        resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.clearRecycleBin()
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter.left, counter.right)
+            notifyDataChanged(0, counter.first, counter.second)
         }
     }
 
@@ -262,11 +262,11 @@ class ModelServices(
 
     fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask,
                                     deliveryOption: DeliveryOption = DeliveryOption.POST,
-                                    resultConsumer: ResultConsumer<Tuple<Int, Int>>? = null): Job {
+                                    resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val counter = services.saveTodoTaskAndSubtasksInDb(todoTask)
             dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter.left, counter.right)
+            notifyDataChanged(0, counter.first, counter.second)
         }
     }
 
@@ -333,8 +333,8 @@ class ModelServices(
                       resultConsumer: ResultConsumer<String?>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri)
-            dispatchResult(deliveryOption, resultConsumer, result.left)
-            val counter = result.right
+            dispatchResult(deliveryOption, resultConsumer, result.first)
+            val counter = result.second
             notifyDataChanged(counter.first, counter.second, counter.third)
         }
     }

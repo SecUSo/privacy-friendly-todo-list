@@ -32,7 +32,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.ModelServices.DeliveryOption
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.Tuple
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
@@ -46,7 +45,7 @@ import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 class TodoListWidgetViewsFactory(private val context: Context, private val appWidgetId: Int) : RemoteViewsFactory {
     private var viewModel: CustomViewModel? = null
     private var model: ModelServices? = null
-    private val items = ArrayList<Tuple<Int, RemoteViews>>()
+    private val items = ArrayList<Pair<Int, RemoteViews>>()
     private lateinit var defaultTitle: String
     private var currentTitle: String = ""
 
@@ -106,7 +105,7 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         fillInIntent.putExtra(TodoListWidget.EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())
         for (todoTask in changedTodoTasks!!) {
             val item = createItem(todoTask, fillInIntent)
-            val tuple = Tuple(todoTask.getId(), item)
+            val tuple = Pair(todoTask.getId(), item)
             items.add(tuple)
         }
         Log.d(TAG, "Widget $appWidgetId: Updated data. Items: ${items.count()}, list ID: ${pref.todoListId}, title: '$currentTitle'.")
@@ -139,11 +138,11 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
-        return if (position >= 0 && position < items.size) items[position].right else null
+        return if (position >= 0 && position < items.size) items[position].second else null
     }
 
     override fun getItemId(position: Int): Long {
-        return if (position >= 0 && position < items.size) items[position].left.toLong() else 0
+        return if (position >= 0 && position < items.size) items[position].first.toLong() else 0
     }
 
     override fun hasStableIds(): Boolean {
