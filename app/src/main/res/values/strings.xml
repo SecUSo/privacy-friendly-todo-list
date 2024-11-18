@@ -293,7 +293,7 @@
     <string name="import_succeeded">Import successfully finished</string>
     <string name="import_failed">Import failed</string>
     <string name="import_question_title">Delete existing data?</string>
-    <string name="import_question_text">Delete all existing data (all lists, tasks and subtasks) before importing new data?</string>
+    <string name="import_question_text">Delete all existing data (all To-Do lists, tasks and subtasks) before importing new data?</string>
     <string name="delete_existing_data">Delete existing data</string>
     <string name="keep_existing_data">Keep existing data</string>
     <string name="abort">Abort</string>
