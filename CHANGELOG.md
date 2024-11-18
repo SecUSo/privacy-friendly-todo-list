@@ -1,5 +1,19 @@
 # Changelog
 
+<a name="v3.0.0"></a>
+## [ToDo List (Privacy Friendly) v3.0.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.0.0) - 24 Dec 2024
+
+## What's Changed
+* tbd
+
+## New Contributors
+* tbd
+
+**Full Changelog**: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v2.4.2...v3.0.0
+
+[Changes][v3.0.0]
+
+
 <a name="v2.4.2"></a>
 ## [ToDo List (Privacy Friendly) v2.4.2](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v2.4.2) - 14 Mar 2023
 
