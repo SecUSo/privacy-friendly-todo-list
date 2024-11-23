@@ -23,6 +23,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import kotlinx.coroutines.sync.Mutex
 import org.secuso.privacyfriendlytodolist.model.database.dao.TodoListDao
 import org.secuso.privacyfriendlytodolist.model.database.dao.TodoSubtaskDao
 import org.secuso.privacyfriendlytodolist.model.database.dao.TodoTaskDao
@@ -50,23 +51,37 @@ abstract class TodoListDatabase : RoomDatabase() {
         private val TAG = LogTag.create(this::class.java.declaringClass)
         const val NAME = "TodoDatabase.db"
         const val VERSION = 3
+
+        private val mutex = Mutex()
         private var instance: TodoListDatabase? = null
 
-        fun getInstance(context: Context): TodoListDatabase {
-            synchronized(NAME) {
+        suspend fun getInstance(context: Context): TodoListDatabase {
+            if (instance == null) {
+                mutex.lock()
                 if (instance == null) {
-                    instance = createDatabase(context)
+                    instance = openDatabase(context)
                 }
-                return instance!!
+                mutex.unlock()
             }
+            return instance!!
         }
 
-        private fun createDatabase(context: Context): TodoListDatabase {
+        suspend fun closeInstance() {
+            mutex.lock()
+            if (instance != null) {
+                Log.d(TAG, "Closing DB $NAME.")
+                instance!!.close()
+                instance = null
+            }
+            mutex.unlock()
+        }
+
+        private fun openDatabase(context: Context): TodoListDatabase {
+            Log.d(TAG, "Opening DB $NAME.")
             val builder = Room.databaseBuilder(context.applicationContext,
                 TodoListDatabase::class.java, NAME)
             builder.addMigrations(*ALL_MIGRATIONS)
             val db = builder.build()
-            Log.d(TAG, "$NAME was created.")
             return db
         }
 

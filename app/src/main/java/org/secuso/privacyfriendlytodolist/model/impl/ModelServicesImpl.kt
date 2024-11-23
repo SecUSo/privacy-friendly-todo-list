@@ -36,10 +36,12 @@ import java.io.OutputStream
 
 class ModelServicesImpl(private val context: Context) {
 
-    private var db = TodoListDatabase.getInstance(context)
+    private suspend fun getDB(): TodoListDatabase {
+        return TodoListDatabase.getInstance(context)
+    }
 
     suspend fun getTaskById(todoTaskId: Int): TodoTask? {
-        val todoTaskData = db.getTodoTaskDao().getById(todoTaskId)
+        val todoTaskData = getDB().getTodoTaskDao().getById(todoTaskId)
         var todoTask: TodoTask? = null
         if (null != todoTaskData) {
             todoTask = loadTasksSubtasks(false, todoTaskData)[0]
@@ -48,7 +50,7 @@ class ModelServicesImpl(private val context: Context) {
     }
 
     private suspend fun updateReminderTimeOfRecurringTasks(now: Long): Int {
-        val dataArray = db.getTodoTaskDao().getOverdueRecurringTasks(now)
+        val dataArray = getDB().getTodoTaskDao().getOverdueRecurringTasks(now)
         val todoTasks = loadTasksSubtasks(false, *dataArray)
         for (todoTask in todoTasks) {
             // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
@@ -73,7 +75,7 @@ class ModelServicesImpl(private val context: Context) {
         // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
         val updatedTasks = updateReminderTimeOfRecurringTasks(now)
         // Get next due task.
-        val nextDueTaskData = db.getTodoTaskDao().getNextDueTask(now)
+        val nextDueTaskData = getDB().getTodoTaskDao().getNextDueTask(now)
         var todoTask: TodoTask? = null
         if (null != nextDueTaskData) {
             todoTask = loadTasksSubtasks(false, nextDueTaskData)[0]
@@ -82,7 +84,7 @@ class ModelServicesImpl(private val context: Context) {
     }
 
     suspend fun getOverdueTasks(now: Long): MutableList<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getOverdueTasks(now)
+        val dataArray = getDB().getTodoTaskDao().getOverdueTasks(now)
         val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
         return data as MutableList<TodoTask>
@@ -92,7 +94,7 @@ class ModelServicesImpl(private val context: Context) {
         var counterLists = 0
         var counterTasks = 0
         var counterSubtasks = 0
-        val todoListData = db.getTodoListDao().getById(todoListId)
+        val todoListData = getDB().getTodoListDao().getById(todoListId)
         if (null != todoListData) {
             val todoList = loadListsTasksSubtasks(todoListData)[0]
             for (task in todoList.getTasks()) {
@@ -100,7 +102,7 @@ class ModelServicesImpl(private val context: Context) {
                 counterTasks += counter.first
                 counterSubtasks += counter.second
             }
-            counterLists += db.getTodoListDao().delete(todoList.data)
+            counterLists += getDB().getTodoListDao().delete(todoList.data)
         }
         Log.i(TAG, "$counterLists list with $counterTasks tasks and $counterSubtasks subtasks removed from database.")
         return Triple(counterLists, counterTasks, counterSubtasks)
@@ -112,14 +114,14 @@ class ModelServicesImpl(private val context: Context) {
             counterSubtasks += deleteTodoSubtask(subtask)
         }
         val todoTaskImpl = todoTask as TodoTaskImpl
-        val counterTasks = db.getTodoTaskDao().delete(todoTaskImpl.data)
+        val counterTasks = getDB().getTodoTaskDao().delete(todoTaskImpl.data)
         Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks removed from database.")
         return Pair(counterTasks, counterSubtasks)
     }
 
     suspend fun deleteTodoSubtask(subtask: TodoSubtask): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
-        val counter = db.getTodoSubtaskDao().delete(todoSubtaskImpl.data)
+        val counter = getDB().getTodoSubtaskDao().delete(todoSubtaskImpl.data)
         Log.i(TAG, "$counter subtask removed from database.")
         return counter
     }
@@ -131,7 +133,7 @@ class ModelServicesImpl(private val context: Context) {
         }
         val todoTaskImpl = todoTask as TodoTaskImpl
         todoTaskImpl.setInRecycleBin(inRecycleBin)
-        val counterTasks = db.getTodoTaskDao().update(todoTaskImpl.data)
+        val counterTasks = getDB().getTodoTaskDao().update(todoTaskImpl.data)
         val action = if (inRecycleBin) "put into" else "restored from"
         Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks $action recycle bin.")
         return Pair(counterTasks, counterSubtasks)
@@ -140,34 +142,34 @@ class ModelServicesImpl(private val context: Context) {
     suspend fun setSubtaskInRecycleBin(subtask: TodoSubtask, inRecycleBin: Boolean): Int {
         val todoSubtaskImpl = subtask as TodoSubtaskImpl
         todoSubtaskImpl.setInRecycleBin(inRecycleBin)
-        val counter = db.getTodoSubtaskDao().update(todoSubtaskImpl.data)
+        val counter = getDB().getTodoSubtaskDao().update(todoSubtaskImpl.data)
         val action = if (inRecycleBin) "put into" else "restored from"
         Log.i(TAG, "$counter subtask $action recycle bin.")
         return counter
     }
 
     suspend fun getNumberOfAllListsAndTasks(): Pair<Int, Int> {
-        val numberOfLists = db.getTodoListDao().getCount()
-        val numberOfTasksNotInRecycleBin = db.getTodoTaskDao().getCountNotInRecycleBin()
+        val numberOfLists = getDB().getTodoListDao().getCount()
+        val numberOfTasksNotInRecycleBin = getDB().getTodoTaskDao().getCountNotInRecycleBin()
         return Pair(numberOfLists, numberOfTasksNotInRecycleBin)
     }
 
     suspend fun getAllToDoTasks(): MutableList<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getAllNotInRecycleBin()
+        val dataArray = getDB().getTodoTaskDao().getAllNotInRecycleBin()
         val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
         return data as MutableList<TodoTask>
     }
 
     suspend fun getAllToDoTasksOfList(listId: Int): MutableList<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getByListIdNotInRecycleBin(listId)
+        val dataArray = getDB().getTodoTaskDao().getByListIdNotInRecycleBin(listId)
         val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
         return data as MutableList<TodoTask>
     }
 
     suspend fun getRecycleBin(): MutableList<TodoTask> {
-        val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
+        val dataArray = getDB().getTodoTaskDao().getAllInRecycleBin()
         val data = loadTasksSubtasks(true, *dataArray)
         @Suppress("UNCHECKED_CAST")
         return data as MutableList<TodoTask>
@@ -176,7 +178,7 @@ class ModelServicesImpl(private val context: Context) {
     suspend fun clearRecycleBin(): Pair<Int, Int> {
         var counterTasks = 0
         var counterSubtasks = 0
-        val dataArray = db.getTodoTaskDao().getAllInRecycleBin()
+        val dataArray = getDB().getTodoTaskDao().getAllInRecycleBin()
         val todoTasks = loadTasksSubtasks(true, *dataArray)
         for (todoTask in todoTasks) {
             val counter = deleteTodoTaskAndSubtasks(todoTask)
@@ -187,12 +189,12 @@ class ModelServicesImpl(private val context: Context) {
     }
 
     suspend fun getAllToDoListIds(): MutableList<Int> {
-        val dataArray = db.getTodoListDao().getAllIds()
+        val dataArray = getDB().getTodoListDao().getAllIds()
         return dataArray.toMutableList()
     }
 
     suspend fun getAllToDoListNames(): Map<Int, String> {
-        val dataArray = db.getTodoListDao().getAllNames()
+        val dataArray = getDB().getTodoListDao().getAllNames()
         /** Important: The map preserves the entry iteration order. */
         val map = mutableMapOf<Int, String>()
         for (tuple in dataArray) {
@@ -202,14 +204,14 @@ class ModelServicesImpl(private val context: Context) {
     }
 
     suspend fun getAllToDoLists(): MutableList<TodoList> {
-        val dataArray = db.getTodoListDao().getAll()
+        val dataArray = getDB().getTodoListDao().getAll()
         val todoLists = loadListsTasksSubtasks(*dataArray)
         @Suppress("UNCHECKED_CAST")
         return todoLists as MutableList<TodoList>
     }
 
     suspend fun getToDoListById(todoListId: Int): TodoList? {
-        val todoListData = db.getTodoListDao().getById(todoListId)
+        val todoListData = getDB().getTodoListDao().getById(todoListId)
         var todoList: TodoList? = null
         if (null != todoListData) {
             todoList = loadListsTasksSubtasks(todoListData)[0]
@@ -224,17 +226,17 @@ class ModelServicesImpl(private val context: Context) {
         var counter = 0
         when (todoListImpl.requiredDBAction) {
             RequiredDBAction.INSERT -> {
-                val listId = db.getTodoListDao().insert(data).toInt()
+                val listId = getDB().getTodoListDao().insert(data).toInt()
                 todoListImpl.setId(listId)
                 counter = 1
                 Log.d(TAG, "Todo list was inserted into DB: $data")
-                if (0 == db.getTodoListDao().updateSortOrderToLast(listId)) {
+                if (0 == getDB().getTodoListDao().updateSortOrderToLast(listId)) {
                     Log.e(TAG, "Failed to update sort order for list.")
                 }
             }
 
             RequiredDBAction.UPDATE -> {
-                counter = db.getTodoListDao().update(data)
+                counter = getDB().getTodoListDao().update(data)
                 Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
             }
 
@@ -259,22 +261,22 @@ class ModelServicesImpl(private val context: Context) {
         var counter = 0
         when (todoTaskImpl.requiredDBAction) {
             RequiredDBAction.INSERT -> {
-                val taskId = db.getTodoTaskDao().insert(data).toInt()
+                val taskId = getDB().getTodoTaskDao().insert(data).toInt()
                 todoTaskImpl.setId(taskId)
                 counter = 1
                 Log.d(TAG, "Todo task was inserted into DB: $data")
-                if (0 == db.getTodoTaskDao().updateSortOrderToLast(taskId, todoTaskImpl.getListId())) {
+                if (0 == getDB().getTodoTaskDao().updateSortOrderToLast(taskId, todoTaskImpl.getListId())) {
                     Log.e(TAG, "Failed to update sort order for task.")
                 }
             }
 
             RequiredDBAction.UPDATE -> {
-                counter = db.getTodoTaskDao().update(data)
+                counter = getDB().getTodoTaskDao().update(data)
                 Log.d(TAG, "Todo task was updated in DB (return code $counter): $data")
             }
 
             RequiredDBAction.UPDATE_FROM_POMODORO -> {
-                counter = db.getTodoTaskDao().updateValuesFromPomodoro(
+                counter = getDB().getTodoTaskDao().updateValuesFromPomodoro(
                     todoTaskImpl.getId(),
                     todoTaskImpl.getName(),
                     todoTaskImpl.getProgress(false),
@@ -294,17 +296,17 @@ class ModelServicesImpl(private val context: Context) {
         var counter = 0
         when (todoSubtaskImpl.requiredDBAction) {
             RequiredDBAction.INSERT -> {
-                val subtaskId = db.getTodoSubtaskDao().insert(data).toInt()
+                val subtaskId = getDB().getTodoSubtaskDao().insert(data).toInt()
                 todoSubtaskImpl.setId(subtaskId)
                 counter = 1
                 Log.d(TAG, "Todo subtask was inserted into DB: $data")
-                if (0 == db.getTodoSubtaskDao().updateSortOrderToLast(subtaskId, todoSubtaskImpl.getTaskId())) {
+                if (0 == getDB().getTodoSubtaskDao().updateSortOrderToLast(subtaskId, todoSubtaskImpl.getTaskId())) {
                     Log.e(TAG, "Failed to update sort order for subtask.")
                 }
             }
 
             RequiredDBAction.UPDATE -> {
-                counter = db.getTodoSubtaskDao().update(data)
+                counter = getDB().getTodoSubtaskDao().update(data)
                 Log.d(TAG, "Todo subtask was updated in DB (return code $counter): $data")
             }
 
@@ -317,7 +319,7 @@ class ModelServicesImpl(private val context: Context) {
     suspend fun saveTodoListsSortOrderInDb(todoListIds: List<Int>): Int {
         var counter = 0
         for ((sortOrder, todoListId) in todoListIds.withIndex()) {
-            counter += db.getTodoListDao().updateSortOrder(todoListId, sortOrder)
+            counter += getDB().getTodoListDao().updateSortOrder(todoListId, sortOrder)
         }
         Log.d(TAG, "Sort order of $counter todo lists was updated in DB.")
         return counter
@@ -328,7 +330,7 @@ class ModelServicesImpl(private val context: Context) {
         for ((sortOrder, todoTask) in todoTasks.withIndex()) {
             val todoTaskImpl = todoTask as TodoTaskImpl
             todoTaskImpl.data.sortOrder = sortOrder
-            counter += db.getTodoTaskDao().updateSortOrder(todoTask.getId(), sortOrder)
+            counter += getDB().getTodoTaskDao().updateSortOrder(todoTask.getId(), sortOrder)
         }
         Log.d(TAG, "Sort order of $counter todo tasks was updated in DB.")
         return counter
@@ -339,16 +341,16 @@ class ModelServicesImpl(private val context: Context) {
         for ((sortOrder, todoSubtask) in todoSubtasks.withIndex()) {
             val todoSubtaskImpl = todoSubtask as TodoSubtaskImpl
             todoSubtaskImpl.data.sortOrder = sortOrder
-            counter += db.getTodoSubtaskDao().updateSortOrder(todoSubtask.getId(), todoSubtaskImpl.data.sortOrder)
+            counter += getDB().getTodoSubtaskDao().updateSortOrder(todoSubtask.getId(), todoSubtaskImpl.data.sortOrder)
         }
         Log.d(TAG, "Sort order of $counter todo subtasks was updated in DB.")
         return counter
     }
 
     suspend fun deleteAllData(): Triple<Int, Int, Int> {
-        val counterSubtasks = db.getTodoSubtaskDao().deleteAll()
-        val counterTasks = db.getTodoTaskDao().deleteAll()
-        val counterLists = db.getTodoListDao().deleteAll()
+        val counterSubtasks = getDB().getTodoSubtaskDao().deleteAll()
+        val counterTasks = getDB().getTodoTaskDao().deleteAll()
+        val counterLists = getDB().getTodoListDao().deleteAll()
         return Triple(counterLists, counterTasks, counterSubtasks)
     }
 
@@ -435,7 +437,7 @@ class ModelServicesImpl(private val context: Context) {
         val lists = ArrayList<TodoListImpl>()
         for (data in dataArray) {
             val list = TodoListImpl(data)
-            val dataArray2 = db.getTodoTaskDao().getAllOfListNotInRecycleBin(list.getId())
+            val dataArray2 = getDB().getTodoTaskDao().getAllOfListNotInRecycleBin(list.getId())
             val tasks = loadTasksSubtasks(false, *dataArray2)
             for (task in tasks) {
                 task.setListId(list.getId())
@@ -465,8 +467,8 @@ class ModelServicesImpl(private val context: Context) {
     ): TodoTaskImpl {
         val task = TodoTaskImpl(data)
         val dataArray = if (subtasksFromRecycleBinToo)
-            db.getTodoSubtaskDao().getAllOfTask(task.getId()) else
-            db.getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.getId())
+            getDB().getTodoSubtaskDao().getAllOfTask(task.getId()) else
+            getDB().getTodoSubtaskDao().getAllOfTaskNotInRecycleBin(task.getId())
         val subtasks = loadSubtasks(*dataArray)
         @Suppress("UNCHECKED_CAST")
         task.setSubtasks(subtasks as MutableList<TodoSubtask>)

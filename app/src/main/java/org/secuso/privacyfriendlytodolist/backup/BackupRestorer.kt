@@ -21,6 +21,7 @@ import android.content.Context
 import android.util.JsonReader
 import android.util.Log
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.runBlocking
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil.readDatabaseContent
 import org.secuso.privacyfriendlybackup.api.backup.FileUtil.copyFile
@@ -29,10 +30,12 @@ import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PrefDataType
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.StringReader
 
 class BackupRestorer : IBackupRestorer {
 
@@ -48,33 +51,42 @@ class BackupRestorer : IBackupRestorer {
         if (n2 != "content") {
             throw RuntimeException("Unknown value $n2")
         }
-        Log.d(TAG, "Restoring todo list database v$version")
+        val restoreDBFile = context.getDatabasePath(RESTORE_DB_NAME)
+        Log.d(TAG, "Restoring temporary todo list database v$version at ${restoreDBFile.canonicalPath}.")
         val db = DatabaseUtil.getSupportSQLiteOpenHelper(context, RESTORE_DB_NAME, version).writableDatabase
-        db.beginTransaction()
-        db.version = version
-        readDatabaseContent(reader, db)
-        db.setTransactionSuccessful()
-        db.endTransaction()
-        db.close()
+        db.use {
+            db.beginTransaction()
+            db.version = version
+            readDatabaseContent(reader, db)
+            db.setTransactionSuccessful()
+            db.endTransaction()
+        }
         reader.endObject()
 
+        // Close database before overwriting it.
+        runBlocking {
+            TodoListDatabase.closeInstance()
+        }
+
         // copy file to correct location
-        val restoreDBFile = context.getDatabasePath(RESTORE_DB_NAME)
         val destinationDBFile = context.getDatabasePath(TodoListDatabase.NAME)
+        Log.d(TAG, "Copying temporary todo list database to ${destinationDBFile.canonicalPath}.")
         copyFile(restoreDBFile, destinationDBFile)
         // Delete meta data files of SQLite DB. Otherwise the restored data will not show up.
-        var fileToBeDeleted = File(destinationDBFile.path.plus("-shm"))
-        if (fileToBeDeleted.exists()) {
-            fileToBeDeleted.delete()
-        }
-        fileToBeDeleted = File(destinationDBFile.path.plus("-wal"))
-        if (fileToBeDeleted.exists()) {
-            fileToBeDeleted.delete()
-        }
+        deleteFile(destinationDBFile.path.plus("-shm"))
+        deleteFile(destinationDBFile.path.plus("-wal"))
         // Delete temporary restore database files.
-        restoreDBFile.delete()
-        fileToBeDeleted = File(restoreDBFile.path.plus("-journal"))
+        deleteFile(restoreDBFile)
+        deleteFile(restoreDBFile.path.plus("-journal"))
+    }
+
+    private fun deleteFile(filePath: String) {
+        deleteFile(File(filePath))
+    }
+
+    private fun deleteFile(fileToBeDeleted: File) {
         if (fileToBeDeleted.exists()) {
+            Log.d(TAG, "Deleting ${fileToBeDeleted.canonicalPath}.")
             fileToBeDeleted.delete()
         }
     }
@@ -100,24 +112,30 @@ class BackupRestorer : IBackupRestorer {
 
     override fun restoreBackup(context: Context, restoreData: InputStream): Boolean {
         try {
-            val isReader = InputStreamReader(restoreData)
-            val reader = JsonReader(isReader)
+            val reader: JsonReader
 
-            /*
-            // Debug-output of backup data
-            // ATTENTION! Following backup restore will not work with this code enabled because
-            // content of input stream gets read by this code completely. Reset of stream not possible.
-            val result = ByteArrayOutputStream()
-            val buffer = ByteArray(1024)
-            var length: Int
-            while (restoreData.read(buffer).also { length = it } != -1) {
-                result.write(buffer, 0, length)
+            if (PRINT_BACKUP_DATA) {
+                /*
+                This code prints the backup data for debug purpose.
+                !!! THIS CODE MUST NOT BE ENABLED IN A RELEASE VERSION OF THE APP !!!
+                Because the personal backup data gets written to the logger.
+                The content of the  input stream gets read by this code completely. A reset of the
+                stream is not possible. So the JSON reader does use the string data.
+                 */
+                val backupDataRaw = ByteArrayOutputStream()
+                val buffer = ByteArray(1024)
+                var length: Int
+                while (restoreData.read(buffer).also { length = it } != -1) {
+                    backupDataRaw.write(buffer, 0, length)
+                }
+                val backupData = backupDataRaw.toString("UTF-8")
+                Log.d(TAG, "Backup data: $backupData")
+                reader = JsonReader(StringReader(backupData))
+            } else {
+                reader = JsonReader(InputStreamReader(restoreData))
             }
-            val resultString = result.toString("UTF-8")
-            Log.d(TAG, "Backup data: $resultString")
-             */
 
-            Log.d(TAG, "Backup restoring starts")
+            Log.d(TAG, "Backup restoring starts.")
             reader.beginObject()
             while (reader.hasNext()) {
                 when (val type = reader.nextName()) {
@@ -128,16 +146,22 @@ class BackupRestorer : IBackupRestorer {
             }
             reader.endObject()
         } catch (e: Exception) {
-            Log.e(TAG, "Error occurred", e)
+            Log.e(TAG, "Backup restore failed.", e)
             e.printStackTrace()
             return false
         }
-        Log.d(TAG, "Backup restored successfully")
+        Log.i(TAG, "Backup restored successfully.")
         return true
     }
 
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
         private const val RESTORE_DB_NAME = "restoreDatabase.db"
+
+        /**
+         * This flag enables / disables logging of the backup data during restore for debug purpose.
+         * !!! THIS FLAG MUST NOT BE SET TO TRUE IN A RELEASE VERSION OF THE APP !!!
+         */
+        private const val PRINT_BACKUP_DATA = false
     }
 }
