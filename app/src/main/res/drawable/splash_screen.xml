@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@color/colorAccent"/>
+        android:drawable="@color/colorAccent" />
 
     <item>
-        <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+        <bitmap
             android:src="@mipmap/splash_screen"
-            android:gravity="center"
-            />
+            android:gravity="center" />
     </item>
 </layer-list>

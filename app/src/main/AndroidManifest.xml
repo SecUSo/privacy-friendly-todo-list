@@ -34,8 +34,9 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".view.SplashActivity"
-            android:theme="@style/SplashTheme"
+            android:name=".view.MainActivity"
+            android:theme="@style/SplashScreenTheme"
+            android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,10 +53,6 @@
             android:autoRemoveFromRecents="true"
             android:launchMode="singleTop"
             android:exported="true" />
-        <activity
-            android:name=".view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask" />
         <activity
             android:name=".view.RecyclerActivity"
             android:label="@string/bin" />

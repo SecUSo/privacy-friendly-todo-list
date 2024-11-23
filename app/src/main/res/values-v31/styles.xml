@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+    </style>
+
+</resources>

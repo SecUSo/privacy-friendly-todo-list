@@ -44,6 +44,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -208,6 +209,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate() isNewIntent: $isNewIntent, action: ${intent?.action}, savedInstanceState: ${null != savedInstanceState}, extras: ${intent?.extras?.keySet()?.joinToString()}")
+
+        // Must be called before super.onCreate():
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
