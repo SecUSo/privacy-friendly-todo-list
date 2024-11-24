@@ -75,7 +75,4 @@
         android:gravity="end"
         android:text="@string/reset_application_button"
  />
-
-        -->
-
 </LinearLayout>

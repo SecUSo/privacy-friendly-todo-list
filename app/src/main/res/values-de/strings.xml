@@ -10,9 +10,12 @@
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
     <string name="home">Alle Aufgaben</string>
-    <string name="calendar_view">Kalenderansicht</string>
     <string name="show_all_tasks">Alle Aufgaben</string>
+    <string name="calendar_view">Kalenderansicht</string>
     <string name="settings">Einstellungen</string>
+    <string name="share_all_tasks">Daten teilen</string>
+    <string name="export_all_tasks">Daten exportieren</string>
+    <string name="import_tasks">Daten importieren</string>
     <string name="other">Andere</string>
 	<string name="help">Hilfe</string>
 	<string name="menu_about">Über</string>
@@ -22,18 +25,17 @@
     <string name="navigation_drawer_open">Menü öffnen</string>
     <string name="navigation_drawer_close">Menü schließen</string>
     <string name="name">Name</string>
-    <string name="todo_list_description_hint">Beschreibung</string>
+    <string name="description_hint">Beschreibung</string>
     <string name="ok">Okay</string>
+    <string name="delete">Löschen</string>
 
     <!-- Common model strings -->
     <string name="select_option">Auswählen</string>
     <string name="high_priority">Hoch</string>
     <string name="medium_priority">Normal</string>
     <string name="low_priority">Niedrig</string>
-    <string name="unknown_priority">Unbekannte Priorität</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
-
 
     <!-- Help -->
     <string name="help_overview_heading">Allgemein</string>
@@ -44,14 +46,22 @@
     <string name="help_subtasks_title">Unteraufgaben</string>
     <string name="help_subtasks">Unteraufgaben können an Aufgaben angehängt werden, um kleinere Einzelschritte zu protokollieren. Sie können nach Antippen einer Aufgabe in der aufgeklappten Ansicht erstellt werden. In den Einstellungen können Sie wählen, ob der Fortschritt einer Aufgabe von der Anzahl erledigter Unteraufgaben abhängt.</string>
     <string name="help_deadline_reminder_title">Fälligkeitsdatum und Erinnerungen</string>
-    <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden. Das Bearbeiten einer Aufgabe ist möglich, indem diese länger angetippt wird.</string>
+    <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden.</string>
     <string name="help_group_app">Einstellungen</string>
     <string name="help_pin_title">PIN-Schutz</string>
     <string name="help_pin">Im Einstellungsmenü kann eine mindestens vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem Start der App eingegeben werden.</string>
     <string name="help_sound">Zudem kann im Einstellungsmenü gewählt werden, ob beim Erscheinen einer Notification ein Benachrichtigungston abgespielt wird.</string>
     <string name="help_group_privacy">Privatsphäre</string>
-    <string name="help_permissions_title">Berechtigung RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Termine erinnert werden möchte. Ansonsten verwendet die "To-Do Liste" kein Tracking, Werbung oder sonstige Berechtigungen, die Ihre Privatsphäre verletzen würden.</string>
+    <string name="help_privacy">Diese App enthält weder Tracking noch Werbung. Andere Berechtigungen als die unten aufgeführten werden nicht verwendet.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Diese Berechtigung wird benötigt, sodass direkt nach dem Starten der App geprüft werden kann, ob der Nutzer an bestimmte Aufgaben erinnert werden möchte.</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS: Diese Berechtigung wird benötigt, um Benachrichtigungen über anstehende Aufgaben anzuzeigen.</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: Diese Berechtigung wird benötigt, um Benachrichtigungen präzise zu einem bestimmten Zeitpunkt anzuzeigen.</string>
+    <string name="help_group_data_backup">Datensicherung</string>
+    <string name="help_data_backup">Sie können die separate Privacy Friendly Backup-App verwenden, um die Daten und Einstellungen dieser Anwendung zu sichern und wiederherzustellen. Dies kann auch verwendet werden, um Ihre Daten auf ein anderes Gerät zu übertragen.</string>
+    <string name="help_group_export_import">Daten Export / Import</string>
+    <string name="help_export">Die Daten dieser Anwendung können im CSV Format (comma separated values, encoding UTF-8) exportiert werden, um in anderen Anwendungen weiterverarbeitet zu werden.</string>
+    <string name="help_import">Die Daten dieser Anwendung können aus einer Datei im CSV Format importiert werden. Das Format dieser Datei entspricht dem Format der CSV-Export-Datei.</string>
+    <string name="help_group_widget">Widget</string>
     <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App. Ein Tippen auf den Aktualisierungs-Button aktualisiert die Liste.</string>
 
     <!-- About -->
@@ -66,11 +76,16 @@
     <!-- To-Do list overview -->
 	<string name="done">erledigt</string>
 	<string name="no_todo_lists_available">Keine To-Do Listen verfügbar.</string>
-	<string name="next_deadline_dd">Nächste Deadline: %1$s</string>
-    <string name="no_next_deadline">Keine Deadlines</string>
+	<string name="next_deadline_dd">Nächster Termin: %1$s</string>
+    <string name="no_next_deadline">Keine Termine</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
-    <string name="delete_list">To-Do Liste löschen</string>
+    <string name="move_up_list">Liste hochschieben</string>
+    <string name="move_down_list">Liste runterschieben</string>
+    <string name="edit_list">Liste bearbeiten</string>
+    <string name="export_list">Liste exportieren</string>
+    <string name="share_list">Liste teilen</string>
+    <string name="delete_list">Liste löschen</string>
     <string name="delete_list_feedback">%1$s gelöscht</string>
 
     <!-- Create/Edit To-Do list dialog -->
@@ -85,26 +100,35 @@
     <string name="open_tasks">Ausstehende Aufgaben</string>
     <string name="completed_tasks">Erledigte Aufgaben</string>
     <string name="group_by_priority">Nach Priorität gruppieren</string>
-    <string name="sort_by_deadline">Nach Deadline sortieren</string>
+    <string name="sort_by_deadline">Nach Termin sortieren</string>
     <string name="add_subtask">Unteraufgabe hinzufügen</string>
 
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Neue Aufgabe</string>
     <string name="edit_todo_task">Aufgabe bearbeiten</string>
-    <string name="deadline_dd">Deadline:</string>
-    <string name="no_deadline">Keine Deadline</string>
+    <string name="deadline_dd">Termin:</string>
+    <string name="no_deadline">Kein Termin</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
+    <string name="share_task">Aufgabe teilen</string>
     <string name="delete_task">Aufgabe löschen</string>
     <string name="task_removed">Aufgabe ist im Papierkorb</string>
-    <string name="deadline">Deadline</string>
+    <string name="deadline">Termin</string>
+    <string name="recurrence_every">Wiederholung alle</string>
+    <string name="recurrence_interval_hint">1..n</string>
+    <string name="recurrence_pattern_hint">Wiederholungsmuster</string>
+    <string name="select_recurrence_pattern">Wiederholungsmuster wählen:</string>
     <string name="reminder">Erinnerung</string>
-    <string name="deadline_smaller_reminder">Die Deadline darf nicht vor der Erinnerungszeit liegen.</string>
-    <string name="set_deadline_before_reminder">Bitte geben sie zuerst eine Deadline an.</string>
+    <string name="deadline_smaller_reminder">Der Termin darf nicht vor der Erinnerungszeit liegen.</string>
+    <string name="reminder_smaller_now">Nur wiederkehrende Aufgaben können eine Erinnerungszeit in der Vergangenheit haben.</string>
+    <string name="set_deadline_before_reminder">Bitte geben Sie zuerst einen Termin an.</string>
+    <string name="set_deadline_if_recurring">Eine wiederkehrende Aufgabe benötigt einen Termin.</string>
+    <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl >= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
+    <string name="select_no_list">Keine Liste</string>
     <string name="new_todo_subtask">Neue Unteraufgabe</string>
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
@@ -115,6 +139,10 @@
     <string name="list_colon">Liste:</string>
     <string name="work_subtask">An Unteraufgabe arbeiten</string>
     <string name="work_task">An Aufgabe arbeiten</string>
+    <string name="move_up">Hochschieben</string>
+    <string name="move_down">Runterschieben</string>
+    <string name="cant_move_task_if_diff_lists">Tasks können nicht verschoben werden, wenn verschiedene Listen angezeigt werden.</string>
+    <string name="cant_move_task_if_filter_group_sort">Tasks können nicht verschoben werden, wenn Filter, Gruppierung oder Sortierung aktiv ist.</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>
@@ -123,7 +151,7 @@
 
     <!-- Calendar view -->
     <string name="calendar">Kalender</string>
-    <string name="no_deadline_today">Keine Deadlines an diesem Tag.</string>
+    <string name="no_deadline_today">Keine Termine an diesem Tag.</string>
 
     <!-- PIN -->
 	<string name="enter_pin">PIN eingeben</string>
@@ -136,21 +164,47 @@
     <!-- Settings -->
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>
     <string-array name="default_reminder_times_human">
-        <item>Pünktlich zur Deadline</item>
-        <item>0.5 Tage vorher</item>
+        <item>Pünktlich zum Termin</item>
+        <item>0,5 Tage vorher</item>
         <item>1 Tag vorher</item>
-        <item>1.5 Tage vorher</item>
+        <item>1,5 Tage vorher</item>
         <item>2 Tage vorher</item>
-        <item>2.5 Tage vorher</item>
+        <item>2,5 Tage vorher</item>
         <item>3 Tage vorher</item>
+    </string-array>
+    <string name="snooze_duration">Schlummer-Dauer von Erinnerungen</string>
+    <string-array name="snooze_duration_values_human">
+        <item>5 Minuten</item>
+        <item>15 Minuten</item>
+        <item>30 Minuten</item>
+        <item>45 Minuten</item>
+        <item>1 Stunde</item>
+        <item>2 Stunden</item>
+        <item>8 Stunden</item>
+        <item>12 Stunden</item>
+        <item>1 Tag</item>
+        <item>2 Tage</item>
+        <item>3 Tage</item>
+        <item>7 Tage</item>
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
     <string name="auto_progress">Fortschritt durch Teilaufgaben</string>
     <string name="notify">Benachrichtigungston</string>
 
+    <!-- Permission request dialog -->
+    <string name="dialog_need_permission_exact_alarm_title">Genaue Erinnerungen aktivieren</string>
+    <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung, um Erinnerungen zeitlich genau zu melden wird benötigt. Andernfalls erfolgen die Erinnerungen zeitlich ungenau.</string>
+
     <!-- Reminder service -->
-    <string name="deadline_approaching">Deadline rückt näher: %1$s</string>
+    <string name="deadline_approaching">Termin rückt näher: %1$s</string>
+    <string name="recurring_deadline_approaching">Termin rückt näher: %1$s (%2$d. Wiederholung)</string>
+
+    <!-- Notifications -->
+    <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
+    <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
+    <string name="notif_reminder_act_snooze">%1$s schlummern</string>
+    <string name="notif_reminder_act_done">Abhaken</string>
 
     <!-- Date and Time -->
 	<string name="sunday_abbr">SO</string>
@@ -164,7 +218,7 @@
 	<string name="february">Februar</string>
 	<string name="march">März</string>
 	<string name="april">April</string>
-	<string name="may">May</string>
+	<string name="may">Mai</string>
 	<string name="june">Juni</string>
 	<string name="july">Juli</string>
 	<string name="august">August</string>
@@ -172,13 +226,15 @@
 	<string name="october">Oktober</string>
 	<string name="november">November</string>
 	<string name="december">Dezember</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">Unteraufgabe konnte nicht gelöscht werden.</string>
-    <string name="error_removing_task">Aufgabe konnte nicht gelöscht werden.</string>
-    <string name="list_to_db_error">To-Do Liste konnte nicht in die Datenbank geschrieben werden.</string>
-    <string name="task_to_db_error">Aufgabe konnte nicht in die Datenbank geschrieben werden.</string>
-    <string name="subtask_to_db_error">Unteraufgabe konnte nicht in die Datenbank geschrieben werden.</string>
+    <string name="none">Keines</string>
+    <string name="daily">Täglich</string>
+    <string name="weekly">Wöchentlich</string>
+    <string name="monthly">Monatlich</string>
+    <string name="yearly">Jährlich</string>
+    <string name="days">Tag(e)</string>
+    <string name="weeks">Woche(n)</string>
+    <string name="months">Monat(e)</string>
+    <string name="years">Jahr(e)</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>
@@ -190,13 +246,13 @@
     <string name="slide2_text">Sie können Ihre Aufgaben in Kategorien unterteilen, indem Sie To-Do Listen anlegen und verwalten.</string>
 
     <string name="slide3_heading">Erinnerungen</string>
-    <string name="slide3_text">Zusätzlich können sie ein Fälligkeitsdatum und eine Erinnerung für Aufgaben definieren.</string>
+    <string name="slide3_text">Zusätzlich können Sie ein Fälligkeitsdatum und eine Erinnerung für Aufgaben definieren.</string>
 
     <string name="slide4_heading">Details</string>
     <string name="slide4_text">Sie können Unteraufgaben erstellen, indem die Aufgabe durch Antippen aufgeklappt wird. Der Fortschritt einer Aufgabe kann entweder manuell oder automatisch durch die Anzahl der erledigten Subtasks gesetzt werden.</string>
 
     <string name="slide5_heading">Privatsphäre</string>
-    <string name="slide5_text">Erstellen sie einen PIN-Schutz in den Einstellungen dieser App.</string>
+    <string name="slide5_text">Erstellen Sie einen PIN-Schutz in den Einstellungen dieser App.</string>
 
     <string name="next">Weiter</string>
     <string name="skip">Überspringen</string>
@@ -213,28 +269,31 @@
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Aufgaben</string>
 
+    <!-- ### Export / Import ### -->
+    <string name="export_succeeded">Export erfolgreich beendet</string>
+    <string name="export_failed">Export fehlgeschlagen</string>
+    <string name="import_succeeded">Import erfolgreich beendet</string>
+    <string name="import_failed">Import fehlgeschlagen</string>
+    <string name="import_question_title">Existierende Daten löschen?</string>
+    <string name="import_question_text">Sollen alle existierenden Daten (alle To-Do Listen, Aufgaben und Unteraufgaben) vor dem Import gelöscht werden?</string>
+    <string name="delete_existing_data">Existierende Daten löschen</string>
+    <string name="keep_existing_data">Existierende Daten beibehalten</string>
+    <string name="abort">Abbrechen</string>
+
     <!-- ### Delete AlertDialog ### -->
-    <string name="alert_listdelete">Wollen Sie die Liste wirklich löschen?</string>
+    <string name="alert_list_delete">Wollen Sie die Liste wirklich löschen?</string>
     <string name="alert_clear">Wirklich leeren?</string>
     <string name="alert_delete_yes">Löschen</string>
     <string name="alert_delete_no">Abbrechen</string>
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Widget hinzufügen</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Konfigurieren</string>
-    <string name="widget_list">Wählen Sie eine Liste aus:</string>
+    <string name="widget_configuration">Widget Konfiguration</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Status geändert</string>
     <string name="snack_undo">Rückgängig machen</string>
     <string name="snack_clear">Papierkorb geleert</string>
-
-    <!-- ### EXIT ### -->
-    <string name="exit_app">To-Do Liste beenden?</string>
-    <string name="exit_positive">Ja</string>
-    <string name="exit_negative">Nein</string>
-    <string name="select_no_list">keine Liste</string>
 
     <!-- TO-DO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>

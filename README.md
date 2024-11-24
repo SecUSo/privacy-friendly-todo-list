@@ -16,11 +16,11 @@ style="float: right; margin-right: 10px;" />
 
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/repository/browse/?fdid=org.secuso.privacyfriendlytodolist) <a href="https://play.google.com/store/apps/details?id=org.secuso.privacyfriendlynotes"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="60"></a>
 
-This application allows to create lists of tasks which can be individually managed. Each list contains a set of tasks. Each task can have a deadline, a reminder time and a list of subtasks. By setting a reminder time the user will be informed by a notification. It is possible to display all tasks in a calendar, to protect the app with a secret pin and to sort and prioritze tasks within a list. Colors indicate the urgency of a task (taking the deadline into account). 
+This application allows to create lists of tasks which can be individually managed. Each list contains a set of tasks. Each task can have a deadline, a reminder time and a list of subtasks. By setting a reminder time the user will be informed by a notification. It is possible to display all tasks in a calendar, to protect the app with a secret pin and to sort and prioritze tasks within a list. Colors indicate the urgency of a task (taking the deadline into account).
 
-The application requires the permission "RECEIVE_ON_BOOT_COMPLETE" in order to start a background service which triggers notifications. 
+The application requires the permission "RECEIVE_BOOT_COMPLETED" in order to start a background service which triggers notifications.
 
-This app belongs to the group of Privacy Friendly Apps developed by the Karlsruhe Institute of Technology. 
+This app belongs to the group of Privacy Friendly Apps developed by the Karlsruhe Institute of Technology.
 
 ## Motivation
 
@@ -29,11 +29,11 @@ This application has been developed to be used as a basis for a Privacy Friendly
 ## Building
 
 Further development requires Android Studio, we recommend to use the latest version.
- 
+
 ### API Reference
 
 Mininum SDK: 17
-Target SDK: 32 
+Target SDK: 32
 
 ## Data Backup
 

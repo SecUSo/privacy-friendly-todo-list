@@ -8,11 +8,19 @@
         android:entryValues="@array/default_reminder_times"
         android:title="@string/default_reminder_time" />
 
+    <ListPreference
+        android:key="pref_snooze_duration"
+        android:defaultValue="900"
+        android:entries="@array/snooze_duration_values_human"
+        android:entryValues="@array/snooze_duration_values"
+        android:title="@string/snooze_duration" />
+
     <SwitchPreference
         android:id="@+id/switch_notifysound"
         android:defaultValue="true"
         android:key="notify"
         android:title="@string/notify" />
+
     <SwitchPreference
         android:key="pref_pin_enabled"
         android:defaultValue="false"

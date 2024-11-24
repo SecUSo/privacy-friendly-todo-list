@@ -17,21 +17,19 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/clayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        android:id="@+id/clayout"
         tools:context=".view.MainActivity">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            xmlns:android="http://schemas.android.com/apk/res/android">
+            android:theme="@style/AppTheme.AppBarOverlay">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -52,9 +50,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:src="@mipmap/plus_white" />
 
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
     <!-- The navigation drawer -->
     <com.google.android.material.navigation.NavigationView
@@ -64,9 +60,9 @@
         android:layout_gravity="start">
 
         <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start">
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
 
             <com.google.android.material.navigation.NavigationView
                 android:id="@+id/nav_view"
@@ -74,20 +70,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="top"
                 android:fitsSystemWindows="true"
+                app:elevation="0pt"
                 app:headerLayout="@layout/nav_header"
-                app:menu="@menu/nav_content"
-                app:elevation="0pt"/>
-
-            <com.google.android.material.navigation.NavigationView
-                android:id="@+id/nav_view_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                app:menu="@menu/nav_bottom"/>
+                app:menu="@menu/nav_content" />
 
         </RelativeLayout>
 
     </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
-

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/change_list" android:title="@string/edit_todo_list"/>
-    <item android:id="@+id/delete_list" android:title="@string/delete_list"/>
-    <item android:id="@+id/show_description_list" android:title="@string/show_description"/>
-</menu>

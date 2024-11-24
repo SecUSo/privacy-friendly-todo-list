@@ -1,41 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="0dp"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_widget_cfg_dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:textSize="20dp"
-        android:gravity="center"
-        android:text="@string/configure" />
+        android:background="@android:color/transparent"
+        android:padding="20sp"
+        android:text="@string/widget_configuration"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="4dp"
-        android:textSize="18dp"
-        android:text="@string/widget_list" />
+        android:layout_marginStart="15dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp">
 
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown"/>
+        <TextView
+            android:id="@+id/tv_widget_cfg_list_choose_str"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/list_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_widget_cfg_list_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_widget_cfg_list_choose_str"
+            android:layout_alignBottom="@+id/tv_widget_cfg_list_choose_str"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="44dp"
+            android:layout_toEndOf="@+id/tv_widget_cfg_list_choose_str"
+            android:text="@string/click_to_choose"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/add_widget" />
+        android:layout_gravity="end">
+
+        <Button
+            android:id="@+id/bt_widget_cfg_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="48dip"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/bt_widget_cfg_ok"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="48dip"
+            android:text="@string/ok" />
+
+    </LinearLayout>
 
 </LinearLayout>

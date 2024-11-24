@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/bt_reminder_date"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
             android:layout_weight="1"
@@ -17,7 +17,7 @@
             style="?android:attr/buttonBarButtonStyle" />
         <Button
             android:id="@+id/bt_reminder_time"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
             android:layout_weight="1"
@@ -30,15 +30,16 @@
         android:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <DatePicker
             android:id="@+id/dp_reminder"
-            android:layout_width="match_parent"
-            android:calendarViewShown="false"
-            android:spinnersShown="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_height="0dp" />
+            android:calendarViewShown="false"
+            android:spinnersShown="false" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,29 +47,30 @@
         android:visibility="gone"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TimePicker
             android:id="@+id/tp_reminder"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginBottom="10dp" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey" />
+        android:background="@color/lightgrey" />
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="right">
+        android:layout_gravity="end">
 
         <Button
             android:id="@+id/bt_reminder_noreminder"
-            android:layout_width="70dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
             android:layout_weight="1"
@@ -76,7 +78,7 @@
             style="?android:attr/buttonBarButtonStyle" />
         <Button
             android:id="@+id/bt_reminder_ok"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dip"
             android:layout_weight="1"
