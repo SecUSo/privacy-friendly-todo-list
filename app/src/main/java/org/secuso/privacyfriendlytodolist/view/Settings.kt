@@ -23,6 +23,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.EditTextPreference
@@ -50,10 +51,15 @@ class Settings : AppCompatActivity() {
         if (supportActionBarCopy != null) {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
-            //final Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            //upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
-            //getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
+
+        onBackPressedDispatcher.addCallback(this) {
+            val intent = Intent(this@Settings, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
+        }
+
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, MyPreferenceFragment())
         transaction.commit()
@@ -141,14 +147,6 @@ class Settings : AppCompatActivity() {
             }
             updatePrefSummary(findPreference(key!!))
         }
-    }
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        super.onBackPressed()
     }
 
     companion object {

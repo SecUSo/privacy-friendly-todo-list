@@ -36,6 +36,7 @@ import android.widget.ExpandableListView
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -239,6 +240,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         exLv!!.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
             expandableTodoTaskAdapter?.onClickSubtask(groupPosition, position)
             return@setOnChildClickListener false
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
+            val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START)
+            } else if (null != activeListId) {
+                showAllTasks()
+            } else {
+                finish()
+            }
         }
 
         fabNewTodoTask!!.setOnClickListener { v: View? ->
@@ -597,18 +609,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onUserLeaveHint() {
         // prevents unlocking the app by rotating while the app is inactive and then returning
         isUnlocked = false
-    }
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onBackPressed() {
-        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else if (null != activeListId) {
-            showAllTasks()
-        } else {
-            super.onBackPressed()
-        }
     }
 
     // Adds To do-Lists to the navigation-drawer

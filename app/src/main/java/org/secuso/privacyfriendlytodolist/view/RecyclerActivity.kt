@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ExpandableListView
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -69,6 +70,14 @@ class RecyclerActivity : AppCompatActivity() {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
+
+        onBackPressedDispatcher.addCallback(this) {
+            val intent = Intent(this@RecyclerActivity, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
+        }
+
         updateAdapter()
     }
 
@@ -141,15 +150,6 @@ class RecyclerActivity : AppCompatActivity() {
             exLv.setAdapter(expandableTodoTaskAdapter)
             exLv.emptyView = tv
         }
-    }
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-
-        super.onBackPressed()
     }
 
     companion object {

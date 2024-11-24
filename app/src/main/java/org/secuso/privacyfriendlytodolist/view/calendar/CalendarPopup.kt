@@ -23,6 +23,7 @@ import android.widget.ExpandableListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.os.BundleCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
@@ -50,9 +51,14 @@ class CalendarPopup : AppCompatActivity() {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
-        val tasksFromBundle = intent.extras?.getParcelableArrayList<TodoTask>(CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES)
-        val tasks = tasksFromBundle ?: ArrayList(0)
-        val adapter = ExpandableTodoTaskAdapter(this, model, tasks, true)
+        var tasks: java.util.ArrayList<TodoTask>? = null
+        val bundle = intent.extras
+        if (null != bundle) {
+            tasks = BundleCompat.getParcelableArrayList(bundle,
+                CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES, TodoTask::class.java)
+        }
+        val adapter = ExpandableTodoTaskAdapter(this, model,
+            tasks ?: ArrayList(0), true)
         val lv = findViewById<ExpandableListView>(R.id.deadline_tasks)
         lv.setAdapter(adapter)
     }
