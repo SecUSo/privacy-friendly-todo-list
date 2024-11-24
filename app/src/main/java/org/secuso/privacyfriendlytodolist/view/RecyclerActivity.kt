@@ -139,7 +139,7 @@ class RecyclerActivity : AppCompatActivity() {
                 openContextMenu(exLv)
             }
             exLv.setAdapter(expandableTodoTaskAdapter)
-            exLv.setEmptyView(tv)
+            exLv.emptyView = tv
         }
     }
 

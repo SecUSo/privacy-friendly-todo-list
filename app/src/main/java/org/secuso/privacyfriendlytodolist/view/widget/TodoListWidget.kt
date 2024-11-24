@@ -64,7 +64,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
 
     override fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.getName())
+        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.name)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)
         for (appWidgetId in appWidgetIds) {
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview_widget)
@@ -73,7 +73,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
 
     private fun initialUpdate(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.getName())
+        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.name)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)
         onUpdate(context, appWidgetManager, appWidgetIds)
     }
@@ -86,6 +86,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         }
     }
 
+    @Suppress("UnnecessaryVariable")
     private fun update(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
                        title: String? = null) {
         val view = RemoteViews(context.packageName, R.layout.todo_list_widget)

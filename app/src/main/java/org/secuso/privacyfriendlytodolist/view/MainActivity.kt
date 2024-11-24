@@ -754,7 +754,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             openContextMenu(exLv)
         }
         exLv!!.setAdapter(expandableTodoTaskAdapter)
-        exLv!!.setEmptyView(emptyView)
+        exLv!!.emptyView = emptyView
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
@@ -1086,10 +1086,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val anim: Animation = AlphaAnimation(0.0f, 1.0f)
             if (numberOfLists == 0 && numberOfTasksNotInRecycleBin == 0) {
                 initialAlert!!.visibility = View.VISIBLE
-                anim.setDuration(1500)
+                anim.duration = 1500
                 anim.startOffset = 20
                 anim.repeatMode = Animation.REVERSE
-                anim.setRepeatCount(Animation.INFINITE)
+                anim.repeatCount = Animation.INFINITE
                 initialAlert!!.startAnimation(anim)
             } else  /* if numberOfLists != 0 || numberOfTasksNotInRecycleBin != 0 */ {
                 initialAlert!!.visibility = View.GONE

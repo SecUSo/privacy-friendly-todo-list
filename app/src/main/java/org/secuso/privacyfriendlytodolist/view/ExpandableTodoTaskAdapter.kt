@@ -37,8 +37,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.service.JobManager
-import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
@@ -418,7 +416,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         actualConvertView.findViewById(R.id.pb_task_progress)
                     )
                     tvh.done.tag = currentTask.getId()
-                    tvh.done.setChecked(currentTask.isDone())
+                    tvh.done.isChecked = currentTask.isDone()
                     tvh.done.jumpDrawablesToCurrentState()
                     actualConvertView.tag = tvh
                 }
@@ -469,14 +467,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 tvh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context,
                     currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
-                tvh.done.setChecked(currentTask.isDone())
+                tvh.done.isChecked = currentTask.isDone()
                 tvh.done.jumpDrawablesToCurrentState()
                 tvh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
                         val snackBar = Snackbar.make(buttonView, R.string.snack_check, Snackbar.LENGTH_LONG)
                         snackBar.setAction(R.string.snack_undo) {
                             val inverted = !isChecked
-                            buttonView.setChecked(inverted)
+                            buttonView.isChecked = inverted
                             currentTask.setDone(buttonView.isChecked)
                             currentTask.setAllSubtasksDone(inverted)
                             currentTask.getProgress(hasAutoProgress())
@@ -604,7 +602,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 svh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context,
                     currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
-                svh.done.setChecked(currentSubtask.isDone())
+                svh.done.isChecked = currentSubtask.isDone()
                 svh.done.jumpDrawablesToCurrentState()
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
@@ -808,7 +806,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 subtasksMetaData.add(SubtaskMetaData())
             }
             while (expectedSize < subtasksMetaData.size) {
-                subtasksMetaData.removeLast()
+                subtasksMetaData.removeAt(subtasksMetaData.size - 1)
             }
         }
 

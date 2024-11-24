@@ -54,7 +54,9 @@ class Settings : AppCompatActivity() {
             //upArrow.setColorFilter(ContextCompat.getColor(this, R.color.white), PorterDuff.Mode.SRC_ATOP);
             //getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, MyPreferenceFragment()).commit()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, MyPreferenceFragment())
+        transaction.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
