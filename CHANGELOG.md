@@ -4,10 +4,44 @@
 ## [ToDo List (Privacy Friendly) v3.0.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.0.0) - 24 Dec 2024
 
 ## What's Changed
-* tbd
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/104 by @udenr
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/103 by @udenr
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/105 by @udenr
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/108 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/110 by @jahway603
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/112 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/115 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/121 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/122 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/123 by @udenr
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/126 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/127 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/130 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/pull/132 by @udenr
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/128 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/117 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/91 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/120 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/124 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/70 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/78 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/38 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/39 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/118 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/119 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/25 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/69 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/68 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/74 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/48 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/67 by @0xC0FFEEC0DE
+* https://github.com/SecUSo/privacy-friendly-todo-list/issues/106 by @0xC0FFEEC0DE
+* ...
+
+See also [Milestone "Release 3.0.0"](https://github.com/SecUSo/privacy-friendly-todo-list/milestone/1?closed=1)
 
 ## New Contributors
-* tbd
+* @0xC0FFEEC0DE
 
 **Full Changelog**: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v2.4.2...v3.0.0
 
