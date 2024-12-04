@@ -23,8 +23,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model.createNewTodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
@@ -38,13 +38,13 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
     private val subtask: TodoSubtask
 
     constructor(context: Context) :
-            super(context, R.layout.add_subtask_dialog) {
+            super(context, R.layout.subtask_dialog) {
         editExistingSubtask = false
         subtask = createNewTodoSubtask()
     }
 
     constructor(context: Context, todoSubtask: TodoSubtask) :
-            super(context, R.layout.add_subtask_dialog) {
+            super(context, R.layout.subtask_dialog) {
         editExistingSubtask = true
         subtask = todoSubtask
         subtask.setChanged()
@@ -61,10 +61,9 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
         val okButton: Button = findViewById(R.id.bt_new_subtask_ok)
         val cancelButton: Button = findViewById(R.id.bt_new_subtask_cancel)
 
-        //initialize titles of the dialog
-        val dialogTitle = findViewById<TextView>(R.id.dialog_subtitle)
+        // initialize title of the dialog
         if (editExistingSubtask) {
-            dialogTitle.text = context.resources.getString(R.string.edit_subtask)
+            findViewById<Toolbar>(R.id.subtask_dialog_title).setTitle(R.string.edit_subtask)
         }
 
         // Request focus for first input field.

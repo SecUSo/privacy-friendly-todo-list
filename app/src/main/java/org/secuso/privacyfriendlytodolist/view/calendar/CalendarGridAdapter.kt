@@ -91,7 +91,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         val spanString = SpannableString(dateToStr(posCal))
         if (posCal[Calendar.MONTH] != currentMonth) {
             // grey day out if it is outside the current month
-            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.middlegrey))
+            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.middleGrey))
         } else if (sameDay(posCal, todayCal)) {
             // highlight today
             dayTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))

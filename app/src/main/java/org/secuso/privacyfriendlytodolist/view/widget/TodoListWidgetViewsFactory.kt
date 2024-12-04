@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.view.widget
 
-import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -111,7 +110,6 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         Log.d(TAG, "Widget $appWidgetId: Updated data. Items: ${items.count()}, list ID: ${pref.todoListId}, title: '$currentTitle'.")
     }
 
-    @SuppressLint("ResourceType")
     private fun createItem(todoTask: TodoTask, fillInIntent: Intent): RemoteViews {
         val view = RemoteViews(context.packageName, R.layout.widget_tasks)
         if (todoTask.isDone()) {
@@ -122,7 +120,6 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
             view.setViewVisibility(R.id.widget_undone, View.VISIBLE)
         }
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())
-        view.setEmptyView(R.id.tv_empty_widget, R.string.empty_todo_list)
         view.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent)
         view.setOnClickFillInIntent(R.id.widget_undone, fillInIntent)
         view.setOnClickFillInIntent(R.id.widget_done, fillInIntent)

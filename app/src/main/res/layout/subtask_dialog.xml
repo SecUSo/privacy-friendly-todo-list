@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/dialog_subtitle"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:text="@string/new_todo_subtask"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:padding="20sp"
-        android:textStyle="bold" />
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/subtask_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/new_todo_subtask"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <EditText
         android:id="@+id/et_new_subtask_name"
@@ -21,33 +25,29 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
+        android:autofillHints=""
         android:hint="@string/name"
         android:inputType="text" />
 
     <LinearLayout
-        android:layout_width="210dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right">
+        android:layout_gravity="end">
 
         <Button
             android:id="@+id/bt_new_subtask_cancel"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="48dip"
+            style="@style/AppButtonBarButtonStyle"
             android:text="@android:string/cancel" />
 
         <Button
             android:id="@+id/bt_new_subtask_ok"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="48dip"
+            style="@style/AppButtonBarButtonStyle"
             android:text="@string/ok" />
+
     </LinearLayout>
-
-
 
 </LinearLayout>

@@ -31,6 +31,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
@@ -41,6 +42,7 @@ import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
+import java.util.Locale
 
 /**
  * This class creates a dialog that lets the user create/edit a task.
@@ -50,7 +52,7 @@ import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ProcessTodoTaskDialog(context: FragmentActivity,
                             private var todoTask: TodoTask):
-        FullScreenDialog<ResultCallback<TodoTask>>(context, R.layout.add_task_dialog) {
+        FullScreenDialog<ResultCallback<TodoTask>>(context, R.layout.task_dialog) {
 
     private var deadline: Long?
     private var recurrencePattern: RecurrencePattern
@@ -141,10 +143,9 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         taskPriority = TodoTask.Priority.DEFAULT_VALUE
         prioritySelector.text = Helper.priorityToString(context, taskPriority)
 
-        //initialize titles of the dialog
-        val dialogTitle = findViewById<TextView>(R.id.dialog_title)
+        // initialize title of the dialog
         if (editExistingTask) {
-            dialogTitle.text = context.resources.getString(R.string.edit_todo_task)
+            findViewById<Toolbar>(R.id.task_dialog_title).setTitle(R.string.edit_todo_task)
         }
 
         // Initialize textview that displays selected list
@@ -216,7 +217,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
 
         // initialize text-views to get deadline and reminder time
         deadlineTextView = findViewById(R.id.tv_todo_list_deadline)
-        deadlineTextView.setTextColor(okayButton.currentTextColor)
         deadlineTextView.setOnClickListener {
             val deadlineDialog = DeadlineDialog(context, deadline)
             deadlineDialog.setDialogCallback(object : DeadlineCallback {
@@ -234,7 +234,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         }
 
         recurrencePatternTextView = findViewById(R.id.tv_task_recurrence_pattern)
-        recurrencePatternTextView.setTextColor(okayButton.currentTextColor)
         recurrencePatternTextView.setOnClickListener {
             registerForContextMenu(recurrencePatternTextView)
             openContextMenu(recurrencePatternTextView)
@@ -243,7 +242,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         recurrenceIntervalEditText = findViewById(R.id.tv_task_recurrence_interval)
 
         reminderTextView = findViewById(R.id.tv_todo_list_reminder)
-        reminderTextView.setTextColor(okayButton.currentTextColor)
         reminderTextView.setOnClickListener {
             val reminderDialog = ReminderDialog(context, reminderTime, deadline)
             reminderDialog.setDialogCallback(object : ReminderCallback {
@@ -355,7 +353,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         } else {
             recurrencePatternTextView.text = Helper.recurrencePatternToNounString(context, recurrencePattern)
             if (recurrenceIntervalEditText.getText().isEmpty()) {
-                recurrenceIntervalEditText.setText(recurrenceInterval.toString())
+                recurrenceIntervalEditText.setText(String.format(Locale.getDefault(), "%d", recurrenceInterval))
             }
         }
     }

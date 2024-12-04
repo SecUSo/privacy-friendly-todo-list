@@ -16,28 +16,24 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lightgrey" />
+        android:background="@color/lightGrey" />
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end">
 
         <Button
             android:id="@+id/bt_deadline_nodeadline"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="48dip"
+            style="@style/AppButtonBarButtonStyle"
             android:text="@string/no_deadline" />
         <Button
             android:id="@+id/bt_deadline_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="48dip"
-            android:layout_weight="1"
-            android:text="@string/ok"
-            style="?android:attr/buttonBarButtonStyle" />
+            style="@style/AppButtonBarButtonStyle"
+            android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>

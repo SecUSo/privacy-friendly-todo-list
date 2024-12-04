@@ -17,20 +17,18 @@
                 android:id="@+id/bt_reminder_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="48dip"
                 android:layout_weight="1"
+                style="@style/AppButtonBarButtonStyle"
                 android:rotation="90"
-                android:text="@string/date"
-                style="?android:attr/buttonBarButtonStyle" />
+                android:text="@string/date" />
             <Button
                 android:id="@+id/bt_reminder_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="48dip"
                 android:layout_weight="1"
                 android:rotation="90"
-                android:text="@string/time"
-                style="?android:attr/buttonBarButtonStyle" />
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@string/time" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,27 +65,23 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lightgrey" />
+        android:background="@color/lightGrey" />
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end">
         <Button
             android:id="@+id/bt_reminder_noreminder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="48dip"
-            android:layout_weight="1"
-            android:text="@string/no_reminder"
-            style="?android:attr/buttonBarButtonStyle" />
+            style="@style/AppButtonBarButtonStyle"
+            android:text="@string/no_reminder" />
         <Button
             android:id="@+id/bt_reminder_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="48dip"
-            android:layout_weight="1"
-            android:text="@android:string/ok"
-            style="?android:attr/buttonBarButtonStyle" />
+            style="@style/AppButtonBarButtonStyle"
+            android:text="@string/ok" />
     </LinearLayout>
 </LinearLayout>
