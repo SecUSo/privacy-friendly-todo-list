@@ -4,9 +4,9 @@
 
     <item
         android:id="@+id/ac_add"
-        android:icon="@mipmap/plus_white"
-        android:title="List"
-        android:text="Neu"
-        app:showAsAction="always|withText"/>
+        android:icon="@drawable/ic_plus_framed_white_24dp"
+        android:title="@string/new_todo_list"
+        android:text="@string/new_todo_list"
+        app:showAsAction="always|withText" />
 
 </menu>

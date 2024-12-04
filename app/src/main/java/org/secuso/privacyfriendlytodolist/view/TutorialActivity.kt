@@ -28,6 +28,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -40,12 +41,11 @@ import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
  * This Activity sets up the tutorial that shall appear for the first start of the app.
  */
 class TutorialActivity : AppCompatActivity() {
-    private var viewPager: ViewPager? = null
-    private var dotsLayout: LinearLayout? = null
-    private var btnSkip: Button? = null
-    private var btnNext: Button? = null
-    private var layouts: IntArray? = null
-    private var myViewPageAdapter: MyViewPageAdapter? = null
+    private lateinit var viewPager: ViewPager
+    private lateinit var dotsLayout: LinearLayout
+    private lateinit var btnSkip: Button
+    private lateinit var btnNext: Button
+    private lateinit var layouts: IntArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,17 +73,16 @@ class TutorialActivity : AppCompatActivity() {
 
         //change status bar to transparent
         changeStatusBarColor()
-        myViewPageAdapter = MyViewPageAdapter()
-        viewPager!!.setAdapter(myViewPageAdapter)
-        viewPager!!.addOnPageChangeListener(viewPagerPageChangeListener)
-        btnSkip!!.setOnClickListener { launchHomeScreen() }
-        btnNext!!.setOnClickListener {
+        viewPager.setAdapter(MyViewPageAdapter())
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener)
+        btnSkip.setOnClickListener { launchHomeScreen() }
+        btnNext.setOnClickListener {
             // checking for last page
             // if last page home screen will be launched
-            val current = viewPager!!.currentItem + 1
-            if (current < layouts!!.size) {
+            val current = viewPager.currentItem + 1
+            if (current < layouts.size) {
                 // move to next screen
-                viewPager!!.setCurrentItem(current)
+                viewPager.setCurrentItem(current)
             } else {
                 launchHomeScreen()
             }
@@ -106,14 +105,14 @@ class TutorialActivity : AppCompatActivity() {
             addBottomDots(position)
 
             // change button text 'NEXT' on last slide to 'GOT IT'
-            if (position == layouts!!.size - 1) {
+            if (position == layouts.size - 1) {
                 // last slide
-                btnNext!!.setText(R.string.okay)
-                btnSkip!!.visibility = View.GONE
+                btnNext.setText(R.string.okay)
+                btnSkip.visibility = View.GONE
             } else {
                 // not last slide reached yet
-                btnNext!!.setText(R.string.next)
-                btnSkip!!.visibility = View.VISIBLE
+                btnNext.setText(R.string.next)
+                btnSkip.visibility = View.VISIBLE
             }
         }
 
@@ -121,20 +120,16 @@ class TutorialActivity : AppCompatActivity() {
     }
 
     private fun addBottomDots(currentPage: Int) {
-        val dots: Array<TextView?> = arrayOfNulls(layouts!!.size)
-        val colorsActive = getResources().getIntArray(R.array.array_dot_active)
-        val colorsInactive = getResources().getIntArray(R.array.array_dot_inactive)
-        dotsLayout!!.removeAllViews()
-        for (i in dots.indices) {
-            dots[i] = TextView(this)
+        val colorActive = ContextCompat.getColor(this, R.color.dotActive)
+        val colorInactive = ContextCompat.getColor(this, R.color.dotInactive)
+        dotsLayout.removeAllViews()
+        for (i in layouts.indices) {
+            val dot = TextView(this)
             // Use Unicode character "Bullet" (decimal code 8226) as text.
-            dots[i]!!.text = 8226.toChar().toString()
-            dots[i]!!.textSize = 35f
-            dots[i]!!.setTextColor(colorsInactive[currentPage])
-            dotsLayout!!.addView(dots[i])
-        }
-        if (dots.isNotEmpty()) {
-            dots[currentPage]!!.setTextColor(colorsActive[currentPage])
+            dot.text = 8226.toChar().toString()
+            dot.textSize = 35f
+            dot.setTextColor(if (i == currentPage) colorActive else colorInactive)
+            dotsLayout.addView(dot)
         }
     }
 
@@ -145,16 +140,15 @@ class TutorialActivity : AppCompatActivity() {
     }
 
     private inner class MyViewPageAdapter : PagerAdapter() {
-        private var layoutInflater: LayoutInflater? = null
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            layoutInflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = layoutInflater!!.inflate(layouts!![position], container, false)
+            val layoutInflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val view = layoutInflater.inflate(layouts[position], container, false)
             container.addView(view)
             return view
         }
 
         override fun getCount(): Int {
-            return layouts!!.size
+            return layouts.size
         }
 
         override fun isViewFromObject(view: View, anObject: Any): Boolean {

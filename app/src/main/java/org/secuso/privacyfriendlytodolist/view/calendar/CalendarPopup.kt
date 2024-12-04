@@ -22,7 +22,6 @@ import android.view.MenuItem
 import android.widget.ExpandableListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.os.BundleCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
@@ -42,8 +41,6 @@ class CalendarPopup : AppCompatActivity() {
         val model = viewModel.model
         setContentView(R.layout.calendar_popup)
         val toolbar: Toolbar = findViewById(R.id.toolbar_deadlineTasks)
-        toolbar.setTitle(R.string.deadline)
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {

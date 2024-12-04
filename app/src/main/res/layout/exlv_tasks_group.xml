@@ -5,7 +5,8 @@
     android:id="@+id/ll_exlv_task_group_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants" >
+    android:descendantFocusability="blocksDescendants"
+    android:theme="@style/AppTheme">
 
     <View
         android:id="@+id/v_urgency_task"
@@ -43,7 +44,7 @@
 
             <ImageButton
                 android:id="@+id/bt_task_move_up"
-                style="@style/BorderlessButtonStyle"
+                style="@style/AppBorderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -53,7 +54,7 @@
 
             <ImageButton
                 android:id="@+id/bt_task_move_down"
-                style="@style/BorderlessButtonStyle"
+                style="@style/AppBorderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -63,7 +64,7 @@
 
             <ImageButton
                 android:id="@+id/bt_task_menu"
-                style="@style/BorderlessButtonStyle"
+                style="@style/AppBorderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -140,8 +141,7 @@
         <View
             android:id="@+id/v_exlv_header_separator"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/lightgrey" />
+            android:layout_height="1dp" />
 
     </LinearLayout>
 

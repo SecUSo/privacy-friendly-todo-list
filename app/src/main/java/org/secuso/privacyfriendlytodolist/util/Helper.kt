@@ -19,12 +19,11 @@ package org.secuso.privacyfriendlytodolist.util
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.util.Log
-import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
@@ -138,9 +137,9 @@ object Helper {
 
     fun getDeadlineColor(context: Context, color: DeadlineColors?): Int {
         return when (color) {
-            DeadlineColors.RED -> ContextCompat.getColor(context, R.color.deadline_red)
-            DeadlineColors.BLUE -> ContextCompat.getColor(context, R.color.deadline_blue)
-            DeadlineColors.ORANGE -> ContextCompat.getColor(context, R.color.deadline_orange)
+            DeadlineColors.RED -> ContextCompat.getColor(context, R.color.deadlineRed)
+            DeadlineColors.BLUE -> ContextCompat.getColor(context, R.color.deadlineBlue)
+            DeadlineColors.ORANGE -> ContextCompat.getColor(context, R.color.deadlineOrange)
             else -> throw IllegalArgumentException("Unknown deadline color '$color'.")
         }
     }
@@ -191,17 +190,21 @@ object Helper {
         return "Unknown snooze duration '$snoozeDuration'"
     }
 
-    fun getMenuHeader(context: Context, title: String?): TextView {
-        val blueBackground = TextView(context)
-        blueBackground.setLayoutParams(LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT))
-        blueBackground.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent))
-        blueBackground.text = title
-        blueBackground.setTextColor(ContextCompat.getColor(context, R.color.black))
-        blueBackground.setPadding(65, 65, 65, 65)
-        blueBackground.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
-        blueBackground.setTypeface(null, Typeface.BOLD)
-        return blueBackground
+    fun inflateLayout(resource: Int, layoutInflater: LayoutInflater, parentView: View, attachToRoot: Boolean = true): View {
+        var viewGroup: ViewGroup? = null
+        if (parentView is ViewGroup) {
+            viewGroup = parentView
+        } else if (parentView.rootView is ViewGroup) {
+            viewGroup = parentView.rootView as ViewGroup
+        }
+        return layoutInflater.inflate(resource, viewGroup, attachToRoot)
+    }
+
+    fun getMenuHeader(layoutInflater: LayoutInflater, parentView: View, titleResId: Int): View {
+        val menuHeader = inflateLayout(R.layout.menu_header, layoutInflater, parentView, false)
+        val menuToolbar = menuHeader.findViewById<Toolbar>(R.id.menu_header_toolbar)
+        menuToolbar.setTitle(titleResId)
+        return menuHeader
     }
 
     fun isPackageAvailable(packageManager: PackageManager, packageName: String): Boolean {

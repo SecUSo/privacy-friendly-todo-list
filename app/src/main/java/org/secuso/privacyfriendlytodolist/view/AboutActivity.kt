@@ -23,7 +23,6 @@ import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.BuildConfig
 import org.secuso.privacyfriendlytodolist.R
 
@@ -40,8 +39,6 @@ class AboutActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.secusoWebsite).movementMethod = LinkMovementMethod.getInstance()
         findViewById<TextView>(R.id.githubURL).movementMethod = LinkMovementMethod.getInstance()
         val toolbar: Toolbar = findViewById(R.id.toolbar_about)
-        toolbar.setTitle(R.string.menu_about)
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {

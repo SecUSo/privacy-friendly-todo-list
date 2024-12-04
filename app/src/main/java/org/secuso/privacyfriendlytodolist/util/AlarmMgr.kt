@@ -24,7 +24,7 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoTask
@@ -55,16 +55,16 @@ object AlarmMgr {
             Log.d(TAG, "Permission to schedule exact alarms is granted.")
         } else {
             Log.i(TAG, "Requesting permission to schedule exact alarms.")
-            AlertDialog.Builder(context)
-                .setMessage(R.string.dialog_need_permission_exact_alarm_message)
-                .setPositiveButton(R.string.yes) { _, _ ->
+            MaterialAlertDialogBuilder(context).apply {
+                setMessage(R.string.dialog_need_permission_exact_alarm_message)
+                setPositiveButton(R.string.yes) { _, _ ->
                     context.startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
                 }
-                .setNegativeButton(R.string.no) { _, _ ->
+                setNegativeButton(R.string.no) { _, _ ->
                 }
-                .setTitle(R.string.dialog_need_permission_exact_alarm_title)
-                .create()
-                .show()
+                setTitle(R.string.dialog_need_permission_exact_alarm_title)
+                show()
+            }
         }
     }
 

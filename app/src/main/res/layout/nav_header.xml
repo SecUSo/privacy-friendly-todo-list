@@ -12,28 +12,28 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="?attr/colorNavBarHeaderBackground">
 
         <ImageView
-            android:paddingLeft="@dimen/activity_horizontal_margin"
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:src="@mipmap/drawer_icon" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:text="@string/nav_header_app_name"
-            android:textSize="18sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_toRightOf="@+id/imageView"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:paddingHorizontal="@dimen/activity_horizontal_margin"
+            android:textAppearance="@style/AppNavBarHeaderTextStyle"
+            android:text="@string/nav_header_app_name"/>
 
     </RelativeLayout>
 

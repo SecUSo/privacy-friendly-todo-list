@@ -6,16 +6,18 @@
     android:layout_margin="0dp"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/dialog_title"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:padding="20sp"
-        android:text="@string/new_todo_task"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/task_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/new_todo_task"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,6 +67,8 @@
                     android:drawablePadding="5dp"
                     android:gravity="center_vertical"
                     android:text="@string/deadline"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null"
                     app:drawableStartCompat="@drawable/ic_calendar_month_24dp" />
 
                 <TextView
@@ -75,6 +79,8 @@
                     android:drawablePadding="5dp"
                     android:gravity="center_vertical"
                     android:text="@string/reminder"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null"
                     app:drawableStartCompat="@drawable/ic_alarm_clock_24dp" />
             </LinearLayout>
 
@@ -112,6 +118,8 @@
                     android:drawablePadding="5dp"
                     android:gravity="center_vertical"
                     android:text="@string/recurrence_pattern_hint"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null"
                     app:drawableStartCompat="@drawable/ic_event_repeat_24dp" />
             </LinearLayout>
 
@@ -180,8 +188,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="@string/click_to_choose"
-                    android:textSize="16sp"
-                    android:textStyle="italic" />
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
             </TableRow>
 
             <TableRow
@@ -203,8 +211,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="@string/click_to_choose"
-                    android:textSize="16sp"
-                    android:textStyle="italic" />
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
             </TableRow>
         </TableLayout>
 
@@ -213,29 +221,25 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lightgrey" />
+        android:background="@color/lightGrey" />
 
     <LinearLayout
-        android:layout_width="210dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end">
 
         <Button
             android:id="@+id/bt_process_task_cancel"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="48dip"
+            style="@style/AppButtonBarButtonStyle"
             android:text="@android:string/cancel" />
 
         <Button
             android:id="@+id/bt_process_task_ok"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="48dip"
+            style="@style/AppButtonBarButtonStyle"
             android:text="@string/ok" />
 
     </LinearLayout>
