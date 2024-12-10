@@ -31,6 +31,7 @@ import android.widget.TextView
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
+import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
@@ -109,7 +110,8 @@ class TodoListWidgetConfigureActivity : Activity() {
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         if (v.id == R.id.tv_widget_cfg_list_choose) {
-            menu.setHeaderTitle(R.string.select_list)
+            val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_list)
+            menu.setHeaderView(menuHeader)
             menu.add(Menu.NONE, -1, Menu.NONE, R.string.all_tasks)
             for (index in todoLists.indices) {
                 menu.add(Menu.NONE, index, Menu.NONE, todoLists[index].getName())

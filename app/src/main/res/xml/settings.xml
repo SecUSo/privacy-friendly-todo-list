@@ -16,7 +16,7 @@
         android:title="@string/snooze_duration" />
 
     <SwitchPreference
-        android:id="@+id/switch_notifysound"
+        android:id="@+id/switch_notify_sound"
         android:defaultValue="true"
         android:key="notify"
         android:title="@string/notify" />
@@ -34,7 +34,6 @@
         android:inputType="numberPassword"
         android:key="pref_pin"
         android:maxLength="32"
-        android:password="true"
         android:title="@string/set_pin" />
 
     <SwitchPreference
@@ -42,8 +41,5 @@
         android:key="pref_progress"
         android:defaultValue="false"
         android:title="@string/auto_progress" />
-
-
-    <!--TODO NumberPicker for reapting interval of alarm notifications -->
 
 </PreferenceScreen>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="AppTheme">
-        <attr name="colorNavBarHeaderBackground" format="color" />
+        <attr name="appColorNavBarHeaderBackground" format="color" />
+        <attr name="appColorIconForeground" format="color"/>
     </declare-styleable>
 </resources>

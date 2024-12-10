@@ -279,7 +279,8 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
         when (v.id) {
             R.id.tv_task_recurrence_pattern -> {
-                menu.setHeaderTitle(R.string.select_recurrence_pattern)
+                val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_recurrence_pattern)
+                menu.setHeaderView(menuHeader)
                 for (pattern in RecurrencePattern.entries) {
                     menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE,
                         Helper.recurrencePatternToAdverbString(context, pattern))
@@ -287,7 +288,8 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             }
 
             R.id.tv_task_priority -> {
-                menu.setHeaderTitle(R.string.select_priority)
+                val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_priority)
+                menu.setHeaderView(menuHeader)
                 for (priority in TodoTask.Priority.entries) {
                     menu.add(GroupId.TASK_PRIORITY.ordinal, priority.ordinal, Menu.NONE,
                         Helper.priorityToString(context, priority))
@@ -295,7 +297,8 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             }
 
             R.id.tv_task_list_choose -> {
-                menu.setHeaderTitle(R.string.select_list)
+                val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_list)
+                menu.setHeaderView(menuHeader)
                 menu.add(GroupId.NO_TASK_LIST.ordinal, Menu.NONE, Menu.NONE, R.string.select_no_list)
                 for (entry in todoLists.entries) {
                     menu.add(GroupId.TASK_LIST_CHOOSE.ordinal, entry.key, Menu.NONE, entry.value)

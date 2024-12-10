@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_widget_task_group_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,7 +15,7 @@
         android:layout_marginStart="12dp"
         android:background="@drawable/border_img_view"
         android:visibility="invisible"
-        android:src="@drawable/done"
+        app:srcCompat="@drawable/done"
         android:id="@+id/widget_done"/>
 
     <ImageView
