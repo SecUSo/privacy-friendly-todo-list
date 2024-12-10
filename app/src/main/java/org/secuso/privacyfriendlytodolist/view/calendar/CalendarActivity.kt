@@ -45,7 +45,7 @@ class CalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
-        setContentView(R.layout.fragment_calendar)
+        setContentView(R.layout.calendar_fragment)
         val calendarView = findViewById<CalendarView>(R.id.calendar_view)
         val toolbar = calendarView.findViewById<Toolbar>(R.id.toolbar_calendar)
         setSupportActionBar(toolbar)

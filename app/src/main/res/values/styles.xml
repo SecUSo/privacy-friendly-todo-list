@@ -2,16 +2,36 @@
 
     <!-- Base application theme - light -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSurface">?android:colorBackground</item>
         <item name="colorOnSurface">?android:textColor</item>
-        <item name="colorNavBarHeaderBackground">@color/white</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="appColorNavBarHeaderBackground">@color/white</item>
+        <item name="appColorIconForeground">?android:textColorSecondary</item>
     </style>
+
+    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.FullScreen" parent="@style/AppTheme.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppNavBarHeaderTextStyle" parent="@style/TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/colorAccent</item>
@@ -19,35 +39,22 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppBorderlessButtonStyle">
-        <item name="android:background">?android:selectableItemBackground</item>
-        <item name="android:tint">?android:textColor</item>
-    </style>
-
     <style name="AppButtonBarButtonStyle">
+        <item name="android:minWidth">@dimen/button_width_min</item>
+        <item name="android:minHeight">@dimen/button_height_min</item>
         <item name="android:background">?android:selectableItemBackground</item>
-        <item name="android:tint">?android:textColor</item>
         <item name="android:textColor">?attr/colorAccent</item>
-        <item name="android:minWidth">120dp</item>
-        <item name="android:minHeight">48dp</item>
     </style>
 
     <style name="AppClickableTextAppearance" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">?attr/colorAccent</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">italic</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.NoActionBar">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="SplashScreenTheme" parent="Theme.SplashScreen">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
-        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+    <style name="AppBorderlessButtonStyle">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="tint">?attr/appColorIconForeground</item>
     </style>
 
 </resources>

@@ -2,41 +2,16 @@
 
     <!-- Base application theme - dark -->
     <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSurface">?android:colorBackground</item>
         <item name="colorOnSurface">?android:textColor</item>
-        <item name="colorNavBarHeaderBackground">@color/lightGrey</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="appColorNavBarHeaderBackground">@color/lightGrey</item>
+        <item name="appColorIconForeground">?android:textColorSecondary</item>
     </style>
-
-    <style name="AppNavBarHeaderTextStyle" parent="@style/TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="AppBorderlessButtonStyle">
-        <item name="android:background">@color/transparent</item>
-        <item name="android:tint">?android:attr/textColorSecondaryNoDisable</item>
-    </style>
-
-    <style name="AppButtonBarButtonStyle">
-        <item name="android:background">?android:selectableItemBackground</item>
-        <item name="android:textColor">?attr/colorAccent</item>
-        <item name="android:minWidth">120dp</item>
-        <item name="android:minHeight">48dp</item>
-    </style>
-
-    <style name="AppClickableTextAppearance" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorAccent</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">italic</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 </resources>

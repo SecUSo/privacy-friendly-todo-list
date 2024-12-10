@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:src="@drawable/privacyfriendlyappslogo" />
+                app:srcCompat="@drawable/privacyfriendlyappslogo" />
 
         </LinearLayout>
 
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:src="@drawable/secuso_logo_blau_blau" />
+            app:srcCompat="@drawable/secuso_logo_blau_blau" />
 
         <TextView
             android:layout_width="wrap_content"
