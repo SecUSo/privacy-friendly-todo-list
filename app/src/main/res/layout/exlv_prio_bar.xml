@@ -13,7 +13,8 @@
     <TextView
         android:id="@+id/tv_exlv_priority_bar"
         android:layout_width="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_height="wrap_content" />
+        android:layout_marginHorizontal="10dp"
+        android:layout_height="wrap_content"
+        android:text="@string/medium_priority"/>
 
 </LinearLayout>
