@@ -17,6 +17,6 @@
         android:layout_marginLeft="50dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:text="Task Description" />
+        android:text="@string/description_hint" />
 
 </LinearLayout>
