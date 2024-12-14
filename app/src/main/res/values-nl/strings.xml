@@ -133,6 +133,12 @@
     </string-array>
     <string name="pin_enabled">PIN vereist bij opstarten</string>
     <string name="set_pin">PIN instellen</string>
+    <string name="pref_app_theme_title">Thema</string>
+    <string-array name="pref_app_theme_entries">
+        <item>Licht</item>
+        <item>Donker</item>
+        <item>Systeem standaard</item>
+    </string-array>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline nadert: %1$s</string>
