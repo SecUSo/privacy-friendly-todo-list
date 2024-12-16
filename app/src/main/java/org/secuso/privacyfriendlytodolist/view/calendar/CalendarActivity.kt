@@ -24,7 +24,6 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
@@ -46,11 +45,9 @@ class CalendarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LifecycleViewModel::class.java]
         model = viewModel.model
-        setContentView(R.layout.fragment_calendar)
+        setContentView(R.layout.calendar_fragment)
         val calendarView = findViewById<CalendarView>(R.id.calendar_view)
         val toolbar = calendarView.findViewById<Toolbar>(R.id.toolbar_calendar)
-        toolbar.setTitle(R.string.calendar)
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {

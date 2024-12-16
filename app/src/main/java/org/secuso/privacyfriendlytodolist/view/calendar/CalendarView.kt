@@ -53,7 +53,7 @@ class CalendarView : LinearLayout {
         buttonPrevMonth = findViewById(R.id.iv_prev_month)
         buttonNextMonth = findViewById(R.id.iv_next_month)
         tvCurrentMonth = findViewById(R.id.tv_current_month)
-        calendarGrid = findViewById(R.id.gv_calendargrid)
+        calendarGrid = findViewById(R.id.gv_calendar_grid)
         monthNames = arrayOf(
             resources.getString(R.string.january),
             resources.getString(R.string.february),

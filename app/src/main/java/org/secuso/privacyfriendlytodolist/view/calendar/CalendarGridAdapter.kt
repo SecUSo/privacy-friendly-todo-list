@@ -91,10 +91,10 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         val spanString = SpannableString(dateToStr(posCal))
         if (posCal[Calendar.MONTH] != currentMonth) {
             // grey day out if it is outside the current month
-            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.middlegrey))
+            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.middleGrey))
         } else if (sameDay(posCal, todayCal)) {
             // highlight today
-            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            dayTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
             spanString.setSpan(UnderlineSpan(), 0, spanString.length, 0)
             spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
         } else {
@@ -109,10 +109,12 @@ class CalendarGridAdapter(context: Context, resource: Int) :
             var border: Drawable? = null
             for (t in tasksToday) {
                 if (!t.isDone()) {
+                    // Use blue border if there are undone tasks.
                     border = ContextCompat.getDrawable(context, R.drawable.border_blue)
                     break
                 }
             }
+            // Use green border if all tasks are done.
             dayTextView.background = border ?: ContextCompat.getDrawable(context, R.drawable.border_green)
         } else {
             dayTextView.setBackgroundResource(0)

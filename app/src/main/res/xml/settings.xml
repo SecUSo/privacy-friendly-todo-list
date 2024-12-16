@@ -6,6 +6,7 @@
         android:defaultValue="86400"
         android:entries="@array/default_reminder_times_human"
         android:entryValues="@array/default_reminder_times"
+        android:summary="%s"
         android:title="@string/default_reminder_time" />
 
     <ListPreference
@@ -13,12 +14,12 @@
         android:defaultValue="900"
         android:entries="@array/snooze_duration_values_human"
         android:entryValues="@array/snooze_duration_values"
+        android:summary="%s"
         android:title="@string/snooze_duration" />
 
     <SwitchPreference
-        android:id="@+id/switch_notifysound"
-        android:defaultValue="true"
         android:key="notify"
+        android:defaultValue="true"
         android:title="@string/notify" />
 
     <SwitchPreference
@@ -27,23 +28,26 @@
         android:title="@string/pin_enabled" />
 
     <EditTextPreference
+        android:key="pref_pin"
         android:defaultValue=""
         android:dependency="pref_pin_enabled"
         android:dialogMessage="@string/add_pin"
         android:dialogTitle="@string/set_pin"
         android:inputType="numberPassword"
-        android:key="pref_pin"
         android:maxLength="32"
-        android:password="true"
         android:title="@string/set_pin" />
 
     <SwitchPreference
-        android:id="@+id/switch_progress"
         android:key="pref_progress"
         android:defaultValue="false"
         android:title="@string/auto_progress" />
 
-
-    <!--TODO NumberPicker for reapting interval of alarm notifications -->
+    <ListPreference
+        android:key="pref_app_theme"
+        android:defaultValue="@string/pref_app_theme_default"
+        android:entries="@array/pref_app_theme_entries"
+        android:entryValues="@array/pref_app_theme_values"
+        android:summary="%s"
+        android:title="@string/pref_app_theme_title" />
 
 </PreferenceScreen>

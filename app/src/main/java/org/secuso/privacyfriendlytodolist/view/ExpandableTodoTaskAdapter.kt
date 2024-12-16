@@ -588,7 +588,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 if (actualConvertView?.tag is SubtaskViewHolder) {
                     svh = actualConvertView.tag as SubtaskViewHolder
                 } else {
-                    actualConvertView = LayoutInflater.from(parent.context)
+                    actualConvertView = LayoutInflater.from(context)
                         .inflate(R.layout.exlv_subtask_row, parent, false)
                     svh = SubtaskViewHolder(
                         actualConvertView.findViewById(R.id.tv_subtask_name),

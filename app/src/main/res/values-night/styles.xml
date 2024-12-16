@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme - dark -->
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSurface">?android:colorBackground</item>
+        <item name="colorOnSurface">?android:textColor</item>
+        <item name="appColorNavBarHeaderBackground">@color/lightGrey</item>
+        <item name="appColorIconForeground">?android:textColorSecondary</item>
+    </style>
+
+</resources>

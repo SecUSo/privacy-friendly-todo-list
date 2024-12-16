@@ -46,7 +46,7 @@
         <activity
             android:name=".view.TutorialActivity"
             android:parentActivityName="view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar.FullScreen" />
         <activity
             android:name=".view.PinActivity"
             android:label="@string/enter_pin"
