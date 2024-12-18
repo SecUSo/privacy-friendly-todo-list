@@ -465,8 +465,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.reminderIcon.visibility = View.GONE
                     tvh.reminder.visibility = View.GONE
                 }
-                tvh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context,
-                    currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
+                val deadlineColor = currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                tvh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, deadlineColor))
                 tvh.done.isChecked = currentTask.isDone()
                 tvh.done.jumpDrawablesToCurrentState()
                 tvh.done.setOnCheckedChangeListener { buttonView, isChecked ->
