@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">Otwórz menu</string>
     <string name="navigation_drawer_close">Zamknij menu</string>
     <string name="name">Nazwa</string>
-    <string name="todo_list_description_hint">Opis</string>
+    <string name="description_hint">Opis</string>
     <string name="ok">Okay</string>
 
     <!-- Common model strings -->
@@ -28,7 +28,6 @@
     <string name="high_priority">Bardzo ważne</string>
     <string name="medium_priority">Średnio ważne</string>
     <string name="low_priority">Mało ważne</string>
-    <string name="unknown_priority">Nieokreślone</string>
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
 
@@ -47,8 +46,7 @@
     <string name="help_pin_title">Hasło</string>
     <string name="help_pin">Wejdź w ustawienia, aby utworzyć hasło. Hasło musi się składać z 4 cyfr. Będziesz musiał je wprowadzić przy uruchamianiu aplikacji.</string>
     <string name="help_group_privacy">Informacja o prywatności</string>
-    <string name="help_permissions_title">Zezwolenie RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
 
     <!-- About -->
     <string name="about">O nas</string>
@@ -66,7 +64,7 @@
     <string name="no_next_deadline">Brak terminów</string>
     <string name="add_list_feedback">%1$s dodane</string>
     <string name="edit_todo_list">Edytuj listę zadań</string>
-    <string name="delete_list">Usuń listę zadań</string>
+    <string name="delete_list">Usuń listę</string>
     <string name="delete_list_feedback">%1$s usunięte</string>
 
     <!-- Create/Edit To-Do list dialog -->
@@ -97,7 +95,7 @@
     <string name="set_deadline_before_reminder">Wprowadź najpierw termin zadania.</string>
     <string name="progress_colon">Postępy:</string>
     <string name="priority_colon">Poziom ważności:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Poziom ważności</string>
     <string name="new_todo_subtask">Nowe podzadanie</string>
     <string name="todo_name_must_not_be_empty">Wymagana nazwa</string>
@@ -159,11 +157,4 @@
 	<string name="october">Październik</string>
 	<string name="november">Listopad</string>
 	<string name="december">Grudzień</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">Podzadanie nie zostało usunięte.</string>
-    <string name="error_removing_task">Zadanie nie zostało usunięte.</string>
-    <string name="list_to_db_error">Lista zadań nie została zapisana w bazie danych.</string>
-    <string name="task_to_db_error">Zadanie nie zostało zapisane w bazie danych.</string>
-    <string name="subtask_to_db_error">Podzadanie nie zostało zapisane w bazie danych.</string>
 </resources>

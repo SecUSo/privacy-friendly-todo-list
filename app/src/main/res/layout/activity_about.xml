@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +16,7 @@
         android:weightSum="1"
         tools:context=".view.AboutActivity">
 
-        <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +69,9 @@
             android:layout_width="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
             android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
             android:text="@string/about_author_names" />
 
         <TextView
@@ -94,23 +95,23 @@
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             android:src="@drawable/secuso_logo_blau_blau" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:gravity="center_horizontal"
             android:text="@string/privacy_friendly" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
+            android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/more_info" />
 

@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">Abrir el menú Inicio</string>
     <string name="navigation_drawer_close">Cerrar el menú Inicio</string>
     <string name="name">Nombre</string>
-    <string name="todo_list_description_hint">Descripción</string>
+    <string name="description_hint">Descripción</string>
     <string name="ok">OK</string>
 
     <!-- Common model strings -->
@@ -28,7 +28,6 @@
     <string name="high_priority">Muy importante</string>
     <string name="medium_priority">Importante</string>
     <string name="low_priority">Poco importante</string>
-    <string name="unknown_priority">Indefinido</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
 
@@ -46,8 +45,7 @@
     <string name="help_pin_title">Contraseña</string>
     <string name="help_pin">Abrir los ajustes  para instalar la contraseña. La contraseña tiene que contener 4 cifras. Hay que introducir la contraseña cada vez al abrir la aplicación.</string>
     <string name="help_group_privacy">Información sobre la privacidad</string>
-    <string name="help_permissions_title">Permisio RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
 
     <!-- About -->
     <string name="about">Sobre nosotros</string>
@@ -65,7 +63,7 @@
     <string name="no_next_deadline">No hay fechas límite</string>
     <string name="add_list_feedback">%1$s agregado</string>
     <string name="edit_todo_list">Editar la lista de tareas</string>
-    <string name="delete_list">Eliminar la lista de tareas</string>
+    <string name="delete_list">Eliminar la lista</string>
     <string name="delete_list_feedback">%1$s eliminado</string>
 
     <!-- Create/Edit To-Do list dialog -->
@@ -96,7 +94,7 @@
     <string name="set_deadline_before_reminder">Introduce la fecha límite antes de introducir la alarma.</string>
     <string name="progress_colon">Progreso:</string>
     <string name="priority_colon">Importancia:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Indicar la importancia</string>
     <string name="new_todo_subtask">Nueva subtarea</string>
     <string name="todo_name_must_not_be_empty">Hay que indicar el nombre de la tarea.</string>
@@ -158,11 +156,4 @@
 	<string name="october">Octubre</string>
 	<string name="november">Noviembre</string>
 	<string name="december">Diciembre</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">La subtarea no ha sido eliminada.</string>
-    <string name="error_removing_task">La tarea no ha sido eliminada.</string>
-    <string name="list_to_db_error">La lista de tareas no ha sido guardada en la base de datos.</string>
-    <string name="task_to_db_error">La tarea no ha sido guardada en la base de datos.</string>
-    <string name="subtask_to_db_error">La subtarea no ha sido guardada en la base de datos.</string>
 </resources>

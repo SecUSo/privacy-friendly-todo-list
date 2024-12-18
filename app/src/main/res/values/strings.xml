@@ -10,56 +10,66 @@
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
     <string name="home">All tasks</string>
-    <string name="calendar_view">Calendar</string>
     <string name="show_all_tasks">Show all tasks</string>
+    <string name="calendar_view">Calendar</string>
     <string name="settings">Settings</string>
+    <string name="share_all_tasks">Share data</string>
+    <string name="export_all_tasks">Export data</string>
+    <string name="import_tasks">Import data</string>
     <string name="other">Other</string>
     <string name="help">Help</string>
     <string name="menu_about">About</string>
     <string name="search">Search</string>
 
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
     <string name="name">Name</string>
-    <string name="todo_list_description_hint">Description</string>
+    <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
+    <string name="delete">Delete</string>
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
     <string name="high_priority">High</string>
     <string name="medium_priority">Medium</string>
     <string name="low_priority">Low</string>
-    <string name="unknown_priority">Unknown Priority</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
     <!-- Help -->
     <string name="help_overview_heading">General Information</string>
-    <string name="help_intro">The Privacy Firendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
+    <string name="help_intro">The Privacy Friendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
     <string name="help_group_lists">Task management</string>
     <string name="help_todo_lists_title">To-Do lists</string>
     <string name="help_todo_lists">A To-Do list is a group of tasks and can be created using the + button in the toolbar. The lists appear in the navigation menu and can be called there. Tasks inside a To-Do list can be checked, edited and deleted.</string>
     <string name="help_subtasks_title">Subtasks</string>
     <string name="help_subtasks">Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
     <string name="help_deadline_reminder_title">Deadlines and reminders</string>
-    <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it. Hold on a task for a while to edit it.</string>
+    <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it.</string>
     <string name="help_group_app">Settings</string>
     <string name="help_pin_title">Settings</string>
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with at least 4 digits. You are asked for it every time you start the application.</string>
     <string name="help_sound">Moreover you can choose if a notification sound should be played by receiving a notification.</string>
     <string name="help_group_privacy">Privacy Info</string>
-    <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Permission RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline. Tracking, advertisement or other permissions do not exist.</string>
-    <string name="help_widget">In addition, this app provides a widget that you can add to your homescreen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
-
+    <string name="help_privacy">This app contains no tracking or advertising. No permissions other than those listed below are used.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline.</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS: This permission allows the app to show reminders for approaching tasks.</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: This permission allows the app to show reminders with exact timing.</string>
+    <string name="help_group_data_backup">Data Backup</string>
+    <string name="help_data_backup">You can use the separate Privacy Friendly Backup app to backup and restore this application\'s data and settings. This can also be used to transfer your data to another device.</string>
+    <string name="help_group_export_import">Data Export / Import</string>
+    <string name="help_export">The data of this application can be exported in CSV format (comma separated values, encoding UTF-8) for further processing in other applications.</string>
+    <string name="help_import">The data of this application can be imported from a file in CSV format. The format of this file corresponds to the format of the CSV export file.</string>
+    <string name="help_group_widget">Widget</string>
+    <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
 
     <!-- About -->
     <string name="about">About</string>
     <string name="version_number">Version v%s</string>
     <string name="about_author">Authors:</string>
-    <string name="about_author_names" translatable="false">Sebastian Lutz, Dominik Püllen, Simon Breitfelder</string>
+    <!-- Using no-break-space character \u00A0 between first and last name. -->
+    <string name="about_author_names" translatable="false">Sebastian\u00A0Lutz, Dominik\u00A0Püllen, Simon\u00A0Breitfelder, Christian\u00A0Adams</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">In affiliation with</string>
     <string name="privacy_friendly">This application belongs to the group of Privacy Friendly Apps developed by Karlsruhe Institute of Technology. Sourcecode licensed under GPLv3 license. Images copyright KIT and Google Inc.</string>
@@ -74,7 +84,12 @@
     <string name="no_next_deadline">No upcoming deadline</string>
     <string name="add_list_feedback">%1$s added</string>
     <string name="edit_todo_list">Edit To-Do list</string>
-    <string name="delete_list">Delete To-Do list</string>
+    <string name="move_up_list">Move up list</string>
+    <string name="move_down_list">Move down list</string>
+    <string name="edit_list">Edit list</string>
+    <string name="export_list">Export list</string>
+    <string name="share_list">Share list</string>
+    <string name="delete_list">Delete list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
 
     <!-- Create/Edit To-Do list dialog -->
@@ -97,18 +112,27 @@
     <string name="edit_todo_task">Edit To-Do task</string>
     <string name="deadline_dd">Deadline:</string>
     <string name="no_deadline">No Deadline</string>
-    <string name="edit_task">Edit To-Do Task</string>
-    <string name="delete_task">Delete To-Do Task</string>
-    <string name="task_removed">Task put into bin</string>
+    <string name="edit_task">Edit task</string>
+    <string name="share_task">Share task</string>
+    <string name="delete_task">Delete task</string>
+    <string name="task_removed">Task put into recycle bin</string>
     <string name="deadline">Deadline</string>
+    <string name="recurrence_every">Recurrence every</string>
+    <string name="recurrence_interval_hint">1..n</string>
+    <string name="recurrence_pattern_hint">Recurrence pattern</string>
+    <string name="select_recurrence_pattern">Select a recurrence pattern:</string>
     <string name="reminder">Reminder</string>
-    <string name="deadline_smaller_reminder">The deadline can not be earlier than the reminder time.</string>
+    <string name="deadline_smaller_reminder">The deadline cannot be earlier than the reminder time.</string>
+    <string name="reminder_smaller_now">Only recurring tasks can have reminder time in the past.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
+    <string name="set_deadline_if_recurring">A recurring task needs a deadline.</string>
+    <string name="recurrence_interval_invalid">Recurrence interval is no integer >= 1.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Select a priority:</string>
     <string name="select_list">Select a list:</string>
+    <string name="select_no_list">No list</string>
     <string name="new_todo_subtask">New subtask</string>
     <string name="todo_name_must_not_be_empty">Please enter a task name.</string>
     <string name="edit_subtask">Edit subtask</string>
@@ -119,7 +143,10 @@
     <string name="list_colon">List:</string>
     <string name="work_subtask">Work on this subtask</string>
     <string name="work_task">Work on this task</string>
-
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="cant_move_task_if_diff_lists">Can\'t move task if different lists are shown.</string>
+    <string name="cant_move_task_if_filter_group_sort">Can\'t move task if filtering, grouping or sorting is active.</string>
 
     <!-- Select reminder dialog -->
     <string name="date">Date</string>
@@ -149,13 +176,53 @@
         <item>2.5 days before</item>
         <item>3 days before</item>
     </string-array>
+    <string name="snooze_duration">Snooze duration of reminders</string>
+    <string-array name="snooze_duration_values_human">
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>45 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>8 hours</item>
+        <item>12 hours</item>
+        <item>1 day</item>
+        <item>2 days</item>
+        <item>3 days</item>
+        <item>7 days</item>
+    </string-array>
+    <string-array name="snooze_duration_values_human_short">
+        <item>5 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>45 min</item>
+        <item>1 h</item>
+        <item>2 h</item>
+        <item>8 h</item>
+        <item>12 h</item>
+        <item>1 d</item>
+        <item>2 d</item>
+        <item>3 d</item>
+        <item>7 d</item>
+    </string-array>
     <string name="pin_enabled">PIN required on startup</string>
     <string name="set_pin">Set PIN</string>
     <string name="auto_progress">Progress by subtasks</string>
     <string name="notify">Enable notification sound</string>
 
+    <!-- Permission request dialog -->
+    <string name="dialog_need_permission_exact_alarm_title">Enable exact reminders</string>
+    <string name="dialog_need_permission_exact_alarm_message">Permission to schedule exact reminders is needed. Otherwise reminders are inexact.</string>
+
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
+    <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
+
+    <!-- Notifications -->
+    <string name="notif_reminder_ch_name">Task Reminder</string>
+    <string name="notif_reminder_ch_desc">Reminders for upcoming tasks.</string>
+    <string name="notif_reminder_act_snooze">Snooze %1$s</string>
+    <string name="notif_reminder_act_done">Set done</string>
 
     <!-- Date and Time -->
     <string name="sunday_abbr">SUN</string>
@@ -177,28 +244,30 @@
     <string name="october">October</string>
     <string name="november">November</string>
     <string name="december">December</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">Subtask could not be removed from the database.</string>
-    <string name="error_removing_task">Could not remove todo task from the database.</string>
-    <string name="list_to_db_error">Error while creating new To-Do list.</string>
-    <string name="task_to_db_error">Error while inserting new task into the database.</string>
-    <string name="subtask_to_db_error">An error occured while inserting new subtask to the database.</string>
+    <string name="none">None</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="days">Day(s)</string>
+    <string name="weeks">Week(s)</string>
+    <string name="months">Month(s)</string>
+    <string name="years">Year(s)</string>
 
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>
 
     <string name="slide1_heading">Welcome!</string>
-    <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app does not use any permissions.</string>
+    <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app contains no tracking or advertising.</string>
 
     <string name="slide2_heading">Lists</string>
-    <string name="slide2_text">You can manage your tasks in labled To-Do lists.</string>
+    <string name="slide2_text">You can manage your tasks in labeled To-Do lists.</string>
 
     <string name="slide3_heading">Reminder</string>
     <string name="slide3_text">You can define deadlines and reminders for your tasks.</string>
 
     <string name="slide4_heading">Everything is important</string>
-    <string name="slide4_text">You can add subtasks and the progress of their maintask. Progress can be set manually or automatically by the number of done subtasks.</string>
+    <string name="slide4_text">You can add subtasks and the progress of their main task. Progress can be set manually or automatically by the number of done subtasks.</string>
 
     <string name="slide5_heading">Secure</string>
     <string name="slide5_text">You can add a PIN-protection in the settings.</string>
@@ -208,40 +277,41 @@
     <string name="skip">Skip</string>
 
     <!-- ### RECYCLE ACTIVITY ### -->
-    <string name="toast_del">Bin is cleared.</string>
-    <string name="bin">Recycler</string>
+    <string name="toast_del">Recycle bin is cleared.</string>
+    <string name="bin">Recycle bin</string>
     <string name="bin_toolbar">Recycle bin</string>
-    <string name="btn_clear">Clear bin</string>
-    <string name="bin_empty">Bin is empty</string>
+    <string name="btn_clear">Clear recycle bin</string>
+    <string name="bin_empty">Recycle bin is empty</string>
     <string name="restore">Restore task</string>
-
 
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Tasks</string>
 
+    <!-- ### Export / Import ### -->
+    <string name="export_succeeded">Export successfully finished</string>
+    <string name="export_failed">Export failed</string>
+    <string name="import_succeeded">Import successfully finished</string>
+    <string name="import_failed">Import failed</string>
+    <string name="import_question_title">Delete existing data?</string>
+    <string name="import_question_text">Delete all existing data (all To-Do lists, tasks and subtasks) before importing new data?</string>
+    <string name="delete_existing_data">Delete existing data</string>
+    <string name="keep_existing_data">Keep existing data</string>
+    <string name="abort">Abort</string>
+
     <!-- ### Delete AlertDialog ### -->
-    <string name="alert_listdelete">Really delete this list?</string>
+    <string name="alert_list_delete">Really delete this list?</string>
     <string name="alert_clear">Really clear?</string>
     <string name="alert_delete_yes">Delete</string>
     <string name="alert_delete_no">Cancel</string>
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="configure">Configure</string>
-    <string name="widget_list">Choose a list:</string>
-
+    <string name="widget_configuration">Widget configuration</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Task changed status</string>
-    <string name="snack_undo">undo action</string>
-    <string name="snack_clear">Bin is now cleared</string>
-
-    <!-- ### EXIT ### -->
-    <string name="exit_app">Exit To-Do List?</string>
-    <string name="exit_positive">Yes</string>
-    <string name="exit_negative">No</string>
-    <string name="select_no_list">no list</string>
+    <string name="snack_undo">Undo action</string>
+    <string name="snack_clear">Recycle bin is now cleared</string>
 
     <!-- POMODORO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>

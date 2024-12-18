@@ -1,49 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_exlv_subtask_row_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants" >
 
     <View
         android:id="@+id/v_subtask_deadline_color_bar"
         android:layout_width="5dp"
-        android:layout_height="0px"
-        android:layout_alignBottom="@+id/v_exlv_subtask_align_anchor"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
         android:background="@color/colorPrimary" />
 
-    <LinearLayout
-        android:id="@+id/ll_cb_subtask_done"
+    <CheckBox
+        android:id="@+id/cb_subtask_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="45dp">
-
-        <CheckBox
-            android:id="@+id/cb_subtask_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX="0.80"
-            android:scaleY="0.80"
-            android:focusable="false"/>
-
-    </LinearLayout>
+        android:layout_marginStart="45dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80" />
 
     <TextView
         android:id="@+id/tv_subtask_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/ll_cb_subtask_done"
-        android:paddingTop="7dp"
+        android:layout_weight="1"
         android:textStyle="bold" />
 
-    <View
-        android:id="@+id/v_exlv_subtask_align_anchor"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_marginTop="7dp"
-        android:layout_below="@+id/tv_subtask_name"
-        android:layout_toRightOf="@+id/v_urgency_task" />
+    <ImageButton
+        android:id="@+id/bt_subtask_move_up"
+        style="@style/BorderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80"
+        android:contentDescription="@string/move_up"
+        app:srcCompat="@drawable/ic_arrow_up_black_24dp" />
 
-</RelativeLayout>
+    <ImageButton
+        android:id="@+id/bt_subtask_move_down"
+        style="@style/BorderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80"
+        android:contentDescription="@string/move_down"
+        app:srcCompat="@drawable/ic_arrow_down_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/bt_subtask_menu"
+        style="@style/BorderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="11dp"
+        android:padding="4dp"
+        android:scaleX="0.80"
+        android:scaleY="0.80"
+        android:contentDescription="@string/move_down"
+        app:srcCompat="@drawable/ic_menu_black_24dp" />
+
+</LinearLayout>

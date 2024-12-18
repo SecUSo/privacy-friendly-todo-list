@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Sluit menu</string>
     <string name="name">Naam</string>
-    <string name="todo_list_description_hint">Beschrijving</string>
+    <string name="description_hint">Beschrijving</string>
     <string name="ok">Okay</string>
 
     <!-- Common model strings -->
@@ -28,7 +28,6 @@
     <string name="high_priority">Hoog</string>
     <string name="medium_priority">Medium</string>
     <string name="low_priority">Laag</string>
-    <string name="unknown_priority">Onbekende Prioriteit</string>
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
 
@@ -47,8 +46,7 @@
     <string name="help_pin_title">PIN bescherming</string>
     <string name="help_pin">Open het instellingsmenu om PIN bescherming in te stellen. De PIN moet een nummer zijn met 4 cijfers. Je zal ernaar gevraagd worden elke keer je de applicatie opent.</string>
     <string name="help_group_privacy">Privacy Info</string>
-    <string name="help_permissions_title">Permission RECEIVE_BOOT_COMPLETED</string>
-    <string name="help_permissions">Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
 
     <!-- About -->
     <string name="about">Over</string>
@@ -66,7 +64,7 @@
     <string name="no_next_deadline">Geen volgende deadline</string>
     <string name="add_list_feedback">%1$s toegevoegd</string>
     <string name="edit_todo_list">Bewerk To-Do lijst</string>
-    <string name="delete_list">Verwijder To-Do lijst</string>
+    <string name="delete_list">Verwijder lijst</string>
     <string name="delete_list_feedback">%1$s verwijderd</string>
 
     <!-- Create/Edit To-Do list dialog -->
@@ -97,7 +95,7 @@
     <string name="set_deadline_before_reminder">Gelieve een deadline in te vullen voor de herinneringstijd.</string>
     <string name="progress_colon">Vooruitgang:</string>
     <string name="priority_colon">Prioriteit:</string>
-    <string name="zero_percent">0%</string>
+    <string name="zero_percent">0 %</string>
     <string name="select_priority">Gelieve een prioriteit te selecteren!</string>
     <string name="new_todo_subtask">Nieuwe ondertaak</string>
     <string name="todo_name_must_not_be_empty">Gelieve een naam te geven aan de taak.</string>
@@ -159,11 +157,4 @@
 	<string name="october">october</string>
 	<string name="november">november</string>
 	<string name="december">december</string>
-
-    <!-- Error messages -->
-    <string name="error_removing_subtask">Ondertaak kon niet verwijderd worden uit de database.</string>
-    <string name="error_removing_task">Kon de taak niet verwijderen uit de database.</string>
-    <string name="list_to_db_error">Fout tijdens het maken van een nieuwe takenlijst.</string>
-    <string name="task_to_db_error">Fout tijdens het invoegen van een taak in de database.</string>
-    <string name="subtask_to_db_error">Fout tijdens het invoegen van een ondertaak in de database.</string>
 </resources>
