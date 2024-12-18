@@ -68,7 +68,7 @@ android {
     }
 
     lint {
-        warning "MissingTranslation"
+        lintConfig = file("lint.xml")
     }
 
     compileOptions {
