@@ -58,6 +58,7 @@ object PreferenceMgr {
     val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
     val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
+    val P_APP_THEME = PrefMetaData("pref_app_theme", PrefDataType.STRING)
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -78,7 +79,7 @@ object PreferenceMgr {
     }
 
     /**
-     * Returns the default reminder time span. It is stored in the app preference.
+     * Returns the default reminder time span, as it is stored in the app preference.
      *
      * The default reminder time is a relative time span in seconds (e.g. 86400s == 1 day).
      * In opposite to the user specified reminder times, which are absolute timestamps.
@@ -90,10 +91,19 @@ object PreferenceMgr {
     }
 
     /**
-     * @return The snooze duration. It is stored in the app preference.
+     * @return The snooze duration, as it is stored in the app preference.
      */
     fun getSnoozeDuration(context: Context): Long {
         return getStringPrefAsLong(context, P_SNOOZE_DURATION.name)
+    }
+
+    /**
+     * @return The selected app theme, as it is stored in the app preference.
+     * Or null if no preference is set.
+     */
+    fun getAppTheme(context: Context): String? {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getString(P_APP_THEME.name, null)
     }
 
     private fun getStringPrefAsLong(context: Context, prefName: String): Long {

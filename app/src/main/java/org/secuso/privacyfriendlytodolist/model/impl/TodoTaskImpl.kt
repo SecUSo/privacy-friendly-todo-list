@@ -26,7 +26,9 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
+import java.util.Calendar
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -187,6 +189,17 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         var color = DeadlineColors.BLUE
         var deadline = data.deadline
         if (!isDone() && deadline != null) {
+            // Set time-part to 00:00:00 to ensure that comparison with reminder time span doesn't
+            // overlap with deadline-day. For example if deadline has time-part of 12:00:00 and
+            // reminder time span is 0.5 day it would not get orange before the deadline-day begins.
+            // But it should get orange 0.5 day before deadline day begins.
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = TimeUnit.SECONDS.toMillis(deadline)
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            deadline = TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
             val now = Helper.getCurrentTimestamp()
             val finalReminderTimeSpan: Long
             if (isRecurring()) {

@@ -209,6 +209,18 @@
     <string name="set_pin">Set PIN</string>
     <string name="auto_progress">Progress by subtasks</string>
     <string name="notify">Enable notification sound</string>
+    <string name="pref_app_theme_title">Theme</string>
+    <string-array name="pref_app_theme_entries">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System default</item>
+    </string-array>
+    <string name="pref_app_theme_default" translatable="false">SYSTEM</string>
+    <string-array name="pref_app_theme_values" translatable="false">
+        <item>LIGHT</item>
+        <item>DARK</item>
+        <item>SYSTEM</item>
+    </string-array>
 
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Enable exact reminders</string>

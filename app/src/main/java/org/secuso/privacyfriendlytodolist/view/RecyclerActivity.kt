@@ -28,15 +28,14 @@ import android.view.View
 import android.widget.ExpandableListView
 import android.widget.TextView
 import androidx.activity.addCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
+import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 
@@ -61,8 +60,6 @@ class RecyclerActivity : AppCompatActivity() {
         exLv = findViewById(R.id.recycle_bin_tasks)
         tv = findViewById(R.id.bin_empty)
         val toolbar: Toolbar = findViewById(R.id.toolbar_recycle_bin)
-        toolbar.setTitle(R.string.bin_toolbar)
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {
@@ -108,18 +105,20 @@ class RecyclerActivity : AppCompatActivity() {
             }
 
             R.id.btn_clear -> {
-                val builder1 = AlertDialog.Builder(this)
-                builder1.setMessage(R.string.alert_clear)
-                builder1.setCancelable(true)
-                builder1.setPositiveButton(R.string.yes) { dialog, which ->
-                    model.clearRecycleBin { counter ->
-                        dialog.cancel()
-                        updateAdapter()
+                MaterialAlertDialogBuilder(this).apply {
+                    setMessage(R.string.alert_clear)
+                    setCancelable(true)
+                    setPositiveButton(R.string.yes) { dialog, which ->
+                        model.clearRecycleBin { counter ->
+                            dialog.cancel()
+                            updateAdapter()
+                        }
                     }
+                    setNegativeButton(R.string.no) { dialog, which ->
+                        dialog.cancel()
+                    }
+                    show()
                 }
-                builder1.setNegativeButton(R.string.no) { dialog, which -> dialog.cancel() }
-                val alert = builder1.create()
-                alert.show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -128,7 +127,8 @@ class RecyclerActivity : AppCompatActivity() {
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo)
         val inflater = this.menuInflater
-        menu.setHeaderView(getMenuHeader(baseContext, baseContext.getString(R.string.select_option)))
+        val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_option)
+        menu.setHeaderView(menuHeader)
         inflater.inflate(R.menu.deleted_task_context, menu)
     }
 

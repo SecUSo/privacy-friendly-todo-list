@@ -30,7 +30,7 @@
 
     <ImageButton
         android:id="@+id/bt_subtask_move_up"
-        style="@style/BorderlessButtonStyle"
+        style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:padding="4dp"
@@ -41,7 +41,7 @@
 
     <ImageButton
         android:id="@+id/bt_subtask_move_down"
-        style="@style/BorderlessButtonStyle"
+        style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:padding="4dp"
@@ -52,7 +52,7 @@
 
     <ImageButton
         android:id="@+id/bt_subtask_menu"
-        style="@style/BorderlessButtonStyle"
+        style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="11dp"

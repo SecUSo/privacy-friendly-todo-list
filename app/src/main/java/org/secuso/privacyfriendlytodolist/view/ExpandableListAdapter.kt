@@ -25,14 +25,18 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.util.Helper
 
 /**
  * Created by Sebastian Lutz on 28.02.2018.
  *
  * Helper for HelpActivity, creating a FAQ-style layout
  */
-class ExpandableListAdapter(private val context: Context, private val expandableListTitle: List<String>,
+class ExpandableListAdapter(
+    private val context: Context,
+    private val expandableListTitle: List<String>,
     private val expandableListDetail: Map<String, List<String>>) : BaseExpandableListAdapter() {
+
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
         return expandableListDetail[expandableListTitle[listPosition]]!![expandedListPosition]
     }
@@ -44,12 +48,12 @@ class ExpandableListAdapter(private val context: Context, private val expandable
     override fun getChildView(listPosition: Int, expandedListPosition: Int,
         isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
         var actualConvertView = convertView
-        val expandedListText = getChild(listPosition, expandedListPosition) as String
         if (actualConvertView == null) {
             val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            actualConvertView = layoutInflater.inflate(R.layout.list_item, null)
+            actualConvertView = Helper.inflateLayout(R.layout.list_item, layoutInflater, parent, false)
         }
-        val expandedListTextView: TextView = actualConvertView!!.findViewById(R.id.expandedListItem)
+        val expandedListText = getChild(listPosition, expandedListPosition) as String
+        val expandedListTextView: TextView = actualConvertView.findViewById(R.id.expandedListItem)
         expandedListTextView.text = expandedListText
         return actualConvertView
     }
@@ -73,12 +77,12 @@ class ExpandableListAdapter(private val context: Context, private val expandable
     override fun getGroupView(listPosition: Int, isExpanded: Boolean, convertView: View?,
                               parent: ViewGroup): View {
         var actualConvertView = convertView
-        val listTitle = getGroup(listPosition) as String
         if (actualConvertView == null) {
             val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            actualConvertView = layoutInflater.inflate(R.layout.list_group, null)
+            actualConvertView = Helper.inflateLayout(R.layout.list_group, layoutInflater, parent, false)
         }
-        val listTitleTextView: TextView = actualConvertView!!.findViewById(R.id.listTitle)
+        val listTitle = getGroup(listPosition) as String
+        val listTitleTextView: TextView = actualConvertView.findViewById(R.id.listTitle)
         listTitleTextView.setTypeface(null, Typeface.BOLD)
         listTitleTextView.text = listTitle
         return actualConvertView

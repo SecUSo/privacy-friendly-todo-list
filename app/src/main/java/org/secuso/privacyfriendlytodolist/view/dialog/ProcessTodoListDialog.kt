@@ -22,8 +22,8 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoList
@@ -34,7 +34,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoList
  * Defines the dialog that lets the user create a list
  */
 class ProcessTodoListDialog(context: Context) :
-    FullScreenDialog<ResultCallback<TodoList>>(context, R.layout.add_todolist_dialog) {
+    FullScreenDialog<ResultCallback<TodoList>>(context, R.layout.list_dialog) {
     private lateinit var todoList: TodoList
     private var editExistingList = false
 
@@ -46,7 +46,6 @@ class ProcessTodoListDialog(context: Context) :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val tvTitle = findViewById<TextView>(R.id.tv_todo_list_title)
         val etName = findViewById<EditText>(R.id.et_todo_list_name)
         val buttonOkay = findViewById<Button>(R.id.bt_todo_list_ok)
         val buttonCancel = findViewById<Button>(R.id.bt_todo_list_cancel)
@@ -57,7 +56,7 @@ class ProcessTodoListDialog(context: Context) :
         window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         if (editExistingList) {
-            tvTitle.text = context.getString(R.string.edit_todo_list)
+            findViewById<Toolbar>(R.id.list_dialog_title).setTitle(R.string.edit_todo_list)
             etName.setText(todoList.getName())
             etName.selectAll()
         } else {

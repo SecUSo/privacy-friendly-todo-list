@@ -143,8 +143,13 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         var result = DeadlineColors.BLUE
         for (currentTask in tasks) {
             when (currentTask.getDeadlineColor(reminderTimeSpan)) {
-                DeadlineColors.RED -> return DeadlineColors.RED
-                DeadlineColors.ORANGE -> result = DeadlineColors.ORANGE
+                DeadlineColors.ORANGE -> {
+                    result = DeadlineColors.ORANGE
+                }
+                DeadlineColors.RED -> {
+                    result = DeadlineColors.RED
+                    break
+                }
                 else -> {}
             }
         }

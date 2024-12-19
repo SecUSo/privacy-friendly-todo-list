@@ -41,7 +41,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -50,6 +49,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -61,7 +61,6 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
-import org.secuso.privacyfriendlytodolist.util.Helper.getMenuHeader
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
@@ -325,10 +324,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
             } else {
                 Log.e(TAG, "CSV import failed: $errorMessage")
-                AlertDialog.Builder(this).apply {
+                MaterialAlertDialogBuilder(this).apply {
                     setTitle(R.string.import_failed)
                     setMessage(errorMessage)
-                    setPositiveButton(R.string.ok) { dialog, which -> }
+                    setPositiveButton(R.string.ok) { _, _ -> }
                     show()
                 }
             }
@@ -393,7 +392,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initializeActivity() {
         // toolbar setup
-        toolbar = findViewById(R.id.toolbar)
+        toolbar = findViewById(R.id.toolbar_main)
         setSupportActionBar(toolbar)
 
         // side menu setup
@@ -508,18 +507,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "text/comma-separated-values"
                 }
-                AlertDialog.Builder(this).apply {
+                MaterialAlertDialogBuilder(this).apply {
                     setTitle(R.string.import_question_title)
                     setMessage(R.string.import_question_text)
-                    setPositiveButton(R.string.delete_existing_data) { dialog, which ->
+                    setPositiveButton(R.string.delete_existing_data) { _, _ ->
                         deleteAllDataBeforeImport = true
                         importTasksLauncher.launch(intent)
                     }
-                    setNegativeButton(R.string.keep_existing_data) { dialog, which ->
+                    setNegativeButton(R.string.keep_existing_data) { _, _ ->
                         deleteAllDataBeforeImport = false
                         importTasksLauncher.launch(intent)
                     }
-                    setNeutralButton(R.string.abort) { dialog, which ->
+                    setNeutralButton(R.string.abort) { _, _ ->
                     }
                     show()
                 }
@@ -760,7 +759,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
         // Check for to-do tasks in expandable list view.
         if (v is ExpandableListView) {
-            val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
+            val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_option)
             menu.setHeaderView(menuHeader)
             val workItemId: Int = if (null == contextMenuTodoSubtask) {
                 // context menu for task
@@ -777,7 +776,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Check for to-do lists in main menu.
         } else if (v.tag is Int) {
             selectedTodoListId = v.tag as Int
-            val menuHeader = getMenuHeader(baseContext, baseContext.getString(R.string.select_option))
+            val menuHeader = Helper.getMenuHeader(layoutInflater, v.rootView, R.string.select_option)
             menu.setHeaderView(menuHeader)
             menuInflater.inflate(R.menu.todo_list_context, menu)
         } else {
@@ -968,7 +967,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
                 return@getToDoListById
             }
-            AlertDialog.Builder(this).apply {
+            MaterialAlertDialogBuilder(this).apply {
                 setMessage(R.string.alert_list_delete)
                 setCancelable(true)
                 setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
@@ -992,7 +991,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setNegativeButton(R.string.alert_delete_no) { dialog, id ->
                     dialog.cancel()
                 }
-                create().show()
+                show()
             }
         }
     }

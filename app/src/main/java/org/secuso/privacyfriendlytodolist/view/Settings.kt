@@ -45,7 +45,7 @@ class Settings : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings)
-        val toolbar: Toolbar = findViewById(R.id.toolbarr)
+        val toolbar: Toolbar = findViewById(R.id.toolbar_settings)
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {

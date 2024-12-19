@@ -25,8 +25,8 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.preference.PreferenceManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 
@@ -78,12 +78,13 @@ class PinDialog(context: Context, private val allowReset: Boolean) :
                     getDialogCallback().resetApp()
                 }
             }
-            val builder = AlertDialog.Builder(context)
             val resources = context.resources
-            builder.setMessage(resources.getString(R.string.reset_application_msg))
-            builder.setPositiveButton(resources.getString(R.string.yes), resetDialogListener)
-            builder.setNegativeButton(resources.getString(R.string.no), resetDialogListener)
-            builder.show()
+            MaterialAlertDialogBuilder(context).apply {
+                setMessage(resources.getString(R.string.reset_application_msg))
+                setPositiveButton(resources.getString(R.string.yes), resetDialogListener)
+                setNegativeButton(resources.getString(R.string.no), resetDialogListener)
+                show()
+            }
         }
         val buttonNoDeadline: Button = findViewById(R.id.bt_pin_cancel)
         buttonNoDeadline.setOnClickListener {

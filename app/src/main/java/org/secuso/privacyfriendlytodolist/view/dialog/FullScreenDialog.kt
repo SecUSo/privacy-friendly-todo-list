@@ -20,6 +20,7 @@ package org.secuso.privacyfriendlytodolist.view.dialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.Window
 import android.view.WindowManager
 
 abstract class FullScreenDialog<T>(context: Context, private val layoutId: Int) : Dialog(context) {
@@ -36,6 +37,12 @@ abstract class FullScreenDialog<T>(context: Context, private val layoutId: Int) 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /*
+        Needed at least at API 21 to hide the title bar.
+        At API 34 the title bar does not appear even without the call of requestWindowFeature().
+        Important: Call requestWindowFeature() before calling setContentView().
+        */
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(layoutId)
 
         // required to make the dialog use the full screen width
