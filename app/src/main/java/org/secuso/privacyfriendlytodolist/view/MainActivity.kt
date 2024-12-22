@@ -66,6 +66,7 @@ import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.TaskFilter
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
 import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
@@ -144,12 +145,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return false
             }
         })
-        var cb = menu.findItem(R.id.ac_group_by_prio)
-        cb.setChecked(mPref!!.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false))
-        cb = menu.findItem(R.id.ac_sort_by_deadline)
-        cb.setChecked(mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false))
-        cb = menu.findItem(R.id.ac_sort_by_name_asc)
-        cb.setChecked(mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false))
+        var item: MenuItem
+        val taskFilterString = mPref!!.getString(PreferenceMgr.P_TASK_FILTER.name, null)
+        val taskFilter = TaskFilter.fromString(taskFilterString)
+        item = when (taskFilter) {
+            TaskFilter.ALL_TASKS -> menu.findItem(R.id.ac_show_all_tasks)
+            TaskFilter.OPEN_TASKS -> menu.findItem(R.id.ac_show_open_tasks)
+            TaskFilter.COMPLETED_TASKS -> menu.findItem(R.id.ac_show_completed_tasks)
+        }
+        item.isChecked = true
+        item = menu.findItem(R.id.ac_group_by_prio)
+        item.isChecked = mPref!!.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
+        item = menu.findItem(R.id.ac_sort_by_deadline)
+        item.isChecked = mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
+        item = menu.findItem(R.id.ac_sort_by_name_asc)
+        item.isChecked = mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -171,23 +181,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.ac_show_all_tasks -> {
-                expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.ALL_TASKS
+                item.isChecked = true
+                expandableTodoTaskAdapter!!.taskFilter = TaskFilter.ALL_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, "ALL_TASKS").apply()
+                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expandableTodoTaskAdapter!!.taskFilter.name).apply()
                 return true
             }
 
             R.id.ac_show_open_tasks -> {
-                expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.OPEN_TASKS
+                item.isChecked = true
+                expandableTodoTaskAdapter!!.taskFilter = TaskFilter.OPEN_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, "OPEN_TASKS").apply()
+                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expandableTodoTaskAdapter!!.taskFilter.name).apply()
                 return true
             }
 
             R.id.ac_show_completed_tasks -> {
-                expandableTodoTaskAdapter!!.filter = ExpandableTodoTaskAdapter.Filter.COMPLETED_TASKS
+                item.isChecked = true
+                expandableTodoTaskAdapter!!.taskFilter = TaskFilter.COMPLETED_TASKS
                 expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, "COMPLETED_TASKS").apply()
+                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expandableTodoTaskAdapter!!.taskFilter.name).apply()
                 return true
             }
 
@@ -475,7 +488,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (navigationView != null) {
             val size = navigationView!!.menu.size()
             for (i in 0 until size) {
-                navigationView!!.menu.getItem(i).setChecked(false)
+                navigationView!!.menu.getItem(i).isChecked = false
             }
         }
     }
@@ -626,7 +639,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             navMenu.removeGroup(R.id.menu_group_todo_lists)
             for (entry in allTodoListNames.entries) {
                 val item = navMenu.add(R.id.menu_group_todo_lists, entry.key, 1, entry.value)
-                item.setCheckable(true)
+                item.isCheckable = true
                 item.setIcon(R.drawable.ic_label_black_24dp)
                 item.setActionView(R.layout.list_action_view)
                 val actionButton: ImageButton = item.actionView!!.findViewById(R.id.action_button)
@@ -702,8 +715,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar?.setTitle(R.string.home)
         uncheckNavigationEntries()
         val homeMenuEntry = navigationView!!.menu.getItem(0)
-        homeMenuEntry.setCheckable(true)
-        homeMenuEntry.setChecked(true)
+        homeMenuEntry.isCheckable = true
+        homeMenuEntry.isChecked = true
         model!!.getAllToDoTasks { todoTasks ->
             createExpandableTodoTaskAdapter(todoTasks, true)
             showHints()
@@ -715,7 +728,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (navigationView != null) {
             for (i in 0 until navigationView!!.menu.size()) {
                 val item = navigationView!!.menu.getItem(i)
-                item.setChecked(item.itemId == listId)
+                item.isChecked = item.itemId == listId
             }
         }
         model!!.getToDoListById(listId) { todoList ->

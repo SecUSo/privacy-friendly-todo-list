@@ -87,15 +87,23 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         SUBTASK_ROW
     }
 
-    enum class Filter {
+    enum class TaskFilter {
         ALL_TASKS,
         COMPLETED_TASKS,
-        OPEN_TASKS
+        OPEN_TASKS;
+
+        companion object {
+            fun fromString(filterString: String?): TaskFilter {
+                return TaskFilter.entries.find { value ->
+                    value.name == filterString
+                } ?: ALL_TASKS
+            }
+        }
     }
 
     // FILTER AND SORTING OPTIONS MADE BY THE USER
     var queryString: String?
-    var filter: Filter
+    var taskFilter: TaskFilter
     var isGroupingByPriority: Boolean
     var isSortingByDeadline: Boolean
     var isSortingByNameAsc: Boolean
@@ -104,10 +112,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private var listNames = mapOf<Int, String>()
 
     init {
-        val filterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, Filter.ALL_TASKS.name)
-        filter = Filter.entries.find { value ->
-            value.name == filterString
-        } ?: Filter.ALL_TASKS
+        val taskFilterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, TaskFilter.ALL_TASKS.name)
+        taskFilter = TaskFilter.fromString(taskFilterString)
         isGroupingByPriority = prefs.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
         isSortingByDeadline = prefs.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
         isSortingByNameAsc = prefs.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
@@ -149,8 +155,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      */
     private fun filterTasks() {
         val newFilteredTasks: MutableList<TaskHolder> = ArrayList()
-        val notOpen = filter != Filter.OPEN_TASKS
-        val notCompleted = filter != Filter.COMPLETED_TASKS
+        val notOpen = taskFilter != TaskFilter.OPEN_TASKS
+        val notCompleted = taskFilter != TaskFilter.COMPLETED_TASKS
         for (task in todoTasks) {
             if ((notOpen && task.isDone() || notCompleted && !task.isDone())
                 && task.checkQueryMatch(queryString)) {
@@ -637,7 +643,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
         // Can't move task if filtering, grouping or sorting is active.
         if (   null != queryString
-            || filter != Filter.ALL_TASKS
+            || taskFilter != TaskFilter.ALL_TASKS
             || isGroupingByPriority
             || isSortingByDeadline
             || isSortingByNameAsc) {

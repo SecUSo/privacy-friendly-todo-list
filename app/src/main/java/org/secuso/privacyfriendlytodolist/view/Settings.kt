@@ -116,7 +116,7 @@ class Settings : AppCompatActivity() {
                 if (!isPinValid(pin)) {
                     // pin invalid: uncheck
                     ignoreChanges = true
-                    findPreference<SwitchPreference>(PreferenceMgr.P_IS_PIN_ENABLED.name)!!.setChecked(false)
+                    findPreference<SwitchPreference>(PreferenceMgr.P_IS_PIN_ENABLED.name)!!.isChecked = false
                     ignoreChanges = false
                 }
             }

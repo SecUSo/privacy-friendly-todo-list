@@ -4,7 +4,7 @@
 
     <group
         android:id="@+id/group_task_filter_modes"
-        android:checkableBehavior="none">
+        android:checkableBehavior="single">
         <item
             android:id="@+id/ac_show_all_tasks"
             android:orderInCategory="1"
@@ -12,12 +12,12 @@
             app:showAsAction="never" />
         <item
             android:id="@+id/ac_show_open_tasks"
-            android:orderInCategory="2"
+            android:orderInCategory="1"
             android:title="@string/open_tasks"
             app:showAsAction="never" />
         <item
             android:id="@+id/ac_show_completed_tasks"
-            android:orderInCategory="3"
+            android:orderInCategory="1"
             android:title="@string/completed_tasks"
             app:showAsAction="never" />
     </group>
@@ -27,20 +27,17 @@
         android:checkableBehavior="all">
         <item
             android:id="@+id/ac_group_by_prio"
-            android:checked="false"
-            android:orderInCategory="4"
+            android:orderInCategory="2"
             android:title="@string/group_by_priority" />
 
         <item
             android:id="@+id/ac_sort_by_deadline"
-            android:checked="false"
-            android:orderInCategory="4"
+            android:orderInCategory="2"
             android:title="@string/sort_by_deadline" />
 
         <item
             android:id="@+id/ac_sort_by_name_asc"
-            android:checked="false"
-            android:orderInCategory="4"
+            android:orderInCategory="2"
             android:title="@string/sort_by_name_asc" />
     </group>
 
