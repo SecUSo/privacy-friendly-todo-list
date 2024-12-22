@@ -36,6 +36,9 @@
 * Database call on UI thread. by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/48
 * not getting reminders by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/67
 * direct crash on phone startup by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/106
+* Dark mode by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/pull/134
+* Feature Request: Sortierung "Nach Alphabet (A bis Z)" by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/56
+* Visual feedback on main screen for select order / filtering by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/109
 * ...
 
 See also [Milestone "Release 3.0.0"](https://github.com/SecUSo/privacy-friendly-todo-list/milestone/1?closed=1)
