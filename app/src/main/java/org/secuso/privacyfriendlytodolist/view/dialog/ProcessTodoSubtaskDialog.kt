@@ -53,10 +53,6 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initGui()
-    }
-
-    private fun initGui() {
         val etSubtaskName: EditText = findViewById(R.id.et_new_subtask_name)
         val okButton: Button = findViewById(R.id.bt_new_subtask_ok)
         val cancelButton: Button = findViewById(R.id.bt_new_subtask_cancel)
