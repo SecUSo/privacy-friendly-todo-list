@@ -21,6 +21,7 @@
             android:title="@string/completed_tasks"
             app:showAsAction="never" />
     </group>
+
     <group
         android:id="@+id/gr_task_group_by_priority"
         android:checkableBehavior="all">
@@ -35,6 +36,12 @@
             android:checked="false"
             android:orderInCategory="4"
             android:title="@string/sort_by_deadline" />
+
+        <item
+            android:id="@+id/ac_sort_by_name_asc"
+            android:checked="false"
+            android:orderInCategory="4"
+            android:title="@string/sort_by_name_asc" />
     </group>
 
 </menu>

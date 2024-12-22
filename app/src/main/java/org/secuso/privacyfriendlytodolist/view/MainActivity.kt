@@ -144,10 +144,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return false
             }
         })
-        val priorityGroup = menu.findItem(R.id.ac_group_by_prio)
-        priorityGroup.setChecked(mPref!!.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false))
-        val deadlineGroup = menu.findItem(R.id.ac_sort_by_deadline)
-        deadlineGroup.setChecked(mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false))
+        var cb = menu.findItem(R.id.ac_group_by_prio)
+        cb.setChecked(mPref!!.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false))
+        cb = menu.findItem(R.id.ac_sort_by_deadline)
+        cb.setChecked(mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false))
+        cb = menu.findItem(R.id.ac_sort_by_name_asc)
+        cb.setChecked(mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false))
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -199,6 +201,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.isChecked = !item.isChecked
                 expandableTodoTaskAdapter!!.isSortingByDeadline = item.isChecked
                 mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
+            }
+
+            R.id.ac_sort_by_name_asc -> {
+                item.isChecked = !item.isChecked
+                expandableTodoTaskAdapter!!.isSortingByNameAsc = item.isChecked
+                mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked).apply()
             }
 
             else -> return super.onOptionsItemSelected(item)

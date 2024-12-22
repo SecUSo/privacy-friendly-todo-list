@@ -135,6 +135,35 @@ object Helper {
         return result.toLong()
     }
 
+    fun compareDeadlines(task1: TodoTask, task2: TodoTask): Int {
+        var now: Long? = null
+        val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
+            now = getCurrentTimestamp()
+            getNextRecurringDate(
+                task1.getDeadline()!!,
+                task1.getRecurrencePattern(),
+                task1.getRecurrenceInterval(),
+                now)
+        } else {
+            task1.getDeadline()
+        }
+        val d2 = if (task2.isRecurring() && task2.getDeadline() != null) {
+            now = now ?: getCurrentTimestamp()
+            getNextRecurringDate(
+                task2.getDeadline()!!,
+                task2.getRecurrencePattern(),
+                task2.getRecurrenceInterval(),
+                now)
+        } else {
+            task2.getDeadline()
+        }
+        // tasks with deadlines always first
+        if (d1 == d2) return 0
+        if (d1 == null) return 1
+        if (d2 == null) return -1
+        return d1.compareTo(d2)
+    }
+
     fun getDeadlineColor(context: Context, color: DeadlineColors?): Int {
         return when (color) {
             DeadlineColors.RED -> ContextCompat.getColor(context, R.color.deadlineRed)

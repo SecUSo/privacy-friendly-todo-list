@@ -41,7 +41,6 @@ import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
-import java.util.Collections
 
 /**
  * Created by Sebastian Lutz on 06.03.2018
@@ -99,6 +98,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     var filter: Filter
     var isGroupingByPriority: Boolean
     var isSortingByDeadline: Boolean
+    var isSortingByNameAsc: Boolean
     private val filteredTasks: MutableList<TaskHolder> = ArrayList() // data after filtering process
     private val priorityBarPositions = mutableMapOf<TodoTask.Priority, Int>()
     private var listNames = mapOf<Int, String>()
@@ -110,6 +110,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         } ?: Filter.ALL_TASKS
         isGroupingByPriority = prefs.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
         isSortingByDeadline = prefs.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
+        isSortingByNameAsc = prefs.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
         queryString = null
         notifyDataSetChanged()
     }
@@ -177,49 +178,26 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      * important to keep [ExpandableTodoTaskAdapter.filteredTasks] up-to-date.
      */
     private fun sortTasks() {
-        val prioritySorting = isGroupingByPriority
-        Collections.sort(filteredTasks, object : Comparator<TaskHolder> {
-            private fun compareDeadlines(task1: TodoTask, task2: TodoTask): Int {
-                val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
-                    Helper.getNextRecurringDate(task1.getDeadline()!!, task1.getRecurrencePattern(),
-                        task1.getRecurrenceInterval(), Helper.getCurrentTimestamp())
-                } else {
-                    task1.getDeadline()
-                }
-                val d2 = if (task2.isRecurring() && task2.getDeadline() != null) {
-                    Helper.getNextRecurringDate(task2.getDeadline()!!, task2.getRecurrencePattern(),
-                        task2.getRecurrenceInterval(), Helper.getCurrentTimestamp())
-                } else {
-                    task2.getDeadline()
-                }
-                // tasks with deadlines always first
-                if (d1 == d2) return 0
-                if (d1 == null) return 1
-                if (d2 == null) return -1
-                if (d1 < d2) return -1
-                return 1
+        filteredTasks.sortWith { taskHolder1, taskHolder2 ->
+            val t1 = taskHolder1.todoTask
+            val t2 = taskHolder2.todoTask
+            var result = 0
+            if (isGroupingByPriority) {
+                result = t1.getPriority().compareTo(t2.getPriority())
             }
-
-            override fun compare(taskHolder1: TaskHolder, taskHolder2: TaskHolder): Int {
-                var result: Int
-                val t1 = taskHolder1.todoTask
-                val t2 = taskHolder2.todoTask
-                if (prioritySorting) {
-                    val p1 = t1.getPriority()
-                    val p2 = t2.getPriority()
-                    result = p1.compareTo(p2)
-                    if (result == 0 && isSortingByDeadline) {
-                        result = compareDeadlines(t1, t2)
-                    }
-                } else if (isSortingByDeadline) {
-                    result = compareDeadlines(t1, t2)
-                } else {
-                    result = t1.getSortOrder() - t2.getSortOrder()
-                }
-                return result
+            if (isSortingByDeadline && result == 0) {
+                result = Helper.compareDeadlines(t1, t2)
             }
-        })
-        if (prioritySorting) {
+            if (isSortingByNameAsc && result == 0) {
+                // Ignore case at comparison. Otherwise all lowercase names would be at the end.
+                result = t1.getName().compareTo(t2.getName(), true)
+            }
+            if (result == 0) {
+                result = t1.getSortOrder().compareTo(t2.getSortOrder())
+            }
+            result
+        }
+        if (isGroupingByPriority) {
             countTasksPerPriority()
         }
     }
@@ -658,7 +636,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
 
         // Can't move task if filtering, grouping or sorting is active.
-        if (null != queryString || filter != Filter.ALL_TASKS || isGroupingByPriority || isSortingByDeadline) {
+        if (   null != queryString
+            || filter != Filter.ALL_TASKS
+            || isGroupingByPriority
+            || isSortingByDeadline
+            || isSortingByNameAsc) {
             Toast.makeText(context, context.getString(R.string.cant_move_task_if_filter_group_sort),
                 Toast.LENGTH_SHORT).show()
             return

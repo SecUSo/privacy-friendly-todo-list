@@ -101,6 +101,7 @@
     <string name="completed_tasks">Erledigte Aufgaben</string>
     <string name="group_by_priority">Nach Priorität gruppieren</string>
     <string name="sort_by_deadline">Nach Termin sortieren</string>
+    <string name="sort_by_name_asc">Nach Name sortieren</string>
     <string name="add_subtask">Unteraufgabe hinzufügen</string>
 
     <!-- Create/Edit To-Do task dialog -->

@@ -56,6 +56,7 @@ object PreferenceMgr {
     val P_IS_NOTIFICATION_SOUND = PrefMetaData("notify", PrefDataType.BOOLEAN)
     val P_GROUP_BY_PRIORITY = PrefMetaData("PRIORITY", PrefDataType.BOOLEAN)
     val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
+    val P_SORT_BY_NAME_ASC = PrefMetaData("NAME_ASC", PrefDataType.BOOLEAN)
     val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
     val P_APP_THEME = PrefMetaData("pref_app_theme", PrefDataType.STRING)
