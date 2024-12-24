@@ -1,8 +1,8 @@
-﻿<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- Application Specific -->
 	<string name="app_name">Lista de tareas</string>
     <string name="app_name_long">Privacy Friendly Lista de tareas</string>
-
     <!-- Menu -->
     <string name="nav_header_app_name">Privacy Friendly Tarea</string>
     <string name="toolbar_title_main">Privacy Friendly Tareas</string>
@@ -12,17 +12,15 @@
     <string name="show_all_tasks">Todas las tareas</string>
     <string name="settings">Ajustes</string>
     <string name="other">Otros</string>
-	<string name="help">Ayuda</string>
-	<string name="menu_about">Sobre nosotros</string>
+    <string name="help">Ayuda</string>
+    <string name="menu_about">Sobre nosotros</string>
     <string name="search">Buscar</string>
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Abrir el menú Inicio</string>
     <string name="navigation_drawer_close">Cerrar el menú Inicio</string>
     <string name="name">Nombre</string>
     <string name="description_hint">Descripción</string>
     <string name="ok">OK</string>
-
     <!-- Common model strings -->
     <string name="select_option">Elegir</string>
     <string name="high_priority">Muy importante</string>
@@ -30,7 +28,6 @@
     <string name="low_priority">Poco importante</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
-
     <!-- Help -->
     <string name="help_overview_heading">Informatión general</string>
     <string name="help_intro">Esta aplicación se puede utilizar para mantener las tareas y organizar una agenda personal.</string>
@@ -46,7 +43,6 @@
     <string name="help_pin">Abrir los ajustes  para instalar la contraseña. La contraseña tiene que contener 4 cifras. Hay que introducir la contraseña cada vez al abrir la aplicación.</string>
     <string name="help_group_privacy">Información sobre la privacidad</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
-
     <!-- About -->
     <string name="about">Sobre nosotros</string>
     <string name="version_number">Versiṕn %s</string>
@@ -55,23 +51,20 @@
     <string name="about_affiliation">En colaboración con:</string>
     <string name="privacy_friendly">Esta aplicación pertenece a Privacy Friendly Apps</string>
     <string name="more_info">Más informaciones sobre:</string>
-
     <!-- To-Do list overview -->
 	<string name="done">hecho</string>
-	<string name="no_todo_lists_available">Lista de tareas indisponible</string>
-	<string name="next_deadline_dd">Próxima fecha límite: %1$s</string>
+    <string name="no_todo_lists_available">Lista de tareas indisponible</string>
+    <string name="next_deadline_dd">Próxima fecha límite: %1$s</string>
     <string name="no_next_deadline">No hay fechas límite</string>
     <string name="add_list_feedback">%1$s agregado</string>
     <string name="edit_todo_list">Editar la lista de tareas</string>
     <string name="delete_list">Eliminar la lista</string>
     <string name="delete_list_feedback">%1$s eliminado</string>
-
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Nueva lista de tareas</string>
     <string name="list_name_must_not_be_empty">La lista de tareas no puede estar vacía</string>
     <string name="show_description">Mostrar la descripción</string>
     <string name="no_description_available">Descripción indisponible</string>
-
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">La lista de tareas está vacía.</string>
     <string name="all_tasks">Todas las tareas</string>
@@ -80,7 +73,6 @@
     <string name="group_by_priority">Clasificar por importancia</string>
     <string name="sort_by_deadline">Clasificar por fechas</string>
     <string name="add_subtask">Añadir una subtarea</string>
-
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nueva tarea</string>
     <string name="deadline_dd">Fecha límite:</string>
@@ -101,24 +93,20 @@
     <string name="edit_subtask">Editar la subtarea</string>
     <string name="delete_subtask">Eliminar la subtarea</string>
     <string name="subtask_removed">Subtarea eliminada</string>
-
     <!-- Select reminder dialog -->
 	<string name="date">Fecha</string>
-	<string name="time">Hora</string>
-	<string name="no_reminder">No hay alarma</string>
-
+    <string name="time">Hora</string>
+    <string name="no_reminder">No hay alarma</string>
     <!-- Calendar view -->
     <string name="calendar">Calendario</string>
     <string name="no_deadline_today">No hay ningunas fechas límite en estos días.</string>
-
     <!-- PIN -->
 	<string name="enter_pin">Intruduce la contraseña</string>
-	<string name="wrong_pin">Contraseña incorrecta</string>
+    <string name="wrong_pin">Contraseña incorrecta</string>
     <string name="reset_application_button">Resetear la aplicación</string>
     <string name="invalid_pin">Por favor, introduzca su contraseña de 4 dígitos.</string>
     <string name="reset_application_msg">¿De verdad quieres resetear la aplicación? Se perderá la contraseña y todas las listas de tareas.</string>
     <string name="add_pin">Introduce la contraseña para poder abrir la aplicación. La contraseña tiene que contener por lo menos 4 cifras.</string>
-
     <!-- Settings -->
 	<string name="default_reminder_time">Alarma estándar</string>
     <string-array name="default_reminder_times_human">
@@ -132,28 +120,53 @@
     </string-array>
     <string name="pin_enabled">Contraseña activa</string>
     <string name="set_pin">Introducir una contraseña</string>
-
     <!-- Reminder service -->
     <string name="deadline_approaching">Próxima fecha límite: %1$s</string>
-
     <!-- Date and Time -->
 	<string name="sunday_abbr">DO</string>
-	<string name="monday_abbr">LU</string>
-	<string name="tuesday_abbr">MA</string>
-	<string name="wednesday_abbr">MI</string>
-	<string name="thursday_abbr">JU</string>
-	<string name="friday_abbr">VI</string>
-	<string name="saturday_abbr">SA</string>
-	<string name="january">Enero</string>
-	<string name="february">Febrero</string>
-	<string name="march">Marzo</string>
-	<string name="april">Abril</string>
-	<string name="may">Mayo</string>
-	<string name="june">Junio</string>
-	<string name="july">Julio</string>
-	<string name="august">Agosto</string>
-	<string name="september">Septiembre</string>
-	<string name="october">Octubre</string>
-	<string name="november">Noviembre</string>
-	<string name="december">Diciembre</string>
+    <string name="monday_abbr">LU</string>
+    <string name="tuesday_abbr">MA</string>
+    <string name="wednesday_abbr">MI</string>
+    <string name="thursday_abbr">JU</string>
+    <string name="friday_abbr">VI</string>
+    <string name="saturday_abbr">SA</string>
+    <string name="january">Enero</string>
+    <string name="february">Febrero</string>
+    <string name="march">Marzo</string>
+    <string name="april">Abril</string>
+    <string name="may">Mayo</string>
+    <string name="june">Junio</string>
+    <string name="july">Julio</string>
+    <string name="august">Agosto</string>
+    <string name="september">Septiembre</string>
+    <string name="october">Octubre</string>
+    <string name="november">Noviembre</string>
+    <string name="december">Diciembre</string>
+    <string name="share_task">Compartir tarea</string>
+    <string name="help_group_data_backup">Copia de seguridad de datos</string>
+    <string name="share_all_tasks">Compartir datos</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS: Este permiso permite que la aplicación muestre recordatorios de tareas próximas.</string>
+    <string name="edit_todo_task">Editar tarea pendiente</string>
+    <string name="share_list">Compartir la lista</string>
+    <string name="initial_alert">PULSE + PARA NUEVA LISTA</string>
+    <string name="help_import">Los datos de esta aplicación pueden importarse desde un fichero en formato CSV. El formato de este fichero se corresponde con el formato del fichero de exportación CSV.</string>
+    <string name="second_alert">AÑADIR NUEVA TAREA &gt;</string>
+    <string name="export_all_tasks">Exportar datos</string>
+    <string name="import_tasks">Importar datos</string>
+    <string name="help_sound">Además, puedes elegir si deseas que se reproduzca un sonido de notificación al recibir una notificación.</string>
+    <string name="help_privacy">Esta aplicación no contiene rastreo ni publicidad. No se utilizan más permisos que los indicados a continuación.</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: Este permiso permite a la aplicación mostrar recordatorios con una programación exacta.</string>
+    <string name="help_group_export_import">Exportación/importación de datos</string>
+    <string name="help_export">Los datos de esta aplicación pueden exportarse en formato CSV (valores separados por comas, codificación UTF-8) para su posterior procesamiento en otras aplicaciones.</string>
+    <string name="help_group_widget">Widget</string>
+    <string name="recurrence_pattern_hint">Patrón de repetición</string>
+    <string name="set_deadline_if_recurring">Una tarea que se repite necesita una fecha límite.</string>
+    <string name="delete">Borrar</string>
+    <string name="help_data_backup">Puede utilizar la aplicación independiente Privacy Friendly Backup para realizar copias de seguridad y restaurar los datos y la configuración de esta aplicación. También se puede utilizar para transferir los datos a otro dispositivo.</string>
+    <string name="help_widget">Además, esta aplicación proporciona un widget que puedes añadir a tu pantalla de inicio. El widget te presenta las tareas que pertenecen a una lista elegida. Al hacer clic en una tarea se accede a la vista principal de la aplicación. El botón de sincronización puede actualizar la lista de tareas mostradas.</string>
+    <string name="edit_list">Editar la lista</string>
+    <string name="export_list">Exportar la lista</string>
+    <string name="recurrence_every">Repetir cada</string>
+    <string name="select_recurrence_pattern">Seleccionar un patrón de repetición:</string>
+    <string name="reminder_smaller_now">Solo las tareas que se repiten pueden tener un recordatorio en el pasado.</string>
 </resources>
