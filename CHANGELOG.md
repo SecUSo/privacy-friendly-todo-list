@@ -1,7 +1,7 @@
 # Changelog
 
-<a name="v3.0.0"></a>
-## [ToDo List (Privacy Friendly) v3.0.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.0.0) - 24 Dec 2024
+<a name="v3.1.0"></a>
+## [ToDo List (Privacy Friendly) v3.1.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.1.0) - 15 Jan 2025
 
 ## What's Changed
 * Update ci workflow by @udenr in https://github.com/SecUSo/privacy-friendly-todo-list/pull/104
@@ -39,16 +39,17 @@
 * Dark mode by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/pull/134
 * Feature Request: Sortierung "Nach Alphabet (A bis Z)" by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/56
 * Visual feedback on main screen for select order / filtering by @0xC0FFEEC0DE in https://github.com/SecUSo/privacy-friendly-todo-list/issues/109
+* Upgrading to Backup API library v1.4.0.
 * ...
 
-See also [Milestone "Release 3.0.0"](https://github.com/SecUSo/privacy-friendly-todo-list/milestone/1?closed=1)
+See also [Milestone "Release 3.1.0"](https://github.com/SecUSo/privacy-friendly-todo-list/milestone/1?closed=1)
 
 ## New Contributors
 * @0xC0FFEEC0DE
 
-**Full Changelog**: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v2.4.2...v3.0.0
+**Full Changelog**: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v2.4.2...v3.1.0
 
-[Changes][v3.0.0]
+[Changes][v3.1.0]
 
 
 <a name="v2.4.2"></a>

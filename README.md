@@ -9,24 +9,28 @@
 [Twitter]: https://twitter.com/SECUSOResearch
 
 <img src="https://raw.githubusercontent.com/SecUSo/privacy-friendly-todo-list/master/fastlane/metadata/android/en-US/images/icon.png"
-alt="Privacy Friendly Notes Icon"
-width="120px"
-align="right"
-style="float: right; margin-right: 10px;" />
+  alt="Privacy Friendly Notes Icon"
+  width="120px"
+  align="right"
+  style="float: right; margin-right: 10px;" />
 
 # Privacy Friendly To-Do List
 
-[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/repository/browse/?fdid=org.secuso.privacyfriendlytodolist) <a href="https://play.google.com/store/apps/details?id=org.secuso.privacyfriendlynotes"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="60"></a>
+[<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">](https://f-droid.org/repository/browse/?fdid=org.secuso.privacyfriendlytodolist)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" height="60">](https://play.google.com/store/apps/details?id=org.secuso.privacyfriendlytodolist)
 
-This application allows to create lists of tasks which can be individually managed. Each list contains a set of tasks. Each task can have a deadline, a reminder time and a list of subtasks. By setting a reminder time the user will be informed by a notification. It is possible to display all tasks in a calendar, to protect the app with a secret pin and to sort and prioritze tasks within a list. Colors indicate the urgency of a task (taking the deadline into account).
+This application allows to create lists of tasks which can be individually managed. Each list contains a set of tasks. Each task can have a deadline, a reminder time and a list of subtasks. By setting a reminder time the user will be informed by a notification. It is possible to display all tasks in a calendar, to protect the app with a secret pin and to sort and prioritize tasks within a list. Colors indicate the urgency of a task (taking the deadline into account).
 
-The application requires the permission "RECEIVE_BOOT_COMPLETED" in order to start a background service which triggers notifications.
+The application requires these permissions:
+* RECEIVE_BOOT_COMPLETED: This permission allows the app to check right after booting of the device if the user wants to get informed about an upcoming deadline.
+* POST_NOTIFICATIONS: This permission allows the app to show reminders for approaching tasks.
+* SCHEDULE_EXACT_ALARM: This permission allows the app to show reminders with exact timing.
 
 This app belongs to the group of Privacy Friendly Apps developed by the Karlsruhe Institute of Technology.
 
 ## Motivation
 
-This application has been developed to be used as a basis for a Privacy Friendly App. Privacy Friendly Apps are group of Android applications which are optimized regarding privacy. Further information can be found on here[secuso.org/pfa]
+This application has been developed to be used as a basis for a Privacy Friendly App. Privacy Friendly Apps are group of Android applications which are optimized regarding privacy. Further information can be found on [www.secuso.org/pfa](https://www.secuso.org/pfa).
 
 ## Building
 
@@ -34,8 +38,8 @@ Further development requires Android Studio, we recommend to use the latest vers
 
 ### API Reference
 
-Mininum SDK: 17
-Target SDK: 32
+Minimum SDK: 21
+Target SDK: 35
 
 ## Data Backup
 
@@ -46,7 +50,7 @@ You can use the [Privacy Friendly Backup app](https://github.com/SecUSo/privacy-
 If you want to help translate this app, you can use [Weblate](https://hosted.weblate.org/projects/pfa/to-do-list/to-do-list-android-app/).
 
 <a href="https://hosted.weblate.org/engage/pfa/">
-<img src="https://hosted.weblate.org/widget/pfa/to-do-list/to-do-list-android-app/multi-auto.svg" alt="Translation status" />
+  <img src="https://hosted.weblate.org/widget/pfa/to-do-list/to-do-list-android-app/multi-auto.svg" alt="Translation status" />
 </a>
 
 ## License
@@ -66,7 +70,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-The icons used in the nagivation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright [SECUSO](www.secuso.org) (2022).
+The icons used in the navigation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright [SECUSO](https://www.secuso.org) (2022-2024).
 
 ## Contributors
 
@@ -74,5 +78,5 @@ App-Icons:
 Markus Hau
 
 <a href="https://github.com/SecUSo/privacy-friendly-todo-list/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SecUSo/privacy-friendly-todo-list&max=100&columns=20" />
+  <img src="https://contrib.rocks/image?repo=SecUSo/privacy-friendly-todo-list&max=100&columns=20" alt="Contributors"/>
 </a>

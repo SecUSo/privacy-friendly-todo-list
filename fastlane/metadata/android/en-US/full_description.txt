@@ -9,21 +9,24 @@ Open the Settings menu to setup a PIN protection for your application. The PIN n
 You can set a reminder to your tasks that will notify you if a deadline is approaching. Settings provide you the possibility to enable a notification sound.
 
 3. Widget
-In addition, this app provides a widget that you can add to your device’s home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task or its checkbox leads to the main view of Privacy Friendly To-Do List. The synchronize button can update the displayed tasks inside the widget.
+In addition, this app provides a widget that you can add to your device’s home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task or its checkbox leads to the main view of Privacy Friendly To-Do List.
 
 4. Progress by subtasks
-By default, progress can be chosen freely by the user when creating or editing a task. To-Do List gives the opportunity to automatically compute and show the progress of a task dependent on its done subtasks. Therefore go to Settings and enable Progress by subtasks.
+By default, progress can be chosen freely by the user when creating or editing a task. To-Do List gives the opportunity to automatically compute and show the progress of a task dependent on its done subtasks. Therefore go to Settings and enable progress by subtasks.
 
-Our Privacy Friendly App differs from other applications with respect to two aspects:
+Our Privacy Friendly App differs from other applications with respect to three aspects:
 
-1) No permissions
-Privacy Friendly To-Do List does not use any permissions.
+1) Minimal permissions
+Privacy Friendly To-Do List does not use more permissions than are strictly necessary to provide its functionality.
 
 2) No advertisement
 Privacy Friendly To-Do List completely relinquishes advertisement.
 Many other free apps in the Google Play Store dazzle annoying advertising which also shortens battery life.
 
-Privacy Friendly Checkers is part of the Privacy Friendly Apps group developed by the research group SECUSO at Karlsruhe Institute of Technology. More information at: https://secuso.org/pfa
+3) No tracking
+Privacy Friendly To-Do List does not use any trackers.
+
+Privacy Friendly To-Do List is part of the Privacy Friendly Apps group developed by the research group SECUSO at Karlsruhe Institute of Technology. More information at: https://secuso.org/pfa
 
 You can reach us via
 Twitter - @SECUSOResearch https://twitter.com/secusoresearch
