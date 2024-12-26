@@ -39,6 +39,7 @@ Further development requires Android Studio, we recommend to use the latest vers
 ### API Reference
 
 Minimum SDK: 21
+
 Target SDK: 35
 
 ## Data Backup

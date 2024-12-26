@@ -29,6 +29,6 @@ Privacy Friendly To-Do List does not use any trackers.
 Privacy Friendly To-Do List is part of the Privacy Friendly Apps group developed by the research group SECUSO at Karlsruhe Institute of Technology. More information at: https://secuso.org/pfa
 
 You can reach us via
-Twitter - @SECUSOResearch https://twitter.com/secusoresearch
+X - @SECUSOResearch https://x.com/secusoresearch
 Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
-Job opening - https://secuso.aifb.kit.edu/english/Job_Offers_1557.php
+Job Offers - https://secuso.aifb.kit.edu/english/Job_Offers.php
