@@ -22,9 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     android:viewportWidth="100"
     android:viewportHeight="100"
     android:tint="#FFFFFF" >
-      
+
     <path
         android:fillColor="@android:color/white"
         android:pathData="M55,0L45,0v45L0,45v10h45v45h10v-45h45v-10h-45L55,0z"/>
-    
+
 </vector>
