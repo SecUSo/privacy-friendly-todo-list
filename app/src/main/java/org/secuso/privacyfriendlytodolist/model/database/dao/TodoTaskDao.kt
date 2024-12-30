@@ -72,6 +72,9 @@ interface TodoTaskDao {
             " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getOverdueTasks(now: Long): Array<TodoTaskData>
 
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND doneTime IS NOT NULL")
+    suspend fun getAllDoneNotInRecycleBin(): Array<TodoTaskData>
+
     @Query("SELECT todoTasks.* FROM todoTasks" +
             " LEFT JOIN todoLists" +
             " ON todoTasks.listId = todoLists.id" +

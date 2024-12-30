@@ -139,6 +139,15 @@ class ModelServices(
         }
     }
 
+    fun setAllDoneTasksInRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                    resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.setAllDoneTasksInRecycleBin()
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(0, counter.first, counter.second)
+        }
+    }
+
     fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask,
                                        inRecycleBin: Boolean,
                                        deliveryOption: DeliveryOption = DeliveryOption.POST,

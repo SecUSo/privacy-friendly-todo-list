@@ -87,7 +87,7 @@
     <string name="deadline_dd">期限:</string>
     <string name="no_deadline">期限なし</string>
     <string name="edit_task">タスクを編集</string>
-    <string name="delete_task">タスクを削除</string>
+    <string name="remove_task">タスクを削除</string>
     <string name="task_removed">タスクを削除しました。</string>
     <string name="deadline">期限</string>
     <string name="reminder">リマインダー</string>

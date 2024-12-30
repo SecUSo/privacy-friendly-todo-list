@@ -429,6 +429,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView = findViewById(R.id.nav_view)
         navigationView!!.setNavigationItemSelectedListener(this)
 
+        val navMenu = navigationView!!.menu
+        val btnAllTasks = navMenu.findItem(R.id.menu_home)
+        btnAllTasks.setActionView(R.layout.nav_action_view)
+        val actionButton: ImageButton = btnAllTasks.actionView!!.findViewById(R.id.action_button)
+        actionButton.tag = ACT_BTN_ALL_TASKS
+        actionButton.setOnClickListener {
+            registerForContextMenu(actionButton)
+            openContextMenu(actionButton)
+            unregisterForContextMenu(actionButton)
+        }
+
         addTodoListsToNavigationMenu()
 
         var tasksGetDisplayed = false
@@ -539,7 +550,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         deleteAllDataBeforeImport = false
                         importTasksLauncher.launch(intent)
                     }
-                    setNeutralButton(R.string.abort) { _, _ ->
+                    setNeutralButton(R.string.cancel) { _, _ ->
                     }
                     show()
                 }
@@ -641,7 +652,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val item = navMenu.add(R.id.menu_group_todo_lists, entry.key, 1, entry.value)
                 item.isCheckable = true
                 item.setIcon(R.drawable.ic_label_black_24dp)
-                item.setActionView(R.layout.list_action_view)
+                item.setActionView(R.layout.nav_action_view)
                 val actionButton: ImageButton = item.actionView!!.findViewById(R.id.action_button)
                 actionButton.tag = entry.key
                 actionButton.setOnClickListener {
@@ -794,6 +805,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (pomodoroInstalled) {
                 menu.findItem(workItemId).setVisible(true)
             }
+        } else if (v.tag == ACT_BTN_ALL_TASKS) {
+            val menuHeader = Helper.getMenuHeader(layoutInflater, v.rootView, R.string.select_option)
+            menu.setHeaderView(menuHeader)
+            menuInflater.inflate(R.menu.all_tasks_context, menu)
         // Check for to-do lists in main menu.
         } else if (v.tag is Int) {
             selectedTodoListId = v.tag as Int
@@ -807,6 +822,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.remove_all_done_tasks -> {
+                MaterialAlertDialogBuilder(this).apply {
+                    setMessage(R.string.alert_done_tasks_remove)
+                    setCancelable(true)
+                    setPositiveButton(R.string.yes) { dialog, setId ->
+                        model!!.setAllDoneTasksInRecycleBin { counters ->
+                            val msg = getString(R.string.tasks_removed, counters.first, counters.second)
+                            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                            if (counters.first > 0) {
+                                showTasksOfListOrAllTasks(activeListId)
+                            }
+                        }
+                    }
+                    setNegativeButton(R.string.cancel) { dialog, id ->
+                        dialog.cancel()
+                    }
+                    show()
+                }
+            }
+
             R.id.move_up_list -> {
                 moveList(true)
             }
@@ -852,7 +887,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
-            R.id.delete_task -> {
+            R.id.remove_task -> {
                 val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     val snackBar = Snackbar.make(fabNewTodoTask!!, R.string.task_removed, Snackbar.LENGTH_LONG)
@@ -862,7 +897,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
                             } else {
-                                Log.w(TAG, "Task was not removed from the database.")
+                                Log.e(TAG, "Task was not restored from recycle bin.")
                             }
                         }
                     }
@@ -873,7 +908,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             showHints()
                             snackBar.show()
                         } else {
-                            Log.w(TAG, "Task was not removed from the database.")
+                            Log.e(TAG, "Task was not moved to recycle bin.")
                         }
                     }
                 }
@@ -991,7 +1026,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             MaterialAlertDialogBuilder(this).apply {
                 setMessage(R.string.alert_list_delete)
                 setCancelable(true)
-                setPositiveButton(R.string.alert_delete_yes) { dialog, setId ->
+                setPositiveButton(R.string.yes) { dialog, setId ->
                     model!!.deleteTodoList(todoList.getId()) { counter ->
                         if (counter.first > 0) {
                             Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
@@ -1009,7 +1044,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         dialog.cancel()
                     }
                 }
-                setNegativeButton(R.string.alert_delete_no) { dialog, id ->
+                setNegativeButton(R.string.cancel) { dialog, id ->
                     dialog.cancel()
                 }
                 show()
@@ -1138,6 +1173,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val COMMAND = "command"
         //const val COMMAND_RUN_TODO = 2
         const val COMMAND_UPDATE = 3
+        const val ACT_BTN_ALL_TASKS = "ACT_BTN_ALL_TASKS"
 
         // Keys
         private const val KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate"

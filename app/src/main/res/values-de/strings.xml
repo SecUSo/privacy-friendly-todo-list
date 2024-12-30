@@ -11,6 +11,7 @@
     <string name="todos">To-Do\'s</string>
     <string name="home">Alle Aufgaben</string>
     <string name="show_all_tasks">Alle Aufgaben</string>
+    <string name="remove_all_done_tasks">Alle erledigten Aufgaben entfernen</string>
     <string name="calendar_view">Kalenderansicht</string>
     <string name="settings">Einstellungen</string>
     <string name="share_all_tasks">Daten teilen</string>
@@ -27,7 +28,7 @@
     <string name="name">Name</string>
     <string name="description_hint">Beschreibung</string>
     <string name="ok">Okay</string>
-    <string name="delete">Löschen</string>
+    <string name="cancel">Abbrechen</string>
 
     <!-- Common model strings -->
     <string name="select_option">Auswählen</string>
@@ -111,8 +112,9 @@
     <string name="no_deadline">Kein Termin</string>
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="share_task">Aufgabe teilen</string>
-    <string name="delete_task">Aufgabe löschen</string>
-    <string name="task_removed">Aufgabe ist im Papierkorb</string>
+    <string name="remove_task">Aufgabe entfernen</string>
+    <string name="task_removed">Aufgabe wurde entfernt</string>
+    <string name="tasks_removed">%d Aufgabe(n) und %d Unteraufgabe(n) entfernt.</string>
     <string name="deadline">Termin</string>
     <string name="recurrence_every">Wiederholung alle</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -285,13 +287,11 @@
     <string name="import_question_text">Sollen alle existierenden Daten (alle To-Do Listen, Aufgaben und Unteraufgaben) vor dem Import gelöscht werden?</string>
     <string name="delete_existing_data">Existierende Daten löschen</string>
     <string name="keep_existing_data">Existierende Daten beibehalten</string>
-    <string name="abort">Abbrechen</string>
 
     <!-- ### Delete AlertDialog ### -->
-    <string name="alert_list_delete">Wollen Sie die Liste wirklich löschen?</string>
+    <string name="alert_list_delete">Die Liste wirklich löschen?</string>
+    <string name="alert_done_tasks_remove">Die erledigten Aufgaben wirklich entfernen?</string>
     <string name="alert_clear">Wirklich leeren?</string>
-    <string name="alert_delete_yes">Löschen</string>
-    <string name="alert_delete_no">Abbrechen</string>
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Widget hinzufügen</string>

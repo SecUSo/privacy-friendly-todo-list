@@ -126,6 +126,20 @@ class ModelServicesImpl(private val context: Context) {
         return counter
     }
 
+    suspend fun setAllDoneTasksInRecycleBin(): Pair<Int, Int> {
+        val dataArray = getDB().getTodoTaskDao().getAllDoneNotInRecycleBin()
+        val tasks = loadTasksSubtasks(false, *dataArray)
+        var counterTasks = 0
+        var counterSubtasks = 0
+        for (task in tasks) {
+            val counters = setTaskAndSubtasksInRecycleBin(task, true)
+            counterTasks += counters.first
+            counterSubtasks += counters.second
+        }
+        Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks put into recycle bin.")
+        return Pair(counterTasks, counterSubtasks)
+    }
+
     suspend fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean): Pair<Int, Int> {
         var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
