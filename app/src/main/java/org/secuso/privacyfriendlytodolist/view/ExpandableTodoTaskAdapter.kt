@@ -40,6 +40,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.TaskComparator
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 
 /**
@@ -87,26 +88,19 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         SUBTASK_ROW
     }
 
-    enum class TaskFilter {
-        ALL_TASKS,
-        COMPLETED_TASKS,
-        OPEN_TASKS;
-
-        companion object {
-            fun fromString(filterString: String?): TaskFilter {
-                return TaskFilter.entries.find { value ->
-                    value.name == filterString
-                } ?: ALL_TASKS
-            }
-        }
-    }
-
     // FILTER AND SORTING OPTIONS MADE BY THE USER
     var queryString: String?
     var taskFilter: TaskFilter
+    private val taskComparator = TaskComparator()
     var isGroupingByPriority: Boolean
+        get() = taskComparator.isGroupingByPriority
+        set(value) { taskComparator.isGroupingByPriority = value }
     var isSortingByDeadline: Boolean
+        get() = taskComparator.isSortingByDeadline
+        set(value) { taskComparator.isSortingByDeadline = value }
     var isSortingByNameAsc: Boolean
+        get() = taskComparator.isSortingByNameAsc
+        set(value) { taskComparator.isSortingByNameAsc = value }
     private val filteredTasks: MutableList<TaskHolder> = ArrayList() // data after filtering process
     private val priorityBarPositions = mutableMapOf<TodoTask.Priority, Int>()
     private var listNames = mapOf<Int, String>()
@@ -185,23 +179,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      */
     private fun sortTasks() {
         filteredTasks.sortWith { taskHolder1, taskHolder2 ->
-            val t1 = taskHolder1.todoTask
-            val t2 = taskHolder2.todoTask
-            var result = 0
-            if (isGroupingByPriority) {
-                result = t1.getPriority().compareTo(t2.getPriority())
-            }
-            if (isSortingByDeadline && result == 0) {
-                result = Helper.compareDeadlines(t1, t2)
-            }
-            if (isSortingByNameAsc && result == 0) {
-                // Ignore case at comparison. Otherwise all lowercase names would be at the end.
-                result = t1.getName().compareTo(t2.getName(), true)
-            }
-            if (result == 0) {
-                result = t1.getSortOrder().compareTo(t2.getSortOrder())
-            }
-            result
+            taskComparator.compare(taskHolder1.todoTask, taskHolder2.todoTask)
         }
         if (isGroupingByPriority) {
             countTasksPerPriority()

@@ -9,4 +9,5 @@
     android:minResizeHeight="80dp"
     android:previewImage="@drawable/widget_preview"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen" />
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable" />

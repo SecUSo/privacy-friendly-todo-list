@@ -23,15 +23,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="15dp"
-        android:paddingBottom="10dp">
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp">
 
         <TextView
             android:id="@+id/tv_widget_cfg_list_choose_str"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:paddingVertical="8dp"
             android:text="@string/list_colon"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -50,6 +49,67 @@
             android:textStyle="italic" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rb_widget_cfg_all_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:text="@string/all_tasks"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/rb_widget_cfg_open_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:text="@string/open_tasks"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/rb_widget_cfg_completed_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:text="@string/completed_tasks"
+                android:textSize="16sp" />
+        </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_group_by_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:text="@string/group_by_priority"
+            android:textSize="16sp"/>
+
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_sort_by_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:text="@string/sort_by_deadline"
+            android:textSize="16sp" />
+
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_sort_by_name_asc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:text="@string/sort_by_name_asc"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

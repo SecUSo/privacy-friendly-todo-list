@@ -25,4 +25,8 @@
     <color name="dotActive">#448bb2</color>
 
     <color name="launcherBackground">#3680BB</color>
+
+    <color name="widgetBackground">@color/black</color>
+    <color name="widgetForeground">@color/white</color>
+    <color name="widgetAccent">@color/colorAccent</color>
 </resources>

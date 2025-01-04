@@ -89,7 +89,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     @Suppress("UnnecessaryVariable")
     private fun update(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int,
                        title: String? = null) {
-        val view = RemoteViews(context.packageName, R.layout.todo_list_widget)
+        val view = RemoteViews(context.packageName, R.layout.widget_list)
         val uniqueRequestCode = appWidgetId
 
         // Intent to call the Service adding the tasks to the ListView
@@ -107,7 +107,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         view.setPendingIntentTemplate(R.id.listview_widget, pendingIntent)
 
         // Intent to open the App by clicking on the widget title or the widget background.
-        val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId)
+        val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId) ?: TodoListWidgetPreferences()
         intent = Intent(context, MainActivity::class.java)
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         intent.putExtra(EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())

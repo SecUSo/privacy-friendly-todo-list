@@ -66,7 +66,6 @@ import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter.TaskFilter
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
 import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog

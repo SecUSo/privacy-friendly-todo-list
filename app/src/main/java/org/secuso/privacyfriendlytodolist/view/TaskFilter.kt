@@ -15,14 +15,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package org.secuso.privacyfriendlytodolist.view.widget
+package org.secuso.privacyfriendlytodolist.view
 
-import org.secuso.privacyfriendlytodolist.view.TaskFilter
+enum class TaskFilter {
+    ALL_TASKS,
+    COMPLETED_TASKS,
+    OPEN_TASKS;
 
-data class TodoListWidgetPreferences(
-    var todoListId: Int? = null,
-    var taskFilter: TaskFilter = TaskFilter.ALL_TASKS,
-    var isGroupingByPriority: Boolean = false,
-    var isSortingByDeadline: Boolean = false,
-    var isSortingByNameAsc: Boolean = false
-)
+    companion object {
+        fun fromString(filterString: String?): TaskFilter {
+            return TaskFilter.entries.find { value ->
+                value.name == filterString
+            } ?: ALL_TASKS
+        }
+    }
+}
