@@ -71,7 +71,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-The icons used in the navigation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright [SECUSO](https://www.secuso.org) (2022-2024).
+The icons used in the navigation drawer are licensed under the CC BY 2.5. In addition to them the app uses icons from Google Design Material Icons licensed under Apache License Version 2.0. All other images (the logo of Privacy Friendly Apps, the SECUSO logo the app logo and the splash screen icon) copyright [SECUSO](https://www.secuso.org) (2022-2025).
 
 ## Contributors
 

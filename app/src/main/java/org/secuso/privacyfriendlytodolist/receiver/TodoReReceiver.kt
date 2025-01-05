@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2020-2024  Fabian Ballreich
+Copyright (C) 2020-2025  Fabian Ballreich
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
