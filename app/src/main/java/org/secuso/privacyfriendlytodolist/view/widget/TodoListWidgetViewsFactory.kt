@@ -31,7 +31,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.ModelServices.DeliveryOption
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.TaskComparator
@@ -121,9 +120,8 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
 
     private fun createItem(todoTask: TodoTask, reminderTimeSpan: Long, fillInIntent: Intent): RemoteViews {
         val view = RemoteViews(context.packageName, R.layout.widget_task)
-        val deadlineColor = todoTask.getDeadlineColor(reminderTimeSpan)
-        val color = Helper.getDeadlineColor(context, deadlineColor)
-        view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", color)
+        val urgencyColor = todoTask.getUrgency(reminderTimeSpan).getColor(context)
+        view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", urgencyColor)
         view.setImageViewResource(R.id.iv_widget_task_state, if (todoTask.isDone()) R.drawable.done else ResourcesCompat.ID_NULL)
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())
         view.setOnClickFillInIntent(R.id.iv_widget_task_state, fillInIntent)

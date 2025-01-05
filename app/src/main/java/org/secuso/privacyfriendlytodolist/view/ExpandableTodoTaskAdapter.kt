@@ -427,8 +427,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.reminderIcon.visibility = View.GONE
                     tvh.reminder.visibility = View.GONE
                 }
-                val deadlineColor = currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))
-                tvh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context, deadlineColor))
+                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgencyColor = urgency.getColor(context)
+                tvh.urgencyColorBar.setBackgroundColor(urgencyColor)
                 tvh.done.isChecked = currentTask.isDone()
                 tvh.done.jumpDrawablesToCurrentState()
                 tvh.done.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -509,8 +510,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 } else {
                     dvh.taskDescription.visibility = View.GONE
                 }
-                dvh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context,
-                    currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
+                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgencyColor = urgency.getColor(context)
+                dvh.urgencyColorBar.setBackgroundColor(urgencyColor)
             }
 
             ChildType.SETTING_ROW -> {
@@ -538,8 +540,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     }
                     newSubtaskDialog.show()
                 }
-                sevh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context,
-                    currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
+                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgencyColor = urgency.getColor(context)
+                sevh.urgencyColorBar.setBackgroundColor(urgencyColor)
             }
 
             ChildType.SUBTASK_ROW -> {
@@ -562,8 +565,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     )
                     actualConvertView.tag = svh
                 }
-                svh.deadlineColorBar.setBackgroundColor(Helper.getDeadlineColor(context,
-                    currentTask.getDeadlineColor(PreferenceMgr.getDefaultReminderTimeSpan(context))))
+                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgencyColor = urgency.getColor(context)
+                svh.urgencyColorBar.setBackgroundColor(urgencyColor)
                 svh.done.isChecked = currentSubtask.isDone()
                 svh.done.jumpDrawablesToCurrentState()
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -735,7 +739,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val reminder: TextView,
         val listName: TextView,
         val done: CheckBox,
-        val deadlineColorBar: View,
+        val urgencyColorBar: View,
         val progressBar: ProgressBar
     )
 
@@ -746,7 +750,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private inner class SubtaskViewHolder(
         val subtaskName: TextView,
         val done: CheckBox,
-        val deadlineColorBar: View,
+        val urgencyColorBar: View,
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
         val subtaskMenuButton: ImageButton
@@ -754,12 +758,12 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     private inner class TaskDescriptionViewHolder(
         val taskDescription: TextView,
-        val deadlineColorBar: View
+        val urgencyColorBar: View
     )
 
     private inner class SettingViewHolder(
         val addSubtaskButton: LinearLayout,
-        val deadlineColorBar: View
+        val urgencyColorBar: View
     )
 
     private inner class TaskHolder(val todoTask: TodoTask) {

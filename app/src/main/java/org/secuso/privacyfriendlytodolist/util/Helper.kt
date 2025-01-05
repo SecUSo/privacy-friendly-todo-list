@@ -27,7 +27,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -162,15 +162,6 @@ object Helper {
         if (d1 == null) return 1
         if (d2 == null) return -1
         return d1.compareTo(d2)
-    }
-
-    fun getDeadlineColor(context: Context, color: DeadlineColors?): Int {
-        return when (color) {
-            DeadlineColors.RED -> ContextCompat.getColor(context, R.color.deadlineRed)
-            DeadlineColors.BLUE -> ContextCompat.getColor(context, R.color.deadlineBlue)
-            DeadlineColors.ORANGE -> ContextCompat.getColor(context, R.color.deadlineOrange)
-            else -> throw IllegalArgumentException("Unknown deadline color '$color'.")
-        }
     }
 
     fun recurrencePatternToAdverbString(context: Context, recurrencePattern: RecurrencePattern?): String {

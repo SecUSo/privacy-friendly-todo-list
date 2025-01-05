@@ -14,9 +14,9 @@
     <color name="yellow">#f6d126</color>
     <color name="green">#68e504</color>
 
-    <color name="deadlineBlue">#024265</color>
-    <color name="deadlineOrange">#ea9d16</color>
-    <color name="deadlineRed">#ef0606</color>
+    <color name="urgencyNone">#024265</color>
+    <color name="urgencyImminent">#ea9d16</color>
+    <color name="urgencyElapsed">#ef0606</color>
 
     <!-- dots inactive colors -->
     <color name="dotInactive">#026499</color>
