@@ -6,21 +6,24 @@ Features der Privacy Friendly To-Do Liste
 2. Erinnerung
 Sie können eine Erinnerung an Aufgaben zuweisen, die Sie benachrichtigt, wenn ein Termin bevorsteht. Die Einstellungen bieten Ihnen die Möglichkeit, einen Benachrichtigungston zu aktivieren.
 3. Widget
-Darüber hinaus bietet diese App ein Widget, das Sie dem Startbildschirm Ihres Geräts hinzufügen können. Das Widget zeigt Ihnen Aufgaben, die zu einer ausgewählten Liste gehören. Ein Klick auf eine Aufgabe oder deren Checkbox führt zur Hauptansicht der Privacy Friendly To-Do-Liste. Der Aktualisierungs-Button kann die angezeigten Aufgaben innerhalb des Widgets aktualisieren.
+Darüber hinaus bietet diese App ein Widget, das Sie dem Startbildschirm Ihres Geräts hinzufügen können. Das Widget zeigt Ihnen Aufgaben, die zu einer ausgewählten Liste gehören. Ein Klick auf eine Aufgabe oder deren Checkbox führt zur Hauptansicht der Privacy Friendly To-Do-Liste.
 4. Fortschritt durch Teilaufgaben
 Standardmäßig kann der Fortschritt beim Anlegen oder Bearbeiten einer Aufgabe vom Benutzer frei gewählt werden. Die To-Do-Liste bietet die Möglichkeit, den Fortschritt einer Aufgabe automatisch zu berechnen und anzuzeigen, abhängig von den erledigten Teilaufgaben. Gehen Sie diesbezüglich zu den Einstellungen und aktivieren Sie Fortschritt durch Teilaufgaben.
 
-Unsere Privacy Friendly App unterscheidet sich in zwei Punkten von anderen Anwendungen:
-1) Keine Berechtigungen
-Die Privacy Friendly To-Do Liste verwendet keine Berechtigungen.
+Unsere Privacy Friendly App unterscheidet sich in drei Punkten von anderen Anwendungen:
+1) Minimale Berechtigungen
+Die Privacy Friendly To-Do Liste verwendet nicht mehr Berechtigungen, als unbedingt notwendig, um ihre Funktionalität bereitzustellen.
 
 2) Keine Werbung
 Die Privacy Friendly To-Do-Liste verzichtet vollständig auf Werbung.
 Viele andere kostenlose Apps im Google Play Store schalten lästige Werbung, die auch die Akkulaufzeit verkürzt.
 
+3) Kein Tracking
+Privacy Friendly To-Do List verwendet keinerlei Tracker.
+
 Die App gehört zur Gruppe der Privacy Friendly Apps, die von der Forschungsgruppe SECUSO am Karlsruher Institut für Technologie entwickelt werden. Mehr Informationen unter: https://secuso.org/pfa
 
 Kontaktieren Sie uns gerne über:
-Twitter - @SECUSOResearch https://twitter.com/secusoresearc)
+X - @SECUSOResearch https://x.com/secusoresearch
 Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
-Offene Stellen - https://secuso.aifb.kit.edu/83_1557.php
+Offene Stellen - https://secuso.aifb.kit.edu/83.php

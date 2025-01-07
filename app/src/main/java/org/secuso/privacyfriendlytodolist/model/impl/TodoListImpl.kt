@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import android.os.Parcel
 import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import java.util.Locale
 
@@ -139,15 +139,15 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return minDeadLine
     }
 
-    override fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors {
-        var result = DeadlineColors.BLUE
+    override fun getUrgency(reminderTimeSpan: Long): Urgency {
+        var result = Urgency.NONE
         for (currentTask in tasks) {
-            when (currentTask.getDeadlineColor(reminderTimeSpan)) {
-                DeadlineColors.ORANGE -> {
-                    result = DeadlineColors.ORANGE
+            when (currentTask.getUrgency(reminderTimeSpan)) {
+                Urgency.IMMINENT -> {
+                    result = Urgency.IMMINENT
                 }
-                DeadlineColors.RED -> {
-                    result = DeadlineColors.RED
+                Urgency.ELAPSED -> {
+                    result = Urgency.ELAPSED
                     break
                 }
                 else -> {}

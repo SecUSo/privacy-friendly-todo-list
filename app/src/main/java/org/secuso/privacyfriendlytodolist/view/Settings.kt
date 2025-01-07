@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ class Settings : AppCompatActivity() {
                 if (!isPinValid(pin)) {
                     // pin invalid: uncheck
                     ignoreChanges = true
-                    findPreference<SwitchPreference>(PreferenceMgr.P_IS_PIN_ENABLED.name)!!.setChecked(false)
+                    findPreference<SwitchPreference>(PreferenceMgr.P_IS_PIN_ENABLED.name)!!.isChecked = false
                     ignoreChanges = false
                 }
             }

@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
+import androidx.core.content.res.ResourcesCompat
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.secuso.privacyfriendlytodolist.R
@@ -32,14 +32,15 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.ModelServices.DeliveryOption
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.TaskComparator
+import org.secuso.privacyfriendlytodolist.view.TaskFilter
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
-
 
 /**
  * Created by Sebastian Lutz on 15.02.2018.
  *
- * This class sets to-do tasks to show up in the widget
- *
+ * This class sets to-do tasks to show up in the widget.
  */
 class TodoListWidgetViewsFactory(private val context: Context, private val appWidgetId: Int) : RemoteViewsFactory {
     private var viewModel: CustomViewModel? = null
@@ -47,6 +48,7 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
     private val items = ArrayList<Pair<Int, RemoteViews>>()
     private lateinit var defaultTitle: String
     private var currentTitle: String = ""
+    private var taskComparator = TaskComparator()
 
     override fun onCreate() {
         viewModel = CustomViewModel(context)
@@ -60,15 +62,11 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         viewModel = null
     }
 
-    override fun getCount(): Int {
-        return items.size
-    }
-
     override fun onDataSetChanged() {
-        val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId)
+        val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId) ?: TodoListWidgetPreferences()
         val job: Job
         var newTitle: String? = null
-        var changedTodoTasks: List<TodoTask>? = null
+        var changedTodoTasks: MutableList<TodoTask>? = null
         if (null != pref.todoListId) {
             job = model!!.getToDoListById(pref.todoListId!!, DeliveryOption.DIRECT) { todoList ->
                 if (null != todoList) {
@@ -98,31 +96,36 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
             currentTitle = newTitle!!
         }
 
+        taskComparator.isGroupingByPriority = pref.isGroupingByPriority
+        taskComparator.isSortingByDeadline = pref.isSortingByDeadline
+        taskComparator.isSortingByNameAsc = pref.isSortingByNameAsc
+        changedTodoTasks!!.sortWith(taskComparator)
+
         items.clear()
         val fillInIntent = Intent()
         fillInIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         fillInIntent.putExtra(TodoListWidget.EXTRA_WIDGET_LIST_ID, pref.todoListId.toString())
+        val reminderTimeSpan = PreferenceMgr.getDefaultReminderTimeSpan(context)
         for (todoTask in changedTodoTasks!!) {
-            val item = createItem(todoTask, fillInIntent)
+            if (   (pref.taskFilter == TaskFilter.OPEN_TASKS      &&   todoTask.isDone())
+                || (pref.taskFilter == TaskFilter.COMPLETED_TASKS && ! todoTask.isDone())) {
+                continue
+            }
+            val item = createItem(todoTask, reminderTimeSpan, fillInIntent)
             val tuple = Pair(todoTask.getId(), item)
             items.add(tuple)
         }
         Log.d(TAG, "Widget $appWidgetId: Updated data. Items: ${items.count()}, list ID: ${pref.todoListId}, title: '$currentTitle'.")
     }
 
-    private fun createItem(todoTask: TodoTask, fillInIntent: Intent): RemoteViews {
-        val view = RemoteViews(context.packageName, R.layout.widget_tasks)
-        if (todoTask.isDone()) {
-            view.setViewVisibility(R.id.widget_done, View.VISIBLE)
-            view.setViewVisibility(R.id.widget_undone, View.INVISIBLE)
-        } else {
-            view.setViewVisibility(R.id.widget_done, View.INVISIBLE)
-            view.setViewVisibility(R.id.widget_undone, View.VISIBLE)
-        }
+    private fun createItem(todoTask: TodoTask, reminderTimeSpan: Long, fillInIntent: Intent): RemoteViews {
+        val view = RemoteViews(context.packageName, R.layout.widget_task)
+        val urgencyColor = todoTask.getUrgency(reminderTimeSpan).getColor(context)
+        view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", urgencyColor)
+        view.setImageViewResource(R.id.iv_widget_task_state, if (todoTask.isDone()) R.drawable.done else ResourcesCompat.ID_NULL)
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())
+        view.setOnClickFillInIntent(R.id.iv_widget_task_state, fillInIntent)
         view.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent)
-        view.setOnClickFillInIntent(R.id.widget_undone, fillInIntent)
-        view.setOnClickFillInIntent(R.id.widget_done, fillInIntent)
         return view
     }
 
@@ -130,16 +133,20 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         return 1
     }
 
+    override fun getCount(): Int {
+        return items.size
+    }
+
     override fun getLoadingView(): RemoteViews? {
         return null
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
-        return if (position >= 0 && position < items.size) items[position].second else null
+        return if (position in items.indices) items[position].second else null
     }
 
     override fun getItemId(position: Int): Long {
-        return if (position >= 0 && position < items.size) items[position].first.toLong() else 0
+        return if (position in items.indices) items[position].first.toLong() else 0
     }
 
     override fun hasStableIds(): Boolean {

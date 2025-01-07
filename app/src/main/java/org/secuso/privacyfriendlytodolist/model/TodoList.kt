@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model
 
 import android.os.Parcelable
-import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -39,7 +39,7 @@ interface TodoList : BaseTodo, Parcelable {
     fun getColor(): Int
     fun getDoneTodos(): Int
     fun getNextDeadline(): Long?
-    fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors
+    fun getUrgency(reminderTimeSpan: Long): Urgency
     fun checkQueryMatch(query: String?, recursive: Boolean): Boolean
     fun checkQueryMatch(query: String?): Boolean
 }

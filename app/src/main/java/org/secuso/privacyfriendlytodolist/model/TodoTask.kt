@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2016-2024  Dominik Puellen
+Copyright (C) 2016-2025  Dominik Puellen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.model
 
+import android.content.Context
 import android.os.Parcelable
+import androidx.core.content.ContextCompat
+import org.secuso.privacyfriendlytodolist.R
 
 
 interface TodoTask : BaseTodo, Parcelable {
@@ -74,10 +77,20 @@ interface TodoTask : BaseTodo, Parcelable {
         }
     }
 
-    enum class DeadlineColors {
-        BLUE,
-        ORANGE,
-        RED
+    /**
+     * The urgency of a to-do task.
+     */
+    enum class Urgency(private val colorId: Int) {
+        /** Task has no deadline or the deadline is far away. */
+        NONE(R.color.urgencyNone),
+        /** The deadline is near. */
+        IMMINENT(R.color.urgencyImminent),
+        /** The deadline has been elapsed. */
+        ELAPSED(R.color.urgencyElapsed);
+
+        fun getColor(context: Context): Int {
+            return ContextCompat.getColor(context, colorId)
+        }
     }
 
     fun setId(id: Int)
@@ -112,9 +125,11 @@ interface TodoTask : BaseTodo, Parcelable {
     fun getSubtasks(): MutableList<TodoSubtask>
 
     /**
-     * @param reminderTimeSpan The reminder time span is a relative value in seconds (e.g. 86400 s == 1 day).
+     * @param reminderTimeSpan The reminder time span is a relative value in seconds
+     * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
+     * Urgency#IMMINENT gets returned.
      */
-    fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors
+    fun getUrgency(reminderTimeSpan: Long): Urgency
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)

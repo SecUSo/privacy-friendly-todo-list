@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -124,6 +124,20 @@ class ModelServicesImpl(private val context: Context) {
         val counter = getDB().getTodoSubtaskDao().delete(todoSubtaskImpl.data)
         Log.i(TAG, "$counter subtask removed from database.")
         return counter
+    }
+
+    suspend fun setAllDoneTasksInRecycleBin(): Pair<Int, Int> {
+        val dataArray = getDB().getTodoTaskDao().getAllDoneNotInRecycleBin()
+        val tasks = loadTasksSubtasks(false, *dataArray)
+        var counterTasks = 0
+        var counterSubtasks = 0
+        for (task in tasks) {
+            val counters = setTaskAndSubtasksInRecycleBin(task, true)
+            counterTasks += counters.first
+            counterSubtasks += counters.second
+        }
+        Log.i(TAG, "$counterTasks task and $counterSubtasks subtasks put into recycle bin.")
+        return Pair(counterTasks, counterSubtasks)
     }
 
     suspend fun setTaskAndSubtasksInRecycleBin(todoTask: TodoTask, inRecycleBin: Boolean): Pair<Int, Int> {

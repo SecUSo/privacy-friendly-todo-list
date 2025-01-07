@@ -1,0 +1,9 @@
+ListId,ListName,TaskId,TaskName,TaskCreationTime,TaskDoneTime,TaskDescription,TaskDeadline,TaskReminderTime,TaskRecurrencePattern,TaskRecurrenceInterval,TaskProgress,TaskPriority,SubtaskId,SubtaskName,SubtaskDoneTime
+,,1,Task 1,2024-12-25 08:13:11,2024-12-25 08:14:58,,,,NONE,1,100,MEDIUM,,,
+,,3,Task 3,2024-12-25 08:14:09,,,2025-12-24 12:00:00,2025-12-01 12:00:00,YEARLY,1,0,HIGH,,,
+,,4,Task 4,2024-12-25 08:14:39,2024-12-25 08:17:46,,,,NONE,1,100,MEDIUM,,,
+,,5,Task 5,2024-12-25 08:14:48,,,2024-10-15 12:00:00,,NONE,1,0,MEDIUM,,,
+1,List 1,2,Task 2,2024-12-25 08:13:26,,,,,NONE,1,66,MEDIUM,1,Subtask 1,2024-12-25 08:15:26
+1,List 1,2,Task 2,2024-12-25 08:13:26,,,,,NONE,1,66,MEDIUM,2,Subtask 2,2024-12-25 08:15:26
+1,List 1,2,Task 2,2024-12-25 08:13:26,,,,,NONE,1,66,MEDIUM,3,Subtask 3,
+2,List 2,,,,,,,,,,,,,,

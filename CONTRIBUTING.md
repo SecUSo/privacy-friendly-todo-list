@@ -14,7 +14,7 @@ For further questions we refer to the contact details on the [Privacy Friendly A
   * Make sure you mention the Android version and the device you have used when
     you encountered the issue.
 * Make your description as precise as possible.
-	
+
 ## Making Changes
 
 * Make sure you have a [GitHub account](https://github.com/signup/free).

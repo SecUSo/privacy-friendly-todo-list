@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -66,13 +66,8 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     private var editExistingTask: Boolean = true
 
     // GUI elements
-    private lateinit var taskName: EditText
-    private lateinit var taskDescription: EditText
-    private lateinit var deadlineTextView: TextView
     private lateinit var recurrencePatternTextView: TextView
     private lateinit var recurrenceIntervalEditText: EditText
-    private lateinit var reminderTextView: TextView
-    private lateinit var progressSelector: SeekBar
     private lateinit var progressPercent: TextView
     private lateinit var prioritySelector: TextView
     private lateinit var listSelector: TextView
@@ -100,66 +95,84 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initGui()
-
-        if (editExistingTask) {
-            taskName.setText(todoTask.getName())
-            taskDescription.setText(todoTask.getDescription())
-            deadlineTextView.text = if (deadline == null)
-                context.getString(R.string.deadline) else Helper.createLocalizedDateString(deadline!!)
-            updateRecurrencePatternText()
-            reminderTextView.text = if (reminderTime == null)
-                context.getString(R.string.reminder) else Helper.createLocalizedDateTimeString(reminderTime!!)
-            progressSelector.progress = taskProgress
-            prioritySelector.text = Helper.priorityToString(context, taskPriority)
-        }
-
-        val viewModel = CustomViewModel(context)
-        val model = viewModel.model
-        model.getAllToDoListNames { allToDoListNames ->
-            todoLists = allToDoListNames
-            updateListSelector()
-        }
-    }
-
-    private fun initGui() {
-        taskName = findViewById(R.id.et_task_name)
-        taskDescription = findViewById(R.id.et_task_description)
-
-        if (!editExistingTask) {
-            // Request focus for first input field.
-            taskName.requestFocus()
-            // Show soft-keyboard
-            window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        }
-
-        // initialize textview that displays the selected priority
-        prioritySelector = findViewById(R.id.tv_task_priority)
-        prioritySelector.setOnClickListener {
-            registerForContextMenu(prioritySelector)
-            openContextMenu(prioritySelector)
-        }
-        prioritySelector.setOnCreateContextMenuListener(this)
-        taskPriority = TodoTask.Priority.DEFAULT_VALUE
-        prioritySelector.text = Helper.priorityToString(context, taskPriority)
-
-        // initialize title of the dialog
+        // Dialog title
         if (editExistingTask) {
             findViewById<Toolbar>(R.id.task_dialog_title).setTitle(R.string.edit_todo_task)
         }
+        // Task name
+        val taskName: EditText = findViewById(R.id.et_task_name)
+        taskName.setText(todoTask.getName())
+        // Task description
+        val taskDescription: EditText = findViewById(R.id.et_task_description)
+        taskDescription.setText(todoTask.getDescription())
+        // Task deadline
+        val deadlineTextView: TextView = findViewById(R.id.tv_todo_list_deadline)
+        deadlineTextView.text = if (deadline == null)
+            context.getString(R.string.deadline) else Helper.createLocalizedDateString(deadline!!)
+        deadlineTextView.setOnClickListener {
+            val deadlineDialog = DeadlineDialog(context, deadline)
+            deadlineDialog.setDialogCallback(object : DeadlineCallback {
+                override fun setDeadline(selectedDeadline: Long) {
+                    deadline = selectedDeadline
+                    deadlineTextView.text = Helper.createLocalizedDateString(selectedDeadline)
+                }
 
-        // Initialize textview that displays selected list
-        listSelector = findViewById(R.id.tv_task_list_choose)
-        listSelector.setOnClickListener { v: View? ->
-            registerForContextMenu(listSelector)
-            openContextMenu(listSelector)
+                override fun removeDeadline() {
+                    deadline = null
+                    deadlineTextView.text = context.resources.getString(R.string.deadline)
+                }
+            })
+            deadlineDialog.show()
         }
-        listSelector.setOnCreateContextMenuListener(this)
+        // Task reminder
+        val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
+        reminderTextView.text = if (reminderTime == null)
+            context.getString(R.string.reminder) else Helper.createLocalizedDateTimeString(reminderTime!!)
+        reminderTextView.setOnClickListener {
+            val reminderDialog = ReminderDialog(context, reminderTime, deadline)
+            reminderDialog.setDialogCallback(object : ReminderCallback {
+                override fun setReminderTime(selectedReminderTime: Long) {
+                    var resIdErrorMsg = 0
+                    val deadlineCopy = deadline
+                    if (recurrencePattern == RecurrencePattern.NONE) {
+                        /* if (deadline == null) {
+                            resIdErrorMsg = R.string.set_deadline_before_reminder
+                        } else */
+                        if (deadlineCopy != null && deadlineCopy < selectedReminderTime) {
+                            resIdErrorMsg = R.string.deadline_smaller_reminder
+                        } else if (selectedReminderTime < Helper.getCurrentTimestamp()) {
+                            resIdErrorMsg = R.string.reminder_smaller_now
+                        }
+                    }
+                    if (resIdErrorMsg == 0) {
+                        reminderTime = selectedReminderTime
+                        reminderTextView.text = Helper.createLocalizedDateTimeString(selectedReminderTime)
+                    } else {
+                        Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
+                    }
+                }
 
+                override fun removeReminderTime() {
+                    reminderTime = null
+                    reminderTextView.text = context.resources.getString(R.string.reminder)
+                }
+            })
+            reminderDialog.show()
+        }
+        // Task recurrence pattern
+        recurrencePatternTextView = findViewById(R.id.tv_task_recurrence_pattern)
+        recurrencePatternTextView.setOnClickListener {
+            registerForContextMenu(recurrencePatternTextView)
+            openContextMenu(recurrencePatternTextView)
+        }
+        recurrencePatternTextView.setOnCreateContextMenuListener(this)
+        recurrenceIntervalEditText = findViewById(R.id.tv_task_recurrence_interval)
+        updateRecurrencePatternText()
+        // Task progress
+        val progressSelector: SeekBar = findViewById(R.id.sb_task_progress)
         progressPercent = findViewById(R.id.tv_task_progress)
-
-        // initialize seekbar that allows to select the progress
-        progressSelector = findViewById(R.id.sb_task_progress)
+        progressSelector.progress = taskProgress
+        updateProgressPercentText()
         if (hasAutoProgress()) {
             findViewById<TextView>(R.id.tv_task_progress_str).visibility = View.GONE
             progressSelector.visibility = View.GONE
@@ -168,8 +181,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             progressSelector.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     taskProgress = progress
-                    val text = "$progress %"
-                    progressPercent.text = text
+                    updateProgressPercentText()
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -177,8 +189,22 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
         }
-
-        // initialize buttons
+        // Task priority
+        prioritySelector = findViewById(R.id.tv_task_priority)
+        prioritySelector.text = Helper.priorityToString(context, taskPriority)
+        prioritySelector.setOnCreateContextMenuListener(this)
+        prioritySelector.setOnClickListener {
+            registerForContextMenu(prioritySelector)
+            openContextMenu(prioritySelector)
+        }
+        // Task list
+        listSelector = findViewById(R.id.tv_task_list_choose)
+        listSelector.setOnClickListener { v: View? ->
+            registerForContextMenu(listSelector)
+            openContextMenu(listSelector)
+        }
+        listSelector.setOnCreateContextMenuListener(this)
+        // OK button
         val okayButton: Button = findViewById(R.id.bt_process_task_ok)
         okayButton.setOnClickListener { v: View? ->
             val name = taskName.getText().toString()
@@ -212,67 +238,22 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 dismiss()
             }
         }
+        // Cancel button
         val cancelButton: Button = findViewById(R.id.bt_process_task_cancel)
         cancelButton.setOnClickListener { dismiss() }
 
-        // initialize text-views to get deadline and reminder time
-        deadlineTextView = findViewById(R.id.tv_todo_list_deadline)
-        deadlineTextView.setOnClickListener {
-            val deadlineDialog = DeadlineDialog(context, deadline)
-            deadlineDialog.setDialogCallback(object : DeadlineCallback {
-                override fun setDeadline(selectedDeadline: Long) {
-                    deadline = selectedDeadline
-                    deadlineTextView.text = Helper.createLocalizedDateString(selectedDeadline)
-                }
-
-                override fun removeDeadline() {
-                    deadline = null
-                    deadlineTextView.text = context.resources.getString(R.string.deadline)
-                }
-            })
-            deadlineDialog.show()
+        val viewModel = CustomViewModel(context)
+        val model = viewModel.model
+        model.getAllToDoListNames { allToDoListNames ->
+            todoLists = allToDoListNames
+            updateListSelector()
         }
 
-        recurrencePatternTextView = findViewById(R.id.tv_task_recurrence_pattern)
-        recurrencePatternTextView.setOnClickListener {
-            registerForContextMenu(recurrencePatternTextView)
-            openContextMenu(recurrencePatternTextView)
-        }
-        recurrencePatternTextView.setOnCreateContextMenuListener(this)
-        recurrenceIntervalEditText = findViewById(R.id.tv_task_recurrence_interval)
-
-        reminderTextView = findViewById(R.id.tv_todo_list_reminder)
-        reminderTextView.setOnClickListener {
-            val reminderDialog = ReminderDialog(context, reminderTime, deadline)
-            reminderDialog.setDialogCallback(object : ReminderCallback {
-                override fun setReminderTime(selectedReminderTime: Long) {
-                    var resIdErrorMsg = 0
-                    val deadlineCopy = deadline
-                    if (recurrencePattern == RecurrencePattern.NONE) {
-                        /* if (deadline == null) {
-                            resIdErrorMsg = R.string.set_deadline_before_reminder
-                        } else */
-                        if (deadlineCopy != null && deadlineCopy < selectedReminderTime) {
-                            resIdErrorMsg = R.string.deadline_smaller_reminder
-                        } else if (selectedReminderTime < Helper.getCurrentTimestamp()) {
-                            resIdErrorMsg = R.string.reminder_smaller_now
-                        }
-                    }
-                    if (resIdErrorMsg == 0) {
-                        reminderTime = selectedReminderTime
-                        reminderTextView.text = Helper.createLocalizedDateTimeString(selectedReminderTime)
-                    } else {
-                        Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun removeReminderTime() {
-                    reminderTime = null
-                    val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
-                    reminderTextView.text = context.resources.getString(R.string.reminder)
-                }
-            })
-            reminderDialog.show()
+        if (!editExistingTask) {
+            // Request focus for first input field.
+            taskName.requestFocus()
+            // Show soft-keyboard
+            window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         }
     }
 
@@ -337,16 +318,15 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         return super.onMenuItemSelected(featureId, item)
     }
 
-    private fun updateListSelector() {
-        var text: String? = null
-        if (null != assignedTodoListId) {
-            text = todoLists[assignedTodoListId]
-        }
-        if (null == text) {
-            assignedTodoListId = null
-            text = context.getString(R.string.click_to_choose)
-        }
-        listSelector.text = text
+    private fun hasAutoProgress(): Boolean {
+        //automatic-progress enabled?
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
+    }
+
+    private fun updateProgressPercentText() {
+        val text = "$taskProgress %"
+        progressPercent.text = text
     }
 
     private fun updateRecurrencePatternText() {
@@ -361,10 +341,16 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         }
     }
 
-    private fun hasAutoProgress(): Boolean {
-        //automatic-progress enabled?
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
+    private fun updateListSelector() {
+        var text: String? = null
+        if (null != assignedTodoListId) {
+            text = todoLists[assignedTodoListId]
+        }
+        if (null == text) {
+            assignedTodoListId = null
+            text = context.getString(R.string.click_to_choose)
+        }
+        listSelector.text = text
     }
 
     companion object {

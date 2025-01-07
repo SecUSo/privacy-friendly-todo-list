@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2024  Christian Adams
+Copyright (C) 2024-2025  Christian Adams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,4 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.view.widget
 
-data class TodoListWidgetPreferences(var todoListId: Int? = null)
+import org.secuso.privacyfriendlytodolist.view.TaskFilter
+
+data class TodoListWidgetPreferences(
+    var todoListId: Int? = null,
+    var taskFilter: TaskFilter = TaskFilter.ALL_TASKS,
+    var isGroupingByPriority: Boolean = false,
+    var isSortingByDeadline: Boolean = false,
+    var isSortingByNameAsc: Boolean = false
+)

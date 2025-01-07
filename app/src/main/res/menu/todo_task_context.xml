@@ -7,8 +7,8 @@
         android:id="@+id/share_task"
         android:title="@string/share_task" />
     <item
-        android:id="@+id/delete_task"
-        android:title="@string/delete_task" />
+        android:id="@+id/remove_task"
+        android:title="@string/remove_task" />
     <item
         android:id="@+id/work_task"
         android:title="@string/work_task"

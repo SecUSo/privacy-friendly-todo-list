@@ -78,7 +78,7 @@
     <string name="deadline_dd">Fecha límite:</string>
     <string name="no_deadline">No hay ninguna fecha límite</string>
     <string name="edit_task">Editar la tarea</string>
-    <string name="delete_task">Eliminar la tarea</string>
+    <string name="remove_task">Eliminar la tarea</string>
     <string name="task_removed">Tarea eliminada</string>
     <string name="deadline">Facha límite</string>
     <string name="reminder">Alarma</string>
@@ -161,7 +161,6 @@
     <string name="help_group_widget">Widget</string>
     <string name="recurrence_pattern_hint">Patrón de repetición</string>
     <string name="set_deadline_if_recurring">Una tarea que se repite necesita una fecha límite.</string>
-    <string name="delete">Borrar</string>
     <string name="help_data_backup">Puede utilizar la aplicación independiente Privacy Friendly Backup para realizar copias de seguridad y restaurar los datos y la configuración de esta aplicación. También se puede utilizar para transferir los datos a otro dispositivo.</string>
     <string name="help_widget">Además, esta aplicación proporciona un widget que puedes añadir a tu pantalla de inicio. El widget te presenta las tareas que pertenecen a una lista elegida. Al hacer clic en una tarea se accede a la vista principal de la aplicación. El botón de sincronización puede actualizar la lista de tareas mostradas.</string>
     <string name="edit_list">Editar la lista</string>

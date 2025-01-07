@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2024  Christian Adams
+Copyright (C) 2024-2025  Christian Adams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -136,6 +136,15 @@ class ModelServices(
             val counter = services.deleteTodoSubtask(subtask)
             dispatchResult(deliveryOption, resultConsumer, counter)
             notifyDataChanged(0, 0, counter)
+        }
+    }
+
+    fun setAllDoneTasksInRecycleBin(deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                    resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.setAllDoneTasksInRecycleBin()
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(0, counter.first, counter.second)
         }
     }
 
