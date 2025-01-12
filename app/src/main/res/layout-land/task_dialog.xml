@@ -1,247 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="0dp"
-    android:orientation="vertical">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/task_dialog_title"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/new_todo_task"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/task_dialog_title"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/new_todo_task"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/et_task_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:paddingVertical="12dp"
-                android:autofillHints=""
-                android:hint="@string/name"
-                android:inputType="text" />
-
-            <EditText
-                android:id="@+id/et_task_description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:paddingVertical="12dp"
-                android:autofillHints=""
-                android:hint="@string/description_hint"
-                android:inputType="textMultiLine"
-                android:maxLines="15"
-                android:minLines="1" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:paddingVertical="5dp">
-
-                <TextView
-                    android:id="@+id/tv_todo_list_deadline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:drawablePadding="5dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/deadline"
-                    android:textAppearance="@style/AppClickableTextAppearance"
-                    android:textColor="@null"
-                    app:drawableStartCompat="@drawable/ic_calendar_month_24dp" />
-
-                <TextView
-                    android:id="@+id/tv_todo_list_reminder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:drawablePadding="5dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/reminder"
-                    android:textAppearance="@style/AppClickableTextAppearance"
-                    android:textColor="@null"
-                    app:drawableStartCompat="@drawable/ic_alarm_clock_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="10dp"
-                android:paddingVertical="5dp">
-
-                <TextView
-                    android:id="@+id/tv_task_recurring_str"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/recurrence_every"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/tv_task_recurrence_interval"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingHorizontal="15dp"
-                    android:paddingVertical="13dp"
+                    android:id="@+id/et_task_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:paddingVertical="12dp"
                     android:autofillHints=""
-                    android:hint="@string/recurrence_interval_hint"
-                    android:inputType="numberDecimal"
-                    android:textSize="16sp"
-                    android:textAlignment="center"/>
+                    android:hint="@string/name"
+                    android:inputType="text" />
 
-                <TextView
-                    android:id="@+id/tv_task_recurrence_pattern"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="5dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/recurrence_pattern_hint"
-                    android:textAppearance="@style/AppClickableTextAppearance"
-                    android:textColor="@null"
-                    app:drawableStartCompat="@drawable/ic_event_repeat_24dp" />
+                <EditText
+                    android:id="@+id/et_task_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:paddingVertical="12dp"
+                    android:autofillHints=""
+                    android:hint="@string/description_hint"
+                    android:inputType="textMultiLine"
+                    android:maxLines="15"
+                    android:minLines="1" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:paddingVertical="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_todo_list_deadline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/deadline"
+                        android:textAppearance="@style/AppClickableTextAppearance"
+                        android:textColor="@null"
+                        app:drawableStartCompat="@drawable/ic_calendar_month_24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_todo_list_reminder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/reminder"
+                        android:textAppearance="@style/AppClickableTextAppearance"
+                        android:textColor="@null"
+                        app:drawableStartCompat="@drawable/ic_alarm_clock_24dp" />
+                </LinearLayout>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:shrinkColumns="*"
+                    android:stretchColumns="1">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="5dp">
+
+                        <TextView
+                            android:id="@+id/tv_task_recurring_str"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/recurrence_every"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/tv_task_recurrence_interval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autofillHints=""
+                            android:hint="@string/recurrence_interval_hint"
+                            android:inputType="numberDecimal"
+                            android:textSize="16sp"
+                            android:textAlignment="center"/>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="5dp">
+
+                        <TextView
+                            android:id="@+id/tv_task_recurrence_pattern"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_column="1"
+                            android:drawablePadding="5dp"
+                            android:text="@string/recurrence_pattern_hint"
+                            android:textAppearance="@style/AppClickableTextAppearance"
+                            android:textColor="@null"
+                            app:drawableStartCompat="@drawable/ic_event_repeat_24dp" />
+                    </TableRow>
+
+                </TableLayout>
+
             </LinearLayout>
+
+            <TableLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:shrinkColumns="0"
+                android:stretchColumns="1">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_task_progress_str"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/progress_colon"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <SeekBar
+                        android:id="@+id/sb_task_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:max="100" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_task_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_column="1"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/zero_percent" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_task_priority_str"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/priority_colon"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_task_priority"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/click_to_choose"
+                        android:textAppearance="@style/AppClickableTextAppearance"
+                        android:textColor="@null" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_task_list_choose_str"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/list_colon"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_task_list_choose"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/click_to_choose"
+                        android:textAppearance="@style/AppClickableTextAppearance"
+                        android:textColor="@null" />
+                </TableRow>
+
+            </TableLayout>
 
         </LinearLayout>
 
-        <TableLayout
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:shrinkColumns="0"
-            android:stretchColumns="1">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lightGrey" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingVertical="5dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
 
-                <TextView
-                    android:id="@+id/tv_task_progress_str"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/progress_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <Button
+                android:id="@+id/bt_process_task_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@android:string/cancel" />
 
-                <SeekBar
-                    android:id="@+id/sb_task_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:max="100" />
-            </TableRow>
+            <Button
+                android:id="@+id/bt_process_task_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@string/ok" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="5dp">
-
-                <TextView
-                    android:id="@+id/tv_task_progress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_column="1"
-                    android:layout_marginStart="17dp"
-                    android:text="@string/zero_percent" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingVertical="5dp">
-
-                <TextView
-                    android:id="@+id/tv_task_priority_str"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="30dp"
-                    android:text="@string/priority_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_task_priority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/click_to_choose"
-                    android:textAppearance="@style/AppClickableTextAppearance"
-                    android:textColor="@null" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingVertical="5dp">
-
-                <TextView
-                    android:id="@+id/tv_task_list_choose_str"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/list_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_task_list_choose"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/click_to_choose"
-                    android:textAppearance="@style/AppClickableTextAppearance"
-                    android:textColor="@null" />
-            </TableRow>
-        </TableLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/lightGrey" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end">
-
-        <Button
-            android:id="@+id/bt_process_task_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/AppButtonBarButtonStyle"
-            android:text="@android:string/cancel" />
-
-        <Button
-            android:id="@+id/bt_process_task_ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/AppButtonBarButtonStyle"
-            android:text="@string/ok" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
