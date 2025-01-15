@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application Specific -->
 	<string name="app_name">To-Do List</string>
     <string name="app_name_long">Privacy Friendly To-Do List</string>
-
     <!-- Menu -->
     <string name="nav_header_app_name">Te doen</string>
     <string name="toolbar_title_main">Te doen</string>
@@ -12,17 +12,15 @@
     <string name="show_all_tasks">Toon alle taken</string>
     <string name="settings">Instelling</string>
     <string name="other">Ander</string>
-	<string name="help">Help</string>
-	<string name="menu_about">Over</string>
+    <string name="help">Help</string>
+    <string name="menu_about">Over</string>
     <string name="search">Zoeken</string>
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Sluit menu</string>
     <string name="name">Naam</string>
     <string name="description_hint">Beschrijving</string>
     <string name="ok">Okay</string>
-
     <!-- Common model strings -->
     <string name="select_option">Selecteer optie</string>
     <string name="high_priority">Hoog</string>
@@ -30,8 +28,6 @@
     <string name="low_priority">Laag</string>
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
-
-
     <!-- Help -->
     <string name="help_overview_heading">Overzicht</string>
     <string name="help_intro">Deze app kan gebruikt worden om taken te organiseren en om herinneringen in te stellen.</string>
@@ -47,7 +43,6 @@
     <string name="help_pin">Open het instellingsmenu om PIN bescherming in te stellen. De PIN moet een nummer zijn met 4 cijfers. Je zal ernaar gevraagd worden elke keer je de applicatie opent.</string>
     <string name="help_group_privacy">Privacy Info</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
-
     <!-- About -->
     <string name="about">Over</string>
     <string name="version_number">Versie v%s</string>
@@ -56,23 +51,20 @@
     <string name="about_affiliation">In samenwerking met</string>
     <string name="privacy_friendly">Deze applicatie behoort tot de Privacy Friendly Apps ontwikkeld door de Technische Universiteit Darmstadt. De broncode is gelicentieerd onder de GPLv3 license. De afbeeldingen staan onder copyright van KIT en Google Inc.</string>
     <string name="more_info">Meer informatie kan gevonden worden op:</string>
-
     <!-- To-Do list overview -->
 	<string name="done">Gedaan</string>
-	<string name="no_todo_lists_available">Geen To-Do lijst beschikbaar.</string>
-	<string name="next_deadline_dd">Volgende Deadline: %1$s</string>
+    <string name="no_todo_lists_available">Geen To-Do lijst beschikbaar.</string>
+    <string name="next_deadline_dd">Volgende Deadline: %1$s</string>
     <string name="no_next_deadline">Geen volgende deadline</string>
     <string name="add_list_feedback">%1$s toegevoegd</string>
     <string name="edit_todo_list">Bewerk To-Do lijst</string>
     <string name="delete_list">Verwijder lijst</string>
     <string name="delete_list_feedback">%1$s verwijderd</string>
-
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Nieuwe To-Do lijst</string>
     <string name="list_name_must_not_be_empty">Gelieve een lijstnaam in te vullen.</string>
     <string name="show_description">Toon beschrijving</string>
     <string name="no_description_available">Geen bescrijving beschikbaar.</string>
-
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Geen taken beschikbaar.</string>
     <string name="all_tasks">Alle taken</string>
@@ -81,7 +73,6 @@
     <string name="group_by_priority">Sorteer op prioriteit</string>
     <string name="sort_by_deadline">Sorteer op deadline</string>
     <string name="add_subtask">Voeg ondertaak toe</string>
-
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nieuwe taak</string>
     <string name="deadline_dd">Deadline:</string>
@@ -102,24 +93,20 @@
     <string name="edit_subtask">Bewerk ondertaak</string>
     <string name="delete_subtask">Verwijder ondertaak</string>
     <string name="subtask_removed">Ondertaak verwijderd.</string>
-
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>
-	<string name="time">Tijd</string>
-	<string name="no_reminder">Geen herinnering</string>
-
+    <string name="time">Tijd</string>
+    <string name="no_reminder">Geen herinnering</string>
     <!-- Calendar view -->
     <string name="calendar">Kalender</string>
     <string name="no_deadline_today">Er zijn vandaag geen deadlines.</string>
-
     <!-- PIN -->
 	<string name="enter_pin">Geef PIN in</string>
-	<string name="wrong_pin">Foute PIN</string>
+    <string name="wrong_pin">Foute PIN</string>
     <string name="reset_application_button">Reset applicatie</string>
     <string name="invalid_pin">Gelieve een PIN van 4 cijfers in te geven.</string>
     <string name="reset_application_msg">Ben je zeker dat je deze applicatie wil resetten? Dit zal de PIN-bescherming en alle taken verwijderen</string>
     <string name="add_pin">Geef een PIN in om toegang tot de app te krijgen. De PIN moet minstens 4 cijfers bevatten.</string>
-
     <!-- Settings -->
 	<string name="default_reminder_time">Standaard herinneringstijd</string>
     <string-array name="default_reminder_times_human">
@@ -139,28 +126,26 @@
         <item>Donker</item>
         <item>Systeem standaard</item>
     </string-array>
-
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline nadert: %1$s</string>
-
     <!-- Date and Time -->
 	<string name="sunday_abbr">ZO</string>
-	<string name="monday_abbr">MA</string>
-	<string name="tuesday_abbr">DI</string>
-	<string name="wednesday_abbr">WO</string>
-	<string name="thursday_abbr">DO</string>
-	<string name="friday_abbr">VR</string>
-	<string name="saturday_abbr">ZA</string>
-	<string name="january">januari</string>
-	<string name="february">februari</string>
-	<string name="march">maart</string>
-	<string name="april">april</string>
-	<string name="may">mei</string>
-	<string name="june">juni</string>
-	<string name="july">juli</string>
-	<string name="august">augustus</string>
-	<string name="september">september</string>
-	<string name="october">october</string>
-	<string name="november">november</string>
-	<string name="december">december</string>
+    <string name="monday_abbr">MA</string>
+    <string name="tuesday_abbr">DI</string>
+    <string name="wednesday_abbr">WO</string>
+    <string name="thursday_abbr">DO</string>
+    <string name="friday_abbr">VR</string>
+    <string name="saturday_abbr">ZA</string>
+    <string name="january">januari</string>
+    <string name="february">februari</string>
+    <string name="march">maart</string>
+    <string name="april">april</string>
+    <string name="may">mei</string>
+    <string name="june">juni</string>
+    <string name="july">juli</string>
+    <string name="august">augustus</string>
+    <string name="september">september</string>
+    <string name="october">october</string>
+    <string name="november">november</string>
+    <string name="december">december</string>
 </resources>

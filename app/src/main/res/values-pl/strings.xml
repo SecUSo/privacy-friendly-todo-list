@@ -1,8 +1,8 @@
-﻿<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- Application Specific -->
 	<string name="app_name">Lista zadań</string>
     <string name="app_name_long">Privacy Friendly Lista zadań</string>
-
     <!-- Menu -->
     <string name="nav_header_app_name">Zadania</string>
     <string name="toolbar_title_main">Zadania</string>
@@ -12,17 +12,15 @@
     <string name="show_all_tasks">Wszystkie zadania</string>
     <string name="settings">Ustawienia</string>
     <string name="other">Inne</string>
-	<string name="help">Pomoc</string>
-	<string name="menu_about">O nas</string>
+    <string name="help">Pomoc</string>
+    <string name="menu_about">O nas</string>
     <string name="search">Szukaj</string>
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Otwórz menu</string>
     <string name="navigation_drawer_close">Zamknij menu</string>
     <string name="name">Nazwa</string>
     <string name="description_hint">Opis</string>
     <string name="ok">Okay</string>
-
     <!-- Common model strings -->
     <string name="select_option">Wybierz</string>
     <string name="high_priority">Bardzo ważne</string>
@@ -30,8 +28,6 @@
     <string name="low_priority">Mało ważne</string>
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
-
-
     <!-- Help -->
     <string name="help_overview_heading">Podgląd</string>
     <string name="help_intro">Aplikacja może być użyta aby zorganizować zadania .</string>
@@ -47,7 +43,6 @@
     <string name="help_pin">Wejdź w ustawienia, aby utworzyć hasło. Hasło musi się składać z 4 cyfr. Będziesz musiał je wprowadzić przy uruchamianiu aplikacji.</string>
     <string name="help_group_privacy">Informacja o prywatności</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
-
     <!-- About -->
     <string name="about">O nas</string>
     <string name="version_number">Wersja %s</string>
@@ -56,23 +51,20 @@
     <string name="about_affiliation">W współpracy z</string>
     <string name="privacy_friendly">Ta aplikacja należy do Privacy Friendly Apps</string>
     <string name="more_info">Więcej informacji na:</string>
-
     <!-- To-Do list overview -->
 	<string name="done">zrobione</string>
-	<string name="no_todo_lists_available">lista zadań niedostępna</string>
-	<string name="next_deadline_dd">Następny termin: %1$s</string>
+    <string name="no_todo_lists_available">lista zadań niedostępna</string>
+    <string name="next_deadline_dd">Następny termin: %1$s</string>
     <string name="no_next_deadline">Brak terminów</string>
     <string name="add_list_feedback">%1$s dodane</string>
     <string name="edit_todo_list">Edytuj listę zadań</string>
     <string name="delete_list">Usuń listę</string>
     <string name="delete_list_feedback">%1$s usunięte</string>
-
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Nowa lista zadań</string>
     <string name="list_name_must_not_be_empty">Lista zadań nie może być pusta</string>
     <string name="show_description">Pokaż opis</string>
     <string name="no_description_available">Opis niedostępny</string>
-
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Lista zadań jest pusta.</string>
     <string name="all_tasks">Wszystkie zadania</string>
@@ -81,7 +73,6 @@
     <string name="group_by_priority">Grupuj pod względem ważności</string>
     <string name="sort_by_deadline">Sortuj terminami</string>
     <string name="add_subtask">Dodaj podzadanie</string>
-
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nowe zadanie</string>
     <string name="deadline_dd">Termin:</string>
@@ -102,24 +93,20 @@
     <string name="edit_subtask">Edytuj podzadanie</string>
     <string name="delete_subtask">Usuń podzadanie</string>
     <string name="subtask_removed">Podzadanie zostało usunięte.</string>
-
     <!-- Select reminder dialog -->
 	<string name="date">Data</string>
-	<string name="time">Godzina</string>
-	<string name="no_reminder">Brak alarmu</string>
-
+    <string name="time">Godzina</string>
+    <string name="no_reminder">Brak alarmu</string>
     <!-- Calendar view -->
     <string name="calendar">Kalendarz</string>
     <string name="no_deadline_today">Brak terminów w tym dniu.</string>
-
     <!-- PIN -->
 	<string name="enter_pin">Wprowadź hasło</string>
-	<string name="wrong_pin">Nieprawidłowe hasło</string>
+    <string name="wrong_pin">Nieprawidłowe hasło</string>
     <string name="reset_application_button">Resetuj aplikację</string>
     <string name="invalid_pin">Proszę wprowadzić hasło z 4 cyframi!.</string>
     <string name="reset_application_msg">Naprawdę chcesz zresetować tę aplikację? Zabezpieczenie hasłem zostanie wycofane, a wszystkie listy zadań usunięte.</string>
     <string name="add_pin">Wprowadź hasło, aby umożliwić dostęp do aplikacji. Hasło musi zawierać przynajmniej 4 cyfry.</string>
-
     <!-- Settings -->
 	<string name="default_reminder_time">Domyślny alarm</string>
     <string-array name="default_reminder_times_human">
@@ -133,28 +120,26 @@
     </string-array>
     <string name="pin_enabled">Aktywne hasło</string>
     <string name="set_pin">Ustaw hasło</string>
-
     <!-- Reminder service -->
     <string name="deadline_approaching">Zbliżający się termin: %1$s</string>
-
     <!-- Date and Time -->
 	<string name="sunday_abbr">NIE</string>
-	<string name="monday_abbr">PON</string>
-	<string name="tuesday_abbr">WT</string>
-	<string name="wednesday_abbr">ŚR</string>
-	<string name="thursday_abbr">CZW</string>
-	<string name="friday_abbr">PT</string>
-	<string name="saturday_abbr">SOB</string>
-	<string name="january">Styczeń</string>
-	<string name="february">Luty</string>
-	<string name="march">Marzec</string>
-	<string name="april">Kwiecień</string>
-	<string name="may">Maj</string>
-	<string name="june">Czerwiec</string>
-	<string name="july">Lipiec</string>
-	<string name="august">Sierpień</string>
-	<string name="september">Wrzesień</string>
-	<string name="october">Październik</string>
-	<string name="november">Listopad</string>
-	<string name="december">Grudzień</string>
+    <string name="monday_abbr">PON</string>
+    <string name="tuesday_abbr">WT</string>
+    <string name="wednesday_abbr">ŚR</string>
+    <string name="thursday_abbr">CZW</string>
+    <string name="friday_abbr">PT</string>
+    <string name="saturday_abbr">SOB</string>
+    <string name="january">Styczeń</string>
+    <string name="february">Luty</string>
+    <string name="march">Marzec</string>
+    <string name="april">Kwiecień</string>
+    <string name="may">Maj</string>
+    <string name="june">Czerwiec</string>
+    <string name="july">Lipiec</string>
+    <string name="august">Sierpień</string>
+    <string name="september">Wrzesień</string>
+    <string name="october">Październik</string>
+    <string name="november">Listopad</string>
+    <string name="december">Grudzień</string>
 </resources>

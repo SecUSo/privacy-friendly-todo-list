@@ -1,8 +1,8 @@
-﻿<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <!-- Application Specific -->
 	<string name="app_name">Liste de tâches</string>
     <string name="app_name_long">Privacy Friendly Liste de tâches</string>
-
     <!-- Menu -->
     <string name="nav_header_app_name">A faire</string>
     <string name="toolbar_title_main">A faire</string>
@@ -12,17 +12,15 @@
     <string name="show_all_tasks">Toutes les tâches</string>
     <string name="settings">Réglages</string>
     <string name="other">Autres</string>
-	<string name="help">Aide</string>
-	<string name="menu_about">Auteurs</string>
+    <string name="help">Aide</string>
+    <string name="menu_about">Auteurs</string>
     <string name="search">Chercher</string>
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Ouvrir le menu</string>
     <string name="navigation_drawer_close">Fermer le menu</string>
     <string name="name">Nom</string>
     <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
-
     <!-- Common model strings -->
     <string name="select_option">Choisir une option</string>
     <string name="high_priority">Très important</string>
@@ -30,8 +28,6 @@
     <string name="low_priority">Peu important</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
-
-
     <!-- Help -->
     <string name="help_overview_heading">Vue d\'ensemble</string>
     <string name="help_intro">L\'application peut être utilisé pour organiser des tâches et pour obtenir des notifications.</string>
@@ -47,7 +43,6 @@
     <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
     <string name="help_group_privacy">Information sur la vie privée</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Cela permet de verifier si l\'utiliseteur souhaite être informé sur les prochaines dates limites juste après avoir mis en marche le périphérique.</string>
-
     <!-- About -->
     <string name="about">Auteurs</string>
     <string name="version_number">Version v%s</string>
@@ -56,23 +51,20 @@
     <string name="about_affiliation">En collaboration avec</string>
     <string name="privacy_friendly">Cette application appartient à Privacy Friendly Apps</string>
     <string name="more_info">Plus d\'informations sur:</string>
-
     <!-- To-Do list overview -->
 	<string name="done">Fait</string>
-	<string name="no_todo_lists_available">Aucune liste de tâches disponible</string>
-	<string name="next_deadline_dd">La prochaine date limite: %1$s</string>
+    <string name="no_todo_lists_available">Aucune liste de tâches disponible</string>
+    <string name="next_deadline_dd">La prochaine date limite: %1$s</string>
     <string name="no_next_deadline">Aucune date limite à venir</string>
     <string name="add_list_feedback">%1$s ajouté</string>
     <string name="edit_todo_list">Editer la liste de tâches</string>
     <string name="delete_list">Supprimer la liste</string>
     <string name="delete_list_feedback">%1$s supprimé</string>
-
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Nouvelle liste de tâches</string>
     <string name="list_name_must_not_be_empty">Il faut introduire le nom de la liste de tâches.</string>
     <string name="show_description">Montrer la description</string>
     <string name="no_description_available">Aucune description disponible</string>
-
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Aucune tâche disponible.</string>
     <string name="all_tasks">Toutes les tâches</string>
@@ -81,7 +73,6 @@
     <string name="group_by_priority">Classer par le niveau d\'importance</string>
     <string name="sort_by_deadline">Classer par la date limite</string>
     <string name="add_subtask">Créer une sous-tâche</string>
-
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nouvelle tâche</string>
     <string name="deadline_dd">Date limite:</string>
@@ -102,24 +93,20 @@
     <string name="edit_subtask">Editer la sous-tâche</string>
     <string name="delete_subtask">Supprimer la sous-tâche</string>
     <string name="subtask_removed">La sous-tâche a été supprimée.</string>
-
     <!-- Select reminder dialog -->
 	<string name="date">Date</string>
-	<string name="time">Heure</string>
-	<string name="no_reminder">Aucune alarme</string>
-
+    <string name="time">Heure</string>
+    <string name="no_reminder">Aucune alarme</string>
     <!-- Calendar view -->
     <string name="calendar">Calendrier</string>
     <string name="no_deadline_today">Aucune alarme aujourd\'hui.</string>
-
     <!-- PIN -->
 	<string name="enter_pin">Introduire le mot de passe</string>
-	<string name="wrong_pin">Mot de passe incorrect</string>
+    <string name="wrong_pin">Mot de passe incorrect</string>
     <string name="reset_application_button">Restarter l\'application</string>
     <string name="invalid_pin">Entrez votre mot de pass à 4 chiffres.</string>
     <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
     <string name="add_pin">Mettez votre mot de passe pour pouvoir ouvrir l\'application. Le mot de passe doit contenir au moins 4 chiffres.</string>
-
     <!-- Settings -->
 	<string name="default_reminder_time">Alarme standard</string>
     <string-array name="default_reminder_times_human">
@@ -133,28 +120,27 @@
     </string-array>
     <string name="pin_enabled">Demander le mot de passe à l\'entrée</string>
     <string name="set_pin">Régler le mot de passe</string>
-
     <!-- Reminder service -->
     <string name="deadline_approaching">Date limite prochaine: %1$s</string>
-
     <!-- Date and Time -->
 	<string name="sunday_abbr">DI</string>
-	<string name="monday_abbr">LU</string>
-	<string name="tuesday_abbr">MA</string>
-	<string name="wednesday_abbr">ME</string>
-	<string name="thursday_abbr">JE</string>
-	<string name="friday_abbr">VE</string>
-	<string name="saturday_abbr">SA</string>
-	<string name="january">Janvier</string>
-	<string name="february">Février</string>
-	<string name="march">Mars</string>
-	<string name="april">April</string>
-	<string name="may">Mai</string>
-	<string name="june">Juin</string>
-	<string name="july">Juillet</string>
-	<string name="august">Août</string>
-	<string name="september">Septembre</string>
-	<string name="october">Octobre</string>
-	<string name="november">Novembre</string>
-	<string name="december">Décembre</string>
+    <string name="monday_abbr">LU</string>
+    <string name="tuesday_abbr">MA</string>
+    <string name="wednesday_abbr">ME</string>
+    <string name="thursday_abbr">JE</string>
+    <string name="friday_abbr">VE</string>
+    <string name="saturday_abbr">SA</string>
+    <string name="january">Janvier</string>
+    <string name="february">Février</string>
+    <string name="march">Mars</string>
+    <string name="april">April</string>
+    <string name="may">Mai</string>
+    <string name="june">Juin</string>
+    <string name="july">Juillet</string>
+    <string name="august">Août</string>
+    <string name="september">Septembre</string>
+    <string name="october">Octobre</string>
+    <string name="november">Novembre</string>
+    <string name="december">Décembre</string>
+    <string name="next">Suivant</string>
 </resources>
