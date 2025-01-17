@@ -87,7 +87,7 @@
     <string name="deadline_dd">Deadline:</string>
     <string name="no_deadline">Geen Deadline</string>
     <string name="edit_task">Bewerk taak</string>
-    <string name="delete_task">Verwijder taak</string>
+    <string name="remove_task">Verwijder taak</string>
     <string name="task_removed">Taak is verwijderd.</string>
     <string name="deadline">Deadline</string>
     <string name="reminder">Herinnering</string>

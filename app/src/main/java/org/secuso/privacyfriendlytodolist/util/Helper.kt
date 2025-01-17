@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2016-2024  Dominik Puellen
+Copyright (C) 2016-2025  Dominik Puellen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -135,13 +135,33 @@ object Helper {
         return result.toLong()
     }
 
-    fun getDeadlineColor(context: Context, color: DeadlineColors?): Int {
-        return when (color) {
-            DeadlineColors.RED -> ContextCompat.getColor(context, R.color.deadlineRed)
-            DeadlineColors.BLUE -> ContextCompat.getColor(context, R.color.deadlineBlue)
-            DeadlineColors.ORANGE -> ContextCompat.getColor(context, R.color.deadlineOrange)
-            else -> throw IllegalArgumentException("Unknown deadline color '$color'.")
+    fun compareDeadlines(task1: TodoTask, task2: TodoTask): Int {
+        var now: Long? = null
+        val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
+            now = getCurrentTimestamp()
+            getNextRecurringDate(
+                task1.getDeadline()!!,
+                task1.getRecurrencePattern(),
+                task1.getRecurrenceInterval(),
+                now)
+        } else {
+            task1.getDeadline()
         }
+        val d2 = if (task2.isRecurring() && task2.getDeadline() != null) {
+            now = now ?: getCurrentTimestamp()
+            getNextRecurringDate(
+                task2.getDeadline()!!,
+                task2.getRecurrencePattern(),
+                task2.getRecurrenceInterval(),
+                now)
+        } else {
+            task2.getDeadline()
+        }
+        // tasks with deadlines always first
+        if (d1 == d2) return 0
+        if (d1 == null) return 1
+        if (d2 == null) return -1
+        return d1.compareTo(d2)
     }
 
     fun recurrencePatternToAdverbString(context: Context, recurrencePattern: RecurrencePattern?): String {

@@ -11,6 +11,7 @@
     <string name="todos">To-Do\'s</string>
     <string name="home">All tasks</string>
     <string name="show_all_tasks">Show all tasks</string>
+    <string name="remove_all_done_tasks">Remove all done tasks</string>
     <string name="calendar_view">Calendar</string>
     <string name="settings">Settings</string>
     <string name="share_all_tasks">Share data</string>
@@ -27,7 +28,7 @@
     <string name="name">Name</string>
     <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
-    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
@@ -105,6 +106,7 @@
     <string name="completed_tasks">Completed tasks</string>
     <string name="group_by_priority">Group by priority</string>
     <string name="sort_by_deadline">Sort by deadline</string>
+    <string name="sort_by_name_asc">Sort by name</string>
     <string name="add_subtask">Add Subtask</string>
 
     <!-- Create/Edit To-Do task dialog -->
@@ -114,8 +116,9 @@
     <string name="no_deadline">No Deadline</string>
     <string name="edit_task">Edit task</string>
     <string name="share_task">Share task</string>
-    <string name="delete_task">Delete task</string>
-    <string name="task_removed">Task put into recycle bin</string>
+    <string name="remove_task">Remove task</string>
+    <string name="task_removed">Task successfully removed.</string>
+    <string name="tasks_removed">%d task(s) and %d subtask(s) removed.</string>
     <string name="deadline">Deadline</string>
     <string name="recurrence_every">Recurrence every</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -308,13 +311,11 @@
     <string name="import_question_text">Delete all existing data (all To-Do lists, tasks and subtasks) before importing new data?</string>
     <string name="delete_existing_data">Delete existing data</string>
     <string name="keep_existing_data">Keep existing data</string>
-    <string name="abort">Abort</string>
 
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_list_delete">Really delete this list?</string>
+    <string name="alert_done_tasks_remove">Really remove all done tasks?</string>
     <string name="alert_clear">Really clear?</string>
-    <string name="alert_delete_yes">Delete</string>
-    <string name="alert_delete_no">Cancel</string>
 
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>

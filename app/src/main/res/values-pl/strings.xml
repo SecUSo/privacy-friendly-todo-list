@@ -87,7 +87,7 @@
     <string name="deadline_dd">Termin:</string>
     <string name="no_deadline">Brak terminu</string>
     <string name="edit_task">Edytuj zadanie</string>
-    <string name="delete_task">Usuń zadanie</string>
+    <string name="remove_task">Usuń zadanie</string>
     <string name="task_removed">Zadanie zostało usunięte.</string>
     <string name="deadline">Termin</string>
     <string name="reminder">Alarm</string>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="org.secuso.privacyfriendlytodolist.view.widget.TodoListWidgetConfigureActivity"
-    android:initialKeyguardLayout="@layout/todo_list_widget"
-    android:initialLayout="@layout/todo_list_widget"
+    android:initialKeyguardLayout="@layout/widget_list"
+    android:initialLayout="@layout/widget_list"
     android:minWidth="160dp"
     android:minHeight="80dp"
     android:minResizeWidth="80dp"

@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2024  Christian Adams
+Copyright (C) 2024-2025  Christian Adams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -71,6 +71,9 @@ interface TodoTaskDao {
             " WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now" +
             " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getOverdueTasks(now: Long): Array<TodoTaskData>
+
+    @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND doneTime IS NOT NULL")
+    suspend fun getAllDoneNotInRecycleBin(): Array<TodoTaskData>
 
     @Query("SELECT todoTasks.* FROM todoTasks" +
             " LEFT JOIN todoLists" +

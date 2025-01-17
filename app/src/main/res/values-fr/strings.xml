@@ -87,7 +87,7 @@
     <string name="deadline_dd">Date limite:</string>
     <string name="no_deadline">Aucune date limite</string>
     <string name="edit_task">Editer la tâche</string>
-    <string name="delete_task">Supprimer la tâche</string>
+    <string name="remove_task">Supprimer la tâche</string>
     <string name="task_removed">La tâche a été supprimée.</string>
     <string name="deadline">Date limite</string>
     <string name="reminder">Alarme</string>

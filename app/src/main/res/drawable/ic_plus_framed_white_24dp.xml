@@ -1,6 +1,6 @@
 <!--
 Privacy Friendly To-Do List
-Copyright (C) 2024  Christian Adams
+Copyright (C) 2024-2025  Christian Adams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
     android:viewportWidth="100"
     android:viewportHeight="100"
     android:tint="#FFFFFF" >
-      
+
     <path
         android:fillColor="@android:color/white"
         android:pathData="M55,15L45,15v30L15,45v10h30v30h10v-30h30v-10h-30L55,15z"/>
-    
+
 </vector>

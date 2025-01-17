@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2024  Sebastian Lutz
+Copyright (C) 2018-2025  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import android.os.Parcel
 import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.DeadlineColors
+import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
@@ -185,8 +185,8 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return subtasks
     }
 
-    override fun getDeadlineColor(reminderTimeSpan: Long): DeadlineColors {
-        var color = DeadlineColors.BLUE
+    override fun getUrgency(reminderTimeSpan: Long): Urgency {
+        var color = Urgency.NONE
         var deadline = data.deadline
         if (!isDone() && deadline != null) {
             // Set time-part to 00:00:00 to ensure that comparison with reminder time span doesn't
@@ -213,9 +213,9 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
             }
 
             if (deadline <= now) {
-                color = DeadlineColors.RED
+                color = Urgency.ELAPSED
             } else if ((deadline - finalReminderTimeSpan) <= now) {
-                color = DeadlineColors.ORANGE
+                color = Urgency.IMMINENT
             }
         }
         return color
