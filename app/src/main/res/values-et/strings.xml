@@ -12,7 +12,6 @@
     <string name="name">Nimi</string>
     <string name="description_hint">Kirjeldus</string>
     <string name="ok">Sobib</string>
-    <string name="delete">Kustuta</string>
     <string name="app_name">Tegemiste loend</string>
     <string name="app_name_long">Privaatsussõbralik tegemiste loend</string>
     <string name="yes">Jah</string>
