@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="show_all_tasks">Näita kõiki ülesandeid</string>
+    <string name="calendar_view">Kalender</string>
+    <string name="share_all_tasks">Jaga andmeid</string>
+    <string name="export_all_tasks">Ekspordi andmed</string>
+    <string name="import_tasks">Impordi andmed</string>
+    <string name="other">Muud</string>
+    <string name="menu_about">Rakenduse teave</string>
+    <string name="search">Otsi</string>
+    <string name="navigation_drawer_close">Sulge menüü</string>
+    <string name="name">Nimi</string>
+    <string name="description_hint">Kirjeldus</string>
+    <string name="ok">Sobib</string>
+    <string name="app_name">Tegemiste loend</string>
+    <string name="app_name_long">Privaatsussõbralik tegemiste loend</string>
+    <string name="yes">Jah</string>
+    <string name="no">Ei</string>
+    <string name="help_overview_heading">Üldteave</string>
+    <string name="home">Kõik ülesanded</string>
+    <string name="settings">Seadistused</string>
+    <string name="help">Abiteave</string>
+    <string name="navigation_drawer_open">Ava menüü</string>
+</resources>
