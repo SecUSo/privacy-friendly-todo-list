@@ -362,7 +362,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh = actualConvertView.tag as GroupTaskViewHolder
                 } else {
                     actualConvertView = LayoutInflater.from(context)
-                        .inflate(R.layout.exlv_tasks_group, parent, false)
+                        .inflate(R.layout.exlv_task_main_row, parent, false)
                     tvh = GroupTaskViewHolder(
                         actualConvertView.findViewById(R.id.tv_exlv_task_name),
                         actualConvertView.findViewById(R.id.bt_task_move_up),

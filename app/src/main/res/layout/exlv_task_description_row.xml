@@ -14,7 +14,8 @@
         android:id="@+id/tv_exlv_task_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="15dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:text="@string/description_hint" />

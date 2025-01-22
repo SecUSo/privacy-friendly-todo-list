@@ -40,13 +40,14 @@
 
     <TextView
         android:id="@+id/tv_exlv_task_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="@string/name"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintEnd_toStartOf="@id/bt_task_move_up"
         app:layout_constraintTop_toBottomOf="@id/v_exlv_header_separator" />
 
     <ImageButton
