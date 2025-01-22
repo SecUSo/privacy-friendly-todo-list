@@ -43,6 +43,8 @@ class PrefMetaData(
  * Created by Sebastian Lutz on 06.12.2017.
  *
  * This class is used to help create Preference hierarchies for the tutorial.
+ *
+ * TODO org.secuso.privacyfriendlytodolist.observer.PreferenceObserver should notify this PreferenceMgr when pref changes and this PreferenceMgr should use this to hold a cache to increase speed while accessing preference values.
  */
 object PreferenceMgr {
     val ALL_PREFERENCES = mutableMapOf<String, PrefMetaData>()

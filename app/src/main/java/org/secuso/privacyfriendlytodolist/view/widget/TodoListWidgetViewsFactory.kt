@@ -111,19 +111,28 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
                 || (pref.taskFilter == TaskFilter.COMPLETED_TASKS && ! todoTask.isDone())) {
                 continue
             }
-            val item = createItem(todoTask, reminderTimeSpan, fillInIntent)
+            val item = createItem(todoTask, reminderTimeSpan, fillInIntent, pref.isShowingDaysUntilDeadline)
             val tuple = Pair(todoTask.getId(), item)
             items.add(tuple)
         }
         Log.d(TAG, "Widget $appWidgetId: Updated data. Items: ${items.count()}, list ID: ${pref.todoListId}, title: '$currentTitle'.")
     }
 
-    private fun createItem(todoTask: TodoTask, reminderTimeSpan: Long, fillInIntent: Intent): RemoteViews {
+    private fun createItem(todoTask: TodoTask, reminderTimeSpan: Long, fillInIntent: Intent,
+                           isShowingDaysUntilDeadline: Boolean): RemoteViews {
         val view = RemoteViews(context.packageName, R.layout.widget_task)
-        val urgencyColor = todoTask.getUrgency(reminderTimeSpan).getColor(context)
-        view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", urgencyColor)
+        val urgency = todoTask.getUrgency(reminderTimeSpan)
+        view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", urgency.getColor(context))
         view.setImageViewResource(R.id.iv_widget_task_state, if (todoTask.isDone()) R.drawable.done else ResourcesCompat.ID_NULL)
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())
+        var daysUntilDeadlineStr = ""
+        if (isShowingDaysUntilDeadline) {
+            val daysUntilDeadline = urgency.daysUntilDeadline
+            if (daysUntilDeadline != null) {
+                daysUntilDeadlineStr = daysUntilDeadline.toString()
+            }
+        }
+        view.setTextViewText(R.id.tv_widget_days_until_deadline, daysUntilDeadlineStr)
         view.setOnClickFillInIntent(R.id.iv_widget_task_state, fillInIntent)
         view.setOnClickFillInIntent(R.id.tv_widget_task_name, fillInIntent)
         return view

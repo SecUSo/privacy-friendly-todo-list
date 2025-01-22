@@ -21,12 +21,11 @@ import android.os.Parcel
 import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
+import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
-import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -186,39 +185,43 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun getUrgency(reminderTimeSpan: Long): Urgency {
-        var color = Urgency.NONE
+        var level = Urgency.Level.NONE
         var deadline = data.deadline
+        var daysUntilDeadline: Long? = null
         if (!isDone() && deadline != null) {
-            // Set time-part to 00:00:00 to ensure that comparison with reminder time span doesn't
-            // overlap with deadline-day. For example if deadline has time-part of 12:00:00 and
-            // reminder time span is 0.5 day it would not get orange before the deadline-day begins.
-            // But it should get orange 0.5 day before deadline day begins.
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = TimeUnit.SECONDS.toMillis(deadline)
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            deadline = TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
             val now = Helper.getCurrentTimestamp()
-            val finalReminderTimeSpan: Long
             if (isRecurring()) {
                 deadline = Helper.getNextRecurringDate(deadline,
                     data.recurrencePattern, data.recurrenceInterval, now)
-                finalReminderTimeSpan = reminderTimeSpan
-            } else {
-                val reminderTime = data.reminderTime
-                finalReminderTimeSpan = if (reminderTime != null && reminderTime < deadline)
-                    deadline - reminderTime else reminderTimeSpan
             }
-
-            if (deadline <= now) {
-                color = Urgency.ELAPSED
-            } else if ((deadline - finalReminderTimeSpan) <= now) {
-                color = Urgency.IMMINENT
+            val nowDay = TimeUnit.SECONDS.toDays(now)
+            val deadlineDay = TimeUnit.SECONDS.toDays(deadline)
+            daysUntilDeadline = deadlineDay - nowDay
+            if (nowDay > deadlineDay) {
+                level = Urgency.Level.EXCEEDED
+            }
+            else if (nowDay == deadlineDay) {
+                level = Urgency.Level.DUE
+            }
+            else {
+                // Set time-part to 00:00:00 to ensure that comparison with reminder time span
+                // doesn't overlap with deadline-day. For example if deadline has time-part of
+                // 12:00:00 and reminder time span is 0.5 day it would not get 'imminent' before the
+                // deadline-day begins. But it should get 'imminent' 0.5 day before deadline day begins.
+                deadline = Helper.changeTimePart(deadline)
+                var finalReminderTimeSpan = reminderTimeSpan
+                if (!isRecurring()) {
+                    val reminderTime = data.reminderTime
+                    if (reminderTime != null && reminderTime < deadline) {
+                        finalReminderTimeSpan = deadline - reminderTime
+                    }
+                }
+                if ((deadline - finalReminderTimeSpan) <= now) {
+                    level = Urgency.Level.IMMINENT
+                }
             }
         }
-        return color
+        return Urgency(level, daysUntilDeadline)
     }
 
     override fun setPriority(priority: Priority) {

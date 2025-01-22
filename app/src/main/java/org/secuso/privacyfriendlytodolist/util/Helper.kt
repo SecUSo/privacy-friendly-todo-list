@@ -24,10 +24,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -61,6 +59,16 @@ object Helper {
      */
     fun getCurrentTimestamp(): Long {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
+    }
+
+    fun changeTimePart(timestamp: Long, h: Int = 0, m: Int = 0, s: Int = 0): Long {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = TimeUnit.SECONDS.toMillis(timestamp)
+        calendar.set(Calendar.HOUR_OF_DAY, h)
+        calendar.set(Calendar.MINUTE, m)
+        calendar.set(Calendar.SECOND, s)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
     }
 
     fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern,

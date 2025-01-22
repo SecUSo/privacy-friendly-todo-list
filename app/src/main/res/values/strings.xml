@@ -320,6 +320,11 @@
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>
     <string name="widget_configuration">Widget configuration</string>
+    <string name="filter_colon">Filter:</string>
+    <string name="grouping_colon">Grouping:</string>
+    <string name="sorting_colon">Sorting:</string>
+    <string name="various_colon">Various:</string>
+    <string name="show_days_until_deadline">Show days until deadline</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Task changed status</string>

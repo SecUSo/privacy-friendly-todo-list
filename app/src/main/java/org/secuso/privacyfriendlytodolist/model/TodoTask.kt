@@ -17,10 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.model
 
-import android.content.Context
 import android.os.Parcelable
-import androidx.core.content.ContextCompat
-import org.secuso.privacyfriendlytodolist.R
 
 
 interface TodoTask : BaseTodo, Parcelable {
@@ -77,22 +74,6 @@ interface TodoTask : BaseTodo, Parcelable {
         }
     }
 
-    /**
-     * The urgency of a to-do task.
-     */
-    enum class Urgency(private val colorId: Int) {
-        /** Task has no deadline or the deadline is far away. */
-        NONE(R.color.urgencyNone),
-        /** The deadline is near. */
-        IMMINENT(R.color.urgencyImminent),
-        /** The deadline has been elapsed. */
-        ELAPSED(R.color.urgencyElapsed);
-
-        fun getColor(context: Context): Int {
-            return ContextCompat.getColor(context, colorId)
-        }
-    }
-
     fun setId(id: Int)
     fun getId(): Int
     fun setCreationTime(creationTime: Long)
@@ -128,6 +109,11 @@ interface TodoTask : BaseTodo, Parcelable {
      * @param reminderTimeSpan The reminder time span is a relative value in seconds
      * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
      * Urgency#IMMINENT gets returned.
+     * @return Returns Urgency EXCEEDED if the deadline is in the past.
+     * Returns Urgency DUE if the deadline is today.
+     * Returns Urgency IMMINENT if the deadline is later than today but within reminder time span
+     * (the given one or the one set by the user).
+     * Returns Urgency NONE in any other case.
      */
     fun getUrgency(reminderTimeSpan: Long): Urgency
     fun setPriority(priority: Priority)

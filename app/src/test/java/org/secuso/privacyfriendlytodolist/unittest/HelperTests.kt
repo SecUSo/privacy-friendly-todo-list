@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.unittest
 
-import org.junit.Assert
+import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.util.Helper
@@ -32,15 +32,15 @@ class HelperTests {
     @Test
     fun computeRepetitionsTest() {
         for (interval in 1..100) {
-            Assert.assertEquals((2 * 365 / interval).toLong(), computeRepetitions(
+            assertEquals((2 * 365 / interval).toLong(), computeRepetitions(
                 "2001-03-12", "2003-03-12", RecurrencePattern.DAILY, interval))
-            Assert.assertEquals(((3 * 365 + 1) / interval).toLong(), computeRepetitions(
+            assertEquals(((3 * 365 + 1) / interval).toLong(), computeRepetitions(
                 "2001-03-12", "2004-03-12", RecurrencePattern.DAILY, interval))
-            Assert.assertEquals(((20 * 52 + 1) / interval).toLong(), computeRepetitions(
+            assertEquals(((20 * 52 + 1) / interval).toLong(), computeRepetitions(
                 "1984-03-12", "2004-03-19", RecurrencePattern.WEEKLY, interval))
-            Assert.assertEquals(((20 * 12 + 8) / interval).toLong(), computeRepetitions(
+            assertEquals(((20 * 12 + 8) / interval).toLong(), computeRepetitions(
                 "1984-03-12", "2004-11-19", RecurrencePattern.MONTHLY, interval))
-            Assert.assertEquals((20 / interval).toLong(), computeRepetitions(
+            assertEquals((20 / interval).toLong(), computeRepetitions(
                 "1984-03-12", "2004-11-19", RecurrencePattern.YEARLY, interval))
         }
     }
