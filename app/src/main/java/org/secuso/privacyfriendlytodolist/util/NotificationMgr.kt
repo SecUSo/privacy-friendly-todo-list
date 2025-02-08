@@ -111,7 +111,7 @@ object NotificationMgr {
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
         val snoozeDuration = Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context), true)
         var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze, snoozeDuration)
-        builder.addAction(R.drawable.snooze, actionTitle, pendingIntent)
+        builder.addAction(R.drawable.ic_snooze_black_24dp, actionTitle, pendingIntent)
 
         // Done Action -> Set task done without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
@@ -119,7 +119,7 @@ object NotificationMgr {
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
         actionTitle = context.resources.getString(R.string.notif_reminder_act_done)
-        builder.addAction(R.drawable.done, actionTitle, pendingIntent)
+        builder.addAction(R.drawable.ic_done_black_24dp, actionTitle, pendingIntent)
 
         val notificationId = task.getId()
         val notification = builder.build()

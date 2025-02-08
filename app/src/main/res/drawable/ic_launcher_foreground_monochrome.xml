@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+  <group android:scaleX="0.6"
+      android:scaleY="0.6"
+      android:translateX="102.4"
+      android:translateY="102.4">
+    <!--
+    The rectangle was manually changed from anti-clockwise to clockwise direction.
+    The characters T O D O were manually merged into the rectangle (with anti-clockwise direction).
+    The result is that the characters get cut out from the rectangle
+    which is what is needed to get a monochrome icon.
+     -->
+    <path
+        android:pathData="M300,67.5l107,107.5l0,140.5l0,128l-295.5,0l0,-376l188,0z
+                          M219,296h-40.3v94h40.3A27,27 0,0 0,246 363v-40.3A27,27 0,0 0,219 296ZM219,376.5L192,376.5L192,309h27a13.5,13.5 0,0 1,13.5 13.5v40.3A13.5,13.5 0,0 1,219 376.5Z
+                          M313,296L300,296a27,27 0,0 0,-27 27v40.3a27,27 0,0 0,27 27h13.5a27,27 0,0 0,27 -27v-40.3A27,27 0,0 0,313 296ZM326.5,363a13.5,13.5 0,0 1,-13.5 13.5L300,376.5a13.5,13.5 0,0 1,-13.5 -13.5v-40.3a13.5,13.5 0,0 1,13.5 -13.5h13.5a13.5,13.5 0,0 1,13.5 13.5Z
+                          M313,188.5L300,188.5a27,27 0,0 0,-27 27v40.3a27,27 0,0 0,27 27h13.5a27,27 0,0 0,27 -27v-40.3A27,27 0,0 0,313 188.5ZM326.5,255.5A13.5,13.5 0,0 1,313 269L300,269a13.5,13.5 0,0 1,-13.5 -13.5v-40.3a13.5,13.5 0,0 1,13.5 -13.5h13.5a13.5,13.5 0,0 1,13.5 13.5Z
+                          M206,282.5l13.5,0l0,-80.6l27,0l0,-13.5l-67,0l0,13.5l27,0l0,80.6z
+                          M300,175l100,0l-100,-100l0,100z"
+        android:fillColor="#fff"/>
+  </group>
+</vector>

@@ -123,7 +123,7 @@ class TodoListWidgetViewsFactory(private val context: Context, private val appWi
         val view = RemoteViews(context.packageName, R.layout.widget_task)
         val urgency = todoTask.getUrgency(reminderTimeSpan)
         view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", urgency.getColor(context))
-        view.setImageViewResource(R.id.iv_widget_task_state, if (todoTask.isDone()) R.drawable.done else ResourcesCompat.ID_NULL)
+        view.setImageViewResource(R.id.iv_widget_task_state, if (todoTask.isDone()) R.drawable.ic_done_black_24dp else ResourcesCompat.ID_NULL)
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())
         var daysUntilDeadlineStr = ""
         if (isShowingDaysUntilDeadline) {

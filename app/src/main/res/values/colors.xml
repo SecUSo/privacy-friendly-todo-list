@@ -24,6 +24,8 @@
     <color name="dotInactive">#026499</color>
     <color name="dotActive">#448BB2</color>
 
+    <color name="splashScreenBackground">#0274B2</color>
+
     <color name="launcherBackground">#3680BB</color>
 
     <color name="widgetBackground">@color/black</color>
