@@ -24,156 +24,126 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <TableLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginHorizontal="16dp"
-            android:shrinkColumns="*">
+            android:layout_marginTop="8dp"
+            android:text="@string/list_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            <TableRow
-                android:paddingVertical="8dp">
+        <TextView
+            android:id="@+id/tv_widget_cfg_list_choose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
+            android:text="@string/click_to_choose"
+            android:textSize="16sp"
+            android:textStyle="italic" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/list_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/filter_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tv_widget_cfg_list_choose"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/click_to_choose"
-                    android:textSize="16sp"
-                    android:textStyle="italic" />
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp">
 
-            </TableRow>
-            <TableRow
-                android:paddingVertical="8dp">
+            <RadioButton
+                android:id="@+id/rb_widget_cfg_all_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="13dp"
+                android:text="@string/all_tasks"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/filter_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+            <RadioButton
+                android:id="@+id/rb_widget_cfg_open_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="13dp"
+                android:text="@string/open_tasks"
+                android:textSize="16sp" />
 
-                <RadioGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/rb_widget_cfg_completed_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="13dp"
+                android:text="@string/completed_tasks"
+                android:textSize="16sp" />
+        </RadioGroup>
 
-                    <RadioButton
-                        android:id="@+id/rb_widget_cfg_all_tasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        android:text="@string/all_tasks"
-                        android:textSize="16sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/grouping_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/rb_widget_cfg_open_tasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        android:text="@string/open_tasks"
-                        android:textSize="16sp" />
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_group_by_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
+            android:text="@string/group_by_priority"
+            android:textSize="16sp"/>
 
-                    <RadioButton
-                        android:id="@+id/rb_widget_cfg_completed_tasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        android:text="@string/completed_tasks"
-                        android:textSize="16sp" />
-                </RadioGroup>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sorting_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            </TableRow>
-            <TableRow
-                android:paddingVertical="8dp">
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_sort_by_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
+            android:text="@string/sort_by_deadline"
+            android:textSize="16sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/grouping_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_sort_by_name_asc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
+            android:text="@string/sort_by_name_asc"
+            android:textSize="16sp" />
 
-                <CheckBox
-                        android:id="@+id/cb_widget_cfg_group_by_priority"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        android:text="@string/group_by_priority"
-                        android:textSize="16sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/various_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            </TableRow>
-            <TableRow
-                android:paddingVertical="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/sorting_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:id="@+id/cb_widget_cfg_sort_by_deadline"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        android:text="@string/sort_by_deadline"
-                        android:textSize="16sp" />
-
-                    <CheckBox
-                        android:id="@+id/cb_widget_cfg_sort_by_name_asc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="8dp"
-                        android:text="@string/sort_by_name_asc"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-            </TableRow>
-            <TableRow
-                android:paddingVertical="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:text="@string/various_colon"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <CheckBox
-                    android:id="@+id/cb_widget_cfg_show_days_until_deadline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="8dp"
-                    android:text="@string/show_days_until_deadline"
-                    android:textSize="16sp" />
-
-            </TableRow>
-
-        </TableLayout>
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_show_days_until_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
+            android:text="@string/show_days_until_deadline"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"

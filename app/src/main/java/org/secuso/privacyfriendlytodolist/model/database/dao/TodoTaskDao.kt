@@ -58,18 +58,16 @@ interface TodoTaskDao {
             " LIMIT 1")
     suspend fun getNextDueTask(now: Long): TodoTaskData?
 
-    @Query("SELECT todoTasks.* FROM todoTasks" +
-            " LEFT JOIN todoLists" +
-            " ON todoTasks.listId = todoLists.id" +
-            " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL AND reminderTime <= :now" +
-            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
+    @Query("SELECT * FROM todoTasks" +
+            " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL AND reminderTime <= :now")
     suspend fun getOverdueRecurringTasks(now: Long): Array<TodoTaskData>
 
-    @Query("SELECT todoTasks.* FROM todoTasks" +
-            " LEFT JOIN todoLists" +
-            " ON todoTasks.listId = todoLists.id" +
-            " WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now" +
-            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
+    @Query("SELECT * FROM todoTasks" +
+            " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND doneTime IS NOT NULL")
+    suspend fun getDoneRecurringTasks(): Array<TodoTaskData>
+
+    @Query("SELECT * FROM todoTasks" +
+            " WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now")
     suspend fun getOverdueTasks(now: Long): Array<TodoTaskData>
 
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND doneTime IS NOT NULL")

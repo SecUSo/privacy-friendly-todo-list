@@ -33,6 +33,7 @@ import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.concurrent.TimeUnit
 
 class ModelServicesImpl(private val context: Context) {
 
@@ -49,9 +50,18 @@ class ModelServicesImpl(private val context: Context) {
         return todoTask
     }
 
-    private suspend fun updateReminderTimeOfRecurringTasks(now: Long): Int {
-        val dataArray = getDB().getTodoTaskDao().getOverdueRecurringTasks(now)
-        val todoTasks = loadTasksSubtasks(false, *dataArray)
+    /**
+     * This method does two things:
+     * 1) Updates the reminder time of recurring tasks.
+     * 2) Sets every recurring task to undone where the done-date is before a deadline and the
+     * deadline is in the past. In other words: Recurring tasks need to be done again and again and
+     * this algorithm should set them to undone when the done deadline is in the past and next
+     * deadline comes near.
+     */
+    private suspend fun updateRecurringTasks(now: Long): Int {
+        var dataArray = getDB().getTodoTaskDao().getOverdueRecurringTasks(now)
+        var todoTasks = loadTasksSubtasks(false, *dataArray)
+        var updatedTasks = todoTasks.size
         for (todoTask in todoTasks) {
             // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
             val oldReminderTime = todoTask.getReminderTime()!!
@@ -62,18 +72,54 @@ class ModelServicesImpl(private val context: Context) {
             todoTask.setChanged()
             if (saveTodoTaskInDb(todoTask) > 0) {
                 Log.i(TAG, "Updating reminder time of $todoTask from " +
-                        "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
-                        "${Helper.createCanonicalDateTimeString(newReminderTime)}.")
+                    "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
+                    "${Helper.createCanonicalDateTimeString(newReminderTime)}.")
             } else {
                 Log.e(TAG, "Failed to save $todoTask after updating reminder time.")
             }
         }
-        return todoTasks.size
+
+        dataArray = getDB().getTodoTaskDao().getDoneRecurringTasks()
+        todoTasks = loadTasksSubtasks(false, *dataArray)
+        for (todoTask in todoTasks) {
+            // Note: getDoneRecurringTasks() ensures that doneTime is set.
+            val doneTime = todoTask.getDoneTime()!!
+            val deadlineTime = todoTask.getDeadline()
+            if (null == deadlineTime) {
+                Log.e(TAG, "Recurring task has no deadline: ID ${todoTask.getId()}, name ${todoTask.getName()}.")
+                continue
+            }
+            // Get the last deadline by usage of offset -1.
+            val lastDeadlineTime = Helper.getNextRecurringDate(deadlineTime,
+                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now, -1)
+            // Convert to days to avoid setting to undone while deadline-day is not completely in past.
+            val doneDay = TimeUnit.SECONDS.toDays(doneTime)
+            val lastDeadlineDay = TimeUnit.SECONDS.toDays(lastDeadlineTime)
+            val nowDay = TimeUnit.SECONDS.toDays(now)
+            Log.d(TAG, "Recurring task $todoTask: Done-time: " +
+                    "${Helper.createCanonicalDateTimeString(doneTime)}, last deadline time: " +
+                    "${Helper.createCanonicalDateTimeString(lastDeadlineTime)}, done-day: $doneDay, last deadline day: $lastDeadlineDay.")
+            // If done-marker belongs to last deadline and last deadline day is over then the task should be set to undone.
+            @Suppress("ConvertTwoComparisonsToRangeCheck")
+            if (doneDay <= lastDeadlineDay && lastDeadlineDay < nowDay) {
+                todoTask.setDone(false)
+                todoTask.setChanged()
+                if (saveTodoTaskInDb(todoTask) > 0) {
+                    ++updatedTasks
+                    Log.i(TAG, "Setting done recurring task $todoTask to undone because done date " +
+                        "${Helper.createCanonicalDateString(doneTime)} is <= last deadline " +
+                        "${Helper.createCanonicalDateString(lastDeadlineTime)} which is < today.")
+                } else {
+                    Log.e(TAG, "Failed to save $todoTask after setting to undone.")
+                }
+            }
+        }
+        return updatedTasks
     }
 
     suspend fun getNextDueTask(now: Long): Pair<TodoTask?, Int> {
         // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
-        val updatedTasks = updateReminderTimeOfRecurringTasks(now)
+        val updatedTasks = updateRecurringTasks(now)
         // Get next due task.
         val nextDueTaskData = getDB().getTodoTaskDao().getNextDueTask(now)
         var todoTask: TodoTask? = null

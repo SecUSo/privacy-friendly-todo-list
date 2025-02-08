@@ -54,6 +54,12 @@ object Helper {
         return canonicalDateTimeFormat.format(dateTime)
     }
 
+    fun createCanonicalDateString(time: Long): String {
+        val canonicalDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = Date(TimeUnit.SECONDS.toMillis(time))
+        return canonicalDateFormat.format(date)
+    }
+
     /**
      * @return The number of seconds since midnight, January 1, 1970 UTC.
      */
@@ -71,22 +77,32 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
     }
 
+    /**
+     * @param offset After the next recurring date was determined, a negative or positive number of
+     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
+     * date can be determined.
+     */
     fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern,
-                             recurrenceInterval: Int, now: Long): Long {
+                             recurrenceInterval: Int, now: Long, offset: Int = 0): Long {
         var result = recurringDate
         if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
             recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(recurringDate))
             val nowCal = Calendar.getInstance()
             nowCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(now))
-            getNextRecurringDate(recurringDateCal, recurrencePattern, recurrenceInterval, nowCal)
+            getNextRecurringDate(recurringDateCal, recurrencePattern, recurrenceInterval, nowCal, offset)
             result = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
         }
         return result
     }
 
+    /**
+     * @param offset After the next recurring date was determined, a negative or positive number of
+     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
+     * date can be determined.
+     */
     fun getNextRecurringDate(recurringDate: Calendar, recurrencePattern: RecurrencePattern,
-                             recurrenceInterval: Int, now: Calendar) {
+                             recurrenceInterval: Int, now: Calendar, offset: Int = 0) {
         if (recurrencePattern != RecurrencePattern.NONE) {
             // TODO When API 26 can be used, use ChronoUnit for a better implementation of this method.
             // Jump to previous year to have less iterations.
@@ -96,6 +112,9 @@ object Helper {
             }
             while (recurringDate <= now) {
                 addInterval(recurringDate, recurrencePattern, recurrenceInterval)
+            }
+            if (offset != 0) {
+                addInterval(recurringDate, recurrencePattern, offset * recurrenceInterval)
             }
         }
     }

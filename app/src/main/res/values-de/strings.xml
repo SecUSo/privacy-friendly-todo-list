@@ -63,7 +63,7 @@
     <string name="help_export">Die Daten dieser Anwendung können im CSV Format (comma separated values, encoding UTF-8) exportiert werden, um in anderen Anwendungen weiterverarbeitet zu werden.</string>
     <string name="help_import">Die Daten dieser Anwendung können aus einer Datei im CSV Format importiert werden. Das Format dieser Datei entspricht dem Format der CSV-Export-Datei.</string>
     <string name="help_group_widget">Widget</string>
-    <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App. Ein Tippen auf den Aktualisierungs-Button aktualisiert die Liste.</string>
+    <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App.</string>
 
     <!-- About -->
     <string name="about">Über</string>
@@ -300,7 +300,7 @@
     <string name="grouping_colon">Gruppierung:</string>
     <string name="sorting_colon">Sortierung:</string>
     <string name="various_colon">Verschiedenes:</string>
-    <string name="show_days_until_deadline">Show days until deadline</string>
+    <string name="show_days_until_deadline">Anzahl Tage bis zum Termin anzeigen</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Status geändert</string>

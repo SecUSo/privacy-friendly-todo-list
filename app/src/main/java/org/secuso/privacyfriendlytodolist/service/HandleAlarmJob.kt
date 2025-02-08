@@ -19,8 +19,6 @@ package org.secuso.privacyfriendlytodolist.service
 
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.Model
-import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -73,14 +71,14 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                 }
                 NotificationMgr.postTaskNotification(context, title, message, todoTask)
 
-                setNextAlarm(todoTask)
+                setNextAlarm()
             } else {
                 Log.e(TAG, "$logPrefix Unable to process alarm. No task with ID $todoTaskId was found.")
             }
         }
     }
 
-    private fun setNextAlarm(task: TodoTask) {
+    private fun setNextAlarm() {
         model.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
             if (isJobStopped()) {
                 return@getNextDueTask
@@ -90,28 +88,6 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                 AlarmMgr.setAlarmForNextDueTask(context, nextDueTask)
             }
 
-            if (task.isRecurring() && task.isDone()) {
-                setTaskUndone(task)
-            } else {
-                jobFinished()
-            }
-        }
-    }
-
-    private fun setTaskUndone(task: TodoTask) {
-        task.setDone(false)
-        task.setChanged()
-        model.saveTodoTaskInDb(task) { counter ->
-            if (isJobStopped()) {
-                return@saveTodoTaskInDb
-            }
-
-            if (counter > 0) {
-                Log.i(TAG, "$logPrefix Set $task automatically as undone because its re-occurring soon.")
-                Model.notifyDataChangedFromOutside(context, 0, counter, 0)
-            } else {
-                Log.e(TAG, "$logPrefix Failed to set $task as undone. Result: $counter")
-            }
             jobFinished()
         }
     }

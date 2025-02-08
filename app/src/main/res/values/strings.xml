@@ -63,7 +63,7 @@
     <string name="help_export">The data of this application can be exported in CSV format (comma separated values, encoding UTF-8) for further processing in other applications.</string>
     <string name="help_import">The data of this application can be imported from a file in CSV format. The format of this file corresponds to the format of the CSV export file.</string>
     <string name="help_group_widget">Widget</string>
-    <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
+    <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app.</string>
 
     <!-- About -->
     <string name="about">About</string>
@@ -324,7 +324,7 @@
     <string name="grouping_colon">Grouping:</string>
     <string name="sorting_colon">Sorting:</string>
     <string name="various_colon">Various:</string>
-    <string name="show_days_until_deadline">Show days until deadline</string>
+    <string name="show_days_until_deadline">Show number of days until deadline</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Task changed status</string>
