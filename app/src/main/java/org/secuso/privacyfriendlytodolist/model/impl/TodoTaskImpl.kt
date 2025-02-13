@@ -308,9 +308,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.doneTime
     }
 
-    // A task is done if the user manually sets it done or when all subtasks are done.
-    // If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
-    override fun doneStatusChanged(): Boolean {
+    override fun updateDoneStatus(): Boolean {
         var allSubtasksAreDone = true
         for (subtask in subtasks) {
             if (!subtask.isDone()) {

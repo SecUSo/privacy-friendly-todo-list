@@ -142,12 +142,12 @@ interface TodoTask : BaseTodo, Parcelable {
     fun getDoneTime(): Long?
 
     /**
-     * A task is done if the user manually sets it done or when all subtasks are done.
-     * If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
-     * This method checks if done-status of task needs an update due to this and if so, does the update.
+     * This method updates the done-status of the task depending on the done-status of all subtasks:
+     * - If all subtasks are done and the task is not set as done, it gets set as done.
+     * - If not all subtasks are done and the task is set as done, it gets set as undone.
      * @return true if the done-status was updated, otherwise false.
      */
-    fun doneStatusChanged(): Boolean
+    fun updateDoneStatus(): Boolean
     fun setInRecycleBin(isInRecycleBin: Boolean)
     fun isInRecycleBin(): Boolean
     fun checkQueryMatch(query: String?, recursive: Boolean): Boolean

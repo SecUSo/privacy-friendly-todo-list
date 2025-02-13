@@ -574,10 +574,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     if (buttonView.isPressed) {
                         currentSubtask.setDone(buttonView.isChecked)
                         currentSubtask.setChanged()
+                        val doneStatusChanged = currentTask.updateDoneStatus()
                         model.saveTodoSubtaskInDb(currentSubtask) {
-                            if (hasAutoProgress()) {
+                            val hasAutoProgress = hasAutoProgress()
+                            if (hasAutoProgress) {
                                 // If having auto-progress, update the progress and save it.
                                 currentTask.getProgress(true)
+                            }
+                            if (doneStatusChanged || hasAutoProgress) {
                                 model.saveTodoTaskInDb(currentTask) {
                                     notifyDataSetChanged()
                                 }
