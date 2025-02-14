@@ -96,9 +96,6 @@ class ModelServicesImpl(private val context: Context) {
             val doneDay = TimeUnit.SECONDS.toDays(doneTime)
             val lastDeadlineDay = TimeUnit.SECONDS.toDays(lastDeadlineTime)
             val nowDay = TimeUnit.SECONDS.toDays(now)
-            Log.d(TAG, "Recurring task $todoTask: Done-time: " +
-                    "${Helper.createCanonicalDateTimeString(doneTime)}, last deadline time: " +
-                    "${Helper.createCanonicalDateTimeString(lastDeadlineTime)}, done-day: $doneDay, last deadline day: $lastDeadlineDay.")
             // If done-marker belongs to last deadline and last deadline day is over then the task should be set to undone.
             @Suppress("ConvertTwoComparisonsToRangeCheck")
             if (doneDay <= lastDeadlineDay && lastDeadlineDay < nowDay) {
@@ -285,6 +282,10 @@ class ModelServicesImpl(private val context: Context) {
         val data = todoListImpl.data
         var counter = 0
         when (todoListImpl.requiredDBAction) {
+            RequiredDBAction.NONE -> {
+                Log.d(TAG, "Todo list NOT saved because no DB action required: $data")
+            }
+
             RequiredDBAction.INSERT -> {
                 val listId = getDB().getTodoListDao().insert(data).toInt()
                 todoListImpl.setId(listId)
@@ -295,12 +296,10 @@ class ModelServicesImpl(private val context: Context) {
                 }
             }
 
-            RequiredDBAction.UPDATE -> {
+            RequiredDBAction.UPDATE, RequiredDBAction.UPDATE_FROM_POMODORO -> {
                 counter = getDB().getTodoListDao().update(data)
                 Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
             }
-
-            else -> {}
         }
         todoListImpl.setUnchanged()
         return counter
@@ -320,6 +319,10 @@ class ModelServicesImpl(private val context: Context) {
         val data = todoTaskImpl.data
         var counter = 0
         when (todoTaskImpl.requiredDBAction) {
+            RequiredDBAction.NONE -> {
+                Log.d(TAG, "Todo task NOT saved because no DB action required: $data")
+            }
+
             RequiredDBAction.INSERT -> {
                 val taskId = getDB().getTodoTaskDao().insert(data).toInt()
                 todoTaskImpl.setId(taskId)
@@ -339,12 +342,10 @@ class ModelServicesImpl(private val context: Context) {
                 counter = getDB().getTodoTaskDao().updateValuesFromPomodoro(
                     todoTaskImpl.getId(),
                     todoTaskImpl.getName(),
-                    todoTaskImpl.getProgress(false),
+                    todoTaskImpl.getProgress(),
                     todoTaskImpl.getDoneTime())
                 Log.d(TAG, "Todo task was updated in DB by values from pomodoro (return code $counter): $data")
             }
-
-            else -> {}
         }
         todoTaskImpl.setUnchanged()
         return counter
@@ -355,6 +356,10 @@ class ModelServicesImpl(private val context: Context) {
         val data = todoSubtaskImpl.data
         var counter = 0
         when (todoSubtaskImpl.requiredDBAction) {
+            RequiredDBAction.NONE -> {
+                Log.d(TAG, "Todo subtask NOT saved because no DB action required: $data")
+            }
+
             RequiredDBAction.INSERT -> {
                 val subtaskId = getDB().getTodoSubtaskDao().insert(data).toInt()
                 todoSubtaskImpl.setId(subtaskId)
@@ -365,12 +370,10 @@ class ModelServicesImpl(private val context: Context) {
                 }
             }
 
-            RequiredDBAction.UPDATE -> {
+            RequiredDBAction.UPDATE, RequiredDBAction.UPDATE_FROM_POMODORO -> {
                 counter = getDB().getTodoSubtaskDao().update(data)
                 Log.d(TAG, "Todo subtask was updated in DB (return code $counter): $data")
             }
-
-            else -> {}
         }
         todoSubtaskImpl.setUnchanged()
         return counter

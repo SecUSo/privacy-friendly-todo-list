@@ -1095,7 +1095,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         pomodoro.putExtra("todo_id", task.getId())
             .putExtra("todo_name", task.getName())
             .putExtra("todo_description", task.getDescription())
-            .putExtra("todo_progress", task.getProgress(false))
+            .putExtra("todo_progress", task.getProgress())
         sendToPomodoro(pomodoro)
     }
 
@@ -1122,7 +1122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         todoRe.setName(intent.getStringExtra("todo_name")!!)
         todoRe.setId(intent.getIntExtra("todo_id", -1))
         todoRe.setProgress(intent.getIntExtra("todo_progress", -1))
-        val progress = todoRe.getProgress(false)
+        val progress = todoRe.getProgress()
         if (progress == 100) {
             // Set task as done
             todoRe.setDone(true)

@@ -81,7 +81,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         recurrencePattern = todoTask.getRecurrencePattern()
         recurrenceInterval = todoTask.getRecurrenceInterval()
         reminderTime = todoTask.getReminderTime()
-        taskProgress = todoTask.getProgress(false)
+        taskProgress = todoTask.getProgress()
         taskPriority = todoTask.getPriority()
         assignedTodoListId = todoTask.getListId()
     }

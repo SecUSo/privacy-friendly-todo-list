@@ -119,17 +119,20 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)
-
     /**
+     * The progress of a task is the number of done subtasks compared to the overall number of subtasks.
      *
-     * @param computeProgress If true, the progress of the task gets computed depending on the
-     * subtasks done-state. This progress also gets stored so that a further
-     * call with 'false' will return the same value (until next computation
-     * or [.setProgress] gets called).
-     * If false, the last stored value gets returned.
-     * @return The progress of the task in percent (values in range 0 - 100).
+     * @return The progress of the task in percent (value in range 0 - 100).
      */
-    fun getProgress(computeProgress: Boolean): Int
+    fun getProgress(): Int
+    /**
+     * Computes the progress of the task depending on the subtasks done-state. This progress gets
+     * stored and can be retrieved by [getProgress].
+     *
+     * @return True if a new progress value was computed, false if the same value was computed as
+     * currently is stored.
+     */
+    fun computeProgress(): Boolean
     fun setReminderTime(reminderTime: Long?)
     fun getReminderTime(): Long?
     fun hasReminderTime(): Boolean

@@ -394,7 +394,15 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 tvh.taskMenuButton.setOnClickListener {
                     onTaskMenuClickListener?.onTaskMenuClicked(currentTask)
                 }
-                tvh.progressBar.progress = currentTask.getProgress(hasAutoProgress())
+
+                val doneStatusChanged = currentTask.updateDoneStatus()
+                val progressChanged = if (hasAutoProgress()) currentTask.computeProgress() else false
+                if (doneStatusChanged || progressChanged) {
+                    currentTask.setChanged()
+                    model.saveTodoTaskInDb(currentTask)
+                }
+                tvh.progressBar.progress = currentTask.getProgress()
+
                 tvh.listName.visibility = View.GONE
                 if (showListNames && currentTask.getListId() != null) {
                     val listName = listNames[currentTask.getListId()]
@@ -440,7 +448,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                             buttonView.isChecked = inverted
                             currentTask.setDone(buttonView.isChecked)
                             currentTask.setAllSubtasksDone(inverted)
-                            currentTask.getProgress(hasAutoProgress())
+                            if (hasAutoProgress()) {
+                                currentTask.computeProgress()
+                            }
                             currentTask.setChanged()
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                                 subtask.setDone(inverted)
@@ -452,7 +462,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         snackBar.show()
                         currentTask.setDone(buttonView.isChecked)
                         currentTask.setAllSubtasksDone(buttonView.isChecked)
-                        currentTask.getProgress(hasAutoProgress())
+                        if (hasAutoProgress()) {
+                            currentTask.computeProgress()
+                        }
                         currentTask.setChanged()
                         for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                             subtask.setChanged()
@@ -574,14 +586,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     if (buttonView.isPressed) {
                         currentSubtask.setDone(buttonView.isChecked)
                         currentSubtask.setChanged()
-                        val doneStatusChanged = currentTask.updateDoneStatus()
                         model.saveTodoSubtaskInDb(currentSubtask) {
-                            val hasAutoProgress = hasAutoProgress()
-                            if (hasAutoProgress) {
-                                // If having auto-progress, update the progress and save it.
-                                currentTask.getProgress(true)
-                            }
-                            if (doneStatusChanged || hasAutoProgress) {
+                            val doneStatusChanged = currentTask.updateDoneStatus()
+                            val progressChanged = if (hasAutoProgress()) currentTask.computeProgress() else false
+                            if (doneStatusChanged || progressChanged) {
+                                currentTask.setChanged()
                                 model.saveTodoTaskInDb(currentTask) {
                                     notifyDataSetChanged()
                                 }

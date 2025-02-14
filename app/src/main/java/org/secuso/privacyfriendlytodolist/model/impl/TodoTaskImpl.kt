@@ -236,24 +236,29 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.progress = progress
     }
 
-    override fun getProgress(computeProgress: Boolean): Int {
-        if (computeProgress) {
-            val progress: Int
-            @Suppress("LiftReturnOrAssignment")
-            if (0 == subtasks.size) {
-                progress = if (isDone()) 100 else 0
-            } else {
-                var doneSubtasks = 0
-                for (todoSubtask in subtasks) {
-                    if (todoSubtask.isDone()) {
-                        ++doneSubtasks
-                    }
-                }
-                progress = doneSubtasks * 100 / subtasks.size
-            }
-            setProgress(progress)
-        }
+    override fun getProgress(): Int {
         return data.progress
+    }
+
+    override fun computeProgress(): Boolean {
+        val computedProgress: Int
+        @Suppress("LiftReturnOrAssignment")
+        if (0 == subtasks.size) {
+            computedProgress = if (isDone()) 100 else 0
+        } else {
+            var doneSubtasks = 0
+            for (todoSubtask in subtasks) {
+                if (todoSubtask.isDone()) {
+                    ++doneSubtasks
+                }
+            }
+            computedProgress = doneSubtasks * 100 / subtasks.size
+        }
+        val progressChanged = getProgress() != computedProgress
+        if (progressChanged) {
+            setProgress(computedProgress)
+        }
+        return progressChanged
     }
 
     override fun describeContents(): Int {
