@@ -60,6 +60,7 @@ object PreferenceMgr {
     val P_SORT_BY_DEADLINE = PrefMetaData("DEADLINE", PrefDataType.BOOLEAN)
     val P_SORT_BY_NAME_ASC = PrefMetaData("NAME_ASC", PrefDataType.BOOLEAN)
     val P_TASK_FILTER = PrefMetaData("FILTER", PrefDataType.STRING)
+    val P_EXPAND_TASKS_WITH_SUBTASKS = PrefMetaData("pref_expand_tasks_with_subtasks", PrefDataType.BOOLEAN)
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
     val P_APP_THEME = PrefMetaData("pref_app_theme", PrefDataType.STRING)
 

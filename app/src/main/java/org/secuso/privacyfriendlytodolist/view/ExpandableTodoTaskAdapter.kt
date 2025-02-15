@@ -58,6 +58,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val todoTasks: MutableList<TodoTask>, private val showListNames: Boolean) : BaseExpandableListAdapter() {
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
+    fun interface OnDataInitiallyLoadedListener {
+        fun onDataInitiallyLoaded(groupCount: Int)
+    }
+
     fun interface OnTaskMenuClickListener {
         fun onTaskMenuClicked(todoTask: TodoTask)
     }
@@ -69,6 +73,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     fun interface OnTasksSwappedListener {
         fun onTasksSwapped(groupPositionA: Int, groupPositionB: Int)
     }
+
+    private var onDataInitiallyLoadedListener: OnDataInitiallyLoadedListener? = null
 
     private var onTaskMenuClickListener: OnTaskMenuClickListener? = null
 
@@ -105,6 +111,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private val priorityBarPositions = mutableMapOf<TodoTask.Priority, Int>()
     private var listNames = mapOf<Int, String>()
 
+    private var dataInitiallyLoaded = false
+
     init {
         val taskFilterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, TaskFilter.ALL_TASKS.name)
         taskFilter = TaskFilter.fromString(taskFilterString)
@@ -113,6 +121,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         isSortingByNameAsc = prefs.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
         queryString = null
         notifyDataSetChanged()
+    }
+
+    fun setOnDataInitiallyLoadedListener(onDataInitiallyLoadedListener: OnDataInitiallyLoadedListener?) {
+        this.onDataInitiallyLoadedListener = onDataInitiallyLoadedListener
     }
 
     fun setOnTaskMenuClickListener(onTaskMenuClickListener: OnTaskMenuClickListener?) {
@@ -124,7 +136,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     fun onClickSubtask(groupPosition: Int, childPosition: Int) {
-        val taskHolder = getTaskByPosition(groupPosition)
+        val taskHolder = getTaskHolderByPosition(groupPosition)
         var subtaskMetaData: SubtaskMetaData? = null
         if (null != taskHolder) {
             val index = childPosition - 1
@@ -216,7 +228,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      * computed taking into account all preceding dividing priority bars
      * @return null if there is no task at @param groupPosition (but a divider row) or the wanted task
      */
-    private fun getTaskByPosition(groupPosition: Int): TaskHolder? {
+    private fun getTaskHolderByPosition(groupPosition: Int): TaskHolder? {
         var seenPriorityBars = 0
         if (isGroupingByPriority) {
             for (priority in TodoTask.Priority.entries) {
@@ -235,6 +247,15 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
         Log.w(TAG, "Unable to get task by group position $groupPosition")
         return null // should never be the case
+    }
+
+    /**
+     * @param groupPosition position of current row. For that reason the offset to the task must be
+     * computed taking into account all preceding dividing priority bars
+     * @return null if there is no task at @param groupPosition (but a divider row) or the wanted task
+     */
+    fun getTaskByPosition(groupPosition: Int): TodoTask? {
+        return getTaskHolderByPosition(groupPosition)?.todoTask
     }
 
     private fun getPositionByTask(taskIndex: Int): Int {
@@ -256,7 +277,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     override fun getChildrenCount(groupPosition: Int): Int {
         var count = ChildType.entries.size - 1
-        val todoTask = getTaskByPosition(groupPosition)?.todoTask
+        val todoTask = getTaskHolderByPosition(groupPosition)?.todoTask
         if (null != todoTask) {
             count += todoTask.getSubtasks().size
         }
@@ -294,7 +315,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         if (childPosition == 0) {
             return ChildType.TASK_DESCRIPTION_ROW
         }
-        val todoTask = getTaskByPosition(groupPosition)?.todoTask
+        val todoTask = getTaskHolderByPosition(groupPosition)?.todoTask
         return if (null != todoTask && childPosition <= todoTask.getSubtasks().size) {
             ChildType.SUBTASK_ROW
         } else {
@@ -341,12 +362,19 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         if (showListNames) {
             model.getAllToDoListNames { todoListNames ->
                 listNames = todoListNames
-                filterTasks()
-                super.notifyDataSetChanged()
+                finishDataSetChangedNotification()
             }
         } else {
-            filterTasks()
-            super.notifyDataSetChanged()
+            finishDataSetChangedNotification()
+        }
+    }
+
+    private fun finishDataSetChangedNotification() {
+        filterTasks()
+        super.notifyDataSetChanged()
+        if (!dataInitiallyLoaded) {
+            dataInitiallyLoaded = true
+            onDataInitiallyLoadedListener?.onDataInitiallyLoaded(groupCount)
         }
     }
 
@@ -355,7 +383,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val groupType = getGroupTypeEnum(groupPosition)
         when (groupType) {
             GroupType.TASK_ROW -> {
-                val currentTaskHolder = getTaskByPosition(groupPosition) ?: return actualConvertView
+                val currentTaskHolder = getTaskHolderByPosition(groupPosition) ?: return actualConvertView
                 val currentTask = currentTaskHolder.todoTask
                 val tvh: GroupTaskViewHolder
                 if (actualConvertView?.tag is GroupTaskViewHolder) {
@@ -499,7 +527,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                               convertView: View?, parent: ViewGroup): View? {
         var actualConvertView = convertView
         val childType = getChildTypeEnum(groupPosition, childPosition)
-        val currentTaskHolder = getTaskByPosition(groupPosition) ?: return actualConvertView
+        val currentTaskHolder = getTaskHolderByPosition(groupPosition) ?: return actualConvertView
         val currentTask = currentTaskHolder.todoTask
         when (childType) {
             ChildType.TASK_DESCRIPTION_ROW -> {
@@ -732,7 +760,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
-        val todoTask = getTaskByPosition(groupPosition)?.todoTask
+        val todoTask = getTaskHolderByPosition(groupPosition)?.todoTask
         return null != todoTask && childPosition > 0 && childPosition < todoTask.getSubtasks().size + 1
     }
 

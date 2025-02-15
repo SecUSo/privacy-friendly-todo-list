@@ -755,6 +755,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun createExpandableTodoTaskAdapter(todoTasks: MutableList<TodoTask>, showListNames: Boolean) {
         val expTaskAdapter = ExpandableTodoTaskAdapter(this, model, todoTasks, showListNames)
+        if (mPref.getBoolean(PreferenceMgr.P_EXPAND_TASKS_WITH_SUBTASKS.name, false)) {
+            expTaskAdapter.setOnDataInitiallyLoadedListener() { groupCount: Int ->
+                for (groupPos in 0 ..< groupCount) {
+                    val subtasksCount = expTaskAdapter.getTaskByPosition(groupPos)?.getSubtasks()?.size ?: 0
+                    if (subtasksCount > 0) {
+                        exLv.expandGroup(groupPos, false)
+                    }
+                }
+            }
+        }
         expTaskAdapter.setOnTasksSwappedListener { groupPositionA: Int, groupPositionB: Int ->
             val isGroupAExpanded = exLv.isGroupExpanded(groupPositionA)
             val isGroupBExpanded = exLv.isGroupExpanded(groupPositionB)

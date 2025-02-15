@@ -192,7 +192,8 @@
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
-    <string name="auto_progress">Fortschritt durch Teilaufgaben</string>
+    <string name="expand_tasks_with_subtasks">Aufgaben mit Unteraufgaben aufklappen</string>
+    <string name="auto_progress">Fortschritt durch Unteraufgaben</string>
     <string name="notify">Benachrichtigungston</string>
     <string name="pref_app_theme_title">Design</string>
     <string-array name="pref_app_theme_entries">

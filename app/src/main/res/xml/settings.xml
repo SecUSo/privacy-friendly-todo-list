@@ -38,6 +38,11 @@
         android:title="@string/set_pin" />
 
     <SwitchPreference
+        android:key="pref_expand_tasks_with_subtasks"
+        android:defaultValue="false"
+        android:title="@string/expand_tasks_with_subtasks" />
+
+    <SwitchPreference
         android:key="pref_progress"
         android:defaultValue="false"
         android:title="@string/auto_progress" />
