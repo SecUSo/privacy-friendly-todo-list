@@ -86,16 +86,16 @@ import java.io.StringWriter
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ModelObserver {
     // TodoTask administration
-    private var exLv: ExpandableListView? = null
-    private var emptyView: TextView? = null
+    private lateinit var model: ModelServices
+    private lateinit var exLv: ExpandableListView
+    private lateinit var emptyView: TextView
+    private lateinit var initialAlert: TextView
+    private lateinit var secondAlert: TextView
+    private lateinit var fabNewTodoTask: FloatingActionButton
+    private lateinit var mPref: SharedPreferences
     private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
     private var contextMenuTodoTask: TodoTask? = null
     private var contextMenuTodoSubtask: TodoSubtask? = null
-    private var initialAlert: TextView? = null
-    private var secondAlert: TextView? = null
-    private var fabNewTodoTask: FloatingActionButton? = null
-    private var model: ModelServices? = null
-    private var mPref: SharedPreferences? = null
 
     // TodoList administration
     private var activeListId: Int? = null
@@ -132,20 +132,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 collapseAll()
-                expandableTodoTaskAdapter!!.queryString = query
-                expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                expandableTodoTaskAdapter?.queryString = query
+                expandableTodoTaskAdapter?.notifyDataSetChanged()
                 return false
             }
 
             override fun onQueryTextChange(query: String): Boolean {
                 collapseAll()
-                expandableTodoTaskAdapter!!.queryString = query
-                expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                expandableTodoTaskAdapter?.queryString = query
+                expandableTodoTaskAdapter?.notifyDataSetChanged()
                 return false
             }
         })
         var item: MenuItem
-        val taskFilterString = mPref!!.getString(PreferenceMgr.P_TASK_FILTER.name, null)
+        val taskFilterString = mPref.getString(PreferenceMgr.P_TASK_FILTER.name, null)
         val taskFilter = TaskFilter.fromString(taskFilterString)
         item = when (taskFilter) {
             TaskFilter.ALL_TASKS -> menu.findItem(R.id.ac_show_all_tasks)
@@ -154,11 +154,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         item.isChecked = true
         item = menu.findItem(R.id.ac_group_by_prio)
-        item.isChecked = mPref!!.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
+        item.isChecked = mPref.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
         item = menu.findItem(R.id.ac_sort_by_deadline)
-        item.isChecked = mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
+        item.isChecked = mPref.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
         item = menu.findItem(R.id.ac_sort_by_name_asc)
-        item.isChecked = mPref!!.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
+        item.isChecked = mPref.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -166,14 +166,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // collapse all elements on view change.
         // the expandable list view keeps the expanded indices, so other items
         // get expanded, when they get the old expanded index
-        val groupCount = expandableTodoTaskAdapter!!.groupCount
+        val groupCount = expandableTodoTaskAdapter?.groupCount ?: 0
         for (i in 0 until groupCount) {
-            exLv!!.collapseGroup(i)
+            exLv.collapseGroup(i)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         collapseAll()
+        val expTaskAdapter = expandableTodoTaskAdapter ?: return super.onOptionsItemSelected(item)
         when (item.itemId) {
             R.id.ac_add -> {
                 startAddListDialog()
@@ -181,49 +182,49 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.ac_show_all_tasks -> {
                 item.isChecked = true
-                expandableTodoTaskAdapter!!.taskFilter = TaskFilter.ALL_TASKS
-                expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expandableTodoTaskAdapter!!.taskFilter.name).apply()
+                expTaskAdapter.taskFilter = TaskFilter.ALL_TASKS
+                expTaskAdapter.notifyDataSetChanged()
+                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
                 return true
             }
 
             R.id.ac_show_open_tasks -> {
                 item.isChecked = true
-                expandableTodoTaskAdapter!!.taskFilter = TaskFilter.OPEN_TASKS
-                expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expandableTodoTaskAdapter!!.taskFilter.name).apply()
+                expTaskAdapter.taskFilter = TaskFilter.OPEN_TASKS
+                expTaskAdapter.notifyDataSetChanged()
+                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
                 return true
             }
 
             R.id.ac_show_completed_tasks -> {
                 item.isChecked = true
-                expandableTodoTaskAdapter!!.taskFilter = TaskFilter.COMPLETED_TASKS
-                expandableTodoTaskAdapter!!.notifyDataSetChanged()
-                mPref!!.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expandableTodoTaskAdapter!!.taskFilter.name).apply()
+                expTaskAdapter.taskFilter = TaskFilter.COMPLETED_TASKS
+                expTaskAdapter.notifyDataSetChanged()
+                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
                 return true
             }
 
             R.id.ac_group_by_prio -> {
                 item.isChecked = !item.isChecked
-                expandableTodoTaskAdapter!!.isGroupingByPriority = item.isChecked
-                mPref!!.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked).apply()
+                expTaskAdapter.isGroupingByPriority = item.isChecked
+                mPref.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked).apply()
             }
 
             R.id.ac_sort_by_deadline -> {
                 item.isChecked = !item.isChecked
-                expandableTodoTaskAdapter!!.isSortingByDeadline = item.isChecked
-                mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
+                expTaskAdapter.isSortingByDeadline = item.isChecked
+                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
             }
 
             R.id.ac_sort_by_name_asc -> {
                 item.isChecked = !item.isChecked
-                expandableTodoTaskAdapter!!.isSortingByNameAsc = item.isChecked
-                mPref!!.edit().putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked).apply()
+                expTaskAdapter.isSortingByNameAsc = item.isChecked
+                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked).apply()
             }
 
             else -> return super.onOptionsItemSelected(item)
         }
-        expandableTodoTaskAdapter!!.notifyDataSetChanged()
+        expTaskAdapter.notifyDataSetChanged()
         return true
     }
 
@@ -256,7 +257,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showHints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        exLv!!.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
+        exLv.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
             expandableTodoTaskAdapter?.onClickSubtask(groupPosition, position)
             return@setOnChildClickListener false
         }
@@ -272,10 +273,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        fabNewTodoTask!!.setOnClickListener { v: View? ->
+        fabNewTodoTask.setOnClickListener { v: View? ->
             val pt = ProcessTodoTaskDialog(this@MainActivity, activeListId)
             pt.setDialogCallback { todoTask ->
-                model!!.saveTodoTaskInDb(todoTask) { counter ->
+                model.saveTodoTaskInDb(todoTask) { counter ->
                     showHints()
                     showTasksOfListOrAllTasks(todoTask.getListId())
                     if (todoTask.hasReminderTime()) {
@@ -322,7 +323,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.i(TAG, "CSV export to $uri starts. List ID: $exportListId.")
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
-        model!!.exportCSVData(exportListId, hasAutoProgress, uri) { errorMessage ->
+        model.exportCSVData(exportListId, hasAutoProgress, uri) { errorMessage ->
             val id = if (null == errorMessage) {
                 R.string.export_succeeded
             } else {
@@ -335,7 +336,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
-        model!!.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
+        model.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
             addTodoListsToNavigationMenu()
             showAllTasks()
             showHints()
@@ -398,7 +399,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun resetApp() {
                     PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit().clear().apply()
-                    model!!.deleteAllData()
+                    model.deleteAllData()
                     val intent = Intent(this@MainActivity, MainActivity::class.java)
                     dialog.dismiss()
                     startActivity(intent)
@@ -459,7 +460,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
             tasksGetDisplayed = true
             val dueTaskId = extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
-            model!!.getTaskById(dueTaskId) { dueTask ->
+            model.getTaskById(dueTaskId) { dueTask ->
                 var listId: Int? = null
                 if (null != dueTask) {
                     listId = dueTask.getListId()
@@ -489,8 +490,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun clearTaskListView() {
         toolbar?.setTitle(R.string.home)
-        exLv?.setAdapter(ExpandableTodoTaskAdapter(
-            this, model!!, ArrayList(0), false))
+        exLv.setAdapter(ExpandableTodoTaskAdapter(
+            this, model, ArrayList(0), false))
     }
 
     private fun uncheckNavigationEntries() {
@@ -643,7 +644,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Adds To do-Lists to the navigation-drawer
     private fun addTodoListsToNavigationMenu() {
-        model!!.getAllToDoListNames { allTodoListNames ->
+        model.getAllToDoListNames { allTodoListNames ->
             val navView: NavigationView = findViewById(R.id.nav_view)
             val navMenu = navView.menu
             navMenu.removeGroup(R.id.menu_group_todo_lists)
@@ -667,7 +668,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun startAddListDialog() {
         val pl = ProcessTodoListDialog(this)
         pl.setDialogCallback { todoList ->
-            model!!.saveTodoListInDb(todoList) { counter ->
+            model.saveTodoListInDb(todoList) { counter ->
                 showHints()
                 addTodoListsToNavigationMenu()
                 Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} added.")
@@ -678,7 +679,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Method to change an existing To do-List
     private fun startEditListDialog() {
-        model!!.getToDoListById(selectedTodoListId) { existingTodoList ->
+        model.getToDoListById(selectedTodoListId) { existingTodoList ->
             if (null == existingTodoList) {
                 Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
                 return@getToDoListById
@@ -686,7 +687,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val pl = ProcessTodoListDialog(this, existingTodoList)
             pl.setDialogCallback { todoList ->
                 todoList.setChanged()
-                model!!.saveTodoListInDb(todoList) { counter ->
+                model.saveTodoListInDb(todoList) { counter ->
                     showHints()
                     addTodoListsToNavigationMenu()
                     expandableTodoTaskAdapter?.notifyDataSetChanged()
@@ -727,7 +728,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val homeMenuEntry = navigationView!!.menu.getItem(0)
         homeMenuEntry.isCheckable = true
         homeMenuEntry.isChecked = true
-        model!!.getAllToDoTasks { todoTasks ->
+        model.getAllToDoTasks { todoTasks ->
             createExpandableTodoTaskAdapter(todoTasks, true)
             showHints()
         }
@@ -741,7 +742,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.isChecked = item.itemId == listId
             }
         }
-        model!!.getToDoListById(listId) { todoList ->
+        model.getToDoListById(listId) { todoList ->
             if (null != todoList) {
                 toolbar?.setTitle(todoList.getName())
                 createExpandableTodoTaskAdapter(todoList.getTasks(), false)
@@ -753,38 +754,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun createExpandableTodoTaskAdapter(todoTasks: MutableList<TodoTask>, showListNames: Boolean) {
-        expandableTodoTaskAdapter = ExpandableTodoTaskAdapter(this, model!!, todoTasks, showListNames)
-        expandableTodoTaskAdapter!!.setOnTasksSwappedListener { groupPositionA: Int, groupPositionB: Int ->
-            if (null != exLv) {
-                val isGroupAExpanded = exLv!!.isGroupExpanded(groupPositionA)
-                val isGroupBExpanded = exLv!!.isGroupExpanded(groupPositionB)
-                if (isGroupAExpanded != isGroupBExpanded) {
-                    if (isGroupAExpanded) {
-                        exLv!!.collapseGroup(groupPositionA)
-                        exLv!!.expandGroup(groupPositionB, false)
-                    } else {
-                        exLv!!.expandGroup(groupPositionA, false)
-                        exLv!!.collapseGroup(groupPositionB)
-                    }
+        val expTaskAdapter = ExpandableTodoTaskAdapter(this, model, todoTasks, showListNames)
+        expTaskAdapter.setOnTasksSwappedListener { groupPositionA: Int, groupPositionB: Int ->
+            val isGroupAExpanded = exLv.isGroupExpanded(groupPositionA)
+            val isGroupBExpanded = exLv.isGroupExpanded(groupPositionB)
+            if (isGroupAExpanded != isGroupBExpanded) {
+                if (isGroupAExpanded) {
+                    exLv.collapseGroup(groupPositionA)
+                    exLv.expandGroup(groupPositionB, false)
+                } else {
+                    exLv.expandGroup(groupPositionA, false)
+                    exLv.collapseGroup(groupPositionB)
                 }
             }
         }
-        expandableTodoTaskAdapter!!.setOnTaskMenuClickListener { todoTask: TodoTask ->
+        expTaskAdapter.setOnTaskMenuClickListener { todoTask: TodoTask ->
             contextMenuTodoTask = todoTask
             contextMenuTodoSubtask = null
             registerForContextMenu(exLv)
-            exLv!!.isLongClickable = false
+            exLv.isLongClickable = false
             openContextMenu(exLv)
         }
-        expandableTodoTaskAdapter!!.setOnSubtaskMenuClickListener { todoTask: TodoTask, todoSubtask: TodoSubtask ->
+        expTaskAdapter.setOnSubtaskMenuClickListener { todoTask: TodoTask, todoSubtask: TodoSubtask ->
             contextMenuTodoTask = todoTask
             contextMenuTodoSubtask = todoSubtask
             registerForContextMenu(exLv)
-            exLv!!.isLongClickable = false
+            exLv.isLongClickable = false
             openContextMenu(exLv)
         }
-        exLv!!.setAdapter(expandableTodoTaskAdapter)
-        exLv!!.emptyView = emptyView
+        expandableTodoTaskAdapter = expTaskAdapter
+        exLv.setAdapter(expTaskAdapter)
+        exLv.emptyView = emptyView
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
@@ -826,7 +826,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     setMessage(R.string.alert_done_tasks_remove)
                     setCancelable(true)
                     setPositiveButton(R.string.yes) { dialog, setId ->
-                        model!!.setAllDoneTasksInRecycleBin { counters ->
+                        model.setAllDoneTasksInRecycleBin { counters ->
                             val msg = getString(R.string.tasks_removed, counters.first, counters.second)
                             Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                             if (counters.first > 0) {
@@ -870,8 +870,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (null != todoTask) {
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoTask)
                     editTaskDialog.setDialogCallback(ResultCallback { changedTodoTask: TodoTask ->
-                        model!!.saveTodoTaskInDb(changedTodoTask) { counter ->
-                            expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                        model.saveTodoTaskInDb(changedTodoTask) { counter ->
+                            expandableTodoTaskAdapter?.notifyDataSetChanged()
                             showTasksOfListOrAllTasks(activeListId)
                         }
                     })
@@ -889,9 +889,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.remove_task -> {
                 val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
-                    val snackBar = Snackbar.make(fabNewTodoTask!!, R.string.task_removed, Snackbar.LENGTH_LONG)
+                    val snackBar = Snackbar.make(fabNewTodoTask, R.string.task_removed, Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.snack_undo) { v: View? ->
-                        model!!.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
+                        model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                             if (counter.first > 0) {
                                 showTasksOfListOrAllTasks(activeListId)
                                 showHints()
@@ -900,7 +900,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             }
                         }
                     }
-                    model!!.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter ->
+                    model.setTaskAndSubtasksInRecycleBin(todoTask, true) { counter ->
                         if (counter.first > 0) {
                             AlarmMgr.cancelAlarmForTask(this, todoTask.getId())
                             showTasksOfListOrAllTasks(activeListId)
@@ -926,8 +926,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (null != todoSubtask) {
                     val dialog = ProcessTodoSubtaskDialog(this, todoSubtask)
                     dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
-                        model!!.saveTodoSubtaskInDb(todoSubtask2!!) { counter ->
-                            expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                        model.saveTodoSubtaskInDb(todoSubtask2!!) { counter ->
+                            expandableTodoTaskAdapter?.notifyDataSetChanged()
                             Log.i(TAG, "Subtask altered")
                         }
                     })
@@ -939,14 +939,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val todoTask = contextMenuTodoTask
                 val todoSubtask = contextMenuTodoSubtask
                 if (null != todoTask && null != todoSubtask) {
-                    model!!.deleteTodoSubtask(todoSubtask) { counter ->
+                    model.deleteTodoSubtask(todoSubtask) { counter ->
                         todoTask.getSubtasks().remove(todoSubtask)
                         if (counter > 0) {
                             Toast.makeText(baseContext, getString(R.string.subtask_removed), Toast.LENGTH_SHORT).show()
                         } else {
                             Log.d(TAG, "Subtask was not removed from the database. Maybe it was not added beforehand (then this is no error)?")
                         }
-                        expandableTodoTaskAdapter!!.notifyDataSetChanged()
+                        expandableTodoTaskAdapter?.notifyDataSetChanged()
                     }
                 }
             }
@@ -965,7 +965,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun moveList(moveUp: Boolean) {
-        model!!.getAllToDoListIds { allTodoListIds ->
+        model.getAllToDoListIds { allTodoListIds ->
             if (allTodoListIds.size < 2) {
                 return@getAllToDoListIds
             }
@@ -990,7 +990,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 swapListIds(allTodoListIds, oldIndex, newIndex)
             }
             // Save changes
-            model!!.saveTodoListsSortOrderInDb(allTodoListIds) {
+            model.saveTodoListsSortOrderInDb(allTodoListIds) {
                 // Notify view
                 addTodoListsToNavigationMenu()
             }
@@ -1004,7 +1004,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun shareList() {
-        model!!.getToDoListById(selectedTodoListId) { todoList ->
+        model.getToDoListById(selectedTodoListId) { todoList ->
             if (null == todoList) {
                 Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
                 return@getToDoListById
@@ -1017,7 +1017,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun deleteList() {
-        model!!.getToDoListById(selectedTodoListId) { todoList ->
+        model.getToDoListById(selectedTodoListId) { todoList ->
             if (null == todoList) {
                 Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
                 return@getToDoListById
@@ -1026,7 +1026,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setMessage(R.string.alert_list_delete)
                 setCancelable(true)
                 setPositiveButton(R.string.yes) { dialog, setId ->
-                    model!!.deleteTodoList(todoList.getId()) { counter ->
+                    model.deleteTodoList(todoList.getId()) { counter ->
                         if (counter.first > 0) {
                             Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
                             val text = getString(R.string.delete_list_feedback, todoList.getName())
@@ -1059,7 +1059,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun shareAllTasks() {
-        model!!.getAllToDoTasks { todoTasks ->
+        model.getAllToDoTasks { todoTasks ->
             val text = StringWriter()
             val builder = MarkdownBuilder(text, getString(R.string.deadline))
             for (todoTask in todoTasks) {
@@ -1129,36 +1129,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (progress != -1) {
             // Update the existing entry, if no subtask
-            model!!.saveTodoTaskInDb(todoRe)
+            model.saveTodoTaskInDb(todoRe)
         }
     }
 
     private fun showHints() {
-        model!!.getNumberOfAllListsAndTasks { tuple: Pair<Int, Int> ->
+        model.getNumberOfAllListsAndTasks { tuple: Pair<Int, Int> ->
             val numberOfLists = tuple.first
             val numberOfTasksNotInRecycleBin = tuple.second
             val anim: Animation = AlphaAnimation(0.0f, 1.0f)
             if (numberOfLists == 0 && numberOfTasksNotInRecycleBin == 0) {
-                initialAlert!!.visibility = View.VISIBLE
+                initialAlert.visibility = View.VISIBLE
                 anim.duration = 1500
                 anim.startOffset = 20
                 anim.repeatMode = Animation.REVERSE
                 anim.repeatCount = Animation.INFINITE
-                initialAlert!!.startAnimation(anim)
+                initialAlert.startAnimation(anim)
             } else  /* if numberOfLists != 0 || numberOfTasksNotInRecycleBin != 0 */ {
-                initialAlert!!.visibility = View.GONE
-                initialAlert!!.clearAnimation()
+                initialAlert.visibility = View.GONE
+                initialAlert.clearAnimation()
             }
             if (numberOfTasksNotInRecycleBin == 0) {
-                secondAlert!!.visibility = View.VISIBLE
+                secondAlert.visibility = View.VISIBLE
                 anim.setDuration(1500)
                 anim.startOffset = 20
                 anim.repeatMode = Animation.REVERSE
                 anim.setRepeatCount(Animation.INFINITE)
-                secondAlert!!.startAnimation(anim)
+                secondAlert.startAnimation(anim)
             } else  /* if numberOfTasksNotInRecycleBin != 0 */ {
-                secondAlert!!.visibility = View.GONE
-                secondAlert!!.clearAnimation()
+                secondAlert.visibility = View.GONE
+                secondAlert.clearAnimation()
             }
         }
     }
