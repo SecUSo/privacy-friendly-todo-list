@@ -148,7 +148,8 @@ interface TodoTask : BaseTodo, Parcelable {
      * This method updates the done-status of the task depending on the done-status of all subtasks:
      * - If all subtasks are done and the task is not set as done, it gets set as done.
      * - If not all subtasks are done and the task is set as done, it gets set as undone.
-     * @return true if the done-status was updated, otherwise false.
+     * - If the task has no subtasks, done-status will not be changed.
+     * @return true if the done-status was changed, otherwise false.
      */
     fun updateDoneStatus(): Boolean
     fun setInRecycleBin(isInRecycleBin: Boolean)

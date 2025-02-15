@@ -314,17 +314,20 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun updateDoneStatus(): Boolean {
-        var allSubtasksAreDone = true
-        for (subtask in subtasks) {
-            if (!subtask.isDone()) {
-                allSubtasksAreDone = false
-                break
+        var doneStatusChanged = false
+        if (subtasks.isNotEmpty()) {
+            var allSubtasksAreDone = true
+            for (subtask in subtasks) {
+                if (!subtask.isDone()) {
+                    allSubtasksAreDone = false
+                    break
+                }
             }
-        }
-        val doneStatusChanged = isDone() != allSubtasksAreDone
-        if (doneStatusChanged) {
-            setDone(allSubtasksAreDone)
-            requiredDBAction = RequiredDBAction.UPDATE
+            doneStatusChanged = isDone() != allSubtasksAreDone
+            if (doneStatusChanged) {
+                setDone(allSubtasksAreDone)
+                requiredDBAction = RequiredDBAction.UPDATE
+            }
         }
         return doneStatusChanged
     }
