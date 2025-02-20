@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.util
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -262,5 +263,28 @@ object Helper {
         } catch (e: PackageManager.NameNotFoundException) {
             false
         }
+    }
+
+    fun bundleToString(bundle: Bundle?): String? {
+        var result: String? = null
+        if (null != bundle) {
+            val sb = StringBuilder("Bundle[")
+            val keys = bundle.keySet()
+            var isFirst = true
+            for (key in keys) {
+                if (!isFirst) {
+                    sb.append(',')
+                } else {
+                    isFirst = false
+                }
+                sb.append(key)
+                sb.append('=')
+                @Suppress("DEPRECATION")
+                sb.append(bundle.get(key))
+            }
+            sb.append("]")
+            result = sb.toString()
+        }
+        return result
     }
 }

@@ -77,7 +77,6 @@ import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 import java.io.StringWriter
 
-
 /**
  * Created by Sebastian Lutz on 12.03.2018.
  *
@@ -102,10 +101,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var selectedTodoListId: Int = -1
 
     // GUI
-    private var navigationView: NavigationView? = null
-    private var toolbar: Toolbar? = null
-    private var drawer: DrawerLayout? = null
-    private var drawerToggle: ActionBarDrawerToggle? = null
+    private lateinit var navigationView: NavigationView
+    private lateinit var toolbar: Toolbar
+    private lateinit var drawer: DrawerLayout
     private lateinit var exportTasksLauncher: ActivityResultLauncher<Intent>
     private lateinit var importTasksLauncher: ActivityResultLauncher<Intent>
 
@@ -114,9 +112,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var deleteAllDataBeforeImport = false
 
     // Others
-    /** Stores if a new intent was received. An intent should be processed only once and not on
-     * every resume. This flag is used to realize that. */
-    private var isNewIntent = false
+    private var isTodoDataLoaded = false
     private var isUnlocked = false
     private var unlockUntil: Long = -1L
 
@@ -229,7 +225,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate() isNewIntent: $isNewIntent, action: ${intent?.action}, savedInstanceState: ${null != savedInstanceState}, extras: ${intent?.extras?.keySet()?.joinToString()}")
+        Log.d(TAG, "onCreate() action: ${intent?.action}, savedInstanceState: ${null != savedInstanceState}, extras: ${Helper.bundleToString(intent?.extras)}")
 
         // Must be called before super.onCreate():
         installSplashScreen()
@@ -257,13 +253,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showHints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
 
+        // toolbar setup
+        toolbar = findViewById(R.id.toolbar_main)
+        setSupportActionBar(toolbar)
+
+        // side menu setup
+        drawer = findViewById(R.id.drawer_layout)
+        val drawerToggle = ActionBarDrawerToggle(this, drawer, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+
+        navigationView = findViewById(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
+
+        val navMenu = navigationView.menu
+        val btnAllTasks = navMenu.findItem(R.id.menu_home)
+        btnAllTasks.setActionView(R.layout.nav_action_view)
+        val actionButton: ImageButton = btnAllTasks.actionView!!.findViewById(R.id.action_button)
+        actionButton.tag = ACT_BTN_ALL_TASKS
+        actionButton.setOnClickListener {
+            registerForContextMenu(actionButton)
+            openContextMenu(actionButton)
+            unregisterForContextMenu(actionButton)
+        }
+
         exLv.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
             expandableTodoTaskAdapter?.onClickSubtask(groupPosition, position)
             return@setOnChildClickListener false
         }
 
         onBackPressedDispatcher.addCallback(this) {
-            val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START)
             } else if (null != activeListId) {
@@ -317,6 +337,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (intent.getIntExtra(COMMAND, -1) == COMMAND_UPDATE) {
             updateTodoFromPomodoro()
         }
+
+        addTodoListsToNavigationMenu()
     }
 
     private fun doExport(uri: Uri) {
@@ -356,6 +378,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
+        Log.d(TAG, "onSaveInstanceState()")
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_IS_UNLOCKED, isUnlocked)
         outState.putLong(KEY_UNLOCK_UNTIL, unlockUntil)
@@ -380,9 +403,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             null else savedInstanceState.getInt(KEY_ACTIVE_LIST_ID)
     }
 
-    private fun authAndGuiInit() {
+    private fun authAndLoadTodoData() {
         if (PinUtil.hasPin(this) && !isUnlocked && (unlockUntil == -1L || System.currentTimeMillis() > unlockUntil)) {
-            clearTaskListView()
+            clearTodoData()
             isUnlocked = false
             unlockUntil = -1L
             val dialog = PinDialog(this, true)
@@ -390,7 +413,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 override fun accepted() {
                     isUnlocked = true
                     unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
-                    initializeActivity()
+                    loadTodoData()
                 }
 
                 override fun declined() {
@@ -399,67 +422,52 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun resetApp() {
                     PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit().clear().apply()
-                    model.deleteAllData()
-                    val intent = Intent(this@MainActivity, MainActivity::class.java)
-                    dialog.dismiss()
-                    startActivity(intent)
+                    model.deleteAllData { _ ->
+                        dialog.dismiss()
+                        val intent = Intent(this@MainActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
             })
             dialog.show()
         } else {
-            initializeActivity()
+            loadTodoData()
         }
     }
 
-    private fun initializeActivity() {
-        // toolbar setup
-        toolbar = findViewById(R.id.toolbar_main)
-        setSupportActionBar(toolbar)
-
-        // side menu setup
-        drawer = findViewById(R.id.drawer_layout)
-        if (null != drawerToggle) {
-            drawer!!.removeDrawerListener(drawerToggle!!)
-        }
-        drawerToggle = ActionBarDrawerToggle(this, drawer, toolbar,
-            R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer!!.addDrawerListener(drawerToggle!!)
-        drawerToggle!!.syncState()
-
-        navigationView = findViewById(R.id.nav_view)
-        navigationView!!.setNavigationItemSelectedListener(this)
-
-        val navMenu = navigationView!!.menu
-        val btnAllTasks = navMenu.findItem(R.id.menu_home)
-        btnAllTasks.setActionView(R.layout.nav_action_view)
-        val actionButton: ImageButton = btnAllTasks.actionView!!.findViewById(R.id.action_button)
-        actionButton.tag = ACT_BTN_ALL_TASKS
-        actionButton.setOnClickListener {
-            registerForContextMenu(actionButton)
-            openContextMenu(actionButton)
-            unregisterForContextMenu(actionButton)
-        }
-
-        addTodoListsToNavigationMenu()
-
-        var tasksGetDisplayed = false
+    private fun loadTodoData() {
+        var isTodoDataLoadedByExtras = false
         val extras = intent.extras
-        if (isNewIntent && extras != null) {
-            isNewIntent = false
-            tasksGetDisplayed = processExtras(extras)
+        if (extras != null) {
+            isTodoDataLoadedByExtras = processExtras(extras)
         }
-        if (!tasksGetDisplayed) {
+
+        // Load data only if it is not already loaded. This is faster and avoids flickering.
+        if (!isTodoDataLoaded && !isTodoDataLoadedByExtras) {
             showTasksOfListOrAllTasks(activeListId)
         }
+
+        isTodoDataLoaded = true
+    }
+
+    private fun clearTodoData() {
+        Log.d(TAG, "Clearing todo data.")
+        toolbar.setTitle(R.string.home)
+        exLv.setAdapter(ExpandableTodoTaskAdapter(
+            this, model, ArrayList(0), false))
+
+        isTodoDataLoaded = false
     }
 
     private fun processExtras(extras: Bundle): Boolean {
-        var tasksGetDisplayed = false
+        var todoDataLoaded = false
 
         // check if app was started by clicking on a reminding notification
         if (extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
-            tasksGetDisplayed = true
+            todoDataLoaded = true
             val dueTaskId = extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
+            // Remove entry to avoid to process it more than once. Sometimes extras get processed more than once.
+            extras.remove(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
             model.getTaskById(dueTaskId) { dueTask ->
                 var listId: Int? = null
                 if (null != dueTask) {
@@ -474,13 +482,65 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val listIdFromWidget = extras.getString(TodoListWidget.EXTRA_WIDGET_LIST_ID, null)
         if (null != listIdFromWidget) {
-            tasksGetDisplayed = true
+            // Remove entry to avoid to process it more than once. Sometimes extras get processed more than once.
+            extras.remove(TodoListWidget.EXTRA_WIDGET_LIST_ID)
+            todoDataLoaded = true
             Log.d(TAG, "Widget started MainActivity to show tasks of list $listIdFromWidget.")
             val listId = if (listIdFromWidget != "null") listIdFromWidget.toInt() else null
             showTasksOfListOrAllTasks(listId)
         }
 
-        return tasksGetDisplayed
+        return todoDataLoaded
+    }
+
+    override fun onPause() {
+        Log.d(TAG, "onPause()")
+        super.onPause()
+
+        if (PinUtil.hasPin(this)) {
+            // Clear task list view so that tasks are not visible before the right pin was entered.
+            clearTodoData()
+        }
+
+        Model.unregisterModelObserver(this)
+    }
+
+    override fun onNewIntent(newIntent: Intent?) {
+        Log.d(TAG, "onNewIntent() action: ${newIntent?.action}, extras: ${Helper.bundleToString(newIntent?.extras)}")
+        super.onNewIntent(newIntent)
+        // Store intent to process it via onResume() and authAndLoadTodoData().
+        intent = newIntent
+    }
+
+    override fun onResume() {
+        Log.d(TAG, "onResume() action: ${intent?.action}, extras: ${Helper.bundleToString(intent?.extras)}")
+        super.onResume()
+
+        Model.registerModelObserver(this)
+
+        // Check if Pomodoro is installed
+        pomodoroInstalled = checkIfPomodoroInstalled()
+
+        // isUnlocked might be false when returning from another activity. See onUserLeaveHint().
+        // Set to true if the unlock period was not expired:
+        if (!isUnlocked && unlockUntil != -1L && System.currentTimeMillis() <= unlockUntil) {
+            isUnlocked = true
+        }
+        unlockUntil = -1L
+
+        authAndLoadTodoData()
+    }
+
+    override fun onStop() {
+        Log.d(TAG, "onStop()")
+        // Call order if API level < 28: 1. onSaveInstanceState(), 2. onStop()
+        // Beginning with API level 28 this call order was reversed.
+        // To not reset the flag before saving it, 'isUnlocked = false' gets done at the end of onSaveInstanceState()
+        // for all API levels. Here too, if API level is < 28 (to keep old behavior (don't know if necessary)).
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            isUnlocked = false
+        }
+        super.onStop()
     }
 
     override fun onDestroy() {
@@ -488,19 +548,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onDestroy()
     }
 
-    private fun clearTaskListView() {
-        toolbar?.setTitle(R.string.home)
-        exLv.setAdapter(ExpandableTodoTaskAdapter(
-            this, model, ArrayList(0), false))
-    }
-
     private fun uncheckNavigationEntries() {
         // uncheck all navigation entries
-        if (navigationView != null) {
-            val size = navigationView!!.menu.size()
-            for (i in 0 until size) {
-                navigationView!!.menu.getItem(i).isChecked = false
-            }
+        val size = navigationView.menu.size()
+        for (i in 0 until size) {
+            navigationView.menu.getItem(i).isChecked = false
         }
     }
 
@@ -577,64 +629,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 showTasksOfList(item.itemId)
             }
         }
-        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         drawer.closeDrawer(GravityCompat.START)
         return true
-    }
-
-    override fun onStop() {
-        // Call order if API level < 28: 1. onSaveInstanceState(), 2. onStop()
-        // Beginning with API level 28 this call order was reversed.
-        // To not reset the flag before saving it, 'isUnlocked = false' gets done at the end of onSaveInstanceState()
-        // for all API levels. Here too, if API level is < 28 (to keep old behavior (don't know if necessary)).
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            isUnlocked = false
-        }
-        super.onStop()
     }
 
     override fun onTodoDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         Log.i(TAG, "Refreshing task list view because data model was changed from outside.")
         showTasksOfListOrAllTasks(activeListId)
-    }
-
-    override fun onPause() {
-        Log.d(TAG, "onPause()")
-        super.onPause()
-
-        if (PinUtil.hasPin(this)) {
-            // Clear task list view so that tasks are not visible before the right pin was entered.
-            clearTaskListView()
-        }
-
-        Model.unregisterModelObserver(this)
-    }
-
-    override fun onNewIntent(newIntent: Intent?) {
-        Log.d(TAG, "onNewIntent() action: ${newIntent?.action}, extras: ${newIntent?.extras?.keySet()?.joinToString()}")
-        super.onNewIntent(newIntent)
-        // Store intent to process it via onResume() and authAndGuiInit().
-        intent = newIntent
-        isNewIntent = true
-    }
-
-    override fun onResume() {
-        Log.d(TAG, "onResume() isNewIntent: $isNewIntent, action: ${intent?.action}, extras: ${intent?.extras?.keySet()?.joinToString()}")
-        super.onResume()
-
-        Model.registerModelObserver(this)
-
-        // Check if Pomodoro is installed
-        pomodoroInstalled = checkIfPomodoroInstalled()
-
-        // isUnlocked might be false when returning from another activity. See onUserLeaveHint().
-        // Set to true if the unlock period was not expired:
-        if (!isUnlocked && unlockUntil != -1L && System.currentTimeMillis() <= unlockUntil) {
-            isUnlocked = true
-        }
-        unlockUntil = -1L
-
-        authAndGuiInit()
     }
 
     override fun onUserLeaveHint() {
@@ -693,7 +694,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     expandableTodoTaskAdapter?.notifyDataSetChanged()
                     if (activeListId == todoList.getId()) {
                         // In case of changed list name:
-                        toolbar?.setTitle(todoList.getName())
+                        toolbar.setTitle(todoList.getName())
                     }
                     if (counter > 0) {
                         Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} changed.")
@@ -723,9 +724,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showAllTasks() {
         activeListId = null
-        toolbar?.setTitle(R.string.home)
+        toolbar.setTitle(R.string.home)
         uncheckNavigationEntries()
-        val homeMenuEntry = navigationView!!.menu.getItem(0)
+        val homeMenuEntry = navigationView.menu.getItem(0)
         homeMenuEntry.isCheckable = true
         homeMenuEntry.isChecked = true
         model.getAllToDoTasks { todoTasks ->
@@ -736,15 +737,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showTasksOfList(listId: Int) {
         activeListId = listId
-        if (navigationView != null) {
-            for (i in 0 until navigationView!!.menu.size()) {
-                val item = navigationView!!.menu.getItem(i)
-                item.isChecked = item.itemId == listId
-            }
+        for (i in 0 until navigationView.menu.size()) {
+            val item = navigationView.menu.getItem(i)
+            item.isChecked = item.itemId == listId
         }
         model.getToDoListById(listId) { todoList ->
             if (null != todoList) {
-                toolbar?.setTitle(todoList.getName())
+                toolbar.setTitle(todoList.getName())
                 createExpandableTodoTaskAdapter(todoList.getTasks(), false)
             } else {
                 Log.e(TAG, "Todo list with id $listId not found. Showing all tasks instead.")
@@ -756,7 +755,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun createExpandableTodoTaskAdapter(todoTasks: MutableList<TodoTask>, showListNames: Boolean) {
         val expTaskAdapter = ExpandableTodoTaskAdapter(this, model, todoTasks, showListNames)
         if (mPref.getBoolean(PreferenceMgr.P_EXPAND_TASKS_WITH_SUBTASKS.name, false)) {
-            expTaskAdapter.setOnDataInitiallyLoadedListener() { groupCount: Int ->
+            expTaskAdapter.setOnDataInitiallyLoadedListener{ groupCount: Int ->
                 for (groupPos in 0 ..< groupCount) {
                     val subtasksCount = expTaskAdapter.getTaskByPosition(groupPos)?.getSubtasks()?.size ?: 0
                     if (subtasksCount > 0) {
