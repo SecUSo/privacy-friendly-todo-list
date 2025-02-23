@@ -29,6 +29,7 @@
     <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
+    <string name="system_default">System default</string>
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
@@ -217,13 +218,24 @@
     <string-array name="pref_app_theme_entries">
         <item>Light</item>
         <item>Dark</item>
-        <item>System default</item>
+        <item>@string/system_default</item>
     </string-array>
     <string name="pref_app_theme_default" translatable="false">SYSTEM</string>
     <string-array name="pref_app_theme_values" translatable="false">
         <item>LIGHT</item>
         <item>DARK</item>
         <item>SYSTEM</item>
+    </string-array>
+    <string name="pref_first_day_of_week_title">First day of week</string>
+    <string-array name="pref_first_day_of_week_entries">
+        <item>@string/system_default</item>
+        <item>@string/sunday</item>
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+        <item>@string/saturday</item>
     </string-array>
 
     <!-- Permission request dialog -->
@@ -241,6 +253,13 @@
     <string name="notif_reminder_act_done">Set done</string>
 
     <!-- Date and Time -->
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
     <string name="sunday_abbr">SUN</string>
     <string name="monday_abbr">MON</string>
     <string name="tuesday_abbr">TUE</string>

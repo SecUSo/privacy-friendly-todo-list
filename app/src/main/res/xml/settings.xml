@@ -48,6 +48,14 @@
         android:title="@string/auto_progress" />
 
     <ListPreference
+        android:key="pref_first_day_of_week"
+        android:defaultValue="0"
+        android:entries="@array/pref_first_day_of_week_entries"
+        android:entryValues="@array/first_day_of_week_values"
+        android:summary="%s"
+        android:title="@string/pref_first_day_of_week_title" />
+
+    <ListPreference
         android:key="pref_app_theme"
         android:defaultValue="@string/pref_app_theme_default"
         android:entries="@array/pref_app_theme_entries"

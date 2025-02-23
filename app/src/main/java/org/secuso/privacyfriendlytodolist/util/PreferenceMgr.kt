@@ -22,7 +22,7 @@ import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 
 enum class PrefDataType {
-    BOOLEAN, LONG, STRING
+    BOOLEAN, STRING
 }
 
 class PrefMetaData(
@@ -63,6 +63,7 @@ object PreferenceMgr {
     val P_EXPAND_TASKS_WITH_SUBTASKS = PrefMetaData("pref_expand_tasks_with_subtasks", PrefDataType.BOOLEAN)
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
     val P_APP_THEME = PrefMetaData("pref_app_theme", PrefDataType.STRING)
+    val P_FIRST_DAY_OF_WEEK = PrefMetaData("pref_first_day_of_week", PrefDataType.STRING)
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)

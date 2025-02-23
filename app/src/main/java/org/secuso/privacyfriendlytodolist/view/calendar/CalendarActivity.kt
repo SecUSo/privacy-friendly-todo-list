@@ -25,11 +25,15 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * Created by Sebastian Lutz on 31.01.2018.
@@ -55,8 +59,17 @@ class CalendarActivity : AppCompatActivity() {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        var firstDayOfWeek = prefs.getString(PreferenceMgr.P_FIRST_DAY_OF_WEEK.name, "0")?.toInt() ?: 0
+        if (firstDayOfWeek == 0) {
+            val calendar = Calendar.getInstance(Locale.getDefault())
+            firstDayOfWeek = calendar.firstDayOfWeek
+        }
+
         calendarGridAdapter = CalendarGridAdapter(this, R.layout.calendar_day)
         calendarView.setGridAdapter(calendarGridAdapter)
+        calendarView.setFirstDayOfWeek(firstDayOfWeek)
         calendarView.setNextMonthOnClickListener {
             calendarView.incMonth(1)
             calendarView.refresh()
@@ -74,6 +87,7 @@ class CalendarActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         }
+        calendarView.refresh()
 
         onBackPressedDispatcher.addCallback(this) {
             val intent = Intent(this@CalendarActivity, MainActivity::class.java)

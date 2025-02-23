@@ -119,111 +119,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //Pomodoro
     private var pomodoroInstalled = false
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        menuInflater.inflate(R.menu.search, menu)
-        menuInflater.inflate(R.menu.add_list, menu)
-        val searchItem = menu.findItem(R.id.ac_search)
-        val searchView = searchItem.actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                collapseAll()
-                expandableTodoTaskAdapter?.queryString = query
-                expandableTodoTaskAdapter?.notifyDataSetChanged()
-                return false
-            }
-
-            override fun onQueryTextChange(query: String): Boolean {
-                collapseAll()
-                expandableTodoTaskAdapter?.queryString = query
-                expandableTodoTaskAdapter?.notifyDataSetChanged()
-                return false
-            }
-        })
-        var item: MenuItem
-        val taskFilterString = mPref.getString(PreferenceMgr.P_TASK_FILTER.name, null)
-        val taskFilter = TaskFilter.fromString(taskFilterString)
-        item = when (taskFilter) {
-            TaskFilter.ALL_TASKS -> menu.findItem(R.id.ac_show_all_tasks)
-            TaskFilter.OPEN_TASKS -> menu.findItem(R.id.ac_show_open_tasks)
-            TaskFilter.COMPLETED_TASKS -> menu.findItem(R.id.ac_show_completed_tasks)
-        }
-        item.isChecked = true
-        item = menu.findItem(R.id.ac_group_by_prio)
-        item.isChecked = mPref.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
-        item = menu.findItem(R.id.ac_sort_by_deadline)
-        item.isChecked = mPref.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
-        item = menu.findItem(R.id.ac_sort_by_name_asc)
-        item.isChecked = mPref.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun collapseAll() {
-        // collapse all elements on view change.
-        // the expandable list view keeps the expanded indices, so other items
-        // get expanded, when they get the old expanded index
-        val groupCount = expandableTodoTaskAdapter?.groupCount ?: 0
-        for (i in 0 until groupCount) {
-            exLv.collapseGroup(i)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        collapseAll()
-        val expTaskAdapter = expandableTodoTaskAdapter ?: return super.onOptionsItemSelected(item)
-        when (item.itemId) {
-            R.id.ac_add -> {
-                startAddListDialog()
-            }
-
-            R.id.ac_show_all_tasks -> {
-                item.isChecked = true
-                expTaskAdapter.taskFilter = TaskFilter.ALL_TASKS
-                expTaskAdapter.notifyDataSetChanged()
-                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
-                return true
-            }
-
-            R.id.ac_show_open_tasks -> {
-                item.isChecked = true
-                expTaskAdapter.taskFilter = TaskFilter.OPEN_TASKS
-                expTaskAdapter.notifyDataSetChanged()
-                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
-                return true
-            }
-
-            R.id.ac_show_completed_tasks -> {
-                item.isChecked = true
-                expTaskAdapter.taskFilter = TaskFilter.COMPLETED_TASKS
-                expTaskAdapter.notifyDataSetChanged()
-                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
-                return true
-            }
-
-            R.id.ac_group_by_prio -> {
-                item.isChecked = !item.isChecked
-                expTaskAdapter.isGroupingByPriority = item.isChecked
-                mPref.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked).apply()
-            }
-
-            R.id.ac_sort_by_deadline -> {
-                item.isChecked = !item.isChecked
-                expTaskAdapter.isSortingByDeadline = item.isChecked
-                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
-            }
-
-            R.id.ac_sort_by_name_asc -> {
-                item.isChecked = !item.isChecked
-                expTaskAdapter.isSortingByNameAsc = item.isChecked
-                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked).apply()
-            }
-
-            else -> return super.onOptionsItemSelected(item)
-        }
-        expTaskAdapter.notifyDataSetChanged()
-        return true
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate() action: ${intent?.action}, savedInstanceState: ${null != savedInstanceState}, extras: ${Helper.bundleToString(intent?.extras)}")
 
@@ -339,42 +234,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         addTodoListsToNavigationMenu()
-    }
-
-    private fun doExport(uri: Uri) {
-        Log.i(TAG, "CSV export to $uri starts. List ID: $exportListId.")
-        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
-        model.exportCSVData(exportListId, hasAutoProgress, uri) { errorMessage ->
-            val id = if (null == errorMessage) {
-                R.string.export_succeeded
-            } else {
-                Log.e(TAG, "CSV export failed: $errorMessage")
-                R.string.export_failed
-            }
-            Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun doImport(uri: Uri) {
-        Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
-        model.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
-            addTodoListsToNavigationMenu()
-            showAllTasks()
-            showHints()
-
-            if (null == errorMessage) {
-                Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
-            } else {
-                Log.e(TAG, "CSV import failed: $errorMessage")
-                MaterialAlertDialogBuilder(this).apply {
-                    setTitle(R.string.import_failed)
-                    setMessage(errorMessage)
-                    setPositiveButton(R.string.ok) { _, _ -> }
-                    show()
-                }
-            }
-        }
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -546,6 +405,111 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onDestroy() {
         Log.d(TAG, "onDestroy()")
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.search, menu)
+        menuInflater.inflate(R.menu.add_list, menu)
+        val searchItem = menu.findItem(R.id.ac_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                collapseAll()
+                expandableTodoTaskAdapter?.queryString = query
+                expandableTodoTaskAdapter?.notifyDataSetChanged()
+                return false
+            }
+
+            override fun onQueryTextChange(query: String): Boolean {
+                collapseAll()
+                expandableTodoTaskAdapter?.queryString = query
+                expandableTodoTaskAdapter?.notifyDataSetChanged()
+                return false
+            }
+        })
+        var item: MenuItem
+        val taskFilterString = mPref.getString(PreferenceMgr.P_TASK_FILTER.name, null)
+        val taskFilter = TaskFilter.fromString(taskFilterString)
+        item = when (taskFilter) {
+            TaskFilter.ALL_TASKS -> menu.findItem(R.id.ac_show_all_tasks)
+            TaskFilter.OPEN_TASKS -> menu.findItem(R.id.ac_show_open_tasks)
+            TaskFilter.COMPLETED_TASKS -> menu.findItem(R.id.ac_show_completed_tasks)
+        }
+        item.isChecked = true
+        item = menu.findItem(R.id.ac_group_by_prio)
+        item.isChecked = mPref.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
+        item = menu.findItem(R.id.ac_sort_by_deadline)
+        item.isChecked = mPref.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
+        item = menu.findItem(R.id.ac_sort_by_name_asc)
+        item.isChecked = mPref.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun collapseAll() {
+        // collapse all elements on view change.
+        // the expandable list view keeps the expanded indices, so other items
+        // get expanded, when they get the old expanded index
+        val groupCount = expandableTodoTaskAdapter?.groupCount ?: 0
+        for (i in 0 until groupCount) {
+            exLv.collapseGroup(i)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        collapseAll()
+        val expTaskAdapter = expandableTodoTaskAdapter ?: return super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.ac_add -> {
+                startAddListDialog()
+            }
+
+            R.id.ac_show_all_tasks -> {
+                item.isChecked = true
+                expTaskAdapter.taskFilter = TaskFilter.ALL_TASKS
+                expTaskAdapter.notifyDataSetChanged()
+                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
+                return true
+            }
+
+            R.id.ac_show_open_tasks -> {
+                item.isChecked = true
+                expTaskAdapter.taskFilter = TaskFilter.OPEN_TASKS
+                expTaskAdapter.notifyDataSetChanged()
+                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
+                return true
+            }
+
+            R.id.ac_show_completed_tasks -> {
+                item.isChecked = true
+                expTaskAdapter.taskFilter = TaskFilter.COMPLETED_TASKS
+                expTaskAdapter.notifyDataSetChanged()
+                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
+                return true
+            }
+
+            R.id.ac_group_by_prio -> {
+                item.isChecked = !item.isChecked
+                expTaskAdapter.isGroupingByPriority = item.isChecked
+                mPref.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked).apply()
+            }
+
+            R.id.ac_sort_by_deadline -> {
+                item.isChecked = !item.isChecked
+                expTaskAdapter.isSortingByDeadline = item.isChecked
+                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
+            }
+
+            R.id.ac_sort_by_name_asc -> {
+                item.isChecked = !item.isChecked
+                expTaskAdapter.isSortingByNameAsc = item.isChecked
+                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked).apply()
+            }
+
+            else -> return super.onOptionsItemSelected(item)
+        }
+        expTaskAdapter.notifyDataSetChanged()
+        return true
     }
 
     private fun uncheckNavigationEntries() {
@@ -1097,6 +1061,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             putExtra(Intent.EXTRA_TITLE, if (null == listId) "ToDo Data.csv" else "ToDo List.csv")
         }
         exportTasksLauncher.launch(intent)
+    }
+
+    private fun doExport(uri: Uri) {
+        Log.i(TAG, "CSV export to $uri starts. List ID: $exportListId.")
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val hasAutoProgress = prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
+        model.exportCSVData(exportListId, hasAutoProgress, uri) { errorMessage ->
+            val id = if (null == errorMessage) {
+                R.string.export_succeeded
+            } else {
+                Log.e(TAG, "CSV export failed: $errorMessage")
+                R.string.export_failed
+            }
+            Toast.makeText(baseContext, getString(id), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun doImport(uri: Uri) {
+        Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
+        model.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
+            addTodoListsToNavigationMenu()
+            showAllTasks()
+            showHints()
+
+            if (null == errorMessage) {
+                Toast.makeText(baseContext, getString(R.string.import_succeeded), Toast.LENGTH_SHORT).show()
+            } else {
+                Log.e(TAG, "CSV import failed: $errorMessage")
+                MaterialAlertDialogBuilder(this).apply {
+                    setTitle(R.string.import_failed)
+                    setMessage(errorMessage)
+                    setPositiveButton(R.string.ok) { _, _ -> }
+                    show()
+                }
+            }
+        }
     }
 
     private fun sendToPomodoro(task: TodoTask) {

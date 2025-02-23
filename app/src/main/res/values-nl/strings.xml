@@ -21,6 +21,7 @@
     <string name="name">Naam</string>
     <string name="description_hint">Beschrijving</string>
     <string name="ok">Okay</string>
+    <string name="system_default">Systeem standaard</string>
     <!-- Common model strings -->
     <string name="select_option">Selecteer optie</string>
     <string name="high_priority">Hoog</string>
@@ -124,7 +125,7 @@
     <string-array name="pref_app_theme_entries">
         <item>Licht</item>
         <item>Donker</item>
-        <item>Systeem standaard</item>
+        <item>@string/system_default</item>
     </string-array>
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline nadert: %1$s</string>
