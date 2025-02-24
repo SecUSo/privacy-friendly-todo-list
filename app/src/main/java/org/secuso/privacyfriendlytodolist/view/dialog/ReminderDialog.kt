@@ -71,6 +71,7 @@ class ReminderDialog(context: Context, private val reminderTime: Long?, private 
             layoutDate.visibility = View.GONE
             layoutTime.visibility = View.VISIBLE
         }
+        datePicker.firstDayOfWeek = PreferenceMgr.getFirstDayOfWeek(context)
         val timePicker: TimePicker = findViewById(R.id.tp_reminder)
         timePicker.setIs24HourView(DateFormat.is24HourFormat(context))
         timePicker.currentHour = calendar[Calendar.HOUR_OF_DAY]

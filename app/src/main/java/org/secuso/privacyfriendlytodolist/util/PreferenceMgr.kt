@@ -20,6 +20,8 @@ package org.secuso.privacyfriendlytodolist.util
 import android.content.Context
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
+import java.util.Calendar
+import java.util.Locale
 
 enum class PrefDataType {
     BOOLEAN, STRING
@@ -63,7 +65,7 @@ object PreferenceMgr {
     val P_EXPAND_TASKS_WITH_SUBTASKS = PrefMetaData("pref_expand_tasks_with_subtasks", PrefDataType.BOOLEAN)
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
     val P_APP_THEME = PrefMetaData("pref_app_theme", PrefDataType.STRING)
-    val P_FIRST_DAY_OF_WEEK = PrefMetaData("pref_first_day_of_week", PrefDataType.STRING)
+    private val P_FIRST_DAY_OF_WEEK = PrefMetaData("pref_first_day_of_week", PrefDataType.STRING)
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -109,6 +111,19 @@ object PreferenceMgr {
     fun getAppTheme(context: Context): String? {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getString(P_APP_THEME.name, null)
+    }
+
+    /**
+     * @return The first day of a week as weekday-constant from [Calendar] class, e.g. [Calendar.MONDAY].
+     */
+    fun getFirstDayOfWeek(context: Context): Int {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        var firstDayOfWeek = prefs.getString(P_FIRST_DAY_OF_WEEK.name, "0")?.toInt() ?: 0
+        if (firstDayOfWeek < Calendar.SUNDAY || firstDayOfWeek > Calendar.SATURDAY) {
+            val calendar = Calendar.getInstance(Locale.getDefault())
+            firstDayOfWeek = calendar.firstDayOfWeek
+        }
+        return firstDayOfWeek
     }
 
     private fun getStringPrefAsLong(context: Context, prefName: String): Long {
