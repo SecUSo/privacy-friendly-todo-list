@@ -20,20 +20,38 @@ package org.secuso.privacyfriendlytodolist.observer
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.util.LogTag
-import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 
+/**
+ * The system preference manager does not currently store a strong reference to the listener.
+ * This preference observer handles this correctly and so provides a simple mechanism to register
+ * listener for preference changes.
+ */
 object PreferenceObserver {
     private val TAG = LogTag.create(this::class.java)
+
+    fun interface OnPreferenceChangeListener {
+        fun onPreferenceChange(sharedPreferences: SharedPreferences, key: String?)
+    }
+
+    private val preferenceChangeListeners = ArrayList<OnPreferenceChangeListener>()
+
+    fun registerPreferenceChangeListener(preferenceChangeListener: OnPreferenceChangeListener) {
+        if (!preferenceChangeListeners.contains(preferenceChangeListener)) {
+            preferenceChangeListeners.add(preferenceChangeListener)
+        }
+    }
+
+    fun unregisterPreferenceChangeListener(preferenceChangeListener: OnPreferenceChangeListener) {
+        preferenceChangeListeners.remove(preferenceChangeListener)
+    }
 
     private val sharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             Log.d(TAG, "Preference $key changed.")
-            if (key == PreferenceMgr.P_APP_THEME.name) {
-                val appTheme = sharedPreferences?.getString(key, null)
-                applyAppTheme(appTheme)
+            for (listener in preferenceChangeListeners) {
+                listener.onPreferenceChange(sharedPreferences, key)
             }
         }
 
@@ -47,17 +65,5 @@ object PreferenceObserver {
          * that will exist as long as you need the listener."
          */
         prefs.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
-    }
-
-    fun applyAppTheme(appTheme: String?) {
-        when (appTheme) {
-            "LIGHT"  -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "DARK"   -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            "SYSTEM" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            else     -> {
-                Log.e(TAG, "Unknown value for preference ${PreferenceMgr.P_APP_THEME.name}: $appTheme.")
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-        }
     }
 }

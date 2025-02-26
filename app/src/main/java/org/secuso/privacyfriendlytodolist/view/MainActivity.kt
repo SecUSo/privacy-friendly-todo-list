@@ -32,6 +32,7 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.AdapterView
+import android.widget.Button
 import android.widget.ExpandableListView
 import android.widget.ImageButton
 import android.widget.TextView
@@ -42,6 +43,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -49,6 +51,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
+import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -59,6 +62,7 @@ import org.secuso.privacyfriendlytodolist.model.ModelObserver
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.observer.PreferenceObserver
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -102,6 +106,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // GUI
     private lateinit var navigationView: NavigationView
+    private lateinit var listQuickAccess: FlexboxLayout
+    private lateinit var listQuickAccessButtonTheme: ContextThemeWrapper
     private lateinit var toolbar: Toolbar
     private lateinit var drawer: DrawerLayout
     private lateinit var exportTasksLauncher: ActivityResultLauncher<Intent>
@@ -161,6 +167,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navigationView = findViewById(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
+
+        listQuickAccess = findViewById(R.id.fbl_list_quick_access)
+        listQuickAccessButtonTheme = ContextThemeWrapper(this, R.style.AppFlexBoxButtonStyle)
+        PreferenceObserver.registerPreferenceChangeListener { _, key ->
+            if (key == PreferenceMgr.P_LIST_QUICK_ACCESS.name) {
+                // Ensure that quick access for To-Do lists gets shown or hidden when setting changes.
+                addTodoListsToView()
+            }
+        }
 
         val navMenu = navigationView.menu
         val btnAllTasks = navMenu.findItem(R.id.menu_home)
@@ -233,7 +248,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             updateTodoFromPomodoro()
         }
 
-        addTodoListsToNavigationMenu()
+        addTodoListsToView()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -607,13 +622,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         isUnlocked = false
     }
 
-    // Adds To do-Lists to the navigation-drawer
-    private fun addTodoListsToNavigationMenu() {
+    private fun addTodoListsToView() {
         model.getAllToDoListNames { allTodoListNames ->
-            val navView: NavigationView = findViewById(R.id.nav_view)
-            val navMenu = navView.menu
+            // Prepare navigation-drawer for To-Do lists
+            val navMenu = navigationView.menu
             navMenu.removeGroup(R.id.menu_group_todo_lists)
+            // Prepare quick access for To-Do lists
+            listQuickAccess.removeAllViews()
+            // Show quick access only if there are lists and the feature is activated.
+            val isListQuickAccess = allTodoListNames.isNotEmpty()
+                    && mPref.getBoolean(PreferenceMgr.P_LIST_QUICK_ACCESS.name, true)
+            if (isListQuickAccess) {
+                val button = Button(listQuickAccessButtonTheme)
+                button.text = getString(R.string.all_tasks)
+                button.setOnClickListener { buttonView ->
+                    showAllTasks()
+                }
+                listQuickAccess.addView(button)
+                listQuickAccess.visibility = View.VISIBLE
+            } else {
+                listQuickAccess.visibility = View.INVISIBLE
+            }
             for (entry in allTodoListNames.entries) {
+                // Adds To-Do lists to the navigation-drawer
                 val item = navMenu.add(R.id.menu_group_todo_lists, entry.key, 1, entry.value)
                 item.isCheckable = true
                 item.setIcon(R.drawable.ic_label_black_24dp)
@@ -625,6 +656,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     openContextMenu(actionButton)
                     unregisterForContextMenu(actionButton)
                 }
+                if (isListQuickAccess) {
+                    // Adds To-Do lists to the quick access
+                    val button = Button(listQuickAccessButtonTheme)
+                    button.id = entry.key
+                    button.text = entry.value
+                    button.setOnClickListener { buttonView ->
+                        showTasksOfList(buttonView.id)
+                    }
+                    listQuickAccess.addView(button)
+                }
             }
         }
     }
@@ -635,7 +676,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         pl.setDialogCallback { todoList ->
             model.saveTodoListInDb(todoList) { counter ->
                 showHints()
-                addTodoListsToNavigationMenu()
+                addTodoListsToView()
                 Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} added.")
             }
         }
@@ -654,7 +695,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 todoList.setChanged()
                 model.saveTodoListInDb(todoList) { counter ->
                     showHints()
-                    addTodoListsToNavigationMenu()
+                    addTodoListsToView()
                     expandableTodoTaskAdapter?.notifyDataSetChanged()
                     if (activeListId == todoList.getId()) {
                         // In case of changed list name:
@@ -965,7 +1006,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Save changes
             model.saveTodoListsSortOrderInDb(allTodoListIds) {
                 // Notify view
-                addTodoListsToNavigationMenu()
+                addTodoListsToView()
             }
         }
     }
@@ -1008,7 +1049,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             Log.e(TAG, "Failed to delete list with ID ${todoList.getId()}.")
                         }
                         showHints()
-                        addTodoListsToNavigationMenu()
+                        addTodoListsToView()
                         if (activeListId == todoList.getId()) {
                             // Currently active list was deleted
                             showAllTasks()
@@ -1081,7 +1122,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
         model.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
-            addTodoListsToNavigationMenu()
+            addTodoListsToView()
             showAllTasks()
             showHints()
 

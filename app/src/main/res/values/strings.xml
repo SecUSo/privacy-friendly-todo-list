@@ -211,6 +211,7 @@
     </string-array>
     <string name="pin_enabled">PIN required on startup</string>
     <string name="set_pin">Set PIN</string>
+    <string name="list_quick_access">Quick access for lists</string>
     <string name="expand_tasks_with_subtasks">Expand tasks that have subtasks</string>
     <string name="auto_progress">Progress by subtasks</string>
     <string name="notify">Enable notification sound</string>
