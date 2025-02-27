@@ -34,31 +34,48 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+@Suppress("MemberVisibilityCanBePrivate")
 object Helper {
     private val TAG = LogTag.create(this::class.java)
 
-    fun createLocalizedDateString(time: Long): String {
+    fun createLocalizedDateString(timestampS: Long): String {
+        val date = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createLocalizedDateString(date)
+    }
+
+    fun createLocalizedDateString(date: Date): String {
         val dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.DEFAULT, Locale.getDefault())
-        val date = Date(TimeUnit.SECONDS.toMillis(time))
         return dateFormat.format(date)
     }
 
-    fun createLocalizedDateTimeString(time: Long): String {
+    fun createLocalizedDateTimeString(timestampS: Long): String {
+        val dateTime = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createLocalizedDateTimeString(dateTime)
+    }
+
+    fun createLocalizedDateTimeString(dateTime: Date): String {
         val dateTimeFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.SHORT, Locale.getDefault())
-        val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
         return dateTimeFormat.format(dateTime)
     }
 
-    fun createCanonicalDateTimeString(time: Long): String {
-        val canonicalDateTimeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
-        val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
-        return canonicalDateTimeFormat.format(dateTime)
+    fun createCanonicalDateString(timestampS: Long): String {
+        val date = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createCanonicalDateString(date)
     }
 
-    fun createCanonicalDateString(time: Long): String {
+    fun createCanonicalDateString(date: Date): String {
         val canonicalDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date = Date(TimeUnit.SECONDS.toMillis(time))
         return canonicalDateFormat.format(date)
+    }
+
+    fun createCanonicalDateTimeString(timestampS: Long): String {
+        val dateTime = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createCanonicalDateTimeString(dateTime)
+    }
+
+    fun createCanonicalDateTimeString(dateTime: Date): String {
+        val canonicalDateTimeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
+        return canonicalDateTimeFormat.format(dateTime)
     }
 
     /**
@@ -98,19 +115,26 @@ object Helper {
     }
 
     /**
-     * @param offset After the next recurring date was determined, a negative or positive number of
-     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
-     * date can be determined.
+     * Computes the next recurring date, based on the given recurring date, the recurrence pattern
+     * and the recurrence interval. The next recurring date will be greater than 'now' and greater
+     * than or equal to the given recurrence date.
+     *
+     * Optionally an positive or negative offset can be specified to add a number of intervals to
+     * the computed next recurring date.
+     *
+     * @todo When API 26 can be used, use ChronoUnit for a better implementation of this method.
+     *
+     * @param recurringDate The base recurring date.
+     * @param recurrencePattern The recurrence pattern.
+     * @param recurrenceInterval The recurrence interval.
+     * @param now The current date and time.
+     * @param offset The number of intervals to add to the next recurring date. For example with an
+     * offset of -1 the last recurring date can be determined.
+     * @return The next recurring date. Optionally shifted by a positive or negative number of intervals.
      */
     fun getNextRecurringDate(recurringDate: Calendar, recurrencePattern: RecurrencePattern,
                              recurrenceInterval: Int, now: Calendar, offset: Int = 0) {
         if (recurrencePattern != RecurrencePattern.NONE) {
-            // TODO When API 26 can be used, use ChronoUnit for a better implementation of this method.
-            // Jump to previous year to have less iterations.
-            val previousYear = now[Calendar.YEAR] - 1
-            if (recurringDate[Calendar.YEAR] < previousYear) {
-                recurringDate[Calendar.YEAR] = previousYear
-            }
             while (recurringDate <= now) {
                 addInterval(recurringDate, recurrencePattern, recurrenceInterval)
             }
