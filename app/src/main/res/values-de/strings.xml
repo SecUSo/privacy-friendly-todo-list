@@ -193,6 +193,7 @@
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
+    <string name="list_quick_access">Schnellzugriff für Listen</string>
     <string name="expand_tasks_with_subtasks">Aufgaben mit Unteraufgaben aufklappen</string>
     <string name="auto_progress">Fortschritt durch Unteraufgaben</string>
     <string name="notify">Benachrichtigungston</string>

@@ -50,6 +50,10 @@
         <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
+    <style name="AppFlexBoxButtonStyle" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAllCaps">false</item>
+    </style>
+
     <style name="AppClickableTextAppearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">?attr/colorAccent</item>
         <item name="android:textSize">16sp</item>
