@@ -448,14 +448,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.deadlineIcon.visibility = View.GONE
                     tvh.deadline.visibility = View.GONE
                 }
-                var reminderTime = currentTask.getReminderTime()
+                val reminderTime = currentTask.getReminderTime()
                 if (isExpanded && reminderTime != null) {
-                    if (currentTask.isRecurring()) {
-                        reminderTime = Helper.getNextRecurringDate(reminderTime,
-                            currentTask.getRecurrencePattern(),
-                            currentTask.getRecurrenceInterval(),
-                            Helper.getCurrentTimestamp())
-                    }
                     tvh.reminder.text = Helper.createLocalizedDateTimeString(reminderTime)
                     tvh.reminderIcon.visibility = View.VISIBLE
                     tvh.reminder.visibility = View.VISIBLE

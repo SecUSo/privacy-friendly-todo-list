@@ -144,6 +144,17 @@ object Helper {
         }
     }
 
+    fun addInterval(timestamp: Long, recurrencePattern: RecurrencePattern, recurrenceInterval: Int): Long {
+        var result = timestamp
+        if (recurrencePattern != RecurrencePattern.NONE) {
+            val recurringDateCal = Calendar.getInstance()
+            recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(timestamp))
+            addInterval(recurringDateCal, recurrencePattern, recurrenceInterval)
+            result = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
+        }
+        return result
+    }
+
     fun addInterval(date: Calendar, recurrencePattern: RecurrencePattern, recurrenceInterval: Int) {
         when (recurrencePattern) {
             RecurrencePattern.NONE -> Log.e(TAG, "Unable to add interval because no recurrence pattern set.")

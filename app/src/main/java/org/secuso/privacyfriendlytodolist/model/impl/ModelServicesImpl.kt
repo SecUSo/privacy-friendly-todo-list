@@ -61,16 +61,39 @@ class ModelServicesImpl(private val context: Context) {
     private suspend fun updateRecurringTasks(now: Long): Int {
         var dataArray = getDB().getTodoTaskDao().getOverdueRecurringTasks(now)
         var todoTasks = loadTasksSubtasks(false, *dataArray)
-        var updatedTasks = todoTasks.size
+        var updatedTasks = 0
         for (todoTask in todoTasks) {
+            // Note: Recurring task without deadline should be impossible.
+            val deadlineTime = todoTask.getDeadline()
             // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
-            val oldReminderTime = todoTask.getReminderTime()!!
-            // Get the upcoming due date of the recurring task.
-            val newReminderTime = Helper.getNextRecurringDate(oldReminderTime,
+            val oldReminderTime = todoTask.getReminderTime()
+            if (null == deadlineTime || null == oldReminderTime) {
+                Log.e(TAG, "Inconsistent task: $todoTask")
+                continue
+            }
+
+            val nextDeadlineTime = Helper.getNextRecurringDate(deadlineTime,
                 todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
+            var newReminderTime = Helper.getNextRecurringDate(oldReminderTime,
+                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
+            // If the reminder time is in the past (overdue) but the deadline is still in
+            // the future the reminder time should not be set to the next one.
+            // This enables that the interval [reminder-time .. deadline] gets used to
+            // determine the urgency / deadline-color.
+            // So subtract one interval from the new reminder time.
+            if (newReminderTime > nextDeadlineTime) {
+                newReminderTime = Helper.addInterval(newReminderTime,
+                    todoTask.getRecurrencePattern(), -todoTask.getRecurrenceInterval())
+                // Check if this results in the old reminder time. If so, there is nothing to do.
+                if (oldReminderTime == newReminderTime) {
+                    continue
+                }
+            }
+
             todoTask.setReminderTime(newReminderTime)
             todoTask.setChanged()
             if (saveTodoTaskInDb(todoTask) > 0) {
+                ++updatedTasks
                 Log.i(TAG, "Updating reminder time of $todoTask from " +
                     "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
                     "${Helper.createCanonicalDateTimeString(newReminderTime)}.")

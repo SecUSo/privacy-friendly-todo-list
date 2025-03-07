@@ -209,12 +209,10 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
                 // 12:00:00 and reminder time span is 0.5 day it would not get 'imminent' before the
                 // deadline-day begins. But it should get 'imminent' 0.5 day before deadline day begins.
                 deadline = Helper.changeTimePart(deadline)
+                val reminderTime = data.reminderTime
                 var finalReminderTimeSpan = reminderTimeSpan
-                if (!isRecurring()) {
-                    val reminderTime = data.reminderTime
-                    if (reminderTime != null && reminderTime < deadline) {
-                        finalReminderTimeSpan = deadline - reminderTime
-                    }
+                if (reminderTime != null && reminderTime < deadline) {
+                    finalReminderTimeSpan = deadline - reminderTime
                 }
                 if ((deadline - finalReminderTimeSpan) <= now) {
                     level = Urgency.Level.IMMINENT

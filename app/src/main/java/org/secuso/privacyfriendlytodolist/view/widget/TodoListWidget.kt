@@ -97,6 +97,8 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         // This line of code causes that for every widget an own WidgetViewsFactory gets created:
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)))
+        // To avoid deprecation of setRemoteAdapter(int, Intent) at least API 31 is needed. See
+        // https://developer.android.com/develop/ui/views/appwidgets/collections#use-remote-collections
         view.setRemoteAdapter(R.id.listview_widget, intent)
 
         // Intent-template to open the App by clicking on an elements of the LinearLayout.

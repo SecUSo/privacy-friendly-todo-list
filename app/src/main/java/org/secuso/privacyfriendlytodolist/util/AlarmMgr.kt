@@ -26,10 +26,8 @@ import android.provider.Settings
 import android.util.Log
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
-import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -86,7 +84,7 @@ object AlarmMgr {
             lastDueTaskAlarmID = null
         }
 
-        var reminderTime = todoTask.getReminderTime()
+        val reminderTime = todoTask.getReminderTime()
         if (reminderTime == null) {
             Log.i(TAG, "No alarm set because $todoTask has no reminder time.")
             return null
@@ -98,30 +96,6 @@ object AlarmMgr {
         }
 
         val now = Helper.getCurrentTimestamp()
-        if (todoTask.isRecurring()) {
-            // Get the upcoming due date of the recurring task. The initial reminder time might not
-            // be the right date for the alarm.
-            val oldReminderTime = reminderTime
-            reminderTime = Helper.getNextRecurringDate(reminderTime,
-                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
-            if (oldReminderTime != reminderTime) {
-                // Store new reminder time to make it visible for the user.
-                todoTask.setReminderTime(reminderTime)
-                todoTask.setChanged()
-                val viewModel = CustomViewModel(context)
-                viewModel.model.saveTodoTaskInDb(todoTask) { counter ->
-                    if (counter > 0) {
-                        Log.i(TAG, "Updated reminder time of $todoTask from " +
-                                "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
-                                "${Helper.createCanonicalDateTimeString(reminderTime)}.")
-                        Model.notifyDataChangedFromOutside(context, 0, counter, 0)
-                    } else {
-                        Log.e(TAG, "Failed to update reminder time of $todoTask in DB.")
-                    }
-                }
-            }
-        }
-
         if (reminderTime < now) {
             Log.i(TAG, "No alarm set because reminder time of $todoTask is in the past.")
             return null
