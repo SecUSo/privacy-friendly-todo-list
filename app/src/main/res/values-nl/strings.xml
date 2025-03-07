@@ -46,7 +46,7 @@
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
     <!-- About -->
     <string name="about">Over</string>
-    <string name="version_number">Versie v%s</string>
+    <string name="version_number">Versie v%1$s</string>
     <string name="about_author">Auteurs:</string>
     <string name="about_author_contributors">en medewerkers.</string>
     <string name="about_affiliation">In samenwerking met</string>
@@ -87,7 +87,7 @@
     <string name="set_deadline_before_reminder">Gelieve een deadline in te vullen voor de herinneringstijd.</string>
     <string name="progress_colon">Vooruitgang:</string>
     <string name="priority_colon">Prioriteit:</string>
-    <string name="zero_percent">0 %</string>
+     <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Gelieve een prioriteit te selecteren!</string>
     <string name="new_todo_subtask">Nieuwe ondertaak</string>
     <string name="todo_name_must_not_be_empty">Gelieve een naam te geven aan de taak.</string>

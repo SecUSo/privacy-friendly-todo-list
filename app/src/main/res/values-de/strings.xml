@@ -68,7 +68,7 @@
 
     <!-- About -->
     <string name="about">Über</string>
-    <string name="version_number">Version v%s</string>
+    <string name="version_number">Version v%1$s</string>
     <string name="about_author">Autoren:</string>
     <string name="about_author_contributors">und Mitwirkende.</string>
     <string name="about_affiliation">In Zusammenschluss mit</string>
@@ -115,7 +115,7 @@
     <string name="share_task">Aufgabe teilen</string>
     <string name="remove_task">Aufgabe entfernen</string>
     <string name="task_removed">Aufgabe wurde entfernt</string>
-    <string name="tasks_removed">%d Aufgabe(n) und %d Unteraufgabe(n) entfernt.</string>
+    <string name="tasks_removed">%1$d Aufgabe(n) und %2$d Unteraufgabe(n) entfernt.</string>
     <string name="deadline">Termin</string>
     <string name="recurrence_every">Wiederholung alle</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -129,7 +129,7 @@
     <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl >= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
-    <string name="zero_percent">0 %</string>
+     <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
     <string name="select_no_list">Keine Liste</string>

@@ -68,7 +68,7 @@
 
     <!-- About -->
     <string name="about">About</string>
-    <string name="version_number">Version v%s</string>
+    <string name="version_number">Version v%1$s</string>
     <string name="about_author">Authors:</string>
     <!-- Using no-break-space character \u00A0 between first and last name. -->
     <string name="about_author_names" translatable="false">Sebastian\u00A0Lutz, Dominik\u00A0Püllen, Simon\u00A0Breitfelder, Christian\u00A0Adams</string>
@@ -119,7 +119,7 @@
     <string name="share_task">Share task</string>
     <string name="remove_task">Remove task</string>
     <string name="task_removed">Task successfully removed.</string>
-    <string name="tasks_removed">%d task(s) and %d subtask(s) removed.</string>
+    <string name="tasks_removed">%1$d task(s) and %2$d subtask(s) removed.</string>
     <string name="deadline">Deadline</string>
     <string name="recurrence_every">Recurrence every</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -133,7 +133,7 @@
     <string name="recurrence_interval_invalid">Recurrence interval is no integer >= 1.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
-    <string name="zero_percent">0 %</string>
+    <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Select a priority:</string>
     <string name="select_list">Select a list:</string>
     <string name="select_no_list">No list</string>

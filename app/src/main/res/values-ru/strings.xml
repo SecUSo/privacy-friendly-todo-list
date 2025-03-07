@@ -72,7 +72,7 @@
     <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: Это разрешение позволяет приложению показывать напоминания с точным временем.</string>
     <string name="help_group_export_import">Экспортирование / импортирование данных</string>
     <string name="help_group_widget">Виджет</string>
-    <string name="version_number">Версия v%s</string>
+    <string name="version_number">Версия v%1$s</string>
     <string name="about_author_contributors">и со-авторы.</string>
     <string name="about_affiliation">В сотрудничестве с</string>
     <string name="more_info">Больше информации может быть найдено здесь:</string>
@@ -90,7 +90,7 @@
     <string name="sort_by_name_asc">Сортировать по имени</string>
     <string name="add_subtask">Добавить подзадачу</string>
     <string name="new_todo_task">Новая задача</string>
-    <string name="tasks_removed">%d задач(и) и %d подзадач(и) удалены.</string>
+    <string name="tasks_removed">%1$d задач(и) и %2$d подзадач(и) удалены.</string>
     <string name="deadline">Крайний срок</string>
     <string name="recurrence_every">Повторять каждый</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -193,7 +193,7 @@
     <string name="set_deadline_if_recurring">Повторяющейся задаче необходим крайний срок.</string>
     <string name="cant_move_task_if_diff_lists">Невозможно переместить задачу, если отображаются разные списки.</string>
     <string name="reset_application_msg">Вы действительно хотите сбросить приложение? Это удалит защиту PIN-кодом и удалит все списки дел.</string>
-    <string name="zero_percent">0 %</string>
+     <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_no_list">Нет списка</string>
     <string name="july">Июль</string>
     <string name="add_widget">Добавить виджет</string>

@@ -45,7 +45,7 @@
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
     <!-- About -->
     <string name="about">O nas</string>
-    <string name="version_number">Wersja %s</string>
+    <string name="version_number">Wersja %1$s</string>
     <string name="about_author">Autorzy:</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">W współpracy z</string>
@@ -86,7 +86,7 @@
     <string name="set_deadline_before_reminder">Wprowadź najpierw termin zadania.</string>
     <string name="progress_colon">Postępy:</string>
     <string name="priority_colon">Poziom ważności:</string>
-    <string name="zero_percent">0 %</string>
+     <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Poziom ważności</string>
     <string name="new_todo_subtask">Nowe podzadanie</string>
     <string name="todo_name_must_not_be_empty">Wymagana nazwa</string>

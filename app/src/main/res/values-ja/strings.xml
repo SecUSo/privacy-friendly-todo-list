@@ -45,7 +45,7 @@
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: このアクセス許可は、ユーザーに予定されている期限を知らせたい場合に、デバイスの起動直後にアプリがチェックできるようにします。</string>
     <!-- About -->
     <string name="about">アプリについて</string>
-    <string name="version_number">バージョン v%s</string>
+    <string name="version_number">バージョン v%1$s</string>
     <string name="about_author">作者:</string>
     <string name="about_author_contributors">と貢献者。</string>
     <string name="about_affiliation">提携</string>
@@ -86,7 +86,7 @@
     <string name="set_deadline_before_reminder">リマインダーの時間を設定する前に期限を指定してください。</string>
     <string name="progress_colon">進捗:</string>
     <string name="priority_colon">優先度:</string>
-    <string name="zero_percent">0 %</string>
+     <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">優先度を選択してください!</string>
     <string name="new_todo_subtask">新しいサブタスク</string>
     <string name="todo_name_must_not_be_empty">タスク名を入力してください。</string>
