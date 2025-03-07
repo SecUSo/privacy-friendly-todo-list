@@ -1066,8 +1066,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         addTodoListsToView()
                         if (activeListId == todoList.getId()) {
                             // Currently active list was deleted
-                            showAllTasks()
+                            activeListId = null
                         }
+                        showTasksOfListOrAllTasks(activeListId)
                         dialog.cancel()
                     }
                 }
@@ -1135,7 +1136,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
-        model.importCSVData(deleteAllDataBeforeImport, uri) { errorMessage ->
+        model.importCSVData(deleteAllDataBeforeImport, uri, Helper.getCurrentTimestamp()) { errorMessage ->
             addTodoListsToView()
             showAllTasks()
             showHints()

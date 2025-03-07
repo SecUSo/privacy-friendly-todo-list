@@ -471,7 +471,8 @@ class ModelServicesImpl(private val context: Context) {
         return null
     }
 
-    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri): Pair<String?, Triple<Int, Int, Int>> {
+    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, now: Long):
+            Pair<String?, Triple<Int, Int, Int>> {
         val inputStream: InputStream?
         try {
             inputStream = context.contentResolver.openInputStream(csvDataUri)
@@ -516,6 +517,10 @@ class ModelServicesImpl(private val context: Context) {
             subtask.second.setTaskId(subtask.first.getId())
             counterSubtasks += saveTodoSubtaskInDb(subtask.second)
         }
+        // Update imported recurring tasks to have correct reminder times.
+        val updatedTasks = updateRecurringTasks(now)
+        // Imported and updated tasks might be the same. Take the larger number.
+        counterTasks = counterTasks.coerceAtLeast(updatedTasks)
         return Pair(null, Triple(counterLists, counterTasks, counterSubtasks))
     }
 

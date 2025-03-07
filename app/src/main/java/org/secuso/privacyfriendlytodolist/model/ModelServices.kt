@@ -337,11 +337,11 @@ class ModelServices(
         }
     }
 
-    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri,
+    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, now: Long,
                       deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<String?>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri)
+            val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri, now)
             dispatchResult(deliveryOption, resultConsumer, result.first)
             val counter = result.second
             notifyDataChanged(counter.first, counter.second, counter.third)
