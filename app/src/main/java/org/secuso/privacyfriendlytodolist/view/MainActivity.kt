@@ -605,7 +605,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
             }
             else -> {
-                showTasksOfList(item.itemId)
+                if (item.groupId == R.id.menu_group_todo_lists) {
+                    showTasksOfList(item.itemId)
+                } else {
+                    Log.e(TAG, "Unknown item with group id ${item.groupId} and id ${item.itemId}.")
+                }
             }
         }
         drawer.closeDrawer(GravityCompat.START)
@@ -626,6 +630,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         model.getAllToDoListNames { allTodoListNames ->
             // Prepare navigation-drawer for To-Do lists
             val navMenu = navigationView.menu
+            for (i in 0 until navigationView.menu.size()) {
+                val item = navigationView.menu.getItem(i)
+                if (item.groupId == R.id.menu_group_todo_lists) {
+                    // Workaround for the issue that when the user deletes the last list, its action
+                    // view 'jumps' to the next menu item, which is the settings menu item:
+                    // Setting the action view to invisible before the menu items gets removed.
+                    // It will 'jump' anyway but will be invisible...
+                    item.actionView?.visibility = View.GONE
+                }
+            }
             navMenu.removeGroup(R.id.menu_group_todo_lists)
             // Prepare quick access for To-Do lists
             listQuickAccess.removeAllViews()
@@ -744,7 +758,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         activeListId = listId
         for (i in 0 until navigationView.menu.size()) {
             val item = navigationView.menu.getItem(i)
-            item.isChecked = item.itemId == listId
+            item.isChecked = item.groupId == R.id.menu_group_todo_lists && item.itemId == listId
         }
         model.getToDoListById(listId) { todoList ->
             if (null != todoList) {
