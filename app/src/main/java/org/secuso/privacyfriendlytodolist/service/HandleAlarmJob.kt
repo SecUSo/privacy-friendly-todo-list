@@ -79,13 +79,13 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
     }
 
     private fun setNextAlarm() {
-        model.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
+        model.getNextTaskToRemind(Helper.getCurrentTimestamp()) { nextTaskToRemind ->
             if (isJobStopped()) {
-                return@getNextDueTask
+                return@getNextTaskToRemind
             }
 
-            if (null != nextDueTask) {
-                AlarmMgr.setAlarmForNextDueTask(context, nextDueTask)
+            if (null != nextTaskToRemind) {
+                AlarmMgr.setAlarmForNextTaskToRemind(context, nextTaskToRemind)
             }
 
             jobFinished()

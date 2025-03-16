@@ -59,13 +59,13 @@ class ModelServicesImpl(private val context: Context) {
      * deadline comes near.
      */
     private suspend fun updateRecurringTasks(now: Long): Int {
-        var dataArray = getDB().getTodoTaskDao().getOverdueRecurringTasks(now)
+        var dataArray = getDB().getTodoTaskDao().getRecurringTasksWithOverdueReminders(now)
         var todoTasks = loadTasksSubtasks(false, *dataArray)
         var updatedTasks = 0
         for (todoTask in todoTasks) {
             // Note: Recurring task without deadline should be impossible.
             val deadlineTime = todoTask.getDeadline()
-            // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
+            // Note: getRecurringTasksWithOverdueReminders() ensures that reminderTime and recurrencePattern is set.
             val oldReminderTime = todoTask.getReminderTime()
             if (null == deadlineTime || null == oldReminderTime) {
                 Log.e(TAG, "Inconsistent task: $todoTask")
@@ -137,20 +137,20 @@ class ModelServicesImpl(private val context: Context) {
         return updatedTasks
     }
 
-    suspend fun getNextDueTask(now: Long): Pair<TodoTask?, Int> {
+    suspend fun getNextTaskToRemind(now: Long): Pair<TodoTask?, Int> {
         // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
         val updatedTasks = updateRecurringTasks(now)
         // Get next due task.
-        val nextDueTaskData = getDB().getTodoTaskDao().getNextDueTask(now)
+        val nextTaskToRemindData = getDB().getTodoTaskDao().getNextTaskToRemind(now)
         var todoTask: TodoTask? = null
-        if (null != nextDueTaskData) {
-            todoTask = loadTasksSubtasks(false, nextDueTaskData)[0]
+        if (null != nextTaskToRemindData) {
+            todoTask = loadTasksSubtasks(false, nextTaskToRemindData)[0]
         }
         return Pair(todoTask, updatedTasks)
     }
 
-    suspend fun getOverdueTasks(now: Long): MutableList<TodoTask> {
-        val dataArray = getDB().getTodoTaskDao().getOverdueTasks(now)
+    suspend fun getTasksWithOverdueReminders(now: Long): MutableList<TodoTask> {
+        val dataArray = getDB().getTodoTaskDao().getTasksWithOverdueReminders(now)
         val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
         return data as MutableList<TodoTask>

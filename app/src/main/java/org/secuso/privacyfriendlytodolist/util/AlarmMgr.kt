@@ -36,7 +36,7 @@ object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
     private val TAG = LogTag.create(this::class.java)
     private var manager: AlarmManager? = null
-    private var lastDueTaskAlarmID: Int? = null
+    private var lastTaskToRemindAlarmID: Int? = null
 
     private fun getManager(context: Context): AlarmManager {
         if (manager == null) {
@@ -76,12 +76,12 @@ object AlarmMgr {
      * @return If an alarm gets set the alarm ID gets returned (task ID gets used as alarm ID).
      * If no alarm gets set null gets returned.
      */
-    fun setAlarmForNextDueTask(context: Context, todoTask: TodoTask): Int? {
+    fun setAlarmForNextTaskToRemind(context: Context, todoTask: TodoTask): Int? {
         // First cancel existing alarm to ensure it doesn't fire.
-        if (lastDueTaskAlarmID != null) {
-            Log.i(TAG, "Cancelling alarm of old next-due-task with ID $lastDueTaskAlarmID.")
-            cancelAlarmForTask(context, lastDueTaskAlarmID!!)
-            lastDueTaskAlarmID = null
+        if (lastTaskToRemindAlarmID != null) {
+            Log.i(TAG, "Cancelling alarm of old next-due-task with ID $lastTaskToRemindAlarmID.")
+            cancelAlarmForTask(context, lastTaskToRemindAlarmID!!)
+            lastTaskToRemindAlarmID = null
         }
 
         val reminderTime = todoTask.getReminderTime()
@@ -107,7 +107,7 @@ object AlarmMgr {
         val alarmTime = reminderTime - (reminderTime % 60)
         val timestamp = Helper.createCanonicalDateTimeString(alarmTime)
         val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
-        lastDueTaskAlarmID = alarmId
+        lastTaskToRemindAlarmID = alarmId
         // Logging.
         val durationAsInt = TimeUnit.SECONDS.toMinutes(reminderTime - now)
         val duration = durationAsInt.toDuration(DurationUnit.MINUTES)

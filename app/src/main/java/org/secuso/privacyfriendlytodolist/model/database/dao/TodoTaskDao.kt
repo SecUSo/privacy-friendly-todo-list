@@ -56,11 +56,11 @@ interface TodoTaskDao {
             " WHERE isInRecycleBin = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime > :now" +
             " ORDER BY ABS(reminderTime - :now)" +
             " LIMIT 1")
-    suspend fun getNextDueTask(now: Long): TodoTaskData?
+    suspend fun getNextTaskToRemind(now: Long): TodoTaskData?
 
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL AND reminderTime <= :now")
-    suspend fun getOverdueRecurringTasks(now: Long): Array<TodoTaskData>
+    suspend fun getRecurringTasksWithOverdueReminders(now: Long): Array<TodoTaskData>
 
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND doneTime IS NOT NULL")
@@ -68,7 +68,7 @@ interface TodoTaskDao {
 
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND recurrencePattern = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime <= :now")
-    suspend fun getOverdueTasks(now: Long): Array<TodoTaskData>
+    suspend fun getTasksWithOverdueReminders(now: Long): Array<TodoTaskData>
 
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND doneTime IS NOT NULL")
     suspend fun getAllDoneNotInRecycleBin(): Array<TodoTaskData>

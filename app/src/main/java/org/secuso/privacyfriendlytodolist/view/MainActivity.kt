@@ -339,16 +339,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // check if app was started by clicking on a reminding notification
         if (extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
             todoDataLoaded = true
-            val dueTaskId = extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
+            val notificationTaskId = extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
             // Remove entry to avoid to process it more than once. Sometimes extras get processed more than once.
             extras.remove(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
-            model.getTaskById(dueTaskId) { dueTask ->
+            model.getTaskById(notificationTaskId) { dueTask ->
                 var listId: Int? = null
                 if (null != dueTask) {
                     listId = dueTask.getListId()
                     Log.d(TAG, "Reminding notification started MainActivity for task $dueTask and its list $listId.")
                 } else {
-                    Log.w(TAG, "Task with ID $dueTaskId not found after click on reminding notification.")
+                    Log.w(TAG, "Task with ID $notificationTaskId not found after click on reminding notification.")
                 }
                 showTasksOfListOrAllTasks(listId)
             }

@@ -41,9 +41,10 @@ object JobManager {
     private const val JOB_SCHEDULER_JOB_ID_RANGE_END = -10000
     private var jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
 
-    fun startUpdateAlarmJob(context: Context, alsoTriggerAlarmsForOverdueTasks: Boolean = false): Int {
+    fun startUpdateAlarmJob(context: Context, alsoTriggerAlarmsForOverdueReminders: Boolean = false): Int {
         val extras = PersistableBundle()
-        extras.putInt(UpdateAlarmsJob.KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, if (alsoTriggerAlarmsForOverdueTasks) 1 else 0)
+        extras.putInt(UpdateAlarmsJob.KEY_TRIGGER_ALARMS_FOR_OVERDUE_REMINDERS,
+            if (alsoTriggerAlarmsForOverdueReminders) 1 else 0)
         return scheduleJob(context, JobType.UpdateAlarmsJob, extras)
     }
 

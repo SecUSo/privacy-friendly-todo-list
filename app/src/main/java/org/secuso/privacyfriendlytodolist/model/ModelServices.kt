@@ -84,11 +84,11 @@ class ModelServices(
         }
     }
 
-    fun getNextDueTask(now: Long,
-                       deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<TodoTask?>): Job {
+    fun getNextTaskToRemind(now: Long,
+                            deliveryOption: DeliveryOption = DeliveryOption.POST,
+                            resultConsumer: ResultConsumer<TodoTask?>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoTask = services.getNextDueTask(now)
+            val todoTask = services.getNextTaskToRemind(now)
             dispatchResult(deliveryOption, resultConsumer, todoTask.first)
             notifyDataChanged(0, todoTask.second, 0)
         }
@@ -101,10 +101,10 @@ class ModelServices(
      * @param resultConsumer Result consumer that will be notified when the asynchronous database
      * access has finished.
      */
-    fun getOverdueTasks(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
-                         resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+    fun getTasksWithOverdueReminders(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                     resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoTasks = services.getOverdueTasks(now)
+            val todoTasks = services.getTasksWithOverdueReminders(now)
             dispatchResult(deliveryOption, resultConsumer, todoTasks)
         }
     }
