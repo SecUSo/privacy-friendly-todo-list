@@ -2,6 +2,7 @@
 
     <!-- Base application theme - light -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
+		<item name="secusoLogoDrawable">@drawable/secuso_logo_black</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
