@@ -83,12 +83,12 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private var onTasksSwappedListener: OnTasksSwappedListener? = null
 
 
-    enum class GroupType {
+    private enum class GroupType {
         TASK_ROW,
         PRIORITY_ROW
     }
 
-    enum class ChildType {
+    private enum class ChildType {
         TASK_DESCRIPTION_ROW,
         SETTING_ROW,
         SUBTASK_ROW
@@ -398,6 +398,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         actualConvertView.findViewById(R.id.bt_task_menu),
                         actualConvertView.findViewById(R.id.iv_exlv_task_deadline),
                         actualConvertView.findViewById(R.id.tv_exlv_task_deadline),
+                        actualConvertView.findViewById(R.id.iv_exlv_task_recurring_deadline),
+                        actualConvertView.findViewById(R.id.tv_exlv_task_recurring_deadline),
                         actualConvertView.findViewById(R.id.iv_exlv_task_reminder),
                         actualConvertView.findViewById(R.id.tv_exlv_task_reminder),
                         actualConvertView.findViewById(R.id.tv_exlv_task_list_name),
@@ -456,6 +458,19 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 } else {
                     tvh.reminderIcon.visibility = View.GONE
                     tvh.reminder.visibility = View.GONE
+                }
+                if (isExpanded && currentTask.isRecurring() && currentTask.hasDeadline()) {
+                    val now = Helper.getCurrentTimestamp()
+                    val recurringDeadlineAndCount = Helper.getNextRecurringDateAndCount(
+                        currentTask.getDeadline()!!, currentTask, now)
+                    val recurringDeadlineString = Helper.createLocalizedDateString(recurringDeadlineAndCount.first)
+                    tvh.recurringDeadline.text = context.getString(R.string.nth_recurrence_at,
+                        recurringDeadlineAndCount.second, recurringDeadlineString)
+                    tvh.recurringDeadlineIcon.visibility = View.VISIBLE
+                    tvh.recurringDeadline.visibility = View.VISIBLE
+                } else {
+                    tvh.recurringDeadlineIcon.visibility = View.GONE
+                    tvh.recurringDeadline.visibility = View.GONE
                 }
                 val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
                 val urgencyColor = urgency.getColor(context)
@@ -763,13 +778,15 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 
-    inner class GroupTaskViewHolder(
+    private inner class GroupTaskViewHolder(
         val name: TextView,
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
         val taskMenuButton: ImageButton,
         val deadlineIcon: ImageView,
         val deadline: TextView,
+        val recurringDeadlineIcon: ImageView,
+        val recurringDeadline: TextView,
         val reminderIcon: ImageView,
         val reminder: TextView,
         val listName: TextView,

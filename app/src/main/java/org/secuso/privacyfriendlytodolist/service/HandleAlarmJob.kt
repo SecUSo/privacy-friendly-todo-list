@@ -57,13 +57,10 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                 if (null != deadline) {
                     message = if (todoTask.isRecurring()) {
                         val now = Helper.getCurrentTimestamp()
-                        val nextDeadline = Helper.getNextRecurringDate(deadline,
-                            todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
-                        val deadlineStr = Helper.createLocalizedDateString(nextDeadline)
-                        val repetitions = Helper.computeRepetitions(deadline, nextDeadline,
-                            todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval())
+                        val nextDeadlineAndCount = Helper.getNextRecurringDateAndCount(deadline, todoTask, now)
+                        val deadlineStr = Helper.createLocalizedDateString(nextDeadlineAndCount.first)
                         applicationContext.resources.getString(R.string.recurring_deadline_approaching,
-                            deadlineStr, repetitions)
+                            deadlineStr, nextDeadlineAndCount.second)
                     } else {
                         val deadlineStr = Helper.createLocalizedDateString(deadline)
                         applicationContext.resources.getString(R.string.deadline_approaching, deadlineStr)

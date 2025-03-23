@@ -72,10 +72,8 @@ class ModelServicesImpl(private val context: Context) {
                 continue
             }
 
-            val nextDeadlineTime = Helper.getNextRecurringDate(deadlineTime,
-                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
-            var newReminderTime = Helper.getNextRecurringDate(oldReminderTime,
-                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
+            val nextDeadlineTime = Helper.getNextRecurringDate(deadlineTime, todoTask, now)
+            var newReminderTime = Helper.getNextRecurringDate(oldReminderTime, todoTask, now)
             // If the reminder time is in the past (overdue) but the deadline is still in
             // the future the reminder time should not be set to the next one.
             // This enables that the interval [reminder-time .. deadline] gets used to
@@ -113,8 +111,7 @@ class ModelServicesImpl(private val context: Context) {
                 continue
             }
             // Get the last deadline by usage of offset -1.
-            val lastDeadlineTime = Helper.getNextRecurringDate(deadlineTime,
-                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now, -1)
+            val lastDeadlineTime = Helper.getNextRecurringDate(deadlineTime, todoTask, now, -1)
             // Convert to days to avoid setting to undone while deadline-day is not completely in past.
             val doneDay = TimeUnit.SECONDS.toDays(doneTime)
             val lastDeadlineDay = TimeUnit.SECONDS.toDays(lastDeadlineTime)

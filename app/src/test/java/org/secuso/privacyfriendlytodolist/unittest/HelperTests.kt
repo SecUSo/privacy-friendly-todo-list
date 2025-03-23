@@ -33,29 +33,7 @@ import java.util.concurrent.TimeUnit
  */
 class HelperTests {
     @Test
-    fun computeRepetitionsTest() {
-        for (interval in 1..100) {
-            assertEquals((2 * 365 / interval).toLong(), computeRepetitions(
-                "2001-03-12", "2003-03-12", RecurrencePattern.DAILY, interval))
-            assertEquals(((3 * 365 + 1) / interval).toLong(), computeRepetitions(
-                "2001-03-12", "2004-03-12", RecurrencePattern.DAILY, interval))
-            assertEquals(((20 * 52 + 1) / interval).toLong(), computeRepetitions(
-                "1984-03-12", "2004-03-19", RecurrencePattern.WEEKLY, interval))
-            assertEquals(((20 * 12 + 8) / interval).toLong(), computeRepetitions(
-                "1984-03-12", "2004-11-19", RecurrencePattern.MONTHLY, interval))
-            assertEquals((20 / interval).toLong(), computeRepetitions(
-                "1984-03-12", "2004-11-19", RecurrencePattern.YEARLY, interval))
-        }
-    }
-
-    private fun computeRepetitions(firstDate: String, followingDate: String,
-                                   recurrencePattern: RecurrencePattern, recurrenceInterval: Int): Long {
-        return Helper.computeRepetitions(dateToSec(firstDate), dateToSec(followingDate),
-            recurrencePattern, recurrenceInterval)
-    }
-
-    @Test
-    fun getNextRecurringDateTest() {
+    fun getNextRecurringDateAndCountTest() {
         var now = "2025-04-27"
         testNextRecurringDate("1900-03-01", RecurrencePattern.MONTHLY, 1, now, "2025-05-01")
         testNextRecurringDate("1900-03-01", RecurrencePattern.MONTHLY, 2, now, "2025-05-01")

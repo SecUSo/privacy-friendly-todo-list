@@ -151,6 +151,7 @@
     <string name="move_down">Move down</string>
     <string name="cant_move_task_if_diff_lists">Can\'t move task if different lists are shown.</string>
     <string name="cant_move_task_if_filter_group_sort">Can\'t move task if filtering, grouping or sorting is active.</string>
+    <string name="nth_recurrence_at">%1$d. recurrence at %2$s</string>
 
     <!-- Select reminder dialog -->
     <string name="date">Date</string>
