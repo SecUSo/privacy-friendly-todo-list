@@ -25,7 +25,7 @@
         android:background="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/pb_task_progress" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <CheckBox
         android:id="@+id/cb_task_done"
@@ -35,8 +35,7 @@
         android:paddingStart="0dp"
         android:paddingEnd="8dp"
         app:layout_constraintStart_toEndOf="@id/v_urgency_task"
-        app:layout_constraintTop_toTopOf="@id/v_exlv_header_separator"
-        app:layout_constraintBottom_toBottomOf="@id/pb_task_progress" />
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_exlv_task_name" />
 
     <TextView
         android:id="@+id/tv_exlv_task_name"
@@ -84,13 +83,27 @@
         app:layout_constraintTop_toBottomOf="@id/v_exlv_header_separator"
         app:srcCompat="@drawable/ic_menu_black_24dp" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/task_name_bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tv_exlv_task_name,bt_task_move_up,bt_task_move_down,bt_task_menu" />
+
     <TextView
         android:id="@+id/tv_exlv_task_list_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/help_todo_lists_title"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
-        app:layout_constraintTop_toBottomOf="@id/tv_exlv_task_name" />
+        app:layout_constraintTop_toBottomOf="@id/task_name_bottom_barrier" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/list_name_bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="task_name_bottom_barrier,tv_exlv_task_list_name" />
 
     <ImageView
         android:id="@+id/iv_exlv_task_deadline"
@@ -100,8 +113,8 @@
         android:scaleX="0.8"
         android:scaleY="0.8"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
-        app:layout_constraintTop_toBottomOf="@id/tv_exlv_task_list_name"
-        app:layout_constraintBottom_toTopOf="@id/iv_exlv_task_recurring_deadline"
+        app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier"
         app:srcCompat="@drawable/ic_calendar_month_24dp" />
 
     <TextView
@@ -111,8 +124,8 @@
         android:paddingHorizontal="5dp"
         android:text="@string/deadline"
         app:layout_constraintStart_toEndOf="@id/iv_exlv_task_deadline"
-        app:layout_constraintTop_toTopOf="@id/iv_exlv_task_deadline"
-        app:layout_constraintBottom_toTopOf="@id/iv_exlv_task_recurring_deadline"/>
+        app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier" />
 
     <TextView
         android:id="@+id/tv_exlv_task_reminder"
@@ -121,8 +134,8 @@
         android:paddingHorizontal="5dp"
         android:text="@string/reminder"
         app:layout_constraintEnd_toStartOf="@id/iv_exlv_task_reminder"
-        app:layout_constraintTop_toBottomOf="@id/tv_exlv_task_list_name"
-        app:layout_constraintBottom_toTopOf="@id/iv_exlv_task_recurring_deadline" />
+        app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier" />
 
     <ImageView
         android:id="@+id/iv_exlv_task_reminder"
@@ -133,9 +146,45 @@
         android:scaleX="0.8"
         android:scaleY="0.8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_exlv_task_list_name"
-        app:layout_constraintBottom_toTopOf="@id/iv_exlv_task_recurring_deadline"
+        app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier"
         app:srcCompat="@drawable/ic_alarm_clock_24dp" />
+
+    <!-- Placeholder-view is needed in case that all other views in barrier
+     'recurring_deadline_top_barrier' have visibility 'gone' to ensure that barrier still works. -->
+    <View
+        android:id="@+id/v_exlv_task_deadline_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/deadline_bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="v_exlv_task_deadline_placeholder,iv_exlv_task_deadline,tv_exlv_task_deadline,tv_exlv_task_reminder,iv_exlv_task_reminder" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/recurring_deadline_top_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="v_exlv_task_recurring_deadline_placeholder,iv_exlv_task_recurring_deadline,tv_exlv_task_recurring_deadline" />
+
+    <!-- Placeholder-view is needed in case that all other views in barrier
+     'recurring_deadline_top_barrier' have visibility 'gone' to ensure that barrier still works. -->
+    <View
+        android:id="@+id/v_exlv_task_recurring_deadline_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintTop_toBottomOf="@id/deadline_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/pb_task_progress" />
 
     <ImageView
         android:id="@+id/iv_exlv_task_recurring_deadline"
@@ -145,6 +194,7 @@
         android:scaleX="0.8"
         android:scaleY="0.8"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintTop_toBottomOf="@id/deadline_bottom_barrier"
         app:layout_constraintBottom_toTopOf="@id/pb_task_progress"
         app:srcCompat="@drawable/ic_event_repeat_24dp" />
 
@@ -155,7 +205,15 @@
         android:paddingHorizontal="5dp"
         android:text="@string/nth_recurrence_at"
         app:layout_constraintStart_toEndOf="@id/iv_exlv_task_recurring_deadline"
-        app:layout_constraintBottom_toTopOf="@id/pb_task_progress"/>
+        app:layout_constraintTop_toBottomOf="@id/deadline_bottom_barrier"
+        app:layout_constraintBottom_toTopOf="@id/pb_task_progress" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/recurring_deadline_bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_exlv_task_recurring_deadline,tv_exlv_task_recurring_deadline" />
 
     <ProgressBar
         android:id="@+id/pb_task_progress"
@@ -167,7 +225,15 @@
         android:max="100"
         android:progress="50"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
-        app:layout_constraintTop_toBottomOf="@id/iv_exlv_task_recurring_deadline"
+        app:layout_constraintTop_toBottomOf="@id/recurring_deadline_bottom_barrier"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_exlv_task_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/description_hint"
+        app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintTop_toBottomOf="@id/pb_task_progress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

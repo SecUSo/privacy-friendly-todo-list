@@ -82,7 +82,10 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
             }
 
             if (null != nextTaskToRemind) {
+                Log.d(TAG, "$logPrefix Setting alarm for next task to remind.")
                 AlarmMgr.setAlarmForNextTaskToRemind(context, nextTaskToRemind)
+            } else {
+                Log.d(TAG, "$logPrefix No next task found to remind.")
             }
 
             jobFinished()

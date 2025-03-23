@@ -89,9 +89,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private enum class ChildType {
-        TASK_DESCRIPTION_ROW,
-        SETTING_ROW,
-        SUBTASK_ROW
+        SUBTASK_ROW,
+        SETTING_ROW
     }
 
     // FILTER AND SORTING OPTIONS MADE BY THE USER
@@ -139,8 +138,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val taskHolder = getTaskHolderByPosition(groupPosition)
         var subtaskMetaData: SubtaskMetaData? = null
         if (null != taskHolder) {
-            val index = childPosition - 1
-            subtaskMetaData = taskHolder.getSubtaskMetaData(index)
+            subtaskMetaData = taskHolder.getSubtaskMetaData(childPosition)
             if (null != subtaskMetaData) {
                 subtaskMetaData.toggleMoveButtonsVisibility()
                 notifyDataSetChanged()
@@ -312,11 +310,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      * @param childPosition Position of child in range 0 - number of children minus one.
      */
     private fun getChildTypeEnum(groupPosition: Int, childPosition: Int): ChildType {
-        if (childPosition == 0) {
-            return ChildType.TASK_DESCRIPTION_ROW
-        }
         val todoTask = getTaskHolderByPosition(groupPosition)?.todoTask
-        return if (null != todoTask && childPosition <= todoTask.getSubtasks().size) {
+        return if (null != todoTask && childPosition < todoTask.getSubtasks().size) {
             ChildType.SUBTASK_ROW
         } else {
             ChildType.SETTING_ROW
@@ -325,6 +320,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     override fun getChildType(groupPosition: Int, childPosition: Int): Int {
         return getChildTypeEnum(groupPosition, childPosition).ordinal
+    }
+
+    override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
+        return getChildTypeEnum(groupPosition, childPosition) == ChildType.SUBTASK_ROW
     }
 
     override fun hasStableIds(): Boolean {
@@ -405,7 +404,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         actualConvertView.findViewById(R.id.tv_exlv_task_list_name),
                         actualConvertView.findViewById(R.id.cb_task_done),
                         actualConvertView.findViewById(R.id.v_urgency_task),
-                        actualConvertView.findViewById(R.id.pb_task_progress)
+                        actualConvertView.findViewById(R.id.pb_task_progress),
+                        actualConvertView.findViewById(R.id.tv_exlv_task_description)
                     )
                     tvh.done.tag = currentTask.getId()
                     tvh.done.isChecked = currentTask.isDone()
@@ -471,6 +471,13 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 } else {
                     tvh.recurringDeadlineIcon.visibility = View.GONE
                     tvh.recurringDeadline.visibility = View.GONE
+                }
+                val description = currentTask.getDescription()
+                if (isExpanded && description.isNotEmpty()) {
+                    tvh.taskDescription.visibility = View.VISIBLE
+                    tvh.taskDescription.text = description
+                } else {
+                    tvh.taskDescription.visibility = View.GONE
                 }
                 val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
                 val urgencyColor = urgency.getColor(context)
@@ -539,63 +546,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val currentTaskHolder = getTaskHolderByPosition(groupPosition) ?: return actualConvertView
         val currentTask = currentTaskHolder.todoTask
         when (childType) {
-            ChildType.TASK_DESCRIPTION_ROW -> {
-                val dvh: TaskDescriptionViewHolder
-                if (actualConvertView?.tag is TaskDescriptionViewHolder) {
-                    dvh = actualConvertView.tag as TaskDescriptionViewHolder
-                } else {
-                    actualConvertView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.exlv_task_description_row, parent, false)
-                    dvh = TaskDescriptionViewHolder(
-                        actualConvertView.findViewById(R.id.tv_exlv_task_description),
-                        actualConvertView.findViewById(R.id.v_task_description_deadline_color_bar)
-                    )
-                    actualConvertView.tag = dvh
-                }
-                val description = currentTask.getDescription()
-                if (description.isNotEmpty()) {
-                    dvh.taskDescription.visibility = View.VISIBLE
-                    dvh.taskDescription.text = description
-                } else {
-                    dvh.taskDescription.visibility = View.GONE
-                }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
-                val urgencyColor = urgency.getColor(context)
-                dvh.urgencyColorBar.setBackgroundColor(urgencyColor)
-            }
-
-            ChildType.SETTING_ROW -> {
-                val sevh: SettingViewHolder
-                if (actualConvertView?.tag is SettingViewHolder) {
-                    sevh = actualConvertView.tag as SettingViewHolder
-                } else {
-                    actualConvertView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.exlv_setting_row, parent, false)
-                    sevh = SettingViewHolder(
-                        actualConvertView.findViewById(R.id.ll_add_subtask),
-                        actualConvertView.findViewById(R.id.v_setting_deadline_color_bar)
-                    )
-                    actualConvertView.tag = sevh
-                    if (currentTask.isInRecycleBin()) actualConvertView.visibility = View.GONE
-                }
-                sevh.addSubtaskButton.setOnClickListener {
-                    val newSubtaskDialog = ProcessTodoSubtaskDialog(context)
-                    newSubtaskDialog.setDialogCallback { todoSubtask ->
-                        currentTask.getSubtasks().add(todoSubtask)
-                        todoSubtask.setTaskId(currentTask.getId())
-                        model.saveTodoSubtaskInDb(todoSubtask) {
-                            notifyDataSetChanged()
-                        }
-                    }
-                    newSubtaskDialog.show()
-                }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
-                val urgencyColor = urgency.getColor(context)
-                sevh.urgencyColorBar.setBackgroundColor(urgencyColor)
-            }
-
             ChildType.SUBTASK_ROW -> {
-                val subtaskIndex = childPosition - 1
+                val subtaskIndex = childPosition
                 val currentSubtask = currentTask.getSubtasks()[subtaskIndex]
                 val currentSubtaskMetaData = currentTaskHolder.getSubtaskMetaData(subtaskIndex)!!
                 val svh: SubtaskViewHolder
@@ -649,6 +601,36 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 svh.subtaskMenuButton.setOnClickListener {
                     onSubtaskMenuClickListener?.onSubtaskMenuClicked(currentTask, currentSubtask)
                 }
+            }
+
+            ChildType.SETTING_ROW -> {
+                val sevh: SettingViewHolder
+                if (actualConvertView?.tag is SettingViewHolder) {
+                    sevh = actualConvertView.tag as SettingViewHolder
+                } else {
+                    actualConvertView = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.exlv_setting_row, parent, false)
+                    sevh = SettingViewHolder(
+                        actualConvertView.findViewById(R.id.ll_add_subtask),
+                        actualConvertView.findViewById(R.id.v_setting_deadline_color_bar)
+                    )
+                    actualConvertView.tag = sevh
+                    if (currentTask.isInRecycleBin()) actualConvertView.visibility = View.GONE
+                }
+                sevh.addSubtaskButton.setOnClickListener {
+                    val newSubtaskDialog = ProcessTodoSubtaskDialog(context)
+                    newSubtaskDialog.setDialogCallback { todoSubtask ->
+                        currentTask.getSubtasks().add(todoSubtask)
+                        todoSubtask.setTaskId(currentTask.getId())
+                        model.saveTodoSubtaskInDb(todoSubtask) {
+                            notifyDataSetChanged()
+                        }
+                    }
+                    newSubtaskDialog.show()
+                }
+                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgencyColor = urgency.getColor(context)
+                sevh.urgencyColorBar.setBackgroundColor(urgencyColor)
             }
         }
         return actualConvertView
@@ -768,15 +750,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         taskHolder.setSubtaskMetaData(indexB, metaDataA)
     }
 
-    override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {
-        val todoTask = getTaskHolderByPosition(groupPosition)?.todoTask
-        return null != todoTask && childPosition > 0 && childPosition < todoTask.getSubtasks().size + 1
-    }
-
     private fun hasAutoProgress(): Boolean {
         //automatic-progress enabled?
         return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
+
+    private inner class GroupPriorityViewHolder(
+        val priorityFlag: TextView
+    )
 
     private inner class GroupTaskViewHolder(
         val name: TextView,
@@ -792,11 +773,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val listName: TextView,
         val done: CheckBox,
         val urgencyColorBar: View,
-        val progressBar: ProgressBar
-    )
-
-    private inner class GroupPriorityViewHolder(
-        val priorityFlag: TextView
+        val progressBar: ProgressBar,
+        val taskDescription: TextView
     )
 
     private inner class SubtaskViewHolder(
@@ -806,11 +784,6 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
         val subtaskMenuButton: ImageButton
-    )
-
-    private inner class TaskDescriptionViewHolder(
-        val taskDescription: TextView,
-        val urgencyColorBar: View
     )
 
     private inner class SettingViewHolder(
