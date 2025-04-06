@@ -53,11 +53,13 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     }
 
     override fun onEnabled(context: Context) {
+        Log.d(TAG, "onEnabled().")
         super.onEnabled(context)
         Model.registerModelObserver(this)
     }
 
     override fun onDisabled(context: Context?) {
+        Log.d(TAG, "onDisabled().")
         super.onDisabled(context)
         Model.unregisterModelObserver(this)
     }
@@ -66,6 +68,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.name)
         val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)
+        Log.d(TAG, "onTodoDataChanged() notifies widgets with IDs ${appWidgetIds.contentToString()}.")
         for (appWidgetId in appWidgetIds) {
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview_widget)
         }
@@ -79,6 +82,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        Log.d(TAG, "onUpdate() updates widgets with IDs ${appWidgetIds.contentToString()}.")
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {

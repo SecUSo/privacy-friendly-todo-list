@@ -56,7 +56,7 @@ class ModelServicesImpl(private val context: Context) {
      * 2) Sets every recurring task to undone where the done-date is before a deadline and the
      * deadline is in the past. In other words: Recurring tasks need to be done again and again and
      * this algorithm should set them to undone when the done deadline is in the past and next
-     * deadline comes near.
+     * deadline comes closer.
      */
     private suspend fun updateRecurringTasks(now: Long): Int {
         var dataArray = getDB().getTodoTaskDao().getRecurringTasksWithOverdueReminders(now)

@@ -201,7 +201,9 @@ object Helper {
     fun compareDeadlines(task1: TodoTask, task2: TodoTask): Int {
         var now: Long? = null
         val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
-            now = getCurrentTimestamp()
+            // Change timestamp to begin of today to ensure that a deadline which is today is not seen
+            // as past because it's time-part (e.g. 8:00) is behind the current time of day (e.g. 10:00).
+            now = changeTimePart(getCurrentTimestamp())
             getNextRecurringDate(
                 task1.getDeadline()!!,
                 task1.getRecurrencePattern(),
@@ -211,7 +213,7 @@ object Helper {
             task1.getDeadline()
         }
         val d2 = if (task2.isRecurring() && task2.getDeadline() != null) {
-            now = now ?: getCurrentTimestamp()
+            now = now ?: changeTimePart(getCurrentTimestamp())
             getNextRecurringDate(
                 task2.getDeadline()!!,
                 task2.getRecurrencePattern(),
