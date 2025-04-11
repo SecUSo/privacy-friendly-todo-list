@@ -202,7 +202,7 @@ object Helper {
         var now: Long? = null
         val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
             // Change timestamp to begin of today to ensure that a deadline which is today is not seen
-            // as past because it's time-part (e.g. 8:00) is behind the current time of day (e.g. 10:00).
+            // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
             now = changeTimePart(getCurrentTimestamp())
             getNextRecurringDate(
                 task1.getDeadline()!!,

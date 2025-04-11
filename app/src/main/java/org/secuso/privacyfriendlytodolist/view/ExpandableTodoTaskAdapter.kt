@@ -460,7 +460,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.reminder.visibility = View.GONE
                 }
                 if (isExpanded && currentTask.isRecurring() && currentTask.hasDeadline()) {
-                    val now = Helper.getCurrentTimestamp()
+                    // Change timestamp to begin of today to ensure that a deadline which is today is not seen
+                    // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
+                    val now = Helper.changeTimePart(Helper.getCurrentTimestamp())
                     val recurringDeadlineAndCount = Helper.getNextRecurringDateAndCount(
                         currentTask.getDeadline()!!, currentTask, now)
                     val recurringDeadlineString = Helper.createLocalizedDateString(recurringDeadlineAndCount.first)
