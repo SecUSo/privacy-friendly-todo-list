@@ -18,7 +18,6 @@
     <string name="enter_pin">Введите PIN-код</string>
     <string name="notif_reminder_ch_desc">Напоминания о предстоящих задачах.</string>
     <string name="set_pin">Установить PIN-код</string>
-    <string name="monthly">Месяц</string>
     <string name="slide5_text">Вы можете добавить защиту PIN-кодом в настройках.</string>
     <string name="help_widget">Дополнительно, данное приложение позволяет использовать виджет, который вы можете добавить на свой домашний экран. Виджет показывает вам задачи, которые относятся к выбранному списку. Нажатие на задачу приведёт к открытию главного экрана приложения. Кнопка синхронизации может обновлять список отображённых задач.</string>
     <string name="about_author">Авторы:</string>
@@ -134,9 +133,6 @@
     <string name="june">Июнь</string>
     <string name="october">Октябрь</string>
     <string name="none">Нет</string>
-    <string name="daily">День</string>
-    <string name="weekly">Неделя</string>
-    <string name="yearly">Год</string>
     <string name="days">День/дней</string>
     <string name="weeks">Неделя/недель</string>
     <string name="months">Месяц/месяцев</string>

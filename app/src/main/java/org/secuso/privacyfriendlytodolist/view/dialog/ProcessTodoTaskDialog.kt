@@ -264,7 +264,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 menu.setHeaderView(menuHeader)
                 for (pattern in RecurrencePattern.entries) {
                     menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE,
-                        Helper.recurrencePatternToAdverbString(context, pattern))
+                        Helper.recurrencePatternToNounString(context, pattern))
                 }
             }
 

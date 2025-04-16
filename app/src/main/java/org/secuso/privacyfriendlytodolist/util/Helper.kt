@@ -229,17 +229,6 @@ object Helper {
         return d1.compareTo(d2)
     }
 
-    fun recurrencePatternToAdverbString(context: Context, recurrencePattern: RecurrencePattern?): String {
-        return when (recurrencePattern) {
-            RecurrencePattern.NONE -> context.resources.getString(R.string.none)
-            RecurrencePattern.DAILY -> context.resources.getString(R.string.daily)
-            RecurrencePattern.WEEKLY -> context.resources.getString(R.string.weekly)
-            RecurrencePattern.MONTHLY -> context.resources.getString(R.string.monthly)
-            RecurrencePattern.YEARLY -> context.resources.getString(R.string.yearly)
-            else -> "Unknown recurrence pattern '$recurrencePattern'"
-        }
-    }
-
     fun recurrencePatternToNounString(context: Context, recurrencePattern: RecurrencePattern?): String {
         return when (recurrencePattern) {
             RecurrencePattern.NONE -> context.resources.getString(R.string.none)

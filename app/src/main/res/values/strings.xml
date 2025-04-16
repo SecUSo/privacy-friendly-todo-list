@@ -282,10 +282,6 @@
     <string name="november">November</string>
     <string name="december">December</string>
     <string name="none">None</string>
-    <string name="daily">Daily</string>
-    <string name="weekly">Weekly</string>
-    <string name="monthly">Monthly</string>
-    <string name="yearly">Yearly</string>
     <string name="days">Day(s)</string>
     <string name="weeks">Week(s)</string>
     <string name="months">Month(s)</string>

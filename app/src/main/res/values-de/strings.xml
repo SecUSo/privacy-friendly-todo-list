@@ -258,10 +258,6 @@
 	<string name="november">November</string>
 	<string name="december">Dezember</string>
     <string name="none">Keines</string>
-    <string name="daily">Täglich</string>
-    <string name="weekly">Wöchentlich</string>
-    <string name="monthly">Monatlich</string>
-    <string name="yearly">Jährlich</string>
     <string name="days">Tag(e)</string>
     <string name="weeks">Woche(n)</string>
     <string name="months">Monat(e)</string>
