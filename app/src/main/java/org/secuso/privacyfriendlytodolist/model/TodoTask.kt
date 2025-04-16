@@ -74,6 +74,29 @@ interface TodoTask : BaseTodo, Parcelable {
         }
     }
 
+    enum class ReminderState {
+        /** Reminder has not been displayed. */
+        INITIAL,
+        /** Reminder has been displayed. */
+        DONE;
+
+        companion object {
+            /** Number of enumeration entries. */
+            @JvmField
+            val LENGTH = entries.size
+
+            /**
+             * Provides the enumeration value that matches the given ordinal number.
+             *
+             * @param ordinal The ordinal number of the requested enumeration value.
+             * @return The requested enumeration value if the given ordinal is valid. Otherwise null.
+             */
+            fun fromOrdinal(ordinal: Int): ReminderState? {
+                return if (ordinal in 0..<LENGTH) entries[ordinal] else null
+            }
+        }
+    }
+
     fun setId(id: Int)
     fun getId(): Int
     fun setCreationTime(creationTime: Long)
@@ -136,8 +159,8 @@ interface TodoTask : BaseTodo, Parcelable {
     fun setReminderTime(reminderTime: Long?)
     fun getReminderTime(): Long?
     fun hasReminderTime(): Boolean
-    fun reminderTimeChanged(): Boolean
-    fun resetReminderTimeChangedStatus()
+    fun setReminderState(reminderState: ReminderState)
+    fun getReminderState(): ReminderState
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean

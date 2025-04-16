@@ -36,17 +36,19 @@ class NotificationJob : ModelJobBase("Notification job") {
 
         if (!params.extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
             Log.e(TAG, "$logPrefix Started without task ID.")
+            jobFinished()
         } else if (params.extras.getInt(NotificationReceiver.ACTION_SNOOZE, -1) != -1) {
             doSnooze(params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID))
         } else if (params.extras.getInt(NotificationReceiver.ACTION_SET_DONE, -1) != -1) {
             doSetDone(params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID))
         } else {
             Log.e(TAG, "$logPrefix Started without (known) notification action).")
+            jobFinished()
         }
 
-        // Return true, if job still runs asynchronously.
-        // If returning true, jobFinished() shall be called after asynchronous job has been finished.
-        return isJobOngoing()
+        // Return true, if job still runs asynchronously. If returning true, this action shall call
+        // jobFinished() after asynchronous tasks have been finished.
+        return isJobNotFinished()
     }
 
     private fun doSnooze(todoTaskId: Int) {
@@ -68,8 +70,10 @@ class NotificationJob : ModelJobBase("Notification job") {
 
             if (null == todoTask) {
                 Log.e(TAG, "$logPrefix Unable to set task as done. No task with ID $todoTaskId was found.")
+                jobFinished()
             } else if (todoTask.isDone()) {
                 Log.d(TAG, "$logPrefix Task with ID $todoTaskId already is done.")
+                jobFinished()
             } else {
                 todoTask.setDone(true)
                 todoTask.setChanged()

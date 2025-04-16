@@ -23,6 +23,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
+import org.secuso.privacyfriendlytodolist.model.TodoTask.ReminderState
 import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
@@ -38,9 +39,6 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     /** Container for data that gets stored in the database.  */
     val data: TodoTaskData
 
-    /** Important for the reminder service.  */
-    private var reminderTimeChanged = false
-    private var reminderTimeWasInitialized = false
     private var subtasks: MutableList<TodoSubtask> = ArrayList()
 
     constructor() {
@@ -67,8 +65,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.recurrencePattern = RecurrencePattern.fromOrdinal(parcel.readInt())!!
         data.recurrenceInterval = parcel.readInt()
         data.reminderTime = parcel.readValue(Long::class.java.classLoader) as Long?
-        reminderTimeChanged = parcel.readByte() != 0.toByte()
-        reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
+        data.reminderState = ReminderState.fromOrdinal(parcel.readInt())!!
         data.sortOrder = parcel.readInt()
         data.priority = Priority.fromOrdinal(parcel.readInt())!!
         parcel.readTypedList(subtasks, TodoSubtaskImpl.CREATOR)
@@ -89,8 +86,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeInt(data.recurrencePattern.ordinal)
         dest.writeInt(data.recurrenceInterval)
         dest.writeValue(data.reminderTime)
-        dest.writeByte((if (reminderTimeChanged) 1 else 0).toByte())
-        dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
+        dest.writeInt(data.reminderState.ordinal)
         dest.writeInt(data.sortOrder)
         dest.writeInt(data.priority.ordinal)
         dest.writeTypedList(subtasks)
@@ -265,12 +261,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun setReminderTime(reminderTime: Long?) {
         data.reminderTime = reminderTime
-
-        // check if reminder time was already set and now changed -> important for reminder service
-        if (reminderTimeWasInitialized) {
-            reminderTimeChanged = true
-        }
-        reminderTimeWasInitialized = true
+        data.reminderState = ReminderState.INITIAL
     }
 
     override fun getReminderTime(): Long? {
@@ -281,12 +272,12 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.reminderTime != null
     }
 
-    override fun reminderTimeChanged(): Boolean {
-        return reminderTimeChanged
+    override fun setReminderState(reminderState: ReminderState) {
+        data.reminderState = reminderState
     }
 
-    override fun resetReminderTimeChangedStatus() {
-        reminderTimeChanged = false
+    override fun getReminderState(): ReminderState {
+        return data.reminderState
     }
 
     override fun setAllSubtasksDone(isDone: Boolean) {

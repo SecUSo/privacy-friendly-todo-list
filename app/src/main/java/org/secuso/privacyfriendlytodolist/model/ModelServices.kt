@@ -105,7 +105,8 @@ class ModelServices(
                                      resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTasks = services.getTasksWithOverdueReminders(now)
-            dispatchResult(deliveryOption, resultConsumer, todoTasks)
+            dispatchResult(deliveryOption, resultConsumer, todoTasks.first)
+            notifyDataChanged(0, todoTasks.second, 0)
         }
     }
 

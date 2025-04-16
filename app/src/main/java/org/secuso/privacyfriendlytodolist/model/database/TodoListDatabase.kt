@@ -32,6 +32,7 @@ import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskDat
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.model.database.migration.MigrationV1ToV2
 import org.secuso.privacyfriendlytodolist.model.database.migration.MigrationV2ToV3
+import org.secuso.privacyfriendlytodolist.model.database.migration.MigrationV3ToV4
 import org.secuso.privacyfriendlytodolist.util.LogTag
 
 @Database(
@@ -50,7 +51,7 @@ abstract class TodoListDatabase : RoomDatabase() {
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
         const val NAME = "TodoDatabase.db"
-        const val VERSION = 3
+        const val VERSION = 4
 
         private val mutex = Mutex()
         private var instance: TodoListDatabase? = null
@@ -85,6 +86,11 @@ abstract class TodoListDatabase : RoomDatabase() {
             return db
         }
 
-        val ALL_MIGRATIONS = arrayOf(MigrationV1ToV2(), MigrationV2ToV3())
+        /** List of all manual DB migrations. There are automated migrations too. See */
+        val ALL_MIGRATIONS = arrayOf(
+            MigrationV1ToV2(),
+            MigrationV2ToV3(),
+            MigrationV3ToV4()
+        )
     }
 }

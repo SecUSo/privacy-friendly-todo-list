@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.service
 
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -35,15 +36,15 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
             doAlarm(params.extras.getInt(AlarmMgr.KEY_ALARM_ID))
         } else {
             Log.e(TAG, "$logPrefix Started without alarm ID.")
+            jobFinished()
         }
 
-        // Return true, if job still runs asynchronously.
-        // If returning true, jobFinished() shall be called after asynchronous job has been finished.
-        return isJobOngoing()
+        // Return true, if job still runs asynchronously. If returning true, this action shall call
+        // jobFinished() after asynchronous tasks have been finished.
+        return isJobNotFinished()
     }
 
     private fun doAlarm(todoTaskId: Int) {
-        // Serialize actions to be sure that all actions are done before calling jobFinished.
         model.getTaskById(todoTaskId) { todoTask ->
             if (isJobStopped()) {
                 return@getTaskById
@@ -70,27 +71,20 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                 }
                 NotificationMgr.postTaskNotification(context, title, message, todoTask)
 
-                setNextAlarm()
+                todoTask.setReminderState(TodoTask.ReminderState.DONE)
+                todoTask.setChanged()
+                model.saveTodoTaskInDb(todoTask) { counter ->
+                    if (counter != 0) {
+                        Log.d(TAG, "$logPrefix Set reminder state to DONE for $todoTask.")
+                    } else {
+                        Log.e(TAG, "$logPrefix Failed to set reminder state to DONE for $todoTask.")
+                    }
+                    jobFinished()
+                }
             } else {
                 Log.e(TAG, "$logPrefix Unable to process alarm. No task with ID $todoTaskId was found.")
+                jobFinished()
             }
-        }
-    }
-
-    private fun setNextAlarm() {
-        model.getNextTaskToRemind(Helper.getCurrentTimestamp()) { nextTaskToRemind ->
-            if (isJobStopped()) {
-                return@getNextTaskToRemind
-            }
-
-            if (null != nextTaskToRemind) {
-                Log.d(TAG, "$logPrefix Setting alarm for next task to remind.")
-                AlarmMgr.setAlarmForNextTaskToRemind(context, nextTaskToRemind)
-            } else {
-                Log.d(TAG, "$logPrefix No next task found to remind.")
-            }
-
-            jobFinished()
         }
     }
 

@@ -57,18 +57,25 @@ class ModelServicesImpl(private val context: Context) {
      * deadline is in the past. In other words: Recurring tasks need to be done again and again and
      * this algorithm should set them to undone when the done deadline is in the past and next
      * deadline comes closer.
+     *
+     * @param now Current time in seconds.
+     * @param ignoreReminderState If false, only the outdated reminders with reminder state
+     * [TodoTask.ReminderState.DONE] get updated. If true, all outdated reminders get updated.
+     * @return The number of updated tasks.
      */
-    private suspend fun updateRecurringTasks(now: Long): Int {
-        var dataArray = getDB().getTodoTaskDao().getRecurringTasksWithOverdueReminders(now)
+    private suspend fun updateRecurringTasks(now: Long, ignoreReminderState: Boolean = false): Int {
+        var dataArray = if (ignoreReminderState)
+            getDB().getTodoTaskDao().getRecurringTasksWithOutdatedRemindersIgnoreState(now) else
+            getDB().getTodoTaskDao().getRecurringTasksWithOutdatedReminders(now)
         var todoTasks = loadTasksSubtasks(false, *dataArray)
         var updatedTasks = 0
         for (todoTask in todoTasks) {
             // Note: Recurring task without deadline should be impossible.
             val deadlineTime = todoTask.getDeadline()
-            // Note: getRecurringTasksWithOverdueReminders() ensures that reminderTime and recurrencePattern is set.
+            // Note: getRecurringTasksWithOutdatedReminders() ensures that reminderTime and recurrencePattern is set.
             val oldReminderTime = todoTask.getReminderTime()
             if (null == deadlineTime || null == oldReminderTime) {
-                Log.e(TAG, "Inconsistent task: $todoTask")
+                Log.e(TAG, "Inconsistent task data: $todoTask")
                 continue
             }
 
@@ -146,11 +153,13 @@ class ModelServicesImpl(private val context: Context) {
         return Pair(todoTask, updatedTasks)
     }
 
-    suspend fun getTasksWithOverdueReminders(now: Long): MutableList<TodoTask> {
+    suspend fun getTasksWithOverdueReminders(now: Long): Pair<MutableList<TodoTask>, Int> {
+        // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
+        val updatedTasks = updateRecurringTasks(now)
         val dataArray = getDB().getTodoTaskDao().getTasksWithOverdueReminders(now)
         val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
-        return data as MutableList<TodoTask>
+        return Pair(data as MutableList<TodoTask>, updatedTasks)
     }
 
     suspend fun deleteTodoList(todoListId: Int): Triple<Int, Int, Int> {
@@ -515,7 +524,7 @@ class ModelServicesImpl(private val context: Context) {
             counterSubtasks += saveTodoSubtaskInDb(subtask.second)
         }
         // Update imported recurring tasks to have correct reminder times.
-        val updatedTasks = updateRecurringTasks(now)
+        val updatedTasks = updateRecurringTasks(now, true)
         // Imported and updated tasks might be the same. Take the larger number.
         counterTasks = counterTasks.coerceAtLeast(updatedTasks)
         return Pair(null, Triple(counterLists, counterTasks, counterSubtasks))

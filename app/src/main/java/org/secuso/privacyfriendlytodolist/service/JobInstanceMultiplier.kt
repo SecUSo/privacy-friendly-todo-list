@@ -45,24 +45,27 @@ class JobInstanceMultiplier : JobService() {
     }
 
     override fun onStartJob(params: JobParameters): Boolean {
-        if (jobs.containsKey(params.jobId)) {
-            Log.e(TAG, "Job with ID ${params.jobId} is already running.")
-            return false
-        }
-
-        val jobType = params.extras.getInt(JobManager.KEY_JOB_TYPE, -1)
-        val job = JobFactory.createJob(jobType)
+        var job = jobs[params.jobId]
         if (null == job) {
-            Log.e(TAG, "Failed to create job of type $jobType.")
-            return false
+            val jobType = params.extras.getInt(JobManager.KEY_JOB_TYPE, -1)
+            job = JobFactory.createJob(jobType)
+            if (null == job) {
+                Log.e(TAG, "Failed to create job of type $jobType.")
+                return false
+            }
+
+            Log.d(TAG, "Job with ID ${params.jobId} gets created.")
+            job.initialize(this, params)
+            job.onCreate()
+        } else {
+            Log.d(TAG, "Job with ID ${params.jobId} gets re-started.")
         }
 
-        job.initialize(this, params)
-        job.onCreate()
         val isJobOngoing = job.onStartJob()
         if (isJobOngoing) {
             jobs[params.jobId] = job
         } else {
+            Log.d(TAG, "Job with ID ${params.jobId} gets destroyed.")
             job.onDestroy()
         }
         return isJobOngoing
@@ -72,13 +75,15 @@ class JobInstanceMultiplier : JobService() {
         var isJobOngoing = false
         val job = jobs[params.jobId]
         if (job != null) {
+            Log.d(TAG, "Job with ID ${params.jobId} gets stopped.")
             isJobOngoing = job.onStopJob()
             if (!isJobOngoing) {
+                Log.d(TAG, "Job with ID ${params.jobId} gets destroyed.")
                 job.onDestroy()
                 jobs.remove(params.jobId)
             }
         } else {
-            Log.w(TAG, "Found no job with ID ${params.jobId}.")
+            Log.w(TAG, "Found no job with ID ${params.jobId} to be stopped.")
         }
         // Return true, if job should be rescheduled.
         return isJobOngoing

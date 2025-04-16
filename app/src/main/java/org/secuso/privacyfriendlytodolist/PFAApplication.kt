@@ -43,6 +43,7 @@ class PFAApplication : Application(), Configuration.Provider {
         TodoListWidget.registerAsModelObserver(this)
         // When the application exits, its alarms get cancelled by the OS.
         // So ensure here that an alarm is set for the next due task:
+        Log.d(TAG, "App starts. Starting update-alarm-job.")
         JobManager.startUpdateAlarmJob(this)
         Model.registerModelObserver(TaskChangeObserver)
         PreferenceObserver.initialize(this)

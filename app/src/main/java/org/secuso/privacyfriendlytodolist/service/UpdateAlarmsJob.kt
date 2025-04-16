@@ -24,21 +24,40 @@ import org.secuso.privacyfriendlytodolist.util.LogTag
 
 /**
  * A job service that ensures that an alarm is set for the task with the next reminder.
- * Optionally it triggers alarms for all tasks with overdue reminders immediately.
+ * But first it triggers alarms for all tasks with overdue reminders.
  */
 class UpdateAlarmsJob : ModelJobBase("Update-alarm-job") {
 
     override fun onStartJob(): Boolean {
         super.onStartJob()
 
-        doUpdateNextAlarm(params.extras.getInt(KEY_TRIGGER_ALARMS_FOR_OVERDUE_REMINDERS, 0))
+        // To keep race condition of lost update small, give notification right at the start of the job.
+        JobManager.notifyUpdateAlarmJobExecuted()
 
-        // Return true, if job still runs asynchronously.
-        // If returning true, jobFinished() shall be called after asynchronous job has been finished.
-        return isJobOngoing()
+        // Serialize (async) actions at sub calls to be sure that all actions are done before calling jobFinished.
+        triggerAlarmsForOverdueReminders()
+
+        // Return true, if job still runs asynchronously. If returning true, this action shall call
+        // jobFinished() after asynchronous tasks have been finished.
+        return isJobNotFinished()
     }
 
-    private fun doUpdateNextAlarm(alsoTriggerAlarmsForOverdueReminders: Int) {
+    private fun triggerAlarmsForOverdueReminders() {
+        model.getTasksWithOverdueReminders(Helper.getCurrentTimestamp()) { tasksWithOverdueReminders ->
+            if (isJobStopped()) {
+                return@getTasksWithOverdueReminders
+            }
+
+            for (todoTask in tasksWithOverdueReminders) {
+                Log.i(TAG, "$logPrefix Due to overdue reminder starting handle-alarm-job for $todoTask.")
+                JobManager.startHandleAlarmJob(context, todoTask.getId())
+            }
+
+            doUpdateNextAlarm()
+        }
+    }
+
+    private fun doUpdateNextAlarm() {
         model.getNextTaskToRemind(Helper.getCurrentTimestamp()) { nextTaskToRemind ->
             if (isJobStopped()) {
                 return@getNextTaskToRemind
@@ -49,32 +68,11 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarm-job") {
             } else {
                 Log.d(TAG, "$logPrefix No next task with due reminder so no alarm to set.")
             }
-
-            if (alsoTriggerAlarmsForOverdueReminders != 0) {
-                triggerAlarmsForOverdueReminders()
-            } else {
-                jobFinished()
-            }
-        }
-    }
-
-    private fun triggerAlarmsForOverdueReminders() {
-        model.getTasksWithOverdueReminders(Helper.getCurrentTimestamp()) { tasksWithOverdueReminders ->
-            if (isJobStopped()) {
-                return@getTasksWithOverdueReminders
-            }
-
-            Log.i(TAG, "$logPrefix Triggering alarms for ${tasksWithOverdueReminders.size} tasks with overdue reminders.")
-            for (todoTask in tasksWithOverdueReminders) {
-                JobManager.startHandleAlarmJob(context, todoTask.getId())
-            }
-
             jobFinished()
         }
     }
 
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
-        const val KEY_TRIGGER_ALARMS_FOR_OVERDUE_REMINDERS = "KEY_TRIGGER_ALARMS_FOR_OVERDUE_REMINDERS"
     }
 }

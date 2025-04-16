@@ -109,8 +109,7 @@ object AlarmMgr {
         val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
         lastTaskToRemindAlarmID = alarmId
         // Logging.
-        val durationAsInt = TimeUnit.SECONDS.toMinutes(reminderTime - now)
-        val duration = durationAsInt.toDuration(DurationUnit.MINUTES)
+        val duration = (alarmTime - now).toDuration(DurationUnit.SECONDS)
         Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $timestamp which is in $duration.")
 
         return alarmId
