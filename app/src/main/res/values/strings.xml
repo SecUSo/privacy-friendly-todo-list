@@ -49,6 +49,7 @@
     <string name="help_subtasks">Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
     <string name="help_deadline_reminder_title">Deadlines and reminders</string>
     <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it.</string>
+    <string name="help_recurring_tasks">For regularly recurring tasks, you can set up a recurrence pattern. If a reminder has also been set, it will recur according to the selected recurrence pattern. Once the task has been checked off, the check mark will be automatically removed after the next due date.</string>
     <string name="help_group_app">Settings</string>
     <string name="help_pin_title">Settings</string>
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with at least 4 digits. You are asked for it every time you start the application.</string>
