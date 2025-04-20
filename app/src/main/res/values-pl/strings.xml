@@ -20,7 +20,7 @@
     <string name="navigation_drawer_close">Zamknij menu</string>
     <string name="name">Nazwa</string>
     <string name="description_hint">Opis</string>
-    <string name="ok">Okej</string>
+    <string name="ok">OK</string>
     <!-- Common model strings -->
     <string name="select_option">Wybierz</string>
     <string name="high_priority">Bardzo ważne</string>
@@ -173,7 +173,7 @@
     <string name="yearly">Co rok</string>
     <string name="days">Dni</string>
     <string name="weeks">Tygodni</string>
-    <string name="tutorial">Przewodnik</string>
+    <string name="tutorial">Samouczek</string>
     <string name="months">Miesięcy</string>
     <string name="years">Lat</string>
     <string name="slide3_heading">Przypomnienia</string>
@@ -207,7 +207,7 @@
     <string name="slide1_heading">Witaj!</string>
     <string name="slide2_heading">Listy</string>
     <string name="pref_app_theme_title">Motyw</string>
-    <string name="okay">Okej</string>
+    <string name="okay">OK</string>
     <string name="next">Dalej</string>
     <string name="skip">Pomiń</string>
 </resources>
