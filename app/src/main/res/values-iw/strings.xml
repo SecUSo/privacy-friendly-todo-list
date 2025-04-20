@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="toolbar_title_main">מטלות</string>
+    <string name="share_all_tasks">שתף נתונים</string>
+    <string name="second_alert">הוסף משימה חדשה &gt;</string>
+    <string name="import_tasks">ייבא מידע</string>
+    <string name="name">שם</string>
+    <string name="help">עזרה</string>
+    <string name="other">אחר</string>
+    <string name="home">כל המשימות</string>
+    <string name="cancel">ביטול</string>
+    <string name="settings">הגדרות</string>
+    <string name="select_option">בחר אפשרות</string>
+    <string name="todos">מטלות</string>
+    <string name="high_priority">גבוה</string>
+    <string name="remove_all_done_tasks">הסר את כל המשימות שבוצעו</string>
+    <string name="search">חפש</string>
+    <string name="nav_header_app_name">מטלות</string>
+    <string name="export_all_tasks">ייצא מידע</string>
+    <string name="ok">אוקיי</string>
+    <string name="initial_alert">לחץ + לרשימה חדשה</string>
+    <string name="show_all_tasks">הצג את כל המשימות</string>
+    <string name="navigation_drawer_open">פתח תפריט</string>
+    <string name="description_hint">תיאור</string>
+    <string name="menu_about">אודות</string>
+    <string name="navigation_drawer_close">סגור תפריט</string>
+    <string name="app_name_long">רשימת מטלות ידידותית לפרטיות</string>
+    <string name="calendar_view">לוח שנה</string>
+    <string name="app_name">רשימת מטלות</string>
+    <string name="next">הבא</string>
+    <string name="medium_priority">בינוני</string>
+    <string name="help_todo_lists_title">רשימת משימות</string>
+    <string name="help_group_privacy">מידע פרטי</string>
+    <string name="low_priority">נמוך</string>
+    <string name="help_pin_title">הגדרות</string>
+    <string name="yes">כן</string>
+    <string name="help_group_lists">ניהול משימות</string>
+    <string name="no">לא</string>
+    <string name="help_overview_heading">מידע כללי</string>
+    <string name="help_intro">ניתן להשתמש ברשימת המשימות הידידותית לפרטיות כדי לשמור על משימות יוצאות דופן ולארגן לוח זמנים אישי.</string>
+    <string name="help_todo_lists">רשימת משימות היא קבוצה של משימות וניתן ליצור אותה באמצעות הלחצן + בסרגל הכלים. הרשימות מופיעות בתפריט הניווט וניתן לעבור לשם. ניתן לבדוק, לערוך ולמחוק משימות בתוך רשימת מטלות.</string>
+    <string name="help_subtasks_title">משימות משנה</string>
+    <string name="help_group_app">הגדרות</string>
+    <string name="pref_app_theme_title">עיצוב</string>
+    <string name="none">ללא</string>
+    <string name="about">על אודות</string>
+</resources>

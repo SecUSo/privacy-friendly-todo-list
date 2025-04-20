@@ -20,7 +20,7 @@
     <string name="navigation_drawer_close">Fermer le menu</string>
     <string name="name">Nom</string>
     <string name="description_hint">Description</string>
-    <string name="ok">Okay</string>
+    <string name="ok">D\'accord</string>
     <!-- Common model strings -->
     <string name="select_option">Choisir une option</string>
     <string name="high_priority">Très important</string>
@@ -37,7 +37,7 @@
     <string name="help_subtasks_title">Sous-tâches</string>
     <string name="help_subtasks">Les sous-tâches sont les pas qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
     <string name="help_deadline_reminder_title">Dates limites et alarmes</string>
-    <string name="help_deadline_reminder">Les dates limites et les alarmes ne peuvent ?tre créées que pour les tâches. Vous pouvez les introduire en créant une tâche ou en en éditant. Cliquez sur la tâche et attendez un moment pour l\'éditer.</string>
+    <string name="help_deadline_reminder">Les dates limites et les rappels ne peuvent être créées que pour les tâches. Vous pouvez soit les indiquer pendant la création d\'une tâche, soit pendant son édition.</string>
     <string name="help_group_app">Application</string>
     <string name="help_pin_title">Mot de passe</string>
     <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
@@ -48,7 +48,7 @@
     <string name="version_number">Version v%s</string>
     <string name="about_author">Auteurs:</string>
     <string name="about_author_contributors">et des collaborateurs.</string>
-    <string name="about_affiliation">En collaboration avec</string>
+    <string name="about_affiliation">En affiliation avec</string>
     <string name="privacy_friendly">Cette application appartient à Privacy Friendly Apps</string>
     <string name="more_info">Plus d\'informations sur:</string>
     <!-- To-Do list overview -->
@@ -143,4 +143,21 @@
     <string name="november">Novembre</string>
     <string name="december">Décembre</string>
     <string name="next">Suivant</string>
+    <string name="second_alert">AJOUTER UNE NOUVELLE TÂCHE &gt;</string>
+    <string name="help_sound">Également vous pouvez choisir si un son doit être émit à la réception d\'une notification.</string>
+    <string name="help_data_backup">Vous pouvez utiliser l\'application de Sauvegarde respectueuse de la Vie Privée pour sauvegarder et restaurer les données et paramètres de cette application. Il est également possible de l\'utiliser pour transférer vos données à un autre appareil.</string>
+    <string name="help_group_export_import">Importation / exportation des données</string>
+    <string name="help_group_widget">Widget</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM : cette autorisation permet à l\'application d\'afficher les rappels à l\'heure exacte.</string>
+    <string name="help_import">Les données de cette application peuvent être importées depuis un fichier au format CSV. Le format de ce fichier correspond au format du fichier CSV exporté.</string>
+    <string name="export_all_tasks">Exporter les données</string>
+    <string name="help_group_data_backup">Sauvegarde des données</string>
+    <string name="share_all_tasks">Partager les données</string>
+    <string name="help_privacy">Cette application ne contient ni traceurs ni publicités. Aucune autorisation autre que celles listées ci-dessous n\'est utilisée.</string>
+    <string name="import_tasks">Importer les données</string>
+    <string name="remove_all_done_tasks">Supprimer les tâches terminées</string>
+    <string name="cancel">Annuler</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS : cette autorisation permet à l\'application d\'afficher des rappels pour les tâches à venir.</string>
+    <string name="tutorial">Tutoriel</string>
+    <string name="help_export">Les données de cette application peuvent être exportées au format CSV (valeurs séparées par des virgules, encodées en UTF-8) pour davantage de traitements dans d\'autres applications.</string>
 </resources>
