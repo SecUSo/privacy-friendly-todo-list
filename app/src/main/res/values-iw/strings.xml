@@ -8,7 +8,7 @@
     <string name="help">עזרה</string>
     <string name="other">אחר</string>
     <string name="home">כל המשימות</string>
-    <string name="cancel">בטל</string>
+    <string name="cancel">ביטול</string>
     <string name="settings">הגדרות</string>
     <string name="select_option">בחר אפשרות</string>
     <string name="todos">מטלות</string>
@@ -27,4 +27,5 @@
     <string name="app_name_long">רשימת מטלות ידידותית לפרטיות</string>
     <string name="calendar_view">לוח שנה</string>
     <string name="app_name">רשימת מטלות</string>
+    <string name="next">הבא</string>
 </resources>
