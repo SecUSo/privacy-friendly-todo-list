@@ -28,4 +28,20 @@
     <string name="calendar_view">לוח שנה</string>
     <string name="app_name">רשימת מטלות</string>
     <string name="next">הבא</string>
+    <string name="medium_priority">בינוני</string>
+    <string name="help_todo_lists_title">רשימת משימות</string>
+    <string name="help_group_privacy">מידע פרטי</string>
+    <string name="low_priority">נמוך</string>
+    <string name="help_pin_title">הגדרות</string>
+    <string name="yes">כן</string>
+    <string name="help_group_lists">ניהול משימות</string>
+    <string name="no">לא</string>
+    <string name="help_overview_heading">מידע כללי</string>
+    <string name="help_intro">ניתן להשתמש ברשימת המשימות הידידותית לפרטיות כדי לשמור על משימות יוצאות דופן ולארגן לוח זמנים אישי.</string>
+    <string name="help_todo_lists">רשימת משימות היא קבוצה של משימות וניתן ליצור אותה באמצעות הלחצן + בסרגל הכלים. הרשימות מופיעות בתפריט הניווט וניתן לעבור לשם. ניתן לבדוק, לערוך ולמחוק משימות בתוך רשימת מטלות.</string>
+    <string name="help_subtasks_title">משימות משנה</string>
+    <string name="help_group_app">הגדרות</string>
+    <string name="pref_app_theme_title">עיצוב</string>
+    <string name="none">ללא</string>
+    <string name="about">אודות</string>
 </resources>
