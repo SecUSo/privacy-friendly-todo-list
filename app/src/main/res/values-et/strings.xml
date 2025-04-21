@@ -165,7 +165,7 @@
     <string name="share_task">Jaga ülesannet</string>
     <string name="remove_task">Kustuta ülesanne</string>
     <string name="task_removed">Ülesande kustutamine õnnestus.</string>
-    <string name="tasks_removed">%d ülesanne(t) ja %d alamülesanne(t) on kustutatud.</string>
+    <string name="tasks_removed">%1$d ülesanne(t) ja %2$d alamülesanne(t) on kustutatud.</string>
     <string name="deadline">Tähtaeg</string>
     <string name="recurrence_every">Korda iga</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -203,10 +203,6 @@
     <string name="friday_abbr">Reede</string>
     <string name="saturday_abbr">Laup</string>
     <string name="none">Puudub</string>
-    <string name="daily">Iga päev</string>
-    <string name="weekly">Iga nädal</string>
-    <string name="monthly">Iga kuu</string>
-    <string name="yearly">Iga aasta</string>
     <string name="days">päev</string>
     <string name="weeks">nädal</string>
     <string name="months">kuu</string>

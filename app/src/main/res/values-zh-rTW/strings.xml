@@ -68,7 +68,7 @@
     <string name="edit_task">編輯事項</string>
     <string name="remove_task">移除事項</string>
     <string name="task_removed">已成功移除事項。</string>
-    <string name="tasks_removed">已移除 %d 個事項與 %d 個子事項。</string>
+    <string name="tasks_removed">已移除 %1$d 個事項與 %2$d 個子事項。</string>
     <string name="select_recurrence_pattern">選擇重複模式：</string>
     <string name="select_no_list">沒有清單</string>
     <string name="edit_subtask">編輯子事項</string>
@@ -91,9 +91,7 @@
     <string name="august">八月</string>
     <string name="october">十月</string>
     <string name="november">十一月</string>
-    <string name="weekly">每週</string>
     <string name="none">無</string>
-    <string name="yearly">每年</string>
     <string name="months">月</string>
     <string name="years">年</string>
     <string name="tutorial">教學</string>
@@ -126,11 +124,9 @@
     <string name="about_author_contributors">與貢獻者。</string>
     <string name="sort_by_name_asc">依名稱排序</string>
     <string name="deadline">期限</string>
-    <string name="monthly">每月</string>
     <string name="april">四月</string>
     <string name="may">五月</string>
     <string name="calendar">日曆</string>
-    <string name="daily">每日</string>
     <string name="export_failed">匯出失敗</string>
     <string name="december">十二月</string>
     <string name="days">日</string>

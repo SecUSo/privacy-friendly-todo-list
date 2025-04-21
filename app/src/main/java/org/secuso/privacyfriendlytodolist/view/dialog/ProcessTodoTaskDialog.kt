@@ -226,8 +226,8 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 todoTask.setDescription(description)
                 todoTask.setDeadline(deadline)
                 todoTask.setRecurrencePattern(recurrencePattern)
-                if ( ! isRecurrenceIntervalBad && null != recurrenceInterval) {
-                    todoTask.setRecurrenceInterval(recurrenceInterval)
+                if ( ! isRecurrenceIntervalBad) {
+                    todoTask.setRecurrenceInterval(recurrenceInterval!!)
                 }
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setProgress(taskProgress)

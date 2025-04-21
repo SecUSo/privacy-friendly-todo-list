@@ -156,7 +156,7 @@
     <string name="cancel">Anuluj</string>
     <string name="edit_list">Edytuj listę</string>
     <string name="remove_all_done_tasks">Usuń wszystkie wykonane zadania</string>
-    <string name="tasks_removed">Usunięto %d zadań i %d podzadań.</string>
+    <string name="tasks_removed">Usunięto %1$d zadań i %2$d podzadań.</string>
     <string name="help_data_backup">Możesz skorzystać z oddzielnej aplikacji Privacy Friendly Backup, aby wykonać kopię zapasową i przywrócić dane i ustawienia tej aplikacji. Można jej również użyć do przeniesienia danych na inne urządzenie.</string>
     <string name="help_group_widget">Widżet</string>
     <string name="move_down_list">Przesuń listę w dół</string>
@@ -167,10 +167,6 @@
     <string name="notify">Włącz dźwięk powiadomienia</string>
     <string name="dialog_need_permission_exact_alarm_title">Włącz dokładne przypomnienia</string>
     <string name="none">Brak</string>
-    <string name="daily">Codziennie</string>
-    <string name="weekly">Co tydzień</string>
-    <string name="monthly">Co miesiąc</string>
-    <string name="yearly">Co rok</string>
     <string name="days">Dni</string>
     <string name="weeks">Tygodni</string>
     <string name="tutorial">Samouczek</string>

@@ -89,7 +89,7 @@
     <string name="sort_by_name_asc">Сортировать по имени</string>
     <string name="add_subtask">Добавить подзадачу</string>
     <string name="new_todo_task">Новая задача</string>
-    <string name="tasks_removed">%d задач(и) и %d подзадач(и) удалены.</string>
+    <string name="tasks_removed">%1$d задач(и) и %2$d подзадач(и) удалены.</string>
     <string name="deadline">Срок</string>
     <string name="recurrence_every">Повторять каждый</string>
     <string name="recurrence_interval_hint">1..n</string>
