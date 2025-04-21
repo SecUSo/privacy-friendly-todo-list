@@ -28,7 +28,8 @@ import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
 import java.util.Locale
-import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -185,26 +186,30 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         var deadline = data.deadline
         var daysUntilDeadline: Long? = null
         if (!isDone() && deadline != null) {
-            val now = Helper.getCurrentTimestamp()
+            // Change timestamps to begin of day to ensure that computations of durations work correctly.
+            // The computations shall bring the same result, independent from current time of day.
+            val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
+            deadline = Helper.changeTimePartToZero(deadline)
             if (isRecurring()) {
+                // If today is the deadline, the result should not be the upcoming deadline but today.
+                // To ensure this, temporarily use timestamp for now which is a bit smaller, for
+                // the case that 'now' and 'deadline' are equal.
                 deadline = Helper.getNextRecurringDate(deadline,
-                    data.recurrencePattern, data.recurrenceInterval, now)
+                    data.recurrencePattern, data.recurrenceInterval, now - 1)
             }
-            val nowDay = TimeUnit.SECONDS.toDays(now)
-            val deadlineDay = TimeUnit.SECONDS.toDays(deadline)
-            daysUntilDeadline = deadlineDay - nowDay
-            if (nowDay > deadlineDay) {
+            daysUntilDeadline = (deadline - now).toDuration(DurationUnit.SECONDS).inWholeDays
+            if (daysUntilDeadline < 0L) {
                 level = Urgency.Level.EXCEEDED
             }
-            else if (nowDay == deadlineDay) {
+            else if (daysUntilDeadline == 0L) {
                 level = Urgency.Level.DUE
             }
             else {
-                // Set time-part to 00:00:00 to ensure that comparison with reminder time span
-                // doesn't overlap with deadline-day. For example if deadline has time-part of
-                // 12:00:00 and reminder time span is 0.5 day it would not get 'imminent' before the
-                // deadline-day begins. But it should get 'imminent' 0.5 day before deadline day begins.
-                deadline = Helper.changeTimePart(deadline)
+                // Here it is also important that time-part is 00:00:00 to ensure that comparison
+                // with reminder time span doesn't overlap with deadline-day.
+                // For example if deadline has time-part of 12:00:00 and reminder time span is
+                // 0.5 day it would not get 'imminent' before the deadline-day begins.
+                // But it should get 'imminent' 0.5 day before deadline day begins.
                 val reminderTime = data.reminderTime
                 var finalReminderTimeSpan = reminderTimeSpan
                 if (reminderTime != null && reminderTime < deadline) {

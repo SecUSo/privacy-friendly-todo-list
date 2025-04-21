@@ -59,7 +59,7 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                     message = if (todoTask.isRecurring()) {
                         // Change timestamp to begin of today to ensure that a deadline which is today is not seen
                         // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
-                        val now = Helper.changeTimePart(Helper.getCurrentTimestamp())
+                        val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
                         val nextDeadlineAndCount = Helper.getNextRecurringDateAndCount(deadline, todoTask, now)
                         val deadlineStr = Helper.createLocalizedDateString(nextDeadlineAndCount.first)
                         applicationContext.resources.getString(R.string.recurring_deadline_approaching,

@@ -85,12 +85,12 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
     }
 
-    fun changeTimePart(timestamp: Long, h: Int = 0, m: Int = 0, s: Int = 0): Long {
+    fun changeTimePartToZero(timestamp: Long): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = TimeUnit.SECONDS.toMillis(timestamp)
-        calendar.set(Calendar.HOUR_OF_DAY, h)
-        calendar.set(Calendar.MINUTE, m)
-        calendar.set(Calendar.SECOND, s)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         return TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
     }
@@ -203,7 +203,7 @@ object Helper {
         val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
             // Change timestamp to begin of today to ensure that a deadline which is today is not seen
             // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
-            now = changeTimePart(getCurrentTimestamp())
+            now = changeTimePartToZero(getCurrentTimestamp())
             getNextRecurringDate(
                 task1.getDeadline()!!,
                 task1.getRecurrencePattern(),
@@ -213,7 +213,7 @@ object Helper {
             task1.getDeadline()
         }
         val d2 = if (task2.isRecurring() && task2.getDeadline() != null) {
-            now = now ?: changeTimePart(getCurrentTimestamp())
+            now = now ?: changeTimePartToZero(getCurrentTimestamp())
             getNextRecurringDate(
                 task2.getDeadline()!!,
                 task2.getRecurrencePattern(),
