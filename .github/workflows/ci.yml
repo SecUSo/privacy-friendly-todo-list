@@ -46,7 +46,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Run lint check
-        run: bash ./gradlew lint
+        run: bash ./gradlew lint --debug
 
       - name: Upload lint result
         uses: actions/upload-artifact@v4
