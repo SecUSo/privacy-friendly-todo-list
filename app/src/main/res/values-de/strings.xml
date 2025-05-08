@@ -229,6 +229,7 @@
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
     <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
     <string name="notif_reminder_act_snooze">%1$s schlummern</string>
+    <string name="notif_reminder_act_snooze_until_deadline">Bis Termin schlummern</string>
     <string name="notif_reminder_act_done">Abhaken</string>
 
     <!-- Date and Time -->

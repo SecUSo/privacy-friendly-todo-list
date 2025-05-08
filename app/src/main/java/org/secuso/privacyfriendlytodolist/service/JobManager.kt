@@ -68,7 +68,7 @@ object JobManager {
 
     fun startNotificationJob(context: Context, action: String, taskId: Int) {
         val extras = PersistableBundle()
-        extras.putInt(action, 0)
+        extras.putString(NotificationMgr.EXTRA_NOTIFICATION_ACTION_ID, action)
         extras.putInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID, taskId)
         scheduleJob(context, JobType.NotificationJob, extras)
     }

@@ -25,6 +25,7 @@ import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -37,13 +38,18 @@ class NotificationJob : ModelJobBase("Notification job") {
         if (!params.extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
             Log.e(TAG, "$logPrefix Started without task ID.")
             jobFinished()
-        } else if (params.extras.getInt(NotificationReceiver.ACTION_SNOOZE, -1) != -1) {
-            doSnooze(params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID))
-        } else if (params.extras.getInt(NotificationReceiver.ACTION_SET_DONE, -1) != -1) {
-            doSetDone(params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID))
         } else {
-            Log.e(TAG, "$logPrefix Started without (known) notification action).")
-            jobFinished()
+            val action = params.extras.getString(NotificationMgr.EXTRA_NOTIFICATION_ACTION_ID)
+            val taskId = params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
+            when (action) {
+                NotificationReceiver.ACTION_SNOOZE -> doSnooze(taskId)
+                NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE -> doSnoozeUntilDeadline(taskId)
+                NotificationReceiver.ACTION_SET_DONE -> doSetDone(taskId)
+                else -> {
+                    Log.e(TAG, "$logPrefix Started with unknown notification action '$action'.")
+                    jobFinished()
+                }
+            }
         }
 
         // Return true, if job still runs asynchronously. If returning true, this action shall call
@@ -55,8 +61,35 @@ class NotificationJob : ModelJobBase("Notification job") {
         NotificationMgr.cancelNotification(context, todoTaskId)
 
         val alarmTime = Helper.getCurrentTimestamp() + PreferenceMgr.getSnoozeDuration(context)
+        Log.d(TAG, "$logPrefix Snoozing task $todoTaskId until ${Helper.createCanonicalDateTimeString(alarmTime)}.")
         AlarmMgr.setAlarmForTask(context, todoTaskId, alarmTime)
         jobFinished()
+    }
+
+    private fun doSnoozeUntilDeadline(todoTaskId: Int) {
+        NotificationMgr.cancelNotification(context, todoTaskId)
+
+        // Serialize actions to be sure that both actions are done before calling jobFinished.
+        model.getTaskById(todoTaskId) { todoTask ->
+            if (isJobStopped()) {
+                return@getTaskById
+            }
+
+            if (null == todoTask) {
+                Log.e(TAG, "$logPrefix Unable to snooze until deadline. No task with ID $todoTaskId was found.")
+            } else if (!todoTask.hasDeadline()) {
+                Log.e(TAG, "$logPrefix Unable to snooze until deadline. $todoTask has no deadline.")
+            } else {
+                // Use date-part from deadline, use time-part from 'now' because deadline is just a date.
+                var datePart = TimeUnit.SECONDS.toDays(todoTask.getDeadline()!!)
+                datePart = TimeUnit.DAYS.toSeconds(datePart)
+                val timePart = Helper.getCurrentTimestamp() % (24 * 60 * 60)
+                val alarmTime = datePart + timePart
+                Log.d(TAG, "$logPrefix Snoozing $todoTask until deadline: ${Helper.createCanonicalDateTimeString(alarmTime)}.")
+                AlarmMgr.setAlarmForTask(context, todoTaskId, alarmTime)
+            }
+            jobFinished()
+        }
     }
 
     private fun doSetDone(todoTaskId: Int) {

@@ -36,6 +36,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
 import org.secuso.privacyfriendlytodolist.view.MainActivity
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -45,6 +46,7 @@ import org.secuso.privacyfriendlytodolist.view.MainActivity
  * If SDK >= 26 NotificationChannels will be created.
  */
 object NotificationMgr {
+    const val EXTRA_NOTIFICATION_ACTION_ID = "EXTRA_NOTIFICATION_ACTION_ID"
     const val EXTRA_NOTIFICATION_TASK_ID = "EXTRA_NOTIFICATION_TASK_ID"
     private val TAG = LogTag.create(this::class.java)
     private const val CHANNEL_ID = "my_channel_01"
@@ -112,6 +114,18 @@ object NotificationMgr {
         val snoozeDuration = Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context), true)
         var actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze, snoozeDuration)
         builder.addAction(R.drawable.ic_snooze_black_24dp, actionTitle, pendingIntent)
+
+        // If deadline is available, in future and not today provide action to snooze until deadline.
+        if (task.hasDeadline()
+            && TimeUnit.SECONDS.toDays(task.getDeadline()!!) > TimeUnit.SECONDS.toDays(Helper.getCurrentTimestamp())) {
+            // Snooze until Deadline Action -> Restart reminder without showing activity
+            intent = Intent(context, NotificationReceiver::class.java)
+            intent.setAction(NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE)
+            intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
+            pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
+            actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze_until_deadline)
+            builder.addAction(R.drawable.ic_snooze_black_24dp, actionTitle, pendingIntent)
+        }
 
         // Done Action -> Set task done without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
