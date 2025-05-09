@@ -25,7 +25,6 @@ import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -77,16 +76,19 @@ class NotificationJob : ModelJobBase("Notification job") {
 
             if (null == todoTask) {
                 Log.e(TAG, "$logPrefix Unable to snooze until deadline. No task with ID $todoTaskId was found.")
-            } else if (!todoTask.hasDeadline()) {
-                Log.e(TAG, "$logPrefix Unable to snooze until deadline. $todoTask has no deadline.")
             } else {
-                // Use date-part from deadline, use time-part from 'now' because deadline is just a date.
-                var datePart = TimeUnit.SECONDS.toDays(todoTask.getDeadline()!!)
-                datePart = TimeUnit.DAYS.toSeconds(datePart)
-                val timePart = Helper.getCurrentTimestamp() % (24 * 60 * 60)
-                val alarmTime = datePart + timePart
-                Log.d(TAG, "$logPrefix Snoozing $todoTask until deadline: ${Helper.createCanonicalDateTimeString(alarmTime)}.")
-                AlarmMgr.setAlarmForTask(context, todoTaskId, alarmTime)
+                val now = Helper.getCurrentTimestamp()
+                var reminderTimeAtDeadline = todoTask.computeReminderTimeAtDeadline(now)
+                if (reminderTimeAtDeadline == null) {
+                    Log.e(TAG, "$logPrefix Unable to snooze until deadline. $todoTask has no deadline.")
+                } else {
+                    val earliest = now + (15 * 60)
+                    if (reminderTimeAtDeadline < earliest) {
+                        reminderTimeAtDeadline = earliest
+                    }
+                    Log.d(TAG, "$logPrefix Snoozing $todoTask until deadline: ${Helper.createCanonicalDateTimeString(reminderTimeAtDeadline)}.")
+                    AlarmMgr.setAlarmForTask(context, todoTaskId, reminderTimeAtDeadline)
+                }
             }
             jobFinished()
         }

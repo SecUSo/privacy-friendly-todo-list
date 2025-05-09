@@ -158,6 +158,7 @@ interface TodoTask : BaseTodo, Parcelable {
     fun computeProgress(): Boolean
     fun setReminderTime(reminderTime: Long?)
     fun getReminderTime(): Long?
+    fun computeReminderTimeAtDeadline(now: Long): Long?
     fun hasReminderTime(): Boolean
     fun setReminderState(reminderState: ReminderState)
     fun getReminderState(): ReminderState

@@ -28,6 +28,7 @@ import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -273,6 +274,23 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.reminderTime
     }
 
+    override fun computeReminderTimeAtDeadline(now: Long): Long? {
+        var result: Long? = null
+        if (hasDeadline()) {
+            val deadline =
+                if (isRecurring()) {
+                    Helper.getNextRecurringDate(data.deadline!!, this, now)
+                } else {
+                    data.deadline!!
+                }
+            // Use date-part from deadline, use time-part from 'now' because deadline is just a date.
+            val datePart = TimeUnit.DAYS.toSeconds(TimeUnit.SECONDS.toDays(deadline))
+            val timePart = Helper.getCurrentTimestamp() % SECONDS_PER_DAY
+            result = datePart + timePart
+        }
+        return result
+    }
+
     override fun hasReminderTime(): Boolean {
         return data.reminderTime != null
     }
@@ -365,6 +383,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     companion object {
+        private const val SECONDS_PER_DAY = 24 * 60 * 60
         @JvmField
         val CREATOR = object : Creator<TodoTask> {
             override fun createFromParcel(parcel: Parcel): TodoTask {

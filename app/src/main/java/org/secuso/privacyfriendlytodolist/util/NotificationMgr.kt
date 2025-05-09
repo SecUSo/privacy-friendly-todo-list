@@ -116,8 +116,10 @@ object NotificationMgr {
         builder.addAction(R.drawable.ic_snooze_black_24dp, actionTitle, pendingIntent)
 
         // If deadline is available, in future and not today provide action to snooze until deadline.
-        if (task.hasDeadline()
-            && TimeUnit.SECONDS.toDays(task.getDeadline()!!) > TimeUnit.SECONDS.toDays(Helper.getCurrentTimestamp())) {
+        val now = Helper.getCurrentTimestamp()
+        val reminderTimeAtDeadline = task.computeReminderTimeAtDeadline(now)
+        if (reminderTimeAtDeadline != null
+            && TimeUnit.SECONDS.toDays(reminderTimeAtDeadline) > TimeUnit.SECONDS.toDays(now)) {
             // Snooze until Deadline Action -> Restart reminder without showing activity
             intent = Intent(context, NotificationReceiver::class.java)
             intent.setAction(NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE)
