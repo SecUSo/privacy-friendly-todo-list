@@ -81,6 +81,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         val cbGroupByPriority = findViewById<CheckBox>(R.id.cb_widget_cfg_group_by_priority)
         val cbSortByDeadline = findViewById<CheckBox>(R.id.cb_widget_cfg_sort_by_deadline)
         val cbSortByNameAsc = findViewById<CheckBox>(R.id.cb_widget_cfg_sort_by_name_asc)
+        val cbShowDaysUntilDeadline = findViewById<CheckBox>(R.id.cb_widget_cfg_show_days_until_deadline)
 
         val loadedPref = loadWidgetPreferences(this, appWidgetId)
         if (null == loadedPref) {
@@ -100,6 +101,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         cbGroupByPriority.isChecked = pref.isGroupingByPriority
         cbSortByDeadline.isChecked = pref.isSortingByDeadline
         cbSortByNameAsc.isChecked = pref.isSortingByNameAsc
+        cbShowDaysUntilDeadline.isChecked = pref.isShowingDaysUntilDeadline
 
         // Initialize textview that displays selected list
         model!!.getAllToDoLists { todoLists ->
@@ -131,6 +133,7 @@ class TodoListWidgetConfigureActivity : Activity() {
             pref.isGroupingByPriority = cbGroupByPriority.isChecked
             pref.isSortingByDeadline = cbSortByDeadline.isChecked
             pref.isSortingByNameAsc = cbSortByNameAsc.isChecked
+            pref.isShowingDaysUntilDeadline = cbShowDaysUntilDeadline.isChecked
             saveWidgetPreferences(this, appWidgetId, pref)
 
             // Trigger update after list name was saved to update the widget title with list name.
@@ -187,6 +190,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         private const val PREF_KEY_GROUP_BY_PRIORITY = "group_by_priority"
         private const val PREF_KEY_SORT_BY_DEADLINE = "sort_by_deadline"
         private const val PREF_KEY_SORT_BY_NAME_ASC = "sort_by_name_asc"
+        private const val PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE = "show_days_until_deadline"
         private const val PREF_VALUE_NULL = "null"
         private const val PREFIX = "_todo_list_widget_"
 
@@ -198,6 +202,7 @@ class TodoListWidgetConfigureActivity : Activity() {
             prefs.putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
             prefs.putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
             prefs.putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
+            prefs.putBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, pref.isShowingDaysUntilDeadline)
             prefs.apply()
             Log.d(TAG, "Preferences saved for app widget $appWidgetId: $pref")
         }
@@ -220,6 +225,7 @@ class TodoListWidgetConfigureActivity : Activity() {
             pref.isGroupingByPriority = prefs.getBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, false)
             pref.isSortingByDeadline = prefs.getBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, false)
             pref.isSortingByNameAsc = prefs.getBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, false)
+            pref.isShowingDaysUntilDeadline = prefs.getBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, false)
             Log.d(TAG, "Preferences loaded for app widget $appWidgetId: $pref")
             return pref
         }
@@ -232,6 +238,7 @@ class TodoListWidgetConfigureActivity : Activity() {
             prefs.remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
             prefs.remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
             prefs.remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
+            prefs.remove(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE)
             prefs.apply()
             Log.d(TAG, "Preferences deleted for app widget $appWidgetId.")
         }

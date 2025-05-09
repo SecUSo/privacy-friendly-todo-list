@@ -81,7 +81,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         recurrencePattern = todoTask.getRecurrencePattern()
         recurrenceInterval = todoTask.getRecurrenceInterval()
         reminderTime = todoTask.getReminderTime()
-        taskProgress = todoTask.getProgress(false)
+        taskProgress = todoTask.getProgress()
         taskPriority = todoTask.getPriority()
         assignedTodoListId = todoTask.getListId()
     }
@@ -226,8 +226,8 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 todoTask.setDescription(description)
                 todoTask.setDeadline(deadline)
                 todoTask.setRecurrencePattern(recurrencePattern)
-                if ( ! isRecurrenceIntervalBad && null != recurrenceInterval) {
-                    todoTask.setRecurrenceInterval(recurrenceInterval)
+                if ( ! isRecurrenceIntervalBad) {
+                    todoTask.setRecurrenceInterval(recurrenceInterval!!)
                 }
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setProgress(taskProgress)
@@ -264,7 +264,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 menu.setHeaderView(menuHeader)
                 for (pattern in RecurrencePattern.entries) {
                     menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE,
-                        Helper.recurrencePatternToAdverbString(context, pattern))
+                        Helper.recurrencePatternToNounString(context, pattern))
                 }
             }
 

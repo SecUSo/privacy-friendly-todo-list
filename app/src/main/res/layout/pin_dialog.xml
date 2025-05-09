@@ -14,7 +14,7 @@
             android:id="@+id/task_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@mipmap/drawer_icon"
+            app:navigationIcon="@drawable/ic_drawer"
             app:title="@string/app_name_long"/>
 
     </com.google.android.material.appbar.AppBarLayout>
