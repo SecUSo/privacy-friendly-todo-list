@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist
 
 import android.app.Application
 import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
 import org.secuso.privacyfriendlybackup.api.pfa.BackupManager
 import org.secuso.privacyfriendlytodolist.backup.BackupCreator
@@ -27,6 +28,7 @@ import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.observer.PreferenceObserver
 import org.secuso.privacyfriendlytodolist.observer.TaskChangeObserver
 import org.secuso.privacyfriendlytodolist.service.JobManager
+import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 
@@ -41,10 +43,31 @@ class PFAApplication : Application(), Configuration.Provider {
         TodoListWidget.registerAsModelObserver(this)
         // When the application exits, its alarms get cancelled by the OS.
         // So ensure here that an alarm is set for the next due task:
+        Log.d(TAG, "App starts. Starting update-alarm-job.")
         JobManager.startUpdateAlarmJob(this)
         Model.registerModelObserver(TaskChangeObserver)
         PreferenceObserver.initialize(this)
-        val appTheme = PreferenceMgr.getAppTheme(this)
-        PreferenceObserver.applyAppTheme(appTheme)
+        PreferenceObserver.registerPreferenceChangeListener { _, key ->
+            if (key == PreferenceMgr.P_APP_THEME.name) {
+                applyAppTheme()
+            }
+        }
+        applyAppTheme()
+    }
+
+    private fun applyAppTheme() {
+        when (val appTheme = PreferenceMgr.getAppTheme(this)) {
+            "LIGHT"  -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            "DARK"   -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            "SYSTEM" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            else     -> {
+                Log.e(TAG, "Unknown value for preference ${PreferenceMgr.P_APP_THEME.name}: $appTheme.")
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        }
+    }
+
+    companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
     }
 }

@@ -29,44 +29,59 @@ import org.secuso.privacyfriendlytodolist.service.JobFactory.JobType
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
+import java.util.concurrent.atomic.AtomicBoolean
 
 object JobManager {
     const val KEY_JOB_TYPE = "KEY_JOB_TYPE"
     private val TAG = LogTag.create(this::class.java)
+    private const val UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS = 10000L
     /**
      * WorkManager uses ID range 0 .. Integer#MAX_VALUE. The JobInfo ID range must not overlap with
      * this range. See androidx.work.Configuration.Builder#setJobSchedulerJobIdRange() for details.
      */
     private const val JOB_SCHEDULER_JOB_ID_RANGE_BEGIN = -1
     private const val JOB_SCHEDULER_JOB_ID_RANGE_END = -10000
-    private var jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
 
-    fun startUpdateAlarmJob(context: Context, alsoTriggerAlarmsForOverdueTasks: Boolean = false): Int {
-        val extras = PersistableBundle()
-        extras.putInt(UpdateAlarmsJob.KEY_TRIGGER_ALARMS_FOR_OVERDUE_TASKS, if (alsoTriggerAlarmsForOverdueTasks) 1 else 0)
-        return scheduleJob(context, JobType.UpdateAlarmsJob, extras)
+    private var jobIdBuilder = JOB_SCHEDULER_JOB_ID_RANGE_BEGIN
+    private var isUpdatedAlarmJobStarted = AtomicBoolean(false)
+
+    fun startUpdateAlarmJob(context: Context) {
+        // Some actions trigger a lot of update-alarm-jobs in a short period of time.
+        // Try to avoid many unnecessary updates by delaying the job and ignoring further
+        // requests while a job is started.
+        if (isUpdatedAlarmJobStarted.getAndSet(true)) {
+            Log.d(TAG, "update-alarm-job already triggered. Discarding this request.")
+        } else {
+            scheduleJob(context, JobType.UpdateAlarmsJob, null, UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS)
+        }
     }
 
-    fun startHandleAlarmJob(context: Context, alarmId: Int): Int {
+    fun notifyUpdateAlarmJobExecuted() {
+        isUpdatedAlarmJobStarted.set(false)
+    }
+
+    fun startHandleAlarmJob(context: Context, alarmId: Int) {
         val extras = PersistableBundle()
         extras.putInt(AlarmMgr.KEY_ALARM_ID, alarmId)
-        return scheduleJob(context, JobType.HandleAlarmJob, extras)
+        scheduleJob(context, JobType.HandleAlarmJob, extras)
     }
 
-    fun startNotificationJob(context: Context, action: String, taskId: Int): Int {
+    fun startNotificationJob(context: Context, action: String, taskId: Int) {
         val extras = PersistableBundle()
-        extras.putInt(action, 0)
+        extras.putString(NotificationMgr.EXTRA_NOTIFICATION_ACTION_ID, action)
         extras.putInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID, taskId)
-        return scheduleJob(context, JobType.NotificationJob, extras)
+        scheduleJob(context, JobType.NotificationJob, extras)
     }
 
-    private fun scheduleJob(context: Context, jobType: JobType, extras: PersistableBundle? = null): Int {
+    private fun scheduleJob(context: Context, jobType: JobType, extras: PersistableBundle? = null,
+                            minimumLatencyMs: Long = 0) {
         val componentName = ComponentName(context, JobInstanceMultiplier::class.java)
-        var jobId = getNextJobId()
+        val jobId = getNextJobId()
         val builder = JobInfo.Builder(jobId, componentName)
         val allExtras = extras ?: PersistableBundle()
         allExtras.putInt(KEY_JOB_TYPE, jobType.ordinal)
         builder.setExtras(allExtras)
+        builder.setMinimumLatency(minimumLatencyMs)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             // Set some constraint to avoid java.lang.IllegalArgumentException: You're trying to build a job with no constraints, this is not allowed.
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -75,10 +90,8 @@ object JobManager {
         val jobScheduler = context.getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
         val result = jobScheduler.schedule(jobInfo)
         if (result != JobScheduler.RESULT_SUCCESS) {
-            jobId = 0
             Log.e(TAG, "JobScheduler failed to schedule job for reminder service. Result: $result")
         }
-        return jobId
     }
 
     private fun getNextJobId(): Int {

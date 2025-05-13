@@ -24,18 +24,30 @@
         android:id="@+id/second_alert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="34dp"
+        android:layout_above="@id/fbl_list_quick_access"
         android:gravity="center_vertical"
         android:text="@string/second_alert"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold|italic" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_new_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/fbl_list_quick_access"
+        android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/second_alert"
+        app:srcCompat="@drawable/ic_plus_white_24dp" />
+
     <ExpandableListView
         android:id="@+id/exlv_tasks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/fbl_list_quick_access"
         android:clipToPadding="false"
         android:divider="@null"
         android:groupIndicator="@null"
@@ -44,10 +56,24 @@
     <TextView
         android:id="@+id/tv_empty_view_no_tasks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/fbl_list_quick_access"
         android:gravity="center"
         android:text="@string/empty_todo_list"
         android:textSize="18sp" />
 
-</RelativeLayout>
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/fbl_list_quick_access"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        app:flexWrap="wrap"
+        app:justifyContent="space_around"
+        app:alignItems="flex_start"
+        app:alignContent="flex_start"
+        app:showDividerHorizontal="beginning"
+        app:dividerDrawableHorizontal="?android:attr/listDivider"/>
 
+</RelativeLayout>

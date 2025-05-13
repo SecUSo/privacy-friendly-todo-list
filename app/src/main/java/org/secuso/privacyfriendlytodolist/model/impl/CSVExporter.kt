@@ -111,7 +111,10 @@ class CSVExporter {
             csvBuilder.addTimeField(todoTask.getReminderTime())
             csvBuilder.addField(todoTask.getRecurrencePattern().toString())
             csvBuilder.addField(todoTask.getRecurrenceInterval())
-            csvBuilder.addField(todoTask.getProgress(hasAutoProgress))
+            if (hasAutoProgress) {
+                todoTask.computeProgress()
+            }
+            csvBuilder.addField(todoTask.getProgress())
             csvBuilder.addField(todoTask.getPriority().toString())
         } else {
             for (i in START_COLUMN_TASK..<START_COLUMN_SUBTASK) {
