@@ -142,7 +142,7 @@
     <string name="months">Месяц/месяцев</string>
     <string name="years">Год/лет</string>
     <string name="tutorial">Руководство</string>
-    <string name="slide1_heading">Добро пожаловать!</string>
+    <string name="slide1_heading">Привет!</string>
     <string name="slide2_heading">Списки</string>
     <string name="slide2_text">Вы можете управлять вашими задачами в отмеченных списках дел.</string>
     <string name="slide3_heading">Напоминание</string>
