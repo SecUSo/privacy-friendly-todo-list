@@ -44,13 +44,13 @@
     <string name="help_group_privacy">Informacja o prywatności</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
     <!-- About -->
-    <string name="about">O nas</string>
-    <string name="version_number">Wersja %s</string>
+    <string name="about">O</string>
+    <string name="version_number">Wersja v%s</string>
     <string name="about_author">Autorzy:</string>
-    <string name="about_author_contributors">i współpracownicy.</string>
+    <string name="about_author_contributors">i współtwórcy.</string>
     <string name="about_affiliation">We współpracy z</string>
     <string name="privacy_friendly">Ta aplikacja należy do Privacy Friendly Apps</string>
-    <string name="more_info">Więcej informacji na:</string>
+    <string name="more_info">Więcej informacji można znaleźć na stronie:</string>
     <!-- To-Do list overview -->
 	<string name="done">zrobione</string>
     <string name="no_todo_lists_available">Lista zadań niedostępna.</string>
@@ -204,10 +204,19 @@
     <string name="move_up_list">Przesuń listę w górę</string>
     <string name="select_no_list">Bez listy</string>
     <string name="help_privacy">Ta aplikacja nie zawiera śledzenia ani reklam. Nie są używane żadne uprawnienia poza tymi wymienionymi poniżej.</string>
-    <string name="slide1_heading">Witaj!</string>
+    <string name="slide1_heading">Witamy!</string>
     <string name="slide2_heading">Listy</string>
     <string name="pref_app_theme_title">Motyw</string>
-    <string name="okay">OK</string>
+    <string name="okay">Ok</string>
     <string name="next">Dalej</string>
     <string name="skip">Pomiń</string>
+    <string name="recurrence_interval_hint">1..n</string>
+    <string name="recurrence_pattern_hint">Wzór powtarzalności</string>
+    <string name="select_recurrence_pattern">Wybierz wzór powtarzania:</string>
+    <string name="reminder_smaller_now">Tylko zadania cykliczne mogą mieć czas przypomnienia w przeszłości.</string>
+    <string name="set_deadline_if_recurring">Powtarzające się zadanie wymaga terminu wykonania.</string>
+    <string name="recurrence_interval_invalid">Interwał rekurencji nie jest liczbą całkowitą ≥ 1.</string>
+    <string name="help_export">Dane tej aplikacji można eksportować w formacie CSV (wartości rozdzielone przecinkami, kodowanie UTF-8) w celu dalszego przetwarzania w innych aplikacjach.</string>
+    <string name="help_import">Dane tej aplikacji można importować z pliku w formacie CSV. Format tego pliku odpowiada formatowi pliku eksportu CSV.</string>
+    <string name="help_widget">Ponadto ta aplikacja zapewnia widżet, który możesz dodać do ekranu głównego. Widget prezentuje zadania należące do wybranej listy. Kliknięcie zadania prowadzi do głównego widoku aplikacji. Przycisk synchronizacji może aktualizować listę wyświetlanych zadań.</string>
 </resources>
