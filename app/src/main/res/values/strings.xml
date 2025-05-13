@@ -254,7 +254,7 @@
     <string name="years">Year(s)</string>
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>
-    <string name="slide1_heading">Bienvenue!</string>
+    <string name="slide1_heading">Welcome!</string>
     <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app contains no tracking or advertising.</string>
     <string name="slide2_heading">Lists</string>
     <string name="slide2_text">You can manage your tasks in labeled To-Do lists.</string>
@@ -264,9 +264,9 @@
     <string name="slide4_text">You can add subtasks and the progress of their main task. Progress can be set manually or automatically by the number of done subtasks.</string>
     <string name="slide5_heading">Secure</string>
     <string name="slide5_text">You can add a PIN-protection in the settings.</string>
-    <string name="okay">Ok</string>
-    <string name="next">Suivant</string>
-    <string name="skip">Passer</string>
+    <string name="okay">Okay</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="toast_del">Recycle bin is cleared.</string>
     <string name="bin">Recycle bin</string>
