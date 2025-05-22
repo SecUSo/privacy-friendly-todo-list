@@ -23,8 +23,9 @@
         <ImageView
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
-            android:background="@mipmap/splash_screen"
-            />
+            android:background="@drawable/ic_splash_screen"
+            android:scaleX="1.7"
+            android:scaleY="1.7" />
 
         <TextView
             android:layout_width="wrap_content"

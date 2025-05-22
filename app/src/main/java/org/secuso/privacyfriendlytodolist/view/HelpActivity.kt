@@ -45,7 +45,7 @@ class HelpActivity : AppCompatActivity() {
         if (supportActionBarCopy != null) {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
-            supportActionBarCopy.setHomeAsUpIndicator(R.drawable.arrow)
+            supportActionBarCopy.setHomeAsUpIndicator(R.drawable.ic_arrow_left_white_24dp)
         }
     }
 

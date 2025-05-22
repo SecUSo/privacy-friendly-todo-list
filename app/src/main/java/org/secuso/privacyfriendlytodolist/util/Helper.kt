@@ -19,15 +19,14 @@ package org.secuso.privacyfriendlytodolist.util
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,24 +34,47 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
+@Suppress("MemberVisibilityCanBePrivate")
 object Helper {
     private val TAG = LogTag.create(this::class.java)
 
-    fun createLocalizedDateString(time: Long): String {
+    fun createLocalizedDateString(timestampS: Long): String {
+        val date = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createLocalizedDateString(date)
+    }
+
+    fun createLocalizedDateString(date: Date): String {
         val dateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.DEFAULT, Locale.getDefault())
-        val date = Date(TimeUnit.SECONDS.toMillis(time))
         return dateFormat.format(date)
     }
 
-    fun createLocalizedDateTimeString(time: Long): String {
+    fun createLocalizedDateTimeString(timestampS: Long): String {
+        val dateTime = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createLocalizedDateTimeString(dateTime)
+    }
+
+    fun createLocalizedDateTimeString(dateTime: Date): String {
         val dateTimeFormat = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.SHORT, Locale.getDefault())
-        val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
         return dateTimeFormat.format(dateTime)
     }
 
-    fun createCanonicalDateTimeString(time: Long): String {
+    fun createCanonicalDateString(timestampS: Long): String {
+        val date = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createCanonicalDateString(date)
+    }
+
+    fun createCanonicalDateString(date: Date): String {
+        val canonicalDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return canonicalDateFormat.format(date)
+    }
+
+    fun createCanonicalDateTimeString(timestampS: Long): String {
+        val dateTime = Date(TimeUnit.SECONDS.toMillis(timestampS))
+        return createCanonicalDateTimeString(dateTime)
+    }
+
+    fun createCanonicalDateTimeString(dateTime: Date): String {
         val canonicalDateTimeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault())
-        val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
         return canonicalDateTimeFormat.format(dateTime)
     }
 
@@ -63,33 +85,107 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
     }
 
+    fun changeTimePartToZero(timestamp: Long): Long {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = TimeUnit.SECONDS.toMillis(timestamp)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
+    }
+
+    fun getNextRecurringDate(recurringDate: Long, todoTask: TodoTask, now: Long, offset: Int = 0): Long {
+        return getNextRecurringDateAndCount(recurringDate, todoTask.getRecurrencePattern(),
+            todoTask.getRecurrenceInterval(), now, offset).first
+    }
+
+    fun getNextRecurringDateAndCount(recurringDate: Long, todoTask: TodoTask, now: Long, offset: Int = 0): Pair<Long, Int> {
+        return getNextRecurringDateAndCount(recurringDate, todoTask.getRecurrencePattern(),
+            todoTask.getRecurrenceInterval(), now, offset)
+    }
+
+    /**
+     * @param offset After the next recurring date was determined, a negative or positive number of
+     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
+     * date can be determined.
+     */
     fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern,
-                             recurrenceInterval: Int, now: Long): Long {
-        var result = recurringDate
+                             recurrenceInterval: Int, now: Long, offset: Int = 0): Long {
+        return getNextRecurringDateAndCount(recurringDate, recurrencePattern, recurrenceInterval,
+            now, offset).first
+    }
+
+    /**
+     * @param offset After the next recurring date was determined, a negative or positive number of
+     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
+     * date can be determined.
+     */
+    fun getNextRecurringDateAndCount(recurringDate: Long, recurrencePattern: RecurrencePattern,
+                                     recurrenceInterval: Int, now: Long, offset: Int = 0): Pair<Long, Int> {
+        var nextRecurringDate = recurringDate
+        var recurrences = 0
         if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
             recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(recurringDate))
             val nowCal = Calendar.getInstance()
             nowCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(now))
-            getNextRecurringDate(recurringDateCal, recurrencePattern, recurrenceInterval, nowCal)
+            recurrences = getNextRecurringDateAndCount(recurringDateCal, recurrencePattern,
+                recurrenceInterval, nowCal, offset)
+            nextRecurringDate = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
+        }
+        return Pair(nextRecurringDate, recurrences)
+    }
+
+    fun getNextRecurringDateAndCount(recurringDate: Calendar, todoTask: TodoTask, now: Calendar, offset: Int = 0): Int {
+        return getNextRecurringDateAndCount(recurringDate, todoTask.getRecurrencePattern(),
+            todoTask.getRecurrenceInterval(), now, offset)
+    }
+
+    /**
+     * Computes the next recurring date, based on the given recurring date, the recurrence pattern
+     * and the recurrence interval. The next recurring date will be greater than 'now' and greater
+     * than or equal to the given recurrence date.
+     *
+     * Optionally an positive or negative offset can be specified to add a number of intervals to
+     * the computed next recurring date.
+     *
+     * @todo When API 26 can be used, use ChronoUnit for a better implementation of this method.
+     *
+     * @param recurringDate In: The base recurring date.
+     * Out: The next recurring date. Optionally shifted by a positive or negative number of intervals.
+     * @param recurrencePattern The recurrence pattern.
+     * @param recurrenceInterval The recurrence interval.
+     * @param now The current date and time.
+     * @param offset The number of intervals to add to the next recurring date. For example with an
+     * offset of -1 the last recurring date can be determined.
+     * @return The number of recurrences.
+     */
+    fun getNextRecurringDateAndCount(recurringDate: Calendar, recurrencePattern: RecurrencePattern,
+                                     recurrenceInterval: Int, now: Calendar, offset: Int = 0): Int {
+        var recurrences = 0
+        if (recurrencePattern != RecurrencePattern.NONE) {
+            while (recurringDate <= now) {
+                addInterval(recurringDate, recurrencePattern, recurrenceInterval)
+                ++recurrences
+            }
+            if (offset != 0) {
+                addInterval(recurringDate, recurrencePattern, offset * recurrenceInterval)
+                recurrences += offset
+            }
+        }
+        return recurrences
+    }
+
+    fun addInterval(timestamp: Long, recurrencePattern: RecurrencePattern, recurrenceInterval: Int): Long {
+        var result = timestamp
+        if (recurrencePattern != RecurrencePattern.NONE) {
+            val recurringDateCal = Calendar.getInstance()
+            recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(timestamp))
+            addInterval(recurringDateCal, recurrencePattern, recurrenceInterval)
             result = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
         }
         return result
-    }
-
-    fun getNextRecurringDate(recurringDate: Calendar, recurrencePattern: RecurrencePattern,
-                             recurrenceInterval: Int, now: Calendar) {
-        if (recurrencePattern != RecurrencePattern.NONE) {
-            // TODO When API 26 can be used, use ChronoUnit for a better implementation of this method.
-            // Jump to previous year to have less iterations.
-            val previousYear = now[Calendar.YEAR] - 1
-            if (recurringDate[Calendar.YEAR] < previousYear) {
-                recurringDate[Calendar.YEAR] = previousYear
-            }
-            while (recurringDate <= now) {
-                addInterval(recurringDate, recurrencePattern, recurrenceInterval)
-            }
-        }
     }
 
     fun addInterval(date: Calendar, recurrencePattern: RecurrencePattern, recurrenceInterval: Int) {
@@ -102,43 +198,12 @@ object Helper {
         }
     }
 
-    fun computeRepetitions(firstDate: Long, followingDate: Long,
-                           recurrencePattern: RecurrencePattern, recurrenceInterval: Int): Long {
-        if (recurrencePattern == RecurrencePattern.NONE) {
-            return 0
-        }
-        if (recurrencePattern == RecurrencePattern.DAILY) {
-            return TimeUnit.DAYS.convert(followingDate - firstDate, TimeUnit.SECONDS) / recurrenceInterval
-        }
-
-        val first = Calendar.getInstance()
-        first.setTimeInMillis(TimeUnit.SECONDS.toMillis(firstDate))
-        val following = Calendar.getInstance()
-        following.setTimeInMillis(TimeUnit.SECONDS.toMillis(followingDate))
-        val result: Int
-        when (recurrencePattern) {
-            RecurrencePattern.WEEKLY -> {
-                val unitsFirst = 52 * first[Calendar.YEAR] + first[Calendar.WEEK_OF_YEAR]
-                val unitsFollowing = 52 * following[Calendar.YEAR] + following[Calendar.WEEK_OF_YEAR]
-                result = (unitsFollowing - unitsFirst) / recurrenceInterval
-            }
-            RecurrencePattern.MONTHLY -> {
-                val unitsFirst = 12 * first[Calendar.YEAR] + first[Calendar.MONTH]
-                val unitsFollowing = 12 * following[Calendar.YEAR] + following[Calendar.MONTH]
-                result = (unitsFollowing - unitsFirst) / recurrenceInterval
-            }
-            RecurrencePattern.YEARLY -> {
-                result = (following[Calendar.YEAR] - first[Calendar.YEAR]) / recurrenceInterval
-            }
-            else -> throw InternalError("Unhandled recurrence pattern: $recurrencePattern")
-        }
-        return result.toLong()
-    }
-
     fun compareDeadlines(task1: TodoTask, task2: TodoTask): Int {
         var now: Long? = null
         val d1 = if (task1.isRecurring() && task1.getDeadline() != null) {
-            now = getCurrentTimestamp()
+            // Change timestamp to begin of today to ensure that a deadline which is today is not seen
+            // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
+            now = changeTimePartToZero(getCurrentTimestamp())
             getNextRecurringDate(
                 task1.getDeadline()!!,
                 task1.getRecurrencePattern(),
@@ -148,7 +213,7 @@ object Helper {
             task1.getDeadline()
         }
         val d2 = if (task2.isRecurring() && task2.getDeadline() != null) {
-            now = now ?: getCurrentTimestamp()
+            now = now ?: changeTimePartToZero(getCurrentTimestamp())
             getNextRecurringDate(
                 task2.getDeadline()!!,
                 task2.getRecurrencePattern(),
@@ -162,17 +227,6 @@ object Helper {
         if (d1 == null) return 1
         if (d2 == null) return -1
         return d1.compareTo(d2)
-    }
-
-    fun recurrencePatternToAdverbString(context: Context, recurrencePattern: RecurrencePattern?): String {
-        return when (recurrencePattern) {
-            RecurrencePattern.NONE -> context.resources.getString(R.string.none)
-            RecurrencePattern.DAILY -> context.resources.getString(R.string.daily)
-            RecurrencePattern.WEEKLY -> context.resources.getString(R.string.weekly)
-            RecurrencePattern.MONTHLY -> context.resources.getString(R.string.monthly)
-            RecurrencePattern.YEARLY -> context.resources.getString(R.string.yearly)
-            else -> "Unknown recurrence pattern '$recurrencePattern'"
-        }
     }
 
     fun recurrencePatternToNounString(context: Context, recurrencePattern: RecurrencePattern?): String {
@@ -235,5 +289,28 @@ object Helper {
         } catch (e: PackageManager.NameNotFoundException) {
             false
         }
+    }
+
+    fun bundleToString(bundle: Bundle?): String? {
+        var result: String? = null
+        if (null != bundle) {
+            val sb = StringBuilder("Bundle[")
+            val keys = bundle.keySet()
+            var isFirst = true
+            for (key in keys) {
+                if (!isFirst) {
+                    sb.append(',')
+                } else {
+                    isFirst = false
+                }
+                sb.append(key)
+                sb.append('=')
+                @Suppress("DEPRECATION")
+                sb.append(bundle.get(key))
+            }
+            sb.append("]")
+            result = sb.toString()
+        }
+        return result
     }
 }

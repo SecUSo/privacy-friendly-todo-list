@@ -17,10 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.model
 
-import android.content.Context
 import android.os.Parcelable
-import androidx.core.content.ContextCompat
-import org.secuso.privacyfriendlytodolist.R
 
 
 interface TodoTask : BaseTodo, Parcelable {
@@ -77,19 +74,26 @@ interface TodoTask : BaseTodo, Parcelable {
         }
     }
 
-    /**
-     * The urgency of a to-do task.
-     */
-    enum class Urgency(private val colorId: Int) {
-        /** Task has no deadline or the deadline is far away. */
-        NONE(R.color.urgencyNone),
-        /** The deadline is near. */
-        IMMINENT(R.color.urgencyImminent),
-        /** The deadline has been elapsed. */
-        ELAPSED(R.color.urgencyElapsed);
+    enum class ReminderState {
+        /** Reminder has not been displayed. */
+        INITIAL,
+        /** Reminder has been displayed. */
+        DONE;
 
-        fun getColor(context: Context): Int {
-            return ContextCompat.getColor(context, colorId)
+        companion object {
+            /** Number of enumeration entries. */
+            @JvmField
+            val LENGTH = entries.size
+
+            /**
+             * Provides the enumeration value that matches the given ordinal number.
+             *
+             * @param ordinal The ordinal number of the requested enumeration value.
+             * @return The requested enumeration value if the given ordinal is valid. Otherwise null.
+             */
+            fun fromOrdinal(ordinal: Int): ReminderState? {
+                return if (ordinal in 0..<LENGTH) entries[ordinal] else null
+            }
         }
     }
 
@@ -128,27 +132,36 @@ interface TodoTask : BaseTodo, Parcelable {
      * @param reminderTimeSpan The reminder time span is a relative value in seconds
      * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
      * Urgency#IMMINENT gets returned.
+     * @return Returns Urgency EXCEEDED if the deadline is in the past.
+     * Returns Urgency DUE if the deadline is today.
+     * Returns Urgency IMMINENT if the deadline is later than today but within reminder time span
+     * (the given one or the one set by the user).
+     * Returns Urgency NONE in any other case.
      */
     fun getUrgency(reminderTimeSpan: Long): Urgency
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)
-
     /**
+     * The progress of a task is the number of done subtasks compared to the overall number of subtasks.
      *
-     * @param computeProgress If true, the progress of the task gets computed depending on the
-     * subtasks done-state. This progress also gets stored so that a further
-     * call with 'false' will return the same value (until next computation
-     * or [.setProgress] gets called).
-     * If false, the last stored value gets returned.
-     * @return The progress of the task in percent (values in range 0 - 100).
+     * @return The progress of the task in percent (value in range 0 - 100).
      */
-    fun getProgress(computeProgress: Boolean): Int
+    fun getProgress(): Int
+    /**
+     * Computes the progress of the task depending on the subtasks done-state. This progress gets
+     * stored and can be retrieved by [getProgress].
+     *
+     * @return True if a new progress value was computed, false if the same value was computed as
+     * currently is stored.
+     */
+    fun computeProgress(): Boolean
     fun setReminderTime(reminderTime: Long?)
     fun getReminderTime(): Long?
+    fun computeReminderTimeAtDeadline(now: Long): Long?
     fun hasReminderTime(): Boolean
-    fun reminderTimeChanged(): Boolean
-    fun resetReminderTimeChangedStatus()
+    fun setReminderState(reminderState: ReminderState)
+    fun getReminderState(): ReminderState
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
@@ -156,12 +169,13 @@ interface TodoTask : BaseTodo, Parcelable {
     fun getDoneTime(): Long?
 
     /**
-     * A task is done if the user manually sets it done or when all subtasks are done.
-     * If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
-     * This method checks if done-status of task needs an update due to this and if so, does the update.
-     * @return true if the done-status was updated, otherwise false.
+     * This method updates the done-status of the task depending on the done-status of all subtasks:
+     * - If all subtasks are done and the task is not set as done, it gets set as done.
+     * - If not all subtasks are done and the task is set as done, it gets set as undone.
+     * - If the task has no subtasks, done-status will not be changed.
+     * @return true if the done-status was changed, otherwise false.
      */
-    fun doneStatusChanged(): Boolean
+    fun updateDoneStatus(): Boolean
     fun setInRecycleBin(isInRecycleBin: Boolean)
     fun isInRecycleBin(): Boolean
     fun checkQueryMatch(query: String?, recursive: Boolean): Boolean

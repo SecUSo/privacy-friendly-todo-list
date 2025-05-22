@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 
@@ -51,12 +52,13 @@ class CalendarActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {
-            supportActionBarCopy.setHomeAsUpIndicator(R.drawable.arrow)
+            supportActionBarCopy.setHomeAsUpIndicator(R.drawable.ic_arrow_left_white_24dp)
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
         calendarGridAdapter = CalendarGridAdapter(this, R.layout.calendar_day)
         calendarView.setGridAdapter(calendarGridAdapter)
+        calendarView.setFirstDayOfWeek(PreferenceMgr.getFirstDayOfWeek(this))
         calendarView.setNextMonthOnClickListener {
             calendarView.incMonth(1)
             calendarView.refresh()
@@ -74,6 +76,7 @@ class CalendarActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         }
+        calendarView.refresh()
 
         onBackPressedDispatcher.addCallback(this) {
             val intent = Intent(this@CalendarActivity, MainActivity::class.java)

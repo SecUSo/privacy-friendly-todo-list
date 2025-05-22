@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.DatePicker
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.concurrent.TimeUnit
@@ -48,6 +49,7 @@ class DeadlineDialog(context: Context, private val deadline: Long?) :
             calendar1[Calendar.MONTH],
             calendar1[Calendar.DAY_OF_MONTH]
         )
+        datePicker.firstDayOfWeek = PreferenceMgr.getFirstDayOfWeek(context)
         val buttonOkay: Button = findViewById(R.id.bt_deadline_ok)
         buttonOkay.setOnClickListener {
             val calendar2: Calendar = GregorianCalendar(

@@ -22,7 +22,6 @@ import android.os.Parcel
 import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
 import java.util.Locale
 
@@ -138,24 +137,6 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         }
         return minDeadLine
     }
-
-    override fun getUrgency(reminderTimeSpan: Long): Urgency {
-        var result = Urgency.NONE
-        for (currentTask in tasks) {
-            when (currentTask.getUrgency(reminderTimeSpan)) {
-                Urgency.IMMINENT -> {
-                    result = Urgency.IMMINENT
-                }
-                Urgency.ELAPSED -> {
-                    result = Urgency.ELAPSED
-                    break
-                }
-                else -> {}
-            }
-        }
-        return result
-    }
-
 
     override fun checkQueryMatch(query: String?, recursive: Boolean): Boolean {
         // no query? always match!

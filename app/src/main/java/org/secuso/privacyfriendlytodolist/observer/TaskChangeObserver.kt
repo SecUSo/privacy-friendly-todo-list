@@ -28,14 +28,14 @@ object TaskChangeObserver: ModelObserver {
 
     override fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         if (0 != changedTasks) {
-            Log.d(TAG, "$changedTasks tasks did change. Updating alarm job.")
+            Log.d(TAG, "$changedTasks tasks did change. Starting update-alarm-job.")
             JobManager.startUpdateAlarmJob(context)
         }
     }
 
     override fun onTodoDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         if (0 != changedTasks) {
-            Log.d(TAG, "$changedTasks tasks did change from outside. Updating alarm job.")
+            Log.d(TAG, "$changedTasks tasks did change from outside. Starting update-alarm-job.")
             JobManager.startUpdateAlarmJob(context)
         }
     }

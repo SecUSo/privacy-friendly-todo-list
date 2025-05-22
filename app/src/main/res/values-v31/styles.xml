@@ -1,8 +1,8 @@
 <resources>
 
     <style name="SplashScreenTheme" parent="Theme.SplashScreen.IconBackground">
-        <item name="windowSplashScreenBackground">@color/colorAccent</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen</item>
+        <item name="windowSplashScreenBackground">@color/splashScreenBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen</item>
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 
