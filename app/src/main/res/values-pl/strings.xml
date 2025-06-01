@@ -44,13 +44,13 @@
     <string name="help_group_privacy">Informacja o prywatności</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Pozwala to aplikacji na sprawdzenie, czy użytkownik chce zostać poinformowany o nadchodzących terminach tuż po uruchomieniu urządzenia.</string>
     <!-- About -->
-    <string name="about">O</string>
+    <string name="about">O aplikacji</string>
     <string name="version_number">Wersja v%s</string>
     <string name="about_author">Autorzy:</string>
     <string name="about_author_contributors">i współtwórcy.</string>
     <string name="about_affiliation">We współpracy z</string>
     <string name="privacy_friendly">Ta aplikacja należy do Privacy Friendly Apps</string>
-    <string name="more_info">Więcej informacji można znaleźć na stronie:</string>
+    <string name="more_info">Więcej informacji można znaleźć na:</string>
     <!-- To-Do list overview -->
 	<string name="done">zrobione</string>
     <string name="no_todo_lists_available">Lista zadań niedostępna.</string>
@@ -207,7 +207,7 @@
     <string name="slide1_heading">Witamy!</string>
     <string name="slide2_heading">Listy</string>
     <string name="pref_app_theme_title">Motyw</string>
-    <string name="okay">Ok</string>
+    <string name="okay">OK</string>
     <string name="next">Dalej</string>
     <string name="skip">Pomiń</string>
     <string name="recurrence_interval_hint">1..n</string>
