@@ -21,7 +21,7 @@
     <string name="monthly">Месяц</string>
     <string name="slide5_text">Вы можете добавить защиту PIN-кодом в настройках.</string>
     <string name="help_widget">Дополнительно, данное приложение позволяет использовать виджет, который вы можете добавить на свой домашний экран. Виджет показывает вам задачи, которые относятся к выбранному списку. Нажатие на задачу приведёт к открытию главного экрана приложения. Кнопка синхронизации может обновлять список отображённых задач.</string>
-    <string name="about_author">Авторы:</string>
+    <string name="about_author">Авторы：</string>
     <string name="sort_by_deadline">Сортировать по крайнему сроку</string>
     <string name="no_deadline">Нет крайнего срока</string>
     <string name="move_down_list">Опустить список ниже</string>
@@ -73,9 +73,9 @@
     <string name="help_group_export_import">Экспортирование / импортирование данных</string>
     <string name="help_group_widget">Виджет</string>
     <string name="version_number">Версия v%s</string>
-    <string name="about_author_contributors">и помощники</string>
-    <string name="about_affiliation">Вместе с</string>
-    <string name="more_info">Подробнее можно узнать на:</string>
+    <string name="about_author_contributors">и другие участники.</string>
+    <string name="about_affiliation">В сотрудничестве с</string>
+    <string name="more_info">Больше информации на:</string>
     <string name="edit_todo_list">Редактировать список дел</string>
     <string name="move_up_list">Поднять список выше</string>
     <string name="edit_list">Редактировать список</string>
@@ -147,8 +147,8 @@
     <string name="slide2_text">Вы можете управлять вашими задачами в отмеченных списках дел.</string>
     <string name="slide3_heading">Напоминание</string>
     <string name="slide4_heading">Всё является важным</string>
-    <string name="okay">Хорошо</string>
-    <string name="next">Дальше</string>
+    <string name="okay">Ладно</string>
+    <string name="next">Далее</string>
     <string name="bin">Мусорная корзина</string>
     <string name="bin_toolbar">Мусорная корзина</string>
     <string name="btn_clear">Очистить мусорную корзину</string>
@@ -169,7 +169,7 @@
     <string name="no">Нет</string>
     <string name="task_removed">Задача успешно удалена.</string>
     <string name="time">Время</string>
-    <string name="about">О приложении</string>
+    <string name="about">О программе</string>
     <string name="next_deadline_dd">Следующий крайний срок: %1$s</string>
     <string name="help_subtasks">Подзадачи могут быть привязаны к задаче, представляя из себя маленькие шаги к её выполнению. Они могут быть созданы, нажав на задачу, при просмотре одного списка.</string>
     <string name="help_deadline_reminder">Крайние сроки и напоминания могут быть созданы только для задач. Вы можете либо указать их при создании задачи, либо при её редактировании.</string>
@@ -199,7 +199,7 @@
     <string name="add_widget">Добавить виджет</string>
     <string name="snack_clear">Мусорная корзина теперь очищена</string>
     <string name="snooze_duration">Продолжительность уведомлений до отключения</string>
-    <string name="skip">Пропуск</string>
+    <string name="skip">Пропустить</string>
     <string name="export_succeeded">Экспортирование успешно завершено</string>
     <string name="dialog_need_permission_exact_alarm_message">Необходимо разрешение для планирования точных напоминаний. В противном случае, напоминания не будут точными.</string>
     <string name="monday_abbr">ПН</string>
