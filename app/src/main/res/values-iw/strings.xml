@@ -44,4 +44,10 @@
     <string name="pref_app_theme_title">עיצוב</string>
     <string name="none">ללא</string>
     <string name="about">על אודות</string>
+    <string name="help_subtasks">ניתן לצרף משימות משנה למשימה כדי לייצג צעדים קטנים יותר להשגתה. ניתן ליצור אותן על ידי הקשה על משימה בעת צפייה ברשימה בודדת.</string>
+    <string name="help_deadline_reminder_title">מועדים אחרונים ותזכורות</string>
+    <string name="help_deadline_reminder">ניתן ליצור מועדים אחרונים ותזכורות רק עבור משימות. ניתן לציין אותם בעת יצירת משימה או בעת עריכתה.</string>
+    <string name="skip">דילוג</string>
+    <string name="okay">בסדר</string>
+    <string name="slide1_heading">ברוך בואך!</string>
 </resources>

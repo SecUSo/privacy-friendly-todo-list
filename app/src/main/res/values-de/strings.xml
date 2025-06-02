@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application Specific -->
 	<string name="app_name">To-Do Liste</string>
     <string name="app_name_long">Privacy Friendly To-Do Liste</string>
     <string name="initial_alert">KLICKE + FÜR NEUE LISTE</string>
-    <string name="second_alert">NEUE AUFGABE ></string>
-
+    <string name="second_alert">NEUE AUFGABE &gt;</string>
     <!-- Menu -->
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
@@ -18,10 +18,9 @@
     <string name="export_all_tasks">Daten exportieren</string>
     <string name="import_tasks">Daten importieren</string>
     <string name="other">Andere</string>
-	<string name="help">Hilfe</string>
-	<string name="menu_about">Über</string>
+    <string name="help">Hilfe</string>
+    <string name="menu_about">Über</string>
     <string name="search">Suche</string>
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Menü öffnen</string>
     <string name="navigation_drawer_close">Menü schließen</string>
@@ -29,7 +28,6 @@
     <string name="description_hint">Beschreibung</string>
     <string name="ok">Okay</string>
     <string name="cancel">Abbrechen</string>
-
     <!-- Common model strings -->
     <string name="select_option">Auswählen</string>
     <string name="high_priority">Hoch</string>
@@ -37,7 +35,6 @@
     <string name="low_priority">Niedrig</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
-
     <!-- Help -->
     <string name="help_overview_heading">Allgemein</string>
     <string name="help_intro">Die Privacy Friendly To-Do Liste kann zur Organisation und persönlichen Zeitplanung verwendet werden.</string>
@@ -64,20 +61,18 @@
     <string name="help_import">Die Daten dieser Anwendung können aus einer Datei im CSV Format importiert werden. Das Format dieser Datei entspricht dem Format der CSV-Export-Datei.</string>
     <string name="help_group_widget">Widget</string>
     <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App. Ein Tippen auf den Aktualisierungs-Button aktualisiert die Liste.</string>
-
     <!-- About -->
     <string name="about">Über</string>
     <string name="version_number">Version v%s</string>
     <string name="about_author">Autoren:</string>
     <string name="about_author_contributors">und Mitwirkende.</string>
-    <string name="about_affiliation">In Zusammenschluss mit</string>
+    <string name="about_affiliation">In Zusammenarbeit mit</string>
     <string name="privacy_friendly">Diese App gehört zur Gruppe der Privacy Friendly Apps entwickelt vom Karlsruher Institut für Technologie. Quelltext lizenziert unter GPLv3. Bilder copyright KIT und Google Inc.</string>
     <string name="more_info">Mehr Informationen auf:</string>
-
     <!-- To-Do list overview -->
 	<string name="done">erledigt</string>
-	<string name="no_todo_lists_available">Keine To-Do Listen verfügbar.</string>
-	<string name="next_deadline_dd">Nächster Termin: %1$s</string>
+    <string name="no_todo_lists_available">Keine To-Do Listen verfügbar.</string>
+    <string name="next_deadline_dd">Nächster Termin: %1$s</string>
     <string name="no_next_deadline">Keine Termine</string>
     <string name="add_list_feedback">%1$s hinzugefügt</string>
     <string name="edit_todo_list">To-Do Liste bearbeiten</string>
@@ -88,13 +83,11 @@
     <string name="share_list">Liste teilen</string>
     <string name="delete_list">Liste löschen</string>
     <string name="delete_list_feedback">%1$s gelöscht</string>
-
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">Neue To-Do Liste</string>
     <string name="list_name_must_not_be_empty">Bitte geben Sie einen Listennamen ein.</string>
     <string name="show_description">Beschreibung anzeigen</string>
     <string name="no_description_available">Keine Beschreibung vorhanden.</string>
-
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Keine Aufgaben</string>
     <string name="all_tasks">Alle Aufgaben</string>
@@ -104,7 +97,6 @@
     <string name="sort_by_deadline">Nach Termin sortieren</string>
     <string name="sort_by_name_asc">Nach Name sortieren</string>
     <string name="add_subtask">Unteraufgabe hinzufügen</string>
-
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Neue Aufgabe</string>
     <string name="edit_todo_task">Aufgabe bearbeiten</string>
@@ -125,7 +117,7 @@
     <string name="reminder_smaller_now">Nur wiederkehrende Aufgaben können eine Erinnerungszeit in der Vergangenheit haben.</string>
     <string name="set_deadline_before_reminder">Bitte geben Sie zuerst einen Termin an.</string>
     <string name="set_deadline_if_recurring">Eine wiederkehrende Aufgabe benötigt einen Termin.</string>
-    <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl >= 1.</string>
+    <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl &gt;= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
     <string name="zero_percent">0 %</string>
@@ -146,24 +138,20 @@
     <string name="move_down">Runterschieben</string>
     <string name="cant_move_task_if_diff_lists">Tasks können nicht verschoben werden, wenn verschiedene Listen angezeigt werden.</string>
     <string name="cant_move_task_if_filter_group_sort">Tasks können nicht verschoben werden, wenn Filter, Gruppierung oder Sortierung aktiv ist.</string>
-
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>
-	<string name="time">Zeit</string>
-	<string name="no_reminder">Keine Erinnerung</string>
-
+    <string name="time">Zeit</string>
+    <string name="no_reminder">Keine Erinnerung</string>
     <!-- Calendar view -->
     <string name="calendar">Kalender</string>
     <string name="no_deadline_today">Keine Termine an diesem Tag.</string>
-
     <!-- PIN -->
 	<string name="enter_pin">PIN eingeben</string>
-	<string name="wrong_pin">Falsche PIN</string>
+    <string name="wrong_pin">Falsche PIN</string>
     <string name="reset_application_button">App zurücksetzen</string>
     <string name="invalid_pin">Bitte geben Sie eine PIN mit 4 Zahlen ein.</string>
     <string name="reset_application_msg">Wollen Sie die Anwendung wirklich zurücksetzen? Dies entfernt zwar den PIN-Schutz, löscht jedoch auch alle To-Do Listen.</string>
     <string name="add_pin">Fügen Sie eine numerische PIN, der aus mindestens vier Ziffern besteht, hinzu, der abgefragt wird, wenn die App startet.</string>
-
     <!-- Settings -->
 	<string name="default_reminder_time">Standardmäßige Erinnerungszeit</string>
     <string-array name="default_reminder_times_human">
@@ -200,41 +188,37 @@
         <item>Dunkel</item>
         <item>Systemstandard</item>
     </string-array>
-
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Genaue Erinnerungen aktivieren</string>
     <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung, um Erinnerungen zeitlich genau zu melden wird benötigt. Andernfalls erfolgen die Erinnerungen zeitlich ungenau.</string>
-
     <!-- Reminder service -->
     <string name="deadline_approaching">Termin rückt näher: %1$s</string>
     <string name="recurring_deadline_approaching">Termin rückt näher: %1$s (%2$d. Wiederholung)</string>
-
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
     <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
     <string name="notif_reminder_act_snooze">%1$s schlummern</string>
     <string name="notif_reminder_act_done">Abhaken</string>
-
     <!-- Date and Time -->
 	<string name="sunday_abbr">SO</string>
-	<string name="monday_abbr">MO</string>
-	<string name="tuesday_abbr">DI</string>
-	<string name="wednesday_abbr">MI</string>
-	<string name="thursday_abbr">DO</string>
-	<string name="friday_abbr">FR</string>
-	<string name="saturday_abbr">SA</string>
-	<string name="january">Januar</string>
-	<string name="february">Februar</string>
-	<string name="march">März</string>
-	<string name="april">April</string>
-	<string name="may">Mai</string>
-	<string name="june">Juni</string>
-	<string name="july">Juli</string>
-	<string name="august">August</string>
-	<string name="september">September</string>
-	<string name="october">Oktober</string>
-	<string name="november">November</string>
-	<string name="december">Dezember</string>
+    <string name="monday_abbr">MO</string>
+    <string name="tuesday_abbr">DI</string>
+    <string name="wednesday_abbr">MI</string>
+    <string name="thursday_abbr">DO</string>
+    <string name="friday_abbr">FR</string>
+    <string name="saturday_abbr">SA</string>
+    <string name="january">Januar</string>
+    <string name="february">Februar</string>
+    <string name="march">März</string>
+    <string name="april">April</string>
+    <string name="may">Mai</string>
+    <string name="june">Juni</string>
+    <string name="july">Juli</string>
+    <string name="august">August</string>
+    <string name="september">September</string>
+    <string name="october">Oktober</string>
+    <string name="november">November</string>
+    <string name="december">Dezember</string>
     <string name="none">Keines</string>
     <string name="daily">Täglich</string>
     <string name="weekly">Wöchentlich</string>
@@ -244,29 +228,21 @@
     <string name="weeks">Woche(n)</string>
     <string name="months">Monat(e)</string>
     <string name="years">Jahr(e)</string>
-
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>
-
     <string name="slide1_heading">Willkommen!</string>
     <string name="slide1_text">Willkommen in der To-Do Liste, die Ihre Privatsphäre nicht verletzt. Diese App kommt ohne Berechtigungen aus.</string>
-
     <string name="slide2_heading">Listen</string>
     <string name="slide2_text">Sie können Ihre Aufgaben in Kategorien unterteilen, indem Sie To-Do Listen anlegen und verwalten.</string>
-
     <string name="slide3_heading">Erinnerungen</string>
     <string name="slide3_text">Zusätzlich können Sie ein Fälligkeitsdatum und eine Erinnerung für Aufgaben definieren.</string>
-
     <string name="slide4_heading">Details</string>
     <string name="slide4_text">Sie können Unteraufgaben erstellen, indem die Aufgabe durch Antippen aufgeklappt wird. Der Fortschritt einer Aufgabe kann entweder manuell oder automatisch durch die Anzahl der erledigten Subtasks gesetzt werden.</string>
-
     <string name="slide5_heading">Privatsphäre</string>
     <string name="slide5_text">Erstellen Sie einen PIN-Schutz in den Einstellungen dieser App.</string>
-
     <string name="next">Weiter</string>
     <string name="skip">Überspringen</string>
     <string name="okay">Okay</string>
-
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="toast_del">Papierkorb wurde geleert.</string>
     <string name="bin">Papierkorb</string>
@@ -274,10 +250,8 @@
     <string name="btn_clear">Leeren</string>
     <string name="bin_empty">Papierkorb ist leer</string>
     <string name="restore">Wiederherstellen</string>
-
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Aufgaben</string>
-
     <!-- ### Export / Import ### -->
     <string name="export_succeeded">Export erfolgreich beendet</string>
     <string name="export_failed">Export fehlgeschlagen</string>
@@ -287,23 +261,18 @@
     <string name="import_question_text">Sollen alle existierenden Daten (alle To-Do Listen, Aufgaben und Unteraufgaben) vor dem Import gelöscht werden?</string>
     <string name="delete_existing_data">Existierende Daten löschen</string>
     <string name="keep_existing_data">Existierende Daten beibehalten</string>
-
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_list_delete">Die Liste wirklich löschen?</string>
     <string name="alert_done_tasks_remove">Die erledigten Aufgaben wirklich entfernen?</string>
     <string name="alert_clear">Wirklich leeren?</string>
-
     <!-- ### WIDGET ### -->
     <string name="add_widget">Widget hinzufügen</string>
     <string name="widget_configuration">Widget Konfiguration</string>
-
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Status geändert</string>
     <string name="snack_undo">Rückgängig machen</string>
     <string name="snack_clear">Papierkorb geleert</string>
-
     <!-- TO-DO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>
     <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
-
 </resources>
