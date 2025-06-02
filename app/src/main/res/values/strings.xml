@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application Specific -->
     <string name="app_name">To-Do List</string>
     <string name="app_name_long">Privacy Friendly To-Do List</string>
     <string name="initial_alert">CLICK + FOR NEW LIST</string>
-    <string name="second_alert">ADD NEW TASK ></string>
-
+    <string name="second_alert">ADD NEW TASK &gt;</string>
     <!-- Menu -->
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
@@ -21,7 +21,6 @@
     <string name="help">Help</string>
     <string name="menu_about">About</string>
     <string name="search">Search</string>
-
     <!-- Common UI strings -->
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
@@ -29,7 +28,6 @@
     <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
-
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
     <string name="high_priority">High</string>
@@ -37,7 +35,6 @@
     <string name="low_priority">Low</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-
     <!-- Help -->
     <string name="help_overview_heading">General Information</string>
     <string name="help_intro">The Privacy Friendly To-Do List can be used to keep outstanding tasks in mind and organize a personal schedule.</string>
@@ -64,7 +61,6 @@
     <string name="help_import">The data of this application can be imported from a file in CSV format. The format of this file corresponds to the format of the CSV export file.</string>
     <string name="help_group_widget">Widget</string>
     <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
-
     <!-- About -->
     <string name="about">About</string>
     <string name="version_number">Version v%s</string>
@@ -77,7 +73,6 @@
     <string name="more_info">More information can be found on:</string>
     <string name="github" translatable="false"><a href="https://github.com/SecUSo/privacy-friendly-todo-list">Github-Repo</a></string>
     <string name="url" translatable="false"><a href="https://www.secuso.org/pfa">SECUSO-Website</a></string>
-
     <!-- To-Do list overview -->
     <string name="done">done</string>
     <string name="no_todo_lists_available">No To-Do lists available.</string>
@@ -92,13 +87,11 @@
     <string name="share_list">Share list</string>
     <string name="delete_list">Delete list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
-
     <!-- Create/Edit To-Do list dialog -->
     <string name="new_todo_list">New To-Do list</string>
     <string name="list_name_must_not_be_empty">Please enter a list name.</string>
     <string name="show_description">Show description</string>
     <string name="no_description_available">No description available.</string>
-
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">No tasks available</string>
     <string name="all_tasks">All tasks</string>
@@ -108,7 +101,6 @@
     <string name="sort_by_deadline">Sort by deadline</string>
     <string name="sort_by_name_asc">Sort by name</string>
     <string name="add_subtask">Add Subtask</string>
-
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">New To-Do task</string>
     <string name="edit_todo_task">Edit To-Do task</string>
@@ -129,7 +121,7 @@
     <string name="reminder_smaller_now">Only recurring tasks can have reminder time in the past.</string>
     <string name="set_deadline_before_reminder">Please specify a deadline before setting the reminder time.</string>
     <string name="set_deadline_if_recurring">A recurring task needs a deadline.</string>
-    <string name="recurrence_interval_invalid">Recurrence interval is no integer >= 1.</string>
+    <string name="recurrence_interval_invalid">Recurrence interval is no integer &gt;= 1.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
     <string name="zero_percent">0 %</string>
@@ -150,16 +142,13 @@
     <string name="move_down">Move down</string>
     <string name="cant_move_task_if_diff_lists">Can\'t move task if different lists are shown.</string>
     <string name="cant_move_task_if_filter_group_sort">Can\'t move task if filtering, grouping or sorting is active.</string>
-
     <!-- Select reminder dialog -->
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="no_reminder">No Reminder</string>
-
     <!-- Calendar view -->
     <string name="calendar">Calendar</string>
     <string name="no_deadline_today">There are no deadlines at this day.</string>
-
     <!-- PIN -->
     <string name="enter_pin">Enter PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
@@ -167,7 +156,6 @@
     <string name="invalid_pin">Please enter a PIN with 4 digits.</string>
     <string name="reset_application_msg">Do you really want to reset the application? This will remove the PIN-protection and delete all To-Do lists.</string>
     <string name="add_pin">Add a numeric PIN to provide access to enter the app. The PIN must contain at least 4 digits.</string>
-
     <!-- Settings -->
     <string name="default_reminder_time">Default reminder time</string>
     <string-array name="default_reminder_times_human">
@@ -224,21 +212,17 @@
         <item>DARK</item>
         <item>SYSTEM</item>
     </string-array>
-
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Enable exact reminders</string>
     <string name="dialog_need_permission_exact_alarm_message">Permission to schedule exact reminders is needed. Otherwise reminders are inexact.</string>
-
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
     <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
-
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Task Reminder</string>
     <string name="notif_reminder_ch_desc">Reminders for upcoming tasks.</string>
     <string name="notif_reminder_act_snooze">Snooze %1$s</string>
     <string name="notif_reminder_act_done">Set done</string>
-
     <!-- Date and Time -->
     <string name="sunday_abbr">SUN</string>
     <string name="monday_abbr">MON</string>
@@ -268,29 +252,21 @@
     <string name="weeks">Week(s)</string>
     <string name="months">Month(s)</string>
     <string name="years">Year(s)</string>
-
     <!-- ### TUTORIAL DIALOG ### -->
     <string name="tutorial">Tutorial</string>
-
-    <string name="slide1_heading">Welcome!</string>
+    <string name="slide1_heading">Bienvenue!</string>
     <string name="slide1_text">Welcome to your privacy friendly To-Do list. This app contains no tracking or advertising.</string>
-
     <string name="slide2_heading">Lists</string>
     <string name="slide2_text">You can manage your tasks in labeled To-Do lists.</string>
-
     <string name="slide3_heading">Reminder</string>
     <string name="slide3_text">You can define deadlines and reminders for your tasks.</string>
-
     <string name="slide4_heading">Everything is important</string>
     <string name="slide4_text">You can add subtasks and the progress of their main task. Progress can be set manually or automatically by the number of done subtasks.</string>
-
     <string name="slide5_heading">Secure</string>
     <string name="slide5_text">You can add a PIN-protection in the settings.</string>
-
-    <string name="okay">Okay</string>
-    <string name="next">Next</string>
-    <string name="skip">Skip</string>
-
+    <string name="okay">Ok</string>
+    <string name="next">Suivant</string>
+    <string name="skip">Passer</string>
     <!-- ### RECYCLE ACTIVITY ### -->
     <string name="toast_del">Recycle bin is cleared.</string>
     <string name="bin">Recycle bin</string>
@@ -298,10 +274,8 @@
     <string name="btn_clear">Clear recycle bin</string>
     <string name="bin_empty">Recycle bin is empty</string>
     <string name="restore">Restore task</string>
-
     <!-- ### TodoTask ACTIVITY ### -->
     <string name="todo_activity">Todo Tasks</string>
-
     <!-- ### Export / Import ### -->
     <string name="export_succeeded">Export successfully finished</string>
     <string name="export_failed">Export failed</string>
@@ -311,23 +285,18 @@
     <string name="import_question_text">Delete all existing data (all To-Do lists, tasks and subtasks) before importing new data?</string>
     <string name="delete_existing_data">Delete existing data</string>
     <string name="keep_existing_data">Keep existing data</string>
-
     <!-- ### Delete AlertDialog ### -->
     <string name="alert_list_delete">Really delete this list?</string>
     <string name="alert_done_tasks_remove">Really remove all done tasks?</string>
     <string name="alert_clear">Really clear?</string>
-
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>
     <string name="widget_configuration">Widget configuration</string>
-
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Task changed status</string>
     <string name="snack_undo">Undo action</string>
     <string name="snack_clear">Recycle bin is now cleared</string>
-
     <!-- POMODORO INTEGRATION -->
     <string name="permission_todo_name">TODO Integration</string>
     <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
-
 </resources>
