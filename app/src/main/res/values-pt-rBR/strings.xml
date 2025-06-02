@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="about_affiliation">Em parceria com</string>
+    <string name="slide1_heading">Boas vindas!</string>
+    <string name="okay">Ok</string>
+    <string name="next">Avançar</string>
+    <string name="skip">Pular</string>
+    <string name="about_author">Autores:</string>
+    <string name="about_author_contributors">e colaboradores.</string>
+</resources>
