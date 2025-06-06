@@ -44,7 +44,7 @@ class CalendarPopup : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
         if (supportActionBarCopy != null) {
-            supportActionBarCopy.setHomeAsUpIndicator(R.drawable.arrow)
+            supportActionBarCopy.setHomeAsUpIndicator(R.drawable.ic_arrow_left_white_24dp)
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }

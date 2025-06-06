@@ -29,6 +29,7 @@
     <string name="description_hint">Beschreibung</string>
     <string name="ok">Okay</string>
     <string name="cancel">Abbrechen</string>
+    <string name="system_default">Systemstandard</string>
 
     <!-- Common model strings -->
     <string name="select_option">Auswählen</string>
@@ -48,6 +49,7 @@
     <string name="help_subtasks">Unteraufgaben können an Aufgaben angehängt werden, um kleinere Einzelschritte zu protokollieren. Sie können nach Antippen einer Aufgabe in der aufgeklappten Ansicht erstellt werden. In den Einstellungen können Sie wählen, ob der Fortschritt einer Aufgabe von der Anzahl erledigter Unteraufgaben abhängt.</string>
     <string name="help_deadline_reminder_title">Fälligkeitsdatum und Erinnerungen</string>
     <string name="help_deadline_reminder">Nur für Aufgaben können ein Fälligkeitsdatum und eine Erinnerung eingerichtet werden. Diese können beim Erstellen oder Bearbeiten der Aufgabe angegeben werden.</string>
+    <string name="help_recurring_tasks">Für regelmäßig wiederkehrende Aufgaben kann ein Wiederholungsmuster eingerichtet werden. Falls auch eine Erinnerung eingerichtet wurde, wird diese im gewählten Wiederholungsmuster immer wieder erneut erscheinen. Wurde die Aufgabe abgehakt, wird der Haken nach dem nächsten Fälligkeitstermin automatisch wieder entfernt.</string>
     <string name="help_group_app">Einstellungen</string>
     <string name="help_pin_title">PIN-Schutz</string>
     <string name="help_pin">Im Einstellungsmenü kann eine mindestens vierstellige PIN als Schutz vor unberechtigten Zugriffen eingerichtet werden. Diese PIN muss bei jedem Start der App eingegeben werden.</string>
@@ -63,11 +65,11 @@
     <string name="help_export">Die Daten dieser Anwendung können im CSV Format (comma separated values, encoding UTF-8) exportiert werden, um in anderen Anwendungen weiterverarbeitet zu werden.</string>
     <string name="help_import">Die Daten dieser Anwendung können aus einer Datei im CSV Format importiert werden. Das Format dieser Datei entspricht dem Format der CSV-Export-Datei.</string>
     <string name="help_group_widget">Widget</string>
-    <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App. Ein Tippen auf den Aktualisierungs-Button aktualisiert die Liste.</string>
+    <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App.</string>
 
     <!-- About -->
     <string name="about">Über</string>
-    <string name="version_number">Version v%s</string>
+    <string name="version_number">Version v%1$s</string>
     <string name="about_author">Autoren:</string>
     <string name="about_author_contributors">und Mitwirkende.</string>
     <string name="about_affiliation">In Zusammenschluss mit</string>
@@ -114,7 +116,7 @@
     <string name="share_task">Aufgabe teilen</string>
     <string name="remove_task">Aufgabe entfernen</string>
     <string name="task_removed">Aufgabe wurde entfernt</string>
-    <string name="tasks_removed">%d Aufgabe(n) und %d Unteraufgabe(n) entfernt.</string>
+    <string name="tasks_removed">%1$d Aufgabe(n) und %2$d Unteraufgabe(n) entfernt.</string>
     <string name="deadline">Termin</string>
     <string name="recurrence_every">Wiederholung alle</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -128,7 +130,7 @@
     <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl >= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
-    <string name="zero_percent">0 %</string>
+     <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
     <string name="select_no_list">Keine Liste</string>
@@ -146,6 +148,7 @@
     <string name="move_down">Runterschieben</string>
     <string name="cant_move_task_if_diff_lists">Tasks können nicht verschoben werden, wenn verschiedene Listen angezeigt werden.</string>
     <string name="cant_move_task_if_filter_group_sort">Tasks können nicht verschoben werden, wenn Filter, Gruppierung oder Sortierung aktiv ist.</string>
+    <string name="nth_recurrence_at">%1$d. Wiederholung am %2$s</string>
 
     <!-- Select reminder dialog -->
 	<string name="date">Datum</string>
@@ -192,13 +195,26 @@
     </string-array>
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
     <string name="set_pin">PIN festlegen</string>
-    <string name="auto_progress">Fortschritt durch Teilaufgaben</string>
+    <string name="list_quick_access">Schnellzugriff für Listen</string>
+    <string name="expand_tasks_with_subtasks">Aufgaben mit Unteraufgaben aufklappen</string>
+    <string name="auto_progress">Fortschritt durch Unteraufgaben</string>
     <string name="notify">Benachrichtigungston</string>
     <string name="pref_app_theme_title">Design</string>
     <string-array name="pref_app_theme_entries">
         <item>Hell</item>
         <item>Dunkel</item>
-        <item>Systemstandard</item>
+        <item>@string/system_default</item>
+    </string-array>
+    <string name="pref_first_day_of_week_title">Erster Tag der Woche</string>
+    <string-array name="pref_first_day_of_week_entries">
+        <item>@string/system_default</item>
+        <item>@string/sunday</item>
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+        <item>@string/saturday</item>
     </string-array>
 
     <!-- Permission request dialog -->
@@ -213,9 +229,17 @@
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
     <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
     <string name="notif_reminder_act_snooze">%1$s schlummern</string>
+    <string name="notif_reminder_act_snooze_until_deadline">Bis Termin schlummern</string>
     <string name="notif_reminder_act_done">Abhaken</string>
 
     <!-- Date and Time -->
+    <string name="sunday">Sonntag</string>
+    <string name="monday">Montag</string>
+    <string name="tuesday">Dienstag</string>
+    <string name="wednesday">Mittwoch</string>
+    <string name="thursday">Donnerstag</string>
+    <string name="friday">Freitag</string>
+    <string name="saturday">Samstag</string>
 	<string name="sunday_abbr">SO</string>
 	<string name="monday_abbr">MO</string>
 	<string name="tuesday_abbr">DI</string>
@@ -236,10 +260,6 @@
 	<string name="november">November</string>
 	<string name="december">Dezember</string>
     <string name="none">Keines</string>
-    <string name="daily">Täglich</string>
-    <string name="weekly">Wöchentlich</string>
-    <string name="monthly">Monatlich</string>
-    <string name="yearly">Jährlich</string>
     <string name="days">Tag(e)</string>
     <string name="weeks">Woche(n)</string>
     <string name="months">Monat(e)</string>
@@ -296,6 +316,11 @@
     <!-- ### WIDGET ### -->
     <string name="add_widget">Widget hinzufügen</string>
     <string name="widget_configuration">Widget Konfiguration</string>
+    <string name="filter_colon">Filter:</string>
+    <string name="grouping_colon">Gruppierung:</string>
+    <string name="sorting_colon">Sortierung:</string>
+    <string name="various_colon">Verschiedenes:</string>
+    <string name="show_days_until_deadline">Anzahl Tage bis zum Termin anzeigen</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Status geändert</string>

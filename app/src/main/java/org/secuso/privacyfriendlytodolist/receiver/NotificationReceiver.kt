@@ -31,10 +31,16 @@ import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
-        if (action != ACTION_SNOOZE && action != ACTION_SET_DONE) {
-            Log.e(TAG, "Received intent with unexpected action '$action'.")
-            return
+        when (action) {
+            ACTION_SNOOZE -> {}
+            ACTION_SNOOZE_UNTIL_DEADLINE -> {}
+            ACTION_SET_DONE -> {}
+            else -> {
+                Log.e(TAG, "Received intent with unexpected action '$action'.")
+                return
+            }
         }
+
         val extras = intent.extras
         if (null == extras || !extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
             Log.e(TAG, "Received intent without extras.")
@@ -48,6 +54,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
     companion object {
         const val ACTION_SNOOZE = "org.secuso.privacyfriendlytodolist.SNOOZE"
+        const val ACTION_SNOOZE_UNTIL_DEADLINE = "org.secuso.privacyfriendlytodolist.SNOOZE_UNTIL_DEADLINE"
         const val ACTION_SET_DONE = "org.secuso.privacyfriendlytodolist.SET_DONE"
         private val TAG = LogTag.create(this::class.java.declaringClass)
     }

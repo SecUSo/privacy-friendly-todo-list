@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/widget_cfg_dialog_title"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/widget_configuration"/>
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/widget_cfg_dialog_title"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/widget_configuration"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginHorizontal="16dp">
+        </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
-            android:id="@+id/tv_widget_cfg_list_choose_str"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/list_colon"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -39,32 +37,31 @@
             android:id="@+id/tv_widget_cfg_list_choose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tv_widget_cfg_list_choose_str"
-            android:layout_alignBottom="@+id/tv_widget_cfg_list_choose_str"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="44dp"
-            android:layout_toEndOf="@+id/tv_widget_cfg_list_choose_str"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
             android:text="@string/click_to_choose"
             android:textSize="16sp"
             android:textStyle="italic" />
 
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/filter_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <RadioGroup
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp">
 
             <RadioButton
                 android:id="@+id/rb_widget_cfg_all_tasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
+                android:paddingVertical="13dp"
                 android:text="@string/all_tasks"
                 android:textSize="16sp" />
 
@@ -72,7 +69,7 @@
                 android:id="@+id/rb_widget_cfg_open_tasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
+                android:paddingVertical="13dp"
                 android:text="@string/open_tasks"
                 android:textSize="16sp" />
 
@@ -80,24 +77,44 @@
                 android:id="@+id/rb_widget_cfg_completed_tasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
+                android:paddingVertical="13dp"
                 android:text="@string/completed_tasks"
                 android:textSize="16sp" />
         </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/grouping_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <CheckBox
             android:id="@+id/cb_widget_cfg_group_by_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
             android:text="@string/group_by_priority"
             android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sorting_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <CheckBox
             android:id="@+id/cb_widget_cfg_sort_by_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
             android:text="@string/sort_by_deadline"
             android:textSize="16sp" />
 
@@ -105,31 +122,50 @@
             android:id="@+id/cb_widget_cfg_sort_by_name_asc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
             android:text="@string/sort_by_name_asc"
             android:textSize="16sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end">
-
-        <Button
-            android:id="@+id/bt_widget_cfg_cancel"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppButtonBarButtonStyle"
-            android:text="@android:string/cancel" />
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/various_colon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/bt_widget_cfg_ok"
+        <CheckBox
+            android:id="@+id/cb_widget_cfg_show_days_until_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/AppButtonBarButtonStyle"
-            android:text="@string/ok" />
+            android:layout_marginHorizontal="20dp"
+            android:paddingVertical="13dp"
+            android:text="@string/show_days_until_deadline"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <Button
+                android:id="@+id/bt_widget_cfg_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@android:string/cancel" />
+
+            <Button
+                android:id="@+id/bt_widget_cfg_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@string/ok" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

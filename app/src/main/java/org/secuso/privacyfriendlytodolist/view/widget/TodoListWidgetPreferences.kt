@@ -24,5 +24,6 @@ data class TodoListWidgetPreferences(
     var taskFilter: TaskFilter = TaskFilter.ALL_TASKS,
     var isGroupingByPriority: Boolean = false,
     var isSortingByDeadline: Boolean = false,
-    var isSortingByNameAsc: Boolean = false
+    var isSortingByNameAsc: Boolean = false,
+    var isShowingDaysUntilDeadline: Boolean = false
 )

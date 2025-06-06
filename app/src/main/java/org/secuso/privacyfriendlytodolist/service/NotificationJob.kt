@@ -36,25 +36,62 @@ class NotificationJob : ModelJobBase("Notification job") {
 
         if (!params.extras.containsKey(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)) {
             Log.e(TAG, "$logPrefix Started without task ID.")
-        } else if (params.extras.getInt(NotificationReceiver.ACTION_SNOOZE, -1) != -1) {
-            doSnooze(params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID))
-        } else if (params.extras.getInt(NotificationReceiver.ACTION_SET_DONE, -1) != -1) {
-            doSetDone(params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID))
+            jobFinished()
         } else {
-            Log.e(TAG, "$logPrefix Started without (known) notification action).")
+            val action = params.extras.getString(NotificationMgr.EXTRA_NOTIFICATION_ACTION_ID)
+            val taskId = params.extras.getInt(NotificationMgr.EXTRA_NOTIFICATION_TASK_ID)
+            when (action) {
+                NotificationReceiver.ACTION_SNOOZE -> doSnooze(taskId)
+                NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE -> doSnoozeUntilDeadline(taskId)
+                NotificationReceiver.ACTION_SET_DONE -> doSetDone(taskId)
+                else -> {
+                    Log.e(TAG, "$logPrefix Started with unknown notification action '$action'.")
+                    jobFinished()
+                }
+            }
         }
 
-        // Return true, if job still runs asynchronously.
-        // If returning true, jobFinished() shall be called after asynchronous job has been finished.
-        return isJobOngoing()
+        // Return true, if job still runs asynchronously. If returning true, this action shall call
+        // jobFinished() after asynchronous tasks have been finished.
+        return isJobNotFinished()
     }
 
     private fun doSnooze(todoTaskId: Int) {
         NotificationMgr.cancelNotification(context, todoTaskId)
 
         val alarmTime = Helper.getCurrentTimestamp() + PreferenceMgr.getSnoozeDuration(context)
+        Log.d(TAG, "$logPrefix Snoozing task $todoTaskId until ${Helper.createCanonicalDateTimeString(alarmTime)}.")
         AlarmMgr.setAlarmForTask(context, todoTaskId, alarmTime)
         jobFinished()
+    }
+
+    private fun doSnoozeUntilDeadline(todoTaskId: Int) {
+        NotificationMgr.cancelNotification(context, todoTaskId)
+
+        // Serialize actions to be sure that both actions are done before calling jobFinished.
+        model.getTaskById(todoTaskId) { todoTask ->
+            if (isJobStopped()) {
+                return@getTaskById
+            }
+
+            if (null == todoTask) {
+                Log.e(TAG, "$logPrefix Unable to snooze until deadline. No task with ID $todoTaskId was found.")
+            } else {
+                val now = Helper.getCurrentTimestamp()
+                var reminderTimeAtDeadline = todoTask.computeReminderTimeAtDeadline(now)
+                if (reminderTimeAtDeadline == null) {
+                    Log.e(TAG, "$logPrefix Unable to snooze until deadline. $todoTask has no deadline.")
+                } else {
+                    val earliest = now + (15 * 60)
+                    if (reminderTimeAtDeadline < earliest) {
+                        reminderTimeAtDeadline = earliest
+                    }
+                    Log.d(TAG, "$logPrefix Snoozing $todoTask until deadline: ${Helper.createCanonicalDateTimeString(reminderTimeAtDeadline)}.")
+                    AlarmMgr.setAlarmForTask(context, todoTaskId, reminderTimeAtDeadline)
+                }
+            }
+            jobFinished()
+        }
     }
 
     private fun doSetDone(todoTaskId: Int) {
@@ -68,8 +105,10 @@ class NotificationJob : ModelJobBase("Notification job") {
 
             if (null == todoTask) {
                 Log.e(TAG, "$logPrefix Unable to set task as done. No task with ID $todoTaskId was found.")
+                jobFinished()
             } else if (todoTask.isDone()) {
                 Log.d(TAG, "$logPrefix Task with ID $todoTaskId already is done.")
+                jobFinished()
             } else {
                 todoTask.setDone(true)
                 todoTask.setChanged()

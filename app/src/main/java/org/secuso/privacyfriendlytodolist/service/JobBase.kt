@@ -52,19 +52,24 @@ abstract class JobBase(private val jobName: String) {
     }
 
     open fun onStartJob(): Boolean {
-        Log.d(TAG, "$logPrefix Started.")
+        Log.d(TAG, "$logPrefix Job started.")
         return false
     }
 
     open fun onStopJob(): Boolean {
         isJobStopped = true
-        Log.w(TAG, "$logPrefix Gets stopped. Finished: $isJobFinished. Rescheduling: ${!isJobFinished}.")
+        val shouldBeRescheduled = isJobNotFinished()
+        Log.w(TAG, "$logPrefix Gets stopped. Job not finished, rescheduling: $shouldBeRescheduled.")
         // Return true, if job should be rescheduled.
-        return isJobOngoing()
+        return shouldBeRescheduled
     }
 
     protected fun isJobStopped(): Boolean {
         return isJobStopped
+    }
+
+    protected fun isJobNotStopped(): Boolean {
+        return !isJobStopped
     }
 
     protected fun jobFinished() {
@@ -77,12 +82,12 @@ abstract class JobBase(private val jobName: String) {
         }
     }
 
-    protected fun isJobOngoing(): Boolean {
-        return !isJobFinished
-    }
-
     protected fun isJobFinished(): Boolean {
         return isJobFinished
+    }
+
+    protected fun isJobNotFinished(): Boolean {
+        return !isJobFinished
     }
 
     companion object {

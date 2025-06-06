@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
+        android:layout_gravity="center_vertical"
         android:scaleX="0.80"
         android:scaleY="0.80" />
 
@@ -26,13 +27,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="center_vertical"
         android:textStyle="bold" />
 
     <ImageButton
         android:id="@+id/bt_subtask_move_up"
         style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:padding="4dp"
         android:scaleX="0.80"
         android:scaleY="0.80"
@@ -43,7 +46,8 @@
         android:id="@+id/bt_subtask_move_down"
         style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:padding="4dp"
         android:scaleX="0.80"
         android:scaleY="0.80"
@@ -54,7 +58,8 @@
         android:id="@+id/bt_subtask_menu"
         style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:layout_marginEnd="11dp"
         android:padding="4dp"
         android:scaleX="0.80"

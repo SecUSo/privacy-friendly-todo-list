@@ -19,7 +19,6 @@ package org.secuso.privacyfriendlytodolist.service
 
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
@@ -37,15 +36,15 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
             doAlarm(params.extras.getInt(AlarmMgr.KEY_ALARM_ID))
         } else {
             Log.e(TAG, "$logPrefix Started without alarm ID.")
+            jobFinished()
         }
 
-        // Return true, if job still runs asynchronously.
-        // If returning true, jobFinished() shall be called after asynchronous job has been finished.
-        return isJobOngoing()
+        // Return true, if job still runs asynchronously. If returning true, this action shall call
+        // jobFinished() after asynchronous tasks have been finished.
+        return isJobNotFinished()
     }
 
     private fun doAlarm(todoTaskId: Int) {
-        // Serialize actions to be sure that all actions are done before calling jobFinished.
         model.getTaskById(todoTaskId) { todoTask ->
             if (isJobStopped()) {
                 return@getTaskById
@@ -58,14 +57,13 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                 val deadline = todoTask.getDeadline()
                 if (null != deadline) {
                     message = if (todoTask.isRecurring()) {
-                        val now = Helper.getCurrentTimestamp()
-                        val nextDeadline = Helper.getNextRecurringDate(deadline,
-                            todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
-                        val deadlineStr = Helper.createLocalizedDateString(nextDeadline)
-                        val repetitions = Helper.computeRepetitions(deadline, nextDeadline,
-                            todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval())
+                        // Change timestamp to begin of today to ensure that a deadline which is today is not seen
+                        // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
+                        val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
+                        val nextDeadlineAndCount = Helper.getNextRecurringDateAndCount(deadline, todoTask, now)
+                        val deadlineStr = Helper.createLocalizedDateString(nextDeadlineAndCount.first)
                         applicationContext.resources.getString(R.string.recurring_deadline_approaching,
-                            deadlineStr, repetitions)
+                            deadlineStr, nextDeadlineAndCount.second)
                     } else {
                         val deadlineStr = Helper.createLocalizedDateString(deadline)
                         applicationContext.resources.getString(R.string.deadline_approaching, deadlineStr)
@@ -73,46 +71,20 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
                 }
                 NotificationMgr.postTaskNotification(context, title, message, todoTask)
 
-                setNextAlarm(todoTask)
+                todoTask.setReminderState(TodoTask.ReminderState.DONE)
+                todoTask.setChanged()
+                model.saveTodoTaskInDb(todoTask) { counter ->
+                    if (counter != 0) {
+                        Log.d(TAG, "$logPrefix Set reminder state to DONE for $todoTask.")
+                    } else {
+                        Log.e(TAG, "$logPrefix Failed to set reminder state to DONE for $todoTask.")
+                    }
+                    jobFinished()
+                }
             } else {
                 Log.e(TAG, "$logPrefix Unable to process alarm. No task with ID $todoTaskId was found.")
-            }
-        }
-    }
-
-    private fun setNextAlarm(task: TodoTask) {
-        model.getNextDueTask(Helper.getCurrentTimestamp()) { nextDueTask ->
-            if (isJobStopped()) {
-                return@getNextDueTask
-            }
-
-            if (null != nextDueTask) {
-                AlarmMgr.setAlarmForNextDueTask(context, nextDueTask)
-            }
-
-            if (task.isRecurring() && task.isDone()) {
-                setTaskUndone(task)
-            } else {
                 jobFinished()
             }
-        }
-    }
-
-    private fun setTaskUndone(task: TodoTask) {
-        task.setDone(false)
-        task.setChanged()
-        model.saveTodoTaskInDb(task) { counter ->
-            if (isJobStopped()) {
-                return@saveTodoTaskInDb
-            }
-
-            if (counter > 0) {
-                Log.i(TAG, "$logPrefix Set $task automatically as undone because its re-occurring soon.")
-                Model.notifyDataChangedFromOutside(context, 0, counter, 0)
-            } else {
-                Log.e(TAG, "$logPrefix Failed to set $task as undone. Result: $counter")
-            }
-            jobFinished()
         }
     }
 

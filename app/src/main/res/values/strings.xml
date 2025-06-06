@@ -29,6 +29,7 @@
     <string name="description_hint">Description</string>
     <string name="ok">Okay</string>
     <string name="cancel">Cancel</string>
+    <string name="system_default">System default</string>
 
     <!-- Common model strings -->
     <string name="select_option">Select option</string>
@@ -48,6 +49,7 @@
     <string name="help_subtasks">Subtasks can be attached to a task to represent smaller steps to accomplish it. They can be created by tapping on a task when viewing a single list.</string>
     <string name="help_deadline_reminder_title">Deadlines and reminders</string>
     <string name="help_deadline_reminder">Deadlines and reminders can only be created for tasks. You can either specify them while creating a task, or while editing it.</string>
+    <string name="help_recurring_tasks">For regularly recurring tasks, you can set up a recurrence pattern. If a reminder has also been set, it will recur according to the selected recurrence pattern. Once the task has been checked off, the check mark will be automatically removed after the next due date.</string>
     <string name="help_group_app">Settings</string>
     <string name="help_pin_title">Settings</string>
     <string name="help_pin">Open the settings menu to setup a PIN protection for your application. The PIN must be a number with at least 4 digits. You are asked for it every time you start the application.</string>
@@ -63,11 +65,11 @@
     <string name="help_export">The data of this application can be exported in CSV format (comma separated values, encoding UTF-8) for further processing in other applications.</string>
     <string name="help_import">The data of this application can be imported from a file in CSV format. The format of this file corresponds to the format of the CSV export file.</string>
     <string name="help_group_widget">Widget</string>
-    <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app. The synchronize button can update the list of tasks shown.</string>
+    <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app.</string>
 
     <!-- About -->
     <string name="about">About</string>
-    <string name="version_number">Version v%s</string>
+    <string name="version_number">Version v%1$s</string>
     <string name="about_author">Authors:</string>
     <!-- Using no-break-space character \u00A0 between first and last name. -->
     <string name="about_author_names" translatable="false">Sebastian\u00A0Lutz, Dominik\u00A0Püllen, Simon\u00A0Breitfelder, Christian\u00A0Adams</string>
@@ -118,7 +120,7 @@
     <string name="share_task">Share task</string>
     <string name="remove_task">Remove task</string>
     <string name="task_removed">Task successfully removed.</string>
-    <string name="tasks_removed">%d task(s) and %d subtask(s) removed.</string>
+    <string name="tasks_removed">%1$d task(s) and %2$d subtask(s) removed.</string>
     <string name="deadline">Deadline</string>
     <string name="recurrence_every">Recurrence every</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -132,7 +134,7 @@
     <string name="recurrence_interval_invalid">Recurrence interval is no integer >= 1.</string>
     <string name="progress_colon">Progress:</string>
     <string name="priority_colon">Priority:</string>
-    <string name="zero_percent">0 %</string>
+    <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Select a priority:</string>
     <string name="select_list">Select a list:</string>
     <string name="select_no_list">No list</string>
@@ -150,6 +152,7 @@
     <string name="move_down">Move down</string>
     <string name="cant_move_task_if_diff_lists">Can\'t move task if different lists are shown.</string>
     <string name="cant_move_task_if_filter_group_sort">Can\'t move task if filtering, grouping or sorting is active.</string>
+    <string name="nth_recurrence_at">%1$d. recurrence at %2$s</string>
 
     <!-- Select reminder dialog -->
     <string name="date">Date</string>
@@ -210,19 +213,32 @@
     </string-array>
     <string name="pin_enabled">PIN required on startup</string>
     <string name="set_pin">Set PIN</string>
+    <string name="list_quick_access">Quick access for lists</string>
+    <string name="expand_tasks_with_subtasks">Expand tasks that have subtasks</string>
     <string name="auto_progress">Progress by subtasks</string>
     <string name="notify">Enable notification sound</string>
     <string name="pref_app_theme_title">Theme</string>
     <string-array name="pref_app_theme_entries">
         <item>Light</item>
         <item>Dark</item>
-        <item>System default</item>
+        <item>@string/system_default</item>
     </string-array>
     <string name="pref_app_theme_default" translatable="false">SYSTEM</string>
     <string-array name="pref_app_theme_values" translatable="false">
         <item>LIGHT</item>
         <item>DARK</item>
         <item>SYSTEM</item>
+    </string-array>
+    <string name="pref_first_day_of_week_title">First day of week</string>
+    <string-array name="pref_first_day_of_week_entries">
+        <item>@string/system_default</item>
+        <item>@string/sunday</item>
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+        <item>@string/saturday</item>
     </string-array>
 
     <!-- Permission request dialog -->
@@ -237,9 +253,17 @@
     <string name="notif_reminder_ch_name">Task Reminder</string>
     <string name="notif_reminder_ch_desc">Reminders for upcoming tasks.</string>
     <string name="notif_reminder_act_snooze">Snooze %1$s</string>
+    <string name="notif_reminder_act_snooze_until_deadline">Snooze until deadline</string>
     <string name="notif_reminder_act_done">Set done</string>
 
     <!-- Date and Time -->
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
     <string name="sunday_abbr">SUN</string>
     <string name="monday_abbr">MON</string>
     <string name="tuesday_abbr">TUE</string>
@@ -260,10 +284,6 @@
     <string name="november">November</string>
     <string name="december">December</string>
     <string name="none">None</string>
-    <string name="daily">Daily</string>
-    <string name="weekly">Weekly</string>
-    <string name="monthly">Monthly</string>
-    <string name="yearly">Yearly</string>
     <string name="days">Day(s)</string>
     <string name="weeks">Week(s)</string>
     <string name="months">Month(s)</string>
@@ -320,6 +340,11 @@
     <!-- ### WIDGET ### -->
     <string name="add_widget">Add widget</string>
     <string name="widget_configuration">Widget configuration</string>
+    <string name="filter_colon">Filter:</string>
+    <string name="grouping_colon">Grouping:</string>
+    <string name="sorting_colon">Sorting:</string>
+    <string name="various_colon">Various:</string>
+    <string name="show_days_until_deadline">Show number of days until deadline</string>
 
     <!-- ### Snackbar Messages ### -->
     <string name="snack_check">Task changed status</string>

@@ -21,14 +21,16 @@ import android.os.Parcel
 import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.TodoTask.Urgency
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
+import org.secuso.privacyfriendlytodolist.model.TodoTask.ReminderState
+import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
 import org.secuso.privacyfriendlytodolist.util.Helper
-import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -39,9 +41,6 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     /** Container for data that gets stored in the database.  */
     val data: TodoTaskData
 
-    /** Important for the reminder service.  */
-    private var reminderTimeChanged = false
-    private var reminderTimeWasInitialized = false
     private var subtasks: MutableList<TodoSubtask> = ArrayList()
 
     constructor() {
@@ -68,8 +67,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.recurrencePattern = RecurrencePattern.fromOrdinal(parcel.readInt())!!
         data.recurrenceInterval = parcel.readInt()
         data.reminderTime = parcel.readValue(Long::class.java.classLoader) as Long?
-        reminderTimeChanged = parcel.readByte() != 0.toByte()
-        reminderTimeWasInitialized = parcel.readByte() != 0.toByte()
+        data.reminderState = ReminderState.fromOrdinal(parcel.readInt())!!
         data.sortOrder = parcel.readInt()
         data.priority = Priority.fromOrdinal(parcel.readInt())!!
         parcel.readTypedList(subtasks, TodoSubtaskImpl.CREATOR)
@@ -90,8 +88,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeInt(data.recurrencePattern.ordinal)
         dest.writeInt(data.recurrenceInterval)
         dest.writeValue(data.reminderTime)
-        dest.writeByte((if (reminderTimeChanged) 1 else 0).toByte())
-        dest.writeByte((if (reminderTimeWasInitialized) 1 else 0).toByte())
+        dest.writeInt(data.reminderState.ordinal)
         dest.writeInt(data.sortOrder)
         dest.writeInt(data.priority.ordinal)
         dest.writeTypedList(subtasks)
@@ -186,39 +183,45 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun getUrgency(reminderTimeSpan: Long): Urgency {
-        var color = Urgency.NONE
+        var level = Urgency.Level.NONE
         var deadline = data.deadline
+        var daysUntilDeadline: Long? = null
         if (!isDone() && deadline != null) {
-            // Set time-part to 00:00:00 to ensure that comparison with reminder time span doesn't
-            // overlap with deadline-day. For example if deadline has time-part of 12:00:00 and
-            // reminder time span is 0.5 day it would not get orange before the deadline-day begins.
-            // But it should get orange 0.5 day before deadline day begins.
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = TimeUnit.SECONDS.toMillis(deadline)
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            deadline = TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
-            val now = Helper.getCurrentTimestamp()
-            val finalReminderTimeSpan: Long
+            // Change timestamps to begin of day to ensure that computations of durations work correctly.
+            // The computations shall bring the same result, independent from current time of day.
+            val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
+            deadline = Helper.changeTimePartToZero(deadline)
             if (isRecurring()) {
+                // If today is the deadline, the result should not be the upcoming deadline but today.
+                // To ensure this, temporarily use timestamp for now which is a bit smaller, for
+                // the case that 'now' and 'deadline' are equal.
                 deadline = Helper.getNextRecurringDate(deadline,
-                    data.recurrencePattern, data.recurrenceInterval, now)
-                finalReminderTimeSpan = reminderTimeSpan
-            } else {
-                val reminderTime = data.reminderTime
-                finalReminderTimeSpan = if (reminderTime != null && reminderTime < deadline)
-                    deadline - reminderTime else reminderTimeSpan
+                    data.recurrencePattern, data.recurrenceInterval, now - 1)
             }
-
-            if (deadline <= now) {
-                color = Urgency.ELAPSED
-            } else if ((deadline - finalReminderTimeSpan) <= now) {
-                color = Urgency.IMMINENT
+            daysUntilDeadline = (deadline - now).toDuration(DurationUnit.SECONDS).inWholeDays
+            if (daysUntilDeadline < 0L) {
+                level = Urgency.Level.EXCEEDED
+            }
+            else if (daysUntilDeadline == 0L) {
+                level = Urgency.Level.DUE
+            }
+            else {
+                // Here it is also important that time-part is 00:00:00 to ensure that comparison
+                // with reminder time span doesn't overlap with deadline-day.
+                // For example if deadline has time-part of 12:00:00 and reminder time span is
+                // 0.5 day it would not get 'imminent' before the deadline-day begins.
+                // But it should get 'imminent' 0.5 day before deadline day begins.
+                val reminderTime = data.reminderTime
+                var finalReminderTimeSpan = reminderTimeSpan
+                if (reminderTime != null && reminderTime < deadline) {
+                    finalReminderTimeSpan = deadline - reminderTime
+                }
+                if ((deadline - finalReminderTimeSpan) <= now) {
+                    level = Urgency.Level.IMMINENT
+                }
             }
         }
-        return color
+        return Urgency(level, daysUntilDeadline)
     }
 
     override fun setPriority(priority: Priority) {
@@ -233,24 +236,29 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.progress = progress
     }
 
-    override fun getProgress(computeProgress: Boolean): Int {
-        if (computeProgress) {
-            val progress: Int
-            @Suppress("LiftReturnOrAssignment")
-            if (0 == subtasks.size) {
-                progress = if (isDone()) 100 else 0
-            } else {
-                var doneSubtasks = 0
-                for (todoSubtask in subtasks) {
-                    if (todoSubtask.isDone()) {
-                        ++doneSubtasks
-                    }
-                }
-                progress = doneSubtasks * 100 / subtasks.size
-            }
-            setProgress(progress)
-        }
+    override fun getProgress(): Int {
         return data.progress
+    }
+
+    override fun computeProgress(): Boolean {
+        val computedProgress: Int
+        @Suppress("LiftReturnOrAssignment")
+        if (0 == subtasks.size) {
+            computedProgress = if (isDone()) 100 else 0
+        } else {
+            var doneSubtasks = 0
+            for (todoSubtask in subtasks) {
+                if (todoSubtask.isDone()) {
+                    ++doneSubtasks
+                }
+            }
+            computedProgress = doneSubtasks * 100 / subtasks.size
+        }
+        val progressChanged = getProgress() != computedProgress
+        if (progressChanged) {
+            setProgress(computedProgress)
+        }
+        return progressChanged
     }
 
     override fun describeContents(): Int {
@@ -259,28 +267,40 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun setReminderTime(reminderTime: Long?) {
         data.reminderTime = reminderTime
-
-        // check if reminder time was already set and now changed -> important for reminder service
-        if (reminderTimeWasInitialized) {
-            reminderTimeChanged = true
-        }
-        reminderTimeWasInitialized = true
+        data.reminderState = ReminderState.INITIAL
     }
 
     override fun getReminderTime(): Long? {
         return data.reminderTime
     }
 
+    override fun computeReminderTimeAtDeadline(now: Long): Long? {
+        var result: Long? = null
+        if (hasDeadline()) {
+            val deadline =
+                if (isRecurring()) {
+                    Helper.getNextRecurringDate(data.deadline!!, this, now)
+                } else {
+                    data.deadline!!
+                }
+            // Use date-part from deadline, use time-part from 'now' because deadline is just a date.
+            val datePart = TimeUnit.DAYS.toSeconds(TimeUnit.SECONDS.toDays(deadline))
+            val timePart = Helper.getCurrentTimestamp() % SECONDS_PER_DAY
+            result = datePart + timePart
+        }
+        return result
+    }
+
     override fun hasReminderTime(): Boolean {
         return data.reminderTime != null
     }
 
-    override fun reminderTimeChanged(): Boolean {
-        return reminderTimeChanged
+    override fun setReminderState(reminderState: ReminderState) {
+        data.reminderState = reminderState
     }
 
-    override fun resetReminderTimeChangedStatus() {
-        reminderTimeChanged = false
+    override fun getReminderState(): ReminderState {
+        return data.reminderState
     }
 
     override fun setAllSubtasksDone(isDone: Boolean) {
@@ -305,20 +325,21 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.doneTime
     }
 
-    // A task is done if the user manually sets it done or when all subtasks are done.
-    // If a subtask is selected "done", the entire task might be "done" if by now all subtasks are done.
-    override fun doneStatusChanged(): Boolean {
-        var allSubtasksAreDone = true
-        for (subtask in subtasks) {
-            if (!subtask.isDone()) {
-                allSubtasksAreDone = false
-                break
+    override fun updateDoneStatus(): Boolean {
+        var doneStatusChanged = false
+        if (subtasks.isNotEmpty()) {
+            var allSubtasksAreDone = true
+            for (subtask in subtasks) {
+                if (!subtask.isDone()) {
+                    allSubtasksAreDone = false
+                    break
+                }
             }
-        }
-        val doneStatusChanged = isDone() != allSubtasksAreDone
-        if (doneStatusChanged) {
-            setDone(allSubtasksAreDone)
-            requiredDBAction = RequiredDBAction.UPDATE
+            doneStatusChanged = isDone() != allSubtasksAreDone
+            if (doneStatusChanged) {
+                setDone(allSubtasksAreDone)
+                requiredDBAction = RequiredDBAction.UPDATE
+            }
         }
         return doneStatusChanged
     }
@@ -362,6 +383,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     companion object {
+        private const val SECONDS_PER_DAY = 24 * 60 * 60
         @JvmField
         val CREATOR = object : Creator<TodoTask> {
             override fun createFromParcel(parcel: Parcel): TodoTask {

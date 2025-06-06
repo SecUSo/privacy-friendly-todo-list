@@ -4,25 +4,27 @@
     <color name="colorPrimaryDark">#024265</color>
     <color name="colorAccent">#0274B2</color>
     <color name="transparent">#00000000</color>
-    <color name="white">#ffffff</color>
-    <color name="black">#dc000000</color>
-    <color name="lightBlue">#0274b2</color>
-    <color name="middleBlue">#8aa5ce</color>
-    <color name="lightGrey">#ffd1d1d1</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#DC000000</color>
+    <color name="lightBlue">#0274B2</color>
+    <color name="middleBlue">#8AA5CE</color>
+    <color name="lightGrey">#FFD1D1D1</color>
     <color name="middleGrey">#A8A8A8</color>
     <color name="darkGrey">#121212</color>
-    <color name="yellow">#f6d126</color>
-    <color name="green">#68e504</color>
+    <color name="yellow">#F6D126</color>
+    <color name="green">#68E504</color>
 
+    <!-- Urgency of tasks -->
     <color name="urgencyNone">#024265</color>
-    <color name="urgencyImminent">#ea9d16</color>
-    <color name="urgencyElapsed">#ef0606</color>
+    <color name="urgencyImminent">#F6D126</color>
+    <color name="urgencyDue">#FF9100</color>
+    <color name="urgencyExceeded">#EF0606</color>
 
-    <!-- dots inactive colors -->
+    <!-- Dots for tutorial-slides -->
     <color name="dotInactive">#026499</color>
+    <color name="dotActive">#448BB2</color>
 
-    <!-- dots active colors -->
-    <color name="dotActive">#448bb2</color>
+    <color name="splashScreenBackground">#0274B2</color>
 
     <color name="launcherBackground">#3680BB</color>
 

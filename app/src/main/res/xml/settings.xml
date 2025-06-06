@@ -38,9 +38,27 @@
         android:title="@string/set_pin" />
 
     <SwitchPreference
+        android:key="pref_list_quick_access"
+        android:defaultValue="true"
+        android:title="@string/list_quick_access" />
+
+    <SwitchPreference
+        android:key="pref_expand_tasks_with_subtasks"
+        android:defaultValue="false"
+        android:title="@string/expand_tasks_with_subtasks" />
+
+    <SwitchPreference
         android:key="pref_progress"
         android:defaultValue="false"
         android:title="@string/auto_progress" />
+
+    <ListPreference
+        android:key="pref_first_day_of_week"
+        android:defaultValue="0"
+        android:entries="@array/pref_first_day_of_week_entries"
+        android:entryValues="@array/first_day_of_week_values"
+        android:summary="%s"
+        android:title="@string/pref_first_day_of_week_title" />
 
     <ListPreference
         android:key="pref_app_theme"

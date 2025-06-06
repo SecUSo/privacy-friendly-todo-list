@@ -33,6 +33,7 @@ import org.secuso.privacyfriendlytodolist.util.LogTag
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.concurrent.TimeUnit
 
 class ModelServicesImpl(private val context: Context) {
 
@@ -49,45 +50,116 @@ class ModelServicesImpl(private val context: Context) {
         return todoTask
     }
 
-    private suspend fun updateReminderTimeOfRecurringTasks(now: Long): Int {
-        val dataArray = getDB().getTodoTaskDao().getOverdueRecurringTasks(now)
-        val todoTasks = loadTasksSubtasks(false, *dataArray)
+    /**
+     * This method does two things:
+     * 1) Updates the reminder time of recurring tasks.
+     * 2) Sets every recurring task to undone where the done-date is before a deadline and the
+     * deadline is in the past. In other words: Recurring tasks need to be done again and again and
+     * this algorithm should set them to undone when the done deadline is in the past and next
+     * deadline comes closer.
+     *
+     * @param now Current time in seconds.
+     * @param ignoreReminderState If false, only the outdated reminders with reminder state
+     * [TodoTask.ReminderState.DONE] get updated. If true, all outdated reminders get updated.
+     * @return The number of updated tasks.
+     */
+    private suspend fun updateRecurringTasks(now: Long, ignoreReminderState: Boolean = false): Int {
+        var dataArray = if (ignoreReminderState)
+            getDB().getTodoTaskDao().getRecurringTasksWithOutdatedRemindersIgnoreState(now) else
+            getDB().getTodoTaskDao().getRecurringTasksWithOutdatedReminders(now)
+        var todoTasks = loadTasksSubtasks(false, *dataArray)
+        var updatedTasks = 0
         for (todoTask in todoTasks) {
-            // Note: getOverdueRecurringTasks() ensures that reminderTime and recurrencePattern is set.
-            val oldReminderTime = todoTask.getReminderTime()!!
-            // Get the upcoming due date of the recurring task.
-            val newReminderTime = Helper.getNextRecurringDate(oldReminderTime,
-                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
+            // Note: Recurring task without deadline should be impossible.
+            val deadlineTime = todoTask.getDeadline()
+            // Note: getRecurringTasksWithOutdatedReminders() ensures that reminderTime and recurrencePattern is set.
+            val oldReminderTime = todoTask.getReminderTime()
+            if (null == deadlineTime || null == oldReminderTime) {
+                Log.e(TAG, "Inconsistent task data: $todoTask")
+                continue
+            }
+
+            val nextDeadlineTime = Helper.getNextRecurringDate(deadlineTime, todoTask, now)
+            var newReminderTime = Helper.getNextRecurringDate(oldReminderTime, todoTask, now)
+            // If the reminder time is in the past (overdue) but the deadline is still in
+            // the future the reminder time should not be set to the next one.
+            // This enables that the interval [reminder-time .. deadline] gets used to
+            // determine the urgency / deadline-color.
+            // So subtract one interval from the new reminder time.
+            if (newReminderTime > nextDeadlineTime) {
+                newReminderTime = Helper.addInterval(newReminderTime,
+                    todoTask.getRecurrencePattern(), -todoTask.getRecurrenceInterval())
+                // Check if this results in the old reminder time. If so, there is nothing to do.
+                if (oldReminderTime == newReminderTime) {
+                    continue
+                }
+            }
+
             todoTask.setReminderTime(newReminderTime)
             todoTask.setChanged()
             if (saveTodoTaskInDb(todoTask) > 0) {
+                ++updatedTasks
                 Log.i(TAG, "Updating reminder time of $todoTask from " +
-                        "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
-                        "${Helper.createCanonicalDateTimeString(newReminderTime)}.")
+                    "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
+                    "${Helper.createCanonicalDateTimeString(newReminderTime)}.")
             } else {
                 Log.e(TAG, "Failed to save $todoTask after updating reminder time.")
             }
         }
-        return todoTasks.size
+
+        dataArray = getDB().getTodoTaskDao().getDoneRecurringTasks()
+        todoTasks = loadTasksSubtasks(false, *dataArray)
+        for (todoTask in todoTasks) {
+            // Note: getDoneRecurringTasks() ensures that doneTime is set.
+            val doneTime = todoTask.getDoneTime()!!
+            val deadlineTime = todoTask.getDeadline()
+            if (null == deadlineTime) {
+                Log.e(TAG, "Recurring task has no deadline: ID ${todoTask.getId()}, name ${todoTask.getName()}.")
+                continue
+            }
+            // Get the last deadline by usage of offset -1.
+            val lastDeadlineTime = Helper.getNextRecurringDate(deadlineTime, todoTask, now, -1)
+            // Convert to days to avoid setting to undone while deadline-day is not completely in past.
+            val doneDay = TimeUnit.SECONDS.toDays(doneTime)
+            val lastDeadlineDay = TimeUnit.SECONDS.toDays(lastDeadlineTime)
+            val nowDay = TimeUnit.SECONDS.toDays(now)
+            // If done-marker belongs to last deadline and last deadline day is over then the task should be set to undone.
+            @Suppress("ConvertTwoComparisonsToRangeCheck")
+            if (doneDay <= lastDeadlineDay && lastDeadlineDay < nowDay) {
+                todoTask.setDone(false)
+                todoTask.setChanged()
+                if (saveTodoTaskInDb(todoTask) > 0) {
+                    ++updatedTasks
+                    Log.i(TAG, "Setting done recurring task $todoTask to undone because done date " +
+                        "${Helper.createCanonicalDateString(doneTime)} is <= last deadline " +
+                        "${Helper.createCanonicalDateString(lastDeadlineTime)} which is < today.")
+                } else {
+                    Log.e(TAG, "Failed to save $todoTask after setting to undone.")
+                }
+            }
+        }
+        return updatedTasks
     }
 
-    suspend fun getNextDueTask(now: Long): Pair<TodoTask?, Int> {
+    suspend fun getNextTaskToRemind(now: Long): Pair<TodoTask?, Int> {
         // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
-        val updatedTasks = updateReminderTimeOfRecurringTasks(now)
+        val updatedTasks = updateRecurringTasks(now)
         // Get next due task.
-        val nextDueTaskData = getDB().getTodoTaskDao().getNextDueTask(now)
+        val nextTaskToRemindData = getDB().getTodoTaskDao().getNextTaskToRemind(now)
         var todoTask: TodoTask? = null
-        if (null != nextDueTaskData) {
-            todoTask = loadTasksSubtasks(false, nextDueTaskData)[0]
+        if (null != nextTaskToRemindData) {
+            todoTask = loadTasksSubtasks(false, nextTaskToRemindData)[0]
         }
         return Pair(todoTask, updatedTasks)
     }
 
-    suspend fun getOverdueTasks(now: Long): MutableList<TodoTask> {
-        val dataArray = getDB().getTodoTaskDao().getOverdueTasks(now)
+    suspend fun getTasksWithOverdueReminders(now: Long): Pair<MutableList<TodoTask>, Int> {
+        // Ensure that reminder time of recurring tasks is up-to-date before determining next due task.
+        val updatedTasks = updateRecurringTasks(now)
+        val dataArray = getDB().getTodoTaskDao().getTasksWithOverdueReminders(now)
         val data = loadTasksSubtasks(false, *dataArray)
         @Suppress("UNCHECKED_CAST")
-        return data as MutableList<TodoTask>
+        return Pair(data as MutableList<TodoTask>, updatedTasks)
     }
 
     suspend fun deleteTodoList(todoListId: Int): Triple<Int, Int, Int> {
@@ -239,6 +311,10 @@ class ModelServicesImpl(private val context: Context) {
         val data = todoListImpl.data
         var counter = 0
         when (todoListImpl.requiredDBAction) {
+            RequiredDBAction.NONE -> {
+                Log.d(TAG, "Todo list NOT saved because no DB action required: $data")
+            }
+
             RequiredDBAction.INSERT -> {
                 val listId = getDB().getTodoListDao().insert(data).toInt()
                 todoListImpl.setId(listId)
@@ -249,12 +325,10 @@ class ModelServicesImpl(private val context: Context) {
                 }
             }
 
-            RequiredDBAction.UPDATE -> {
+            RequiredDBAction.UPDATE, RequiredDBAction.UPDATE_FROM_POMODORO -> {
                 counter = getDB().getTodoListDao().update(data)
                 Log.d(TAG, "Todo list was updated in DB (return code $counter): $data")
             }
-
-            else -> {}
         }
         todoListImpl.setUnchanged()
         return counter
@@ -274,6 +348,10 @@ class ModelServicesImpl(private val context: Context) {
         val data = todoTaskImpl.data
         var counter = 0
         when (todoTaskImpl.requiredDBAction) {
+            RequiredDBAction.NONE -> {
+                Log.d(TAG, "Todo task NOT saved because no DB action required: $data")
+            }
+
             RequiredDBAction.INSERT -> {
                 val taskId = getDB().getTodoTaskDao().insert(data).toInt()
                 todoTaskImpl.setId(taskId)
@@ -293,12 +371,10 @@ class ModelServicesImpl(private val context: Context) {
                 counter = getDB().getTodoTaskDao().updateValuesFromPomodoro(
                     todoTaskImpl.getId(),
                     todoTaskImpl.getName(),
-                    todoTaskImpl.getProgress(false),
+                    todoTaskImpl.getProgress(),
                     todoTaskImpl.getDoneTime())
                 Log.d(TAG, "Todo task was updated in DB by values from pomodoro (return code $counter): $data")
             }
-
-            else -> {}
         }
         todoTaskImpl.setUnchanged()
         return counter
@@ -309,6 +385,10 @@ class ModelServicesImpl(private val context: Context) {
         val data = todoSubtaskImpl.data
         var counter = 0
         when (todoSubtaskImpl.requiredDBAction) {
+            RequiredDBAction.NONE -> {
+                Log.d(TAG, "Todo subtask NOT saved because no DB action required: $data")
+            }
+
             RequiredDBAction.INSERT -> {
                 val subtaskId = getDB().getTodoSubtaskDao().insert(data).toInt()
                 todoSubtaskImpl.setId(subtaskId)
@@ -319,12 +399,10 @@ class ModelServicesImpl(private val context: Context) {
                 }
             }
 
-            RequiredDBAction.UPDATE -> {
+            RequiredDBAction.UPDATE, RequiredDBAction.UPDATE_FROM_POMODORO -> {
                 counter = getDB().getTodoSubtaskDao().update(data)
                 Log.d(TAG, "Todo subtask was updated in DB (return code $counter): $data")
             }
-
-            else -> {}
         }
         todoSubtaskImpl.setUnchanged()
         return counter
@@ -399,7 +477,8 @@ class ModelServicesImpl(private val context: Context) {
         return null
     }
 
-    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri): Pair<String?, Triple<Int, Int, Int>> {
+    suspend fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, now: Long):
+            Pair<String?, Triple<Int, Int, Int>> {
         val inputStream: InputStream?
         try {
             inputStream = context.contentResolver.openInputStream(csvDataUri)
@@ -444,6 +523,10 @@ class ModelServicesImpl(private val context: Context) {
             subtask.second.setTaskId(subtask.first.getId())
             counterSubtasks += saveTodoSubtaskInDb(subtask.second)
         }
+        // Update imported recurring tasks to have correct reminder times.
+        val updatedTasks = updateRecurringTasks(now, true)
+        // Imported and updated tasks might be the same. Take the larger number.
+        counterTasks = counterTasks.coerceAtLeast(updatedTasks)
         return Pair(null, Triple(counterLists, counterTasks, counterSubtasks))
     }
 

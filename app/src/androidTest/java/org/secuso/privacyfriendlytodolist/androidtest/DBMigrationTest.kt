@@ -156,6 +156,7 @@ class DBMigrationTest {
                 assertEquals(id, cursor.getIntOrNull(col++))
                 assertEquals(listSortOrder++, cursor.getIntOrNull(col++))
                 assertEquals("Test list $id", cursor.getStringOrNull(col++))
+
                 assertEquals(col, cursor.columnCount)
                 listIds.add(id)
             }
@@ -192,6 +193,7 @@ class DBMigrationTest {
                     }
                     val deadline = if (id % 2 == 0) id + TASK_DEADLINE_BASE else null
                     val reminderTime = if (id % 2 != 0) id + TASK_DEADLINE_WARNING_TIME_BASE else null
+                    val reminderState = if (reminderTime == null) 0 else 1
 
                     var col = 0
                     assertEquals(id, cursor.getIntOrNull(col++))
@@ -212,6 +214,8 @@ class DBMigrationTest {
                         assertEquals(null, cursor.getIntOrNull(col++))
                     }
                     assertEquals(0, cursor.getIntOrNull(col++)) // isInRecycleBin
+                    assertEquals(reminderState, cursor.getIntOrNull(col++))
+
                     assertEquals(col, cursor.columnCount)
                     assertTrue(listId == null || listIds.contains(listId))
                     taskIds.add(id)
@@ -255,6 +259,7 @@ class DBMigrationTest {
                         assertEquals(null, cursor.getIntOrNull(col++))
                     }
                     assertEquals(0, cursor.getIntOrNull(col++))
+
                     assertEquals(col, cursor.columnCount)
                     assertTrue(taskIds.contains(taskId))
                 }
