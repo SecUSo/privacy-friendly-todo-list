@@ -57,6 +57,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
+import org.secuso.privacyfriendlytodolist.checkGoodbyeGoogle
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.ModelObserver
 import org.secuso.privacyfriendlytodolist.model.ModelServices
@@ -249,6 +250,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         addTodoListsToView()
+        checkGoodbyeGoogle(this, layoutInflater)
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
