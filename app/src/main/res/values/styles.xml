@@ -47,7 +47,7 @@
         <item name="android:paddingBottom">8dp</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
-        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:background">?android:windowContentOverlay</item>
         <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
@@ -62,7 +62,7 @@
     </style>
 
     <style name="AppBorderlessButtonStyle">
-        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:background">?android:windowContentOverlay</item>
         <item name="tint">?attr/appColorIconForeground</item>
     </style>
 

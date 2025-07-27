@@ -555,7 +555,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_settings -> {
                 uncheckNavigationEntries()
-                val intent = Intent(this, Settings::class.java)
+                val intent = Intent(this, SettingsActivity::class.java)
                 unlockUntil = System.currentTimeMillis() + UNLOCK_PERIOD
                 startActivity(intent)
             }

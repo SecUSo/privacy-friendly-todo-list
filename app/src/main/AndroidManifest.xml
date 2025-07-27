@@ -69,7 +69,7 @@
         <activity
             android:name=".view.calendar.CalendarPopup" />
         <activity
-            android:name=".view.Settings"
+            android:name=".view.SettingsActivity"
             android:label="@string/settings" />
         <activity
             android:name=".view.widget.TodoListWidgetConfigureActivity"
