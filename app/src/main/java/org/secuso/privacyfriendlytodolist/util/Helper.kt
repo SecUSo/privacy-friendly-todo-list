@@ -38,6 +38,8 @@ import java.util.concurrent.TimeUnit
 object Helper {
     private val TAG = LogTag.create(this::class.java)
 
+    const val SECONDS_PER_DAY = 24 * 60 * 60
+
     fun createLocalizedDateString(timestampS: Long): String {
         val date = Date(TimeUnit.SECONDS.toMillis(timestampS))
         return createLocalizedDateString(date)

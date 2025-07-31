@@ -19,6 +19,7 @@ package org.secuso.privacyfriendlytodolist.service
 
 object JobFactory {
     enum class JobType {
+        NoJob,
         HandleAlarmJob,
         NotificationJob,
         UpdateAlarmsJob

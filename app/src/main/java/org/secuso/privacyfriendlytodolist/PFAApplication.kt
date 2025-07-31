@@ -31,6 +31,7 @@ import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
+import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidgetPeriodicUpdater
 
 class PFAApplication : Application(), Configuration.Provider {
 
@@ -46,6 +47,7 @@ class PFAApplication : Application(), Configuration.Provider {
         Log.d(TAG, "App starts. Starting update-alarm-job.")
         JobManager.startUpdateAlarmJob(this)
         Model.registerModelObserver(TaskChangeObserver)
+        TodoListWidgetPeriodicUpdater.scheduleNextUpdate(this)
         PreferenceObserver.initialize(this)
         PreferenceObserver.registerPreferenceChangeListener { _, key ->
             if (key == PreferenceMgr.P_APP_THEME.name) {

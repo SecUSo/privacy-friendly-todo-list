@@ -69,17 +69,12 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     }
 
     override fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.name)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)
-        Log.d(TAG, "onTodoDataChanged() notifies widgets with IDs ${appWidgetIds.contentToString()}.")
-        triggerWidgetUpdate(context, appWidgetIds)
+        triggerWidgetUpdate(context, "ToDo data changed")
     }
 
     private fun initialUpdate(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.name)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisComponentName)
+        val appWidgetIds = getAppWidgetIds(context, appWidgetManager)
         onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
@@ -177,17 +172,37 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         const val EXTRA_TODO_WIDGET_LIST_ID = "EXTRA_TODO_WIDGET_LIST_ID"
         const val OPTION_TODO_WIDGET_TITLE = "OPTION_TODO_WIDGET_TITLE"
 
+        private fun getAppWidgetIds(context: Context): IntArray {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            return getAppWidgetIds(context, appWidgetManager)
+        }
+
+        private fun getAppWidgetIds(context: Context, appWidgetManager: AppWidgetManager): IntArray {
+            val thisComponentName = ComponentName(context.packageName, TodoListWidget::class.java.name)
+            return appWidgetManager.getAppWidgetIds(thisComponentName)
+        }
+
         fun registerAsModelObserver(context: Context) {
             val intent = Intent(context, TodoListWidget::class.java)
             intent.setAction(ACTION_REGISTER_AS_MODEL_OBSERVER)
             context.sendBroadcast(intent)
         }
 
-        fun triggerWidgetUpdate(context: Context, appWidgetIds: IntArray) {
-            val intent = Intent(context, TodoListWidget::class.java)
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
-            context.sendBroadcast(intent)
+        fun triggerWidgetUpdate(context: Context, reason: String) {
+            val appWidgetIds = getAppWidgetIds(context)
+            triggerWidgetUpdate(context, appWidgetIds, reason)
+        }
+
+        fun triggerWidgetUpdate(context: Context, appWidgetIds: IntArray, reason: String) {
+            if (appWidgetIds.isNotEmpty()) {
+                Log.d(TAG, "Triggering update of widgets ${appWidgetIds.contentToString()}. Reason: $reason.")
+                val intent = Intent(context, TodoListWidget::class.java)
+                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+                context.sendBroadcast(intent)
+            } else {
+                Log.d(TAG, "Skipped widget update ($reason) because no widget available.")
+            }
         }
     }
 }

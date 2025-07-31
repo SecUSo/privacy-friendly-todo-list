@@ -285,7 +285,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
                 }
             // Use date-part from deadline, use time-part from 'now' because deadline is just a date.
             val datePart = TimeUnit.DAYS.toSeconds(TimeUnit.SECONDS.toDays(deadline))
-            val timePart = Helper.getCurrentTimestamp() % SECONDS_PER_DAY
+            val timePart = Helper.getCurrentTimestamp() % Helper.SECONDS_PER_DAY
             result = datePart + timePart
         }
         return result
@@ -383,7 +383,6 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     companion object {
-        private const val SECONDS_PER_DAY = 24 * 60 * 60
         @JvmField
         val CREATOR = object : Creator<TodoTask> {
             override fun createFromParcel(parcel: Parcel): TodoTask {

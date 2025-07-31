@@ -137,7 +137,8 @@ class TodoListWidgetConfigureActivity : Activity() {
             saveWidgetPreferences(this, appWidgetId, pref)
 
             // Trigger update after list name was saved to update the widget title with list name.
-            TodoListWidget.triggerWidgetUpdate(this, intArrayOf(appWidgetId))
+            TodoListWidget.triggerWidgetUpdate(this, intArrayOf(appWidgetId),
+                "Widget configuration changed")
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
