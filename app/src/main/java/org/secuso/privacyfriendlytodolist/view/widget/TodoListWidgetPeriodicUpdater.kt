@@ -29,7 +29,6 @@ import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-import kotlin.time.toJavaDuration
 
 /**
  * Updating the widget periodically is needed to have up-to-date urgency colors
@@ -58,15 +57,15 @@ class TodoListWidgetPeriodicUpdater(private val context: Context,
             calendar.set(Calendar.MINUTE, 59)
             calendar.set(Calendar.SECOND, 59)
             calendar.set(Calendar.MILLISECOND, 0)
-            var updateTime = calendar.timeInMillis
-            updateTime += TimeUnit.SECONDS.toMillis(31)
-            val duration = (updateTime - now).toDuration(DurationUnit.MILLISECONDS)
+            val updateTime = calendar.timeInMillis + 31000
+            val duration = updateTime - now
             val widgetUpdateRequest = OneTimeWorkRequestBuilder<TodoListWidgetPeriodicUpdater>().
-                setInitialDelay(duration.toJavaDuration()).
+                setInitialDelay(duration, TimeUnit.MILLISECONDS).
                 build()
 
             Log.i(TAG, "Next periodic widget update scheduled for " +
-                    "${Helper.createCanonicalDateTimeString(TimeUnit.MILLISECONDS.toSeconds(updateTime))} which is in $duration.")
+                    "${Helper.createCanonicalDateTimeString(TimeUnit.MILLISECONDS.toSeconds(updateTime))} " +
+                    "which is in ${duration.toDuration(DurationUnit.MILLISECONDS)}.")
             WorkManager.getInstance(context).enqueue(widgetUpdateRequest)
         }
     }
