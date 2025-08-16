@@ -68,6 +68,8 @@ open class TodoListWidgetViewsFactory() {
 
     /**
      * Creates remote views for to-do tasks and updates the list name.
+     *
+     * Note: This is a expensive task. To-Do Tasks get synchronously read from DB.
      */
     fun createItems(context: Context, appWidgetId: Int): List<Pair<Int, RemoteViews>> {
         val pref = TodoListWidgetConfigureActivity.loadWidgetPreferences(context, appWidgetId) ?: TodoListWidgetPreferences()

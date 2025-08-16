@@ -58,6 +58,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     override fun onEnabled(context: Context) {
         Log.d(TAG, "onEnabled().")
         Model.registerModelObserver(this)
+        TodoListWidgetPeriodicUpdater.startPeriodicUpdates(context)
         super.onEnabled(context)
     }
 
@@ -188,12 +189,12 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
             context.sendBroadcast(intent)
         }
 
-        fun triggerWidgetUpdate(context: Context, reason: String) {
+        fun triggerWidgetUpdate(context: Context, reason: String): Int {
             val appWidgetIds = getAppWidgetIds(context)
-            triggerWidgetUpdate(context, appWidgetIds, reason)
+            return triggerWidgetUpdate(context, appWidgetIds, reason)
         }
 
-        fun triggerWidgetUpdate(context: Context, appWidgetIds: IntArray, reason: String) {
+        fun triggerWidgetUpdate(context: Context, appWidgetIds: IntArray, reason: String): Int {
             if (appWidgetIds.isNotEmpty()) {
                 Log.d(TAG, "Triggering update of widgets ${appWidgetIds.contentToString()}. Reason: $reason.")
                 val intent = Intent(context, TodoListWidget::class.java)
@@ -203,6 +204,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
             } else {
                 Log.d(TAG, "Skipped widget update ($reason) because no widget available.")
             }
+            return appWidgetIds.size
         }
     }
 }

@@ -47,7 +47,7 @@ class PFAApplication : Application(), Configuration.Provider {
         Log.d(TAG, "App starts. Starting update-alarm-job.")
         JobManager.startUpdateAlarmJob(this)
         Model.registerModelObserver(TaskChangeObserver)
-        TodoListWidgetPeriodicUpdater.scheduleNextUpdate(this)
+        TodoListWidgetPeriodicUpdater.startPeriodicUpdates(this)
         PreferenceObserver.initialize(this)
         PreferenceObserver.registerPreferenceChangeListener { _, key ->
             if (key == PreferenceMgr.P_APP_THEME.name) {
@@ -63,7 +63,7 @@ class PFAApplication : Application(), Configuration.Provider {
             "DARK"   -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             "SYSTEM" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             else     -> {
-                Log.e(TAG, "Unknown value for preference ${PreferenceMgr.P_APP_THEME.name}: $appTheme.")
+                Log.w(TAG, "Unknown value for preference ${PreferenceMgr.P_APP_THEME.name}: $appTheme. Using default.")
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
