@@ -220,6 +220,8 @@
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Genaue Erinnerungen aktivieren</string>
     <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung, um Erinnerungen zeitlich genau zu melden wird benötigt. Andernfalls erfolgen die Erinnerungen zeitlich ungenau.</string>
+    <string name="dialog_need_permission_post_notifications_title">Benachrichtigungen aktivieren</string>
+    <string name="dialog_need_permission_post_notifications_message">Die Berechtigung, um Benachrichtigungen für Erinnerungen anzuzeigen wird benötigt. Andernfalls werden Erinnerungen nicht angezeigt.</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Termin rückt näher: %1$s</string>
@@ -328,7 +330,7 @@
     <string name="snack_clear">Papierkorb geleert</string>
 
     <!-- TO-DO INTEGRATION -->
-    <string name="permission_todo_name">TODO Integration</string>
-    <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
+    <string name="permission_todo_name">To-Do Integration</string>
+    <string name="permission_todo_description">Berechtigt die To-Do Listen App den Timer mit einer To-Do Aufgabe zu starten</string>
 
 </resources>

@@ -22,6 +22,7 @@ import androidx.preference.PreferenceManager
 import org.secuso.privacyfriendlytodolist.R
 import java.util.Calendar
 import java.util.Locale
+import androidx.core.content.edit
 
 enum class PrefDataType {
     BOOLEAN, STRING
@@ -70,9 +71,7 @@ object PreferenceMgr {
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = prefs.edit()
-        editor.putBoolean(P_IS_FIRST_TIME_LAUNCH.name, isFirstTimeLaunch)
-        editor.apply()
+        prefs.edit { putBoolean(P_IS_FIRST_TIME_LAUNCH.name, isFirstTimeLaunch) }
     }
 
     fun isFirstTimeLaunch(context: Context): Boolean {

@@ -243,7 +243,9 @@
 
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Enable exact reminders</string>
-    <string name="dialog_need_permission_exact_alarm_message">Permission to schedule exact reminders is needed. Otherwise reminders are inexact.</string>
+    <string name="dialog_need_permission_exact_alarm_message">Permission to schedule exact reminders is required. Otherwise, reminders are inexact.</string>
+    <string name="dialog_need_permission_post_notifications_title">Enable notifications</string>
+    <string name="dialog_need_permission_post_notifications_message">Permission to display notifications for reminders is required. Otherwise, reminders will not be displayed.</string>
 
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline is approaching: %1$s</string>
@@ -352,7 +354,7 @@
     <string name="snack_clear">Recycle bin is now cleared</string>
 
     <!-- POMODORO INTEGRATION -->
-    <string name="permission_todo_name">TODO Integration</string>
-    <string name="permission_todo_description">Enables the TODO App to start the timer with a given TODO Item</string>
+    <string name="permission_todo_name">To-Do Integration</string>
+    <string name="permission_todo_description">Enables the To-Do List app to start the timer with a given To-Do task</string>
 
 </resources>

@@ -46,11 +46,11 @@ object AlarmMgr {
     }
 
     fun checkForPermissions(context: Context) {
-        val sysAlarmMgr = getManager(context)
+        val manager = getManager(context)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             Log.d(TAG, "SDK version is ${Build.VERSION.SDK_INT}. Exact alarms can be scheduled always.")
-        } else if (sysAlarmMgr.canScheduleExactAlarms()) {
-            Log.d(TAG, "Permission to schedule exact alarms is granted.")
+        } else if (manager.canScheduleExactAlarms()) {
+            Log.d(TAG, "Permission to schedule exact alarms is already granted.")
         } else {
             Log.i(TAG, "Requesting permission to schedule exact alarms.")
             MaterialAlertDialogBuilder(context).apply {
@@ -136,14 +136,14 @@ object AlarmMgr {
     private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
         // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
-        val sysAlarmMgr = getManager(context)
+        val manager = getManager(context)
         // On targets with SDK_INT < VERSION_CODES.S exact alarms can always be scheduled.
         // On targets with SDK_INT >= VERSION_CODES.S exact alarms can be scheduled if user grants permissions.
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || sysAlarmMgr.canScheduleExactAlarms()) {
-            sysAlarmMgr.setExact(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || manager.canScheduleExactAlarms()) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
             "Exact"
         } else {
-            sysAlarmMgr.set(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+            manager.set(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
             "Inexact"
         }
     }

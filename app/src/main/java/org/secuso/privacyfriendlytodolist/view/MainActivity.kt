@@ -41,6 +41,7 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
@@ -48,6 +49,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
@@ -80,6 +83,7 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ResultCallback
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 import java.io.StringWriter
+import androidx.core.content.edit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -96,6 +100,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var secondAlert: TextView
     private lateinit var fabNewTodoTask: FloatingActionButton
     private lateinit var mPref: SharedPreferences
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private var expandableTodoTaskAdapter: ExpandableTodoTaskAdapter? = null
     private var contextMenuTodoTask: TodoTask? = null
     private var contextMenuTodoSubtask: TodoSubtask? = null
@@ -153,6 +158,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         secondAlert = findViewById(R.id.second_alert)
         showHints()
         mPref = PreferenceManager.getDefaultSharedPreferences(this)
+        requestPermissionLauncher = registerForActivityResult(RequestPermission()) { isGranted: Boolean ->
+            Log.d(TAG, "Permission for sending notifications is ${if (isGranted) "granted" else "denied"}.")
+        }
 
         // toolbar setup
         toolbar = findViewById(R.id.toolbar_main)
@@ -211,6 +219,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     showTasksOfListOrAllTasks(todoTask.getListId())
                     if (todoTask.hasReminderTime()) {
                         AlarmMgr.checkForPermissions(this)
+                        NotificationMgr.checkForPermissions(this) { permission ->
+                            requestPermissionLauncher.launch(permission)
+                        }
                     }
                 }
             }
@@ -295,7 +306,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 override fun resetApp() {
-                    PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit().clear().apply()
+                    PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit {
+                        clear()
+                    }
                     model.deleteAllData { _ ->
                         dialog.dismiss()
                         val intent = Intent(this@MainActivity, MainActivity::class.java)
@@ -483,7 +496,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.isChecked = true
                 expTaskAdapter.taskFilter = TaskFilter.ALL_TASKS
                 expTaskAdapter.notifyDataSetChanged()
-                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
+                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name) }
                 return true
             }
 
@@ -491,7 +504,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.isChecked = true
                 expTaskAdapter.taskFilter = TaskFilter.OPEN_TASKS
                 expTaskAdapter.notifyDataSetChanged()
-                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
+                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name) }
                 return true
             }
 
@@ -499,26 +512,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 item.isChecked = true
                 expTaskAdapter.taskFilter = TaskFilter.COMPLETED_TASKS
                 expTaskAdapter.notifyDataSetChanged()
-                mPref.edit().putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name).apply()
+                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name) }
                 return true
             }
 
             R.id.ac_group_by_prio -> {
                 item.isChecked = !item.isChecked
                 expTaskAdapter.isGroupingByPriority = item.isChecked
-                mPref.edit().putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked).apply()
+                mPref.edit { putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked) }
             }
 
             R.id.ac_sort_by_deadline -> {
                 item.isChecked = !item.isChecked
                 expTaskAdapter.isSortingByDeadline = item.isChecked
-                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked).apply()
+                mPref.edit { putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked) }
             }
 
             R.id.ac_sort_by_name_asc -> {
                 item.isChecked = !item.isChecked
                 expTaskAdapter.isSortingByNameAsc = item.isChecked
-                mPref.edit().putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked).apply()
+                mPref.edit{ putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked) }
             }
 
             else -> return super.onOptionsItemSelected(item)
@@ -529,9 +542,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun uncheckNavigationEntries() {
         // uncheck all navigation entries
-        val size = navigationView.menu.size()
+        val size = navigationView.menu.size
         for (i in 0 until size) {
-            navigationView.menu.getItem(i).isChecked = false
+            navigationView.menu[i].isChecked = false
         }
     }
 
@@ -630,8 +643,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         model.getAllToDoListNames { allTodoListNames ->
             // Prepare navigation-drawer for To-Do lists
             val navMenu = navigationView.menu
-            for (i in 0 until navigationView.menu.size()) {
-                val item = navigationView.menu.getItem(i)
+            for (i in 0 until navigationView.menu.size) {
+                val item = navigationView.menu[i]
                 if (item.groupId == R.id.menu_group_todo_lists) {
                     // Workaround for the issue that when the user deletes the last list, its action
                     // view 'jumps' to the next menu item, which is the settings menu item:
@@ -745,7 +758,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         activeListId = null
         toolbar.setTitle(R.string.home)
         uncheckNavigationEntries()
-        val homeMenuEntry = navigationView.menu.getItem(0)
+        val homeMenuEntry = navigationView.menu[0]
         homeMenuEntry.isCheckable = true
         homeMenuEntry.isChecked = true
         model.getAllToDoTasks { todoTasks ->
@@ -756,8 +769,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showTasksOfList(listId: Int) {
         activeListId = listId
-        for (i in 0 until navigationView.menu.size()) {
-            val item = navigationView.menu.getItem(i)
+        for (i in 0 until navigationView.menu.size) {
+            val item = navigationView.menu[i]
             item.isChecked = item.groupId == R.id.menu_group_todo_lists && item.itemId == listId
         }
         model.getToDoListById(listId) { todoList ->
@@ -830,7 +843,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 R.id.work_subtask
             }
             if (pomodoroInstalled) {
-                menu.findItem(workItemId).setVisible(true)
+                menu.findItem(workItemId).isVisible = true
             }
         } else if (v.tag == ACT_BTN_ALL_TASKS) {
             val menuHeader = Helper.getMenuHeader(layoutInflater, v.rootView, R.string.select_option)
