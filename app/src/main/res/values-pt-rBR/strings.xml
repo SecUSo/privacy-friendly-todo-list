@@ -196,7 +196,7 @@
     <string name="subtask_removed">Subarefa removida com sucesso.</string>
     <string name="sunday_abbr">DOM</string>
     <string name="task_removed">Tarefa removida com sucesso.</string>
-    <string name="tasks_removed" formatted="false">%1$d tarefa(s) e %2$d subarefa(s) removidas.</string>
+    <string name="tasks_removed">%1$d tarefa(s) e %2$d subarefa(s) removidas.</string>
     <string name="thursday_abbr">QUI</string>
     <string name="time">Hora</string>
     <string name="to_choose_list">Selecione uma lista!</string>

@@ -30,6 +30,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.core.content.edit
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
@@ -197,14 +198,14 @@ class TodoListWidgetConfigureActivity : Activity() {
 
         private fun saveWidgetPreferences(context: Context, appWidgetId: Int, pref: TodoListWidgetPreferences) {
             val prefix = appWidgetId.toString() + PREFIX
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(prefix + PREF_KEY_LIST_ID, pref.todoListId.toString())
-            prefs.putString(prefix + PREF_KEY_TASK_FILTER, pref.taskFilter.toString())
-            prefs.putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
-            prefs.putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
-            prefs.putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
-            prefs.putBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, pref.isShowingDaysUntilDeadline)
-            prefs.apply()
+            context.getSharedPreferences(PREFS_NAME, 0).edit {
+                putString(prefix + PREF_KEY_LIST_ID, pref.todoListId.toString())
+                putString(prefix + PREF_KEY_TASK_FILTER, pref.taskFilter.toString())
+                putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
+                putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
+                putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
+                putBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, pref.isShowingDaysUntilDeadline)
+            }
             Log.d(TAG, "Preferences saved for app widget $appWidgetId: $pref")
         }
 
@@ -233,14 +234,14 @@ class TodoListWidgetConfigureActivity : Activity() {
 
         fun deleteWidgetPreferences(context: Context, appWidgetId: Int) {
             val prefix = appWidgetId.toString() + PREFIX
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.remove(prefix + PREF_KEY_LIST_ID)
-            prefs.remove(prefix + PREF_KEY_TASK_FILTER)
-            prefs.remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
-            prefs.remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
-            prefs.remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
-            prefs.remove(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE)
-            prefs.apply()
+            context.getSharedPreferences(PREFS_NAME, 0).edit {
+                remove(prefix + PREF_KEY_LIST_ID)
+                remove(prefix + PREF_KEY_TASK_FILTER)
+                remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
+                remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
+                remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
+                remove(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE)
+            }
             Log.d(TAG, "Preferences deleted for app widget $appWidgetId.")
         }
     }

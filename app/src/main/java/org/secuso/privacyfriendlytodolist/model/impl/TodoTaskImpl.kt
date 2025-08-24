@@ -242,8 +242,7 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
 
     override fun computeProgress(): Boolean {
         val computedProgress: Int
-        @Suppress("LiftReturnOrAssignment")
-        if (0 == subtasks.size) {
+        if (subtasks.isEmpty()) {
             computedProgress = if (isDone()) 100 else 0
         } else {
             var doneSubtasks = 0

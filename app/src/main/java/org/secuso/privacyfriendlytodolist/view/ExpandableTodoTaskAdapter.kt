@@ -205,7 +205,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      */
     private fun countTasksPerPriority() {
         priorityBarPositions.clear()
-        if (filteredTasks.size != 0) {
+        if (filteredTasks.isNotEmpty()) {
             var pos = 0
             var currentPriority: TodoTask.Priority
             val priorityAlreadySeen = HashSet<TodoTask.Priority>()
