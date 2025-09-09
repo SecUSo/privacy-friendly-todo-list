@@ -19,8 +19,8 @@ package org.secuso.privacyfriendlytodolist.view.widget
 
 import android.content.Context
 import android.util.Log
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -41,9 +41,21 @@ class TodoListWidgetPeriodicUpdater(private val context: Context,
                                     workerParams: WorkerParameters): Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        if (TodoListWidget.triggerWidgetUpdate(context, "Periodic update") == 0) {
-            Log.d(TAG, "Periodic widget updates cancelled because no widget installed.")
-            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
+        var numberOfWidgets = 1
+        try {
+            numberOfWidgets = TodoListWidget.triggerWidgetUpdate(context, "Periodic update")
+        }
+        catch (e: Exception) {
+            Log.e(TAG, "Updating widgets failed: $e")
+        }
+        finally {
+            if (numberOfWidgets == 0) {
+                Log.d(TAG, "Periodic widget updates cancelled because no widget installed.")
+            } else {
+                // Because the initial delay of PeriodicWorkRequest is initialDelay + interval
+                // it is not used. Instead this updater restarts itself.
+                startPeriodicUpdates(context)
+            }
         }
         return Result.success()
     }
@@ -62,16 +74,14 @@ class TodoListWidgetPeriodicUpdater(private val context: Context,
             calendar.set(Calendar.MILLISECOND, 0)
             val updateTime = calendar.timeInMillis + 31000
             val initialDelay = updateTime - now
-            val periodicWidgetUpdateRequest =
-                PeriodicWorkRequestBuilder<TodoListWidgetPeriodicUpdater>(1, TimeUnit.DAYS)
-                    .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
-                    .build()
-
+            val request = OneTimeWorkRequestBuilder<TodoListWidgetPeriodicUpdater>()
+                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .build()
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                WORK_NAME, ExistingWorkPolicy.REPLACE, request)
             Log.i(TAG, "Next periodic widget update scheduled for " +
                     "${Helper.createCanonicalDateTimeString(TimeUnit.MILLISECONDS.toSeconds(updateTime))} " +
                     "which is in ${initialDelay.toDuration(DurationUnit.MILLISECONDS)}.")
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(WORK_NAME,
-                ExistingPeriodicWorkPolicy.UPDATE, periodicWidgetUpdateRequest)
         }
     }
 }
