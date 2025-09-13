@@ -30,6 +30,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.core.content.edit
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
@@ -81,6 +82,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         val cbGroupByPriority = findViewById<CheckBox>(R.id.cb_widget_cfg_group_by_priority)
         val cbSortByDeadline = findViewById<CheckBox>(R.id.cb_widget_cfg_sort_by_deadline)
         val cbSortByNameAsc = findViewById<CheckBox>(R.id.cb_widget_cfg_sort_by_name_asc)
+        val cbShowDaysUntilDeadline = findViewById<CheckBox>(R.id.cb_widget_cfg_show_days_until_deadline)
 
         val loadedPref = loadWidgetPreferences(this, appWidgetId)
         if (null == loadedPref) {
@@ -100,6 +102,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         cbGroupByPriority.isChecked = pref.isGroupingByPriority
         cbSortByDeadline.isChecked = pref.isSortingByDeadline
         cbSortByNameAsc.isChecked = pref.isSortingByNameAsc
+        cbShowDaysUntilDeadline.isChecked = pref.isShowingDaysUntilDeadline
 
         // Initialize textview that displays selected list
         model!!.getAllToDoLists { todoLists ->
@@ -131,10 +134,12 @@ class TodoListWidgetConfigureActivity : Activity() {
             pref.isGroupingByPriority = cbGroupByPriority.isChecked
             pref.isSortingByDeadline = cbSortByDeadline.isChecked
             pref.isSortingByNameAsc = cbSortByNameAsc.isChecked
+            pref.isShowingDaysUntilDeadline = cbShowDaysUntilDeadline.isChecked
             saveWidgetPreferences(this, appWidgetId, pref)
 
             // Trigger update after list name was saved to update the widget title with list name.
-            TodoListWidget.triggerWidgetUpdate(this, appWidgetId)
+            TodoListWidget.triggerWidgetUpdate(this, intArrayOf(appWidgetId),
+                "Widget configuration changed")
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
@@ -187,18 +192,20 @@ class TodoListWidgetConfigureActivity : Activity() {
         private const val PREF_KEY_GROUP_BY_PRIORITY = "group_by_priority"
         private const val PREF_KEY_SORT_BY_DEADLINE = "sort_by_deadline"
         private const val PREF_KEY_SORT_BY_NAME_ASC = "sort_by_name_asc"
+        private const val PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE = "show_days_until_deadline"
         private const val PREF_VALUE_NULL = "null"
         private const val PREFIX = "_todo_list_widget_"
 
         private fun saveWidgetPreferences(context: Context, appWidgetId: Int, pref: TodoListWidgetPreferences) {
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
             val prefix = appWidgetId.toString() + PREFIX
-            prefs.putString(prefix + PREF_KEY_LIST_ID, pref.todoListId.toString())
-            prefs.putString(prefix + PREF_KEY_TASK_FILTER, pref.taskFilter.toString())
-            prefs.putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
-            prefs.putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
-            prefs.putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
-            prefs.apply()
+            context.getSharedPreferences(PREFS_NAME, 0).edit {
+                putString(prefix + PREF_KEY_LIST_ID, pref.todoListId.toString())
+                putString(prefix + PREF_KEY_TASK_FILTER, pref.taskFilter.toString())
+                putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
+                putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
+                putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
+                putBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, pref.isShowingDaysUntilDeadline)
+            }
             Log.d(TAG, "Preferences saved for app widget $appWidgetId: $pref")
         }
 
@@ -220,19 +227,21 @@ class TodoListWidgetConfigureActivity : Activity() {
             pref.isGroupingByPriority = prefs.getBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, false)
             pref.isSortingByDeadline = prefs.getBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, false)
             pref.isSortingByNameAsc = prefs.getBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, false)
+            pref.isShowingDaysUntilDeadline = prefs.getBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, false)
             Log.d(TAG, "Preferences loaded for app widget $appWidgetId: $pref")
             return pref
         }
 
         fun deleteWidgetPreferences(context: Context, appWidgetId: Int) {
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
             val prefix = appWidgetId.toString() + PREFIX
-            prefs.remove(prefix + PREF_KEY_LIST_ID)
-            prefs.remove(prefix + PREF_KEY_TASK_FILTER)
-            prefs.remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
-            prefs.remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
-            prefs.remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
-            prefs.apply()
+            context.getSharedPreferences(PREFS_NAME, 0).edit {
+                remove(prefix + PREF_KEY_LIST_ID)
+                remove(prefix + PREF_KEY_TASK_FILTER)
+                remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
+                remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
+                remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
+                remove(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE)
+            }
             Log.d(TAG, "Preferences deleted for app widget $appWidgetId.")
         }
     }

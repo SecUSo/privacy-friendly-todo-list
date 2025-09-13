@@ -3,5 +3,6 @@
     <declare-styleable name="AppTheme">
         <attr name="appColorNavBarHeaderBackground" format="color" />
         <attr name="appColorIconForeground" format="color"/>
+        <attr name="secusoLogoDrawable" format="reference"/>
     </declare-styleable>
 </resources>

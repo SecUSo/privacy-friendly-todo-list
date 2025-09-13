@@ -7,11 +7,12 @@
     <string name="name">שם</string>
     <string name="help">עזרה</string>
     <string name="other">אחר</string>
-    <string name="home">כל המשימות</string>
+    <string name="all_tasks">כל המשימות</string>
     <string name="cancel">ביטול</string>
     <string name="settings">הגדרות</string>
     <string name="select_option">בחר אפשרות</string>
     <string name="todos">מטלות</string>
+    <string name="tasks">מטלות</string>
     <string name="high_priority">גבוה</string>
     <string name="remove_all_done_tasks">הסר את כל המשימות שבוצעו</string>
     <string name="search">חפש</string>

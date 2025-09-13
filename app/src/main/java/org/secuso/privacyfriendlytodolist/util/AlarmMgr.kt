@@ -26,10 +26,8 @@ import android.provider.Settings
 import android.util.Log
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
-import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
-import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -38,7 +36,7 @@ object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
     private val TAG = LogTag.create(this::class.java)
     private var manager: AlarmManager? = null
-    private var lastDueTaskAlarmID: Int? = null
+    private var lastTaskToRemindAlarmID: Int? = null
 
     private fun getManager(context: Context): AlarmManager {
         if (manager == null) {
@@ -48,11 +46,11 @@ object AlarmMgr {
     }
 
     fun checkForPermissions(context: Context) {
-        val sysAlarmMgr = getManager(context)
+        val manager = getManager(context)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             Log.d(TAG, "SDK version is ${Build.VERSION.SDK_INT}. Exact alarms can be scheduled always.")
-        } else if (sysAlarmMgr.canScheduleExactAlarms()) {
-            Log.d(TAG, "Permission to schedule exact alarms is granted.")
+        } else if (manager.canScheduleExactAlarms()) {
+            Log.d(TAG, "Permission to schedule exact alarms is already granted.")
         } else {
             Log.i(TAG, "Requesting permission to schedule exact alarms.")
             MaterialAlertDialogBuilder(context).apply {
@@ -78,15 +76,15 @@ object AlarmMgr {
      * @return If an alarm gets set the alarm ID gets returned (task ID gets used as alarm ID).
      * If no alarm gets set null gets returned.
      */
-    fun setAlarmForNextDueTask(context: Context, todoTask: TodoTask): Int? {
+    fun setAlarmForNextTaskToRemind(context: Context, todoTask: TodoTask): Int? {
         // First cancel existing alarm to ensure it doesn't fire.
-        if (lastDueTaskAlarmID != null) {
-            Log.i(TAG, "Cancelling alarm of old next-due-task with ID $lastDueTaskAlarmID.")
-            cancelAlarmForTask(context, lastDueTaskAlarmID!!)
-            lastDueTaskAlarmID = null
+        if (lastTaskToRemindAlarmID != null) {
+            Log.i(TAG, "Cancelling alarm of old next-due-task with ID $lastTaskToRemindAlarmID.")
+            cancelAlarmForTask(context, lastTaskToRemindAlarmID!!)
+            lastTaskToRemindAlarmID = null
         }
 
-        var reminderTime = todoTask.getReminderTime()
+        val reminderTime = todoTask.getReminderTime()
         if (reminderTime == null) {
             Log.i(TAG, "No alarm set because $todoTask has no reminder time.")
             return null
@@ -98,30 +96,6 @@ object AlarmMgr {
         }
 
         val now = Helper.getCurrentTimestamp()
-        if (todoTask.isRecurring()) {
-            // Get the upcoming due date of the recurring task. The initial reminder time might not
-            // be the right date for the alarm.
-            val oldReminderTime = reminderTime
-            reminderTime = Helper.getNextRecurringDate(reminderTime,
-                todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval(), now)
-            if (oldReminderTime != reminderTime) {
-                // Store new reminder time to make it visible for the user.
-                todoTask.setReminderTime(reminderTime)
-                todoTask.setChanged()
-                val viewModel = CustomViewModel(context)
-                viewModel.model.saveTodoTaskInDb(todoTask) { counter ->
-                    if (counter > 0) {
-                        Log.i(TAG, "Updated reminder time of $todoTask from " +
-                                "${Helper.createCanonicalDateTimeString(oldReminderTime)} to " +
-                                "${Helper.createCanonicalDateTimeString(reminderTime)}.")
-                        Model.notifyDataChangedFromOutside(context, 0, counter, 0)
-                    } else {
-                        Log.e(TAG, "Failed to update reminder time of $todoTask in DB.")
-                    }
-                }
-            }
-        }
-
         if (reminderTime < now) {
             Log.i(TAG, "No alarm set because reminder time of $todoTask is in the past.")
             return null
@@ -133,10 +107,9 @@ object AlarmMgr {
         val alarmTime = reminderTime - (reminderTime % 60)
         val timestamp = Helper.createCanonicalDateTimeString(alarmTime)
         val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
-        lastDueTaskAlarmID = alarmId
+        lastTaskToRemindAlarmID = alarmId
         // Logging.
-        val durationAsInt = TimeUnit.SECONDS.toMinutes(reminderTime - now)
-        val duration = durationAsInt.toDuration(DurationUnit.MINUTES)
+        val duration = (alarmTime - now).toDuration(DurationUnit.SECONDS)
         Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $timestamp which is in $duration.")
 
         return alarmId
@@ -163,14 +136,14 @@ object AlarmMgr {
     private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
         // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
-        val sysAlarmMgr = getManager(context)
+        val manager = getManager(context)
         // On targets with SDK_INT < VERSION_CODES.S exact alarms can always be scheduled.
         // On targets with SDK_INT >= VERSION_CODES.S exact alarms can be scheduled if user grants permissions.
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || sysAlarmMgr.canScheduleExactAlarms()) {
-            sysAlarmMgr.setExact(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || manager.canScheduleExactAlarms()) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
             "Exact"
         } else {
-            sysAlarmMgr.set(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+            manager.set(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
             "Inexact"
         }
     }

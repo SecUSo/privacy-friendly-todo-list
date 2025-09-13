@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">Lista de Tareas</string>
     <string name="toolbar_title_main">Lista de Tareas</string>
     <string name="todos">Tareas</string>
-    <string name="home">Todas las tareas</string>
+    <string name="tasks">Tareas</string>
     <string name="calendar_view">Calendario</string>
     <string name="show_all_tasks">Ver todas las tareas</string>
     <string name="settings">Ajustes</string>
@@ -45,7 +45,7 @@
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
     <!-- About -->
     <string name="about">Sobre nosotros</string>
-    <string name="version_number">Versión %s</string>
+    <string name="version_number">Versión %1$s</string>
     <string name="about_author">Autores:</string>
     <string name="about_author_contributors">y contribuyentes.</string>
     <string name="about_affiliation">En colaboración con</string>
@@ -86,7 +86,7 @@
     <string name="set_deadline_before_reminder">Introduce la fecha límite antes de introducir la alarma.</string>
     <string name="progress_colon">Progreso:</string>
     <string name="priority_colon">Importancia:</string>
-    <string name="zero_percent">0 %</string>
+    <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Seleccione una prioridad:</string>
     <string name="new_todo_subtask">Nueva subtarea</string>
     <string name="todo_name_must_not_be_empty">Hay que indicar el nombre de la tarea.</string>

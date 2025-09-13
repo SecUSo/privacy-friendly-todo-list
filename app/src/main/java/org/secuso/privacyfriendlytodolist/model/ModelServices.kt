@@ -84,11 +84,11 @@ class ModelServices(
         }
     }
 
-    fun getNextDueTask(now: Long,
-                       deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<TodoTask?>): Job {
+    fun getNextTaskToRemind(now: Long,
+                            deliveryOption: DeliveryOption = DeliveryOption.POST,
+                            resultConsumer: ResultConsumer<TodoTask?>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoTask = services.getNextDueTask(now)
+            val todoTask = services.getNextTaskToRemind(now)
             dispatchResult(deliveryOption, resultConsumer, todoTask.first)
             notifyDataChanged(0, todoTask.second, 0)
         }
@@ -101,11 +101,12 @@ class ModelServices(
      * @param resultConsumer Result consumer that will be notified when the asynchronous database
      * access has finished.
      */
-    fun getOverdueTasks(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
-                         resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+    fun getTasksWithOverdueReminders(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                     resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoTasks = services.getOverdueTasks(now)
-            dispatchResult(deliveryOption, resultConsumer, todoTasks)
+            val todoTasks = services.getTasksWithOverdueReminders(now)
+            dispatchResult(deliveryOption, resultConsumer, todoTasks.first)
+            notifyDataChanged(0, todoTasks.second, 0)
         }
     }
 
@@ -116,16 +117,6 @@ class ModelServices(
             val counter = services.deleteTodoList(todoListId)
             dispatchResult(deliveryOption, resultConsumer, counter)
             notifyDataChanged(counter.first, counter.second, counter.third)
-        }
-    }
-
-    fun deleteTodoTask(todoTask: TodoTask,
-                       deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
-        return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.deleteTodoTaskAndSubtasks(todoTask)
-            dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter.first, counter.second)
         }
     }
 
@@ -159,17 +150,6 @@ class ModelServices(
         }
     }
 
-    fun setSubtaskInRecycleBin(subtask: TodoSubtask,
-                               inRecycleBin: Boolean,
-                               deliveryOption: DeliveryOption = DeliveryOption.POST,
-                               resultConsumer: ResultConsumer<Int>? = null): Job {
-        return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.setSubtaskInRecycleBin(subtask, inRecycleBin)
-            dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, 0, counter)
-        }
-    }
-
     /**
      * Returns the number of all to-do-lists (left in tuple) and all to-do-tasks that are not in recycle bin (right in tuple).
      */
@@ -189,11 +169,10 @@ class ModelServices(
         }
     }
 
-    fun getAllToDoTasksOfList(todoListId: Int,
-                              deliveryOption: DeliveryOption = DeliveryOption.POST,
-                              resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+    fun getAllToDoTasksNotInList(deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                 resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoTasks = services.getAllToDoTasksOfList(todoListId)
+            val todoTasks = services.getAllToDoTasksNotInList()
             dispatchResult(deliveryOption, resultConsumer, todoTasks)
         }
     }
@@ -337,11 +316,11 @@ class ModelServices(
         }
     }
 
-    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri,
+    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, now: Long,
                       deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<String?>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri)
+            val result = services.importCSVData(deleteAllDataBeforeImport, csvDataUri, now)
             dispatchResult(deliveryOption, resultConsumer, result.first)
             val counter = result.second
             notifyDataChanged(counter.first, counter.second, counter.third)

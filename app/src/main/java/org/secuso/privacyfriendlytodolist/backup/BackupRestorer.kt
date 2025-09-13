@@ -102,7 +102,6 @@ class BackupRestorer : IBackupRestorer {
                 ?: throw RuntimeException("Unknown preference $name")
             when (prefMetaData.dataType) {
                 PrefDataType.BOOLEAN -> pref.putBoolean(name, reader.nextBoolean())
-                PrefDataType.LONG -> pref.putLong(name, reader.nextLong())
                 PrefDataType.STRING -> pref.putString(name, reader.nextString())
             }
         }

@@ -3,6 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- WAKE_LOCK is only needed for GitLab emulator test. Otherwise these exceptions occur:
+    java.lang.RuntimeException: Unable to start service androidx.work.impl.background.systemalarm.SystemAlarmService:
+     java.lang.SecurityException: Neither user 10053 nor current process has android.permission.WAKE_LOCK. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
@@ -69,7 +73,7 @@
         <activity
             android:name=".view.calendar.CalendarPopup" />
         <activity
-            android:name=".view.Settings"
+            android:name=".view.SettingsActivity"
             android:label="@string/settings" />
         <activity
             android:name=".view.widget.TodoListWidgetConfigureActivity"
