@@ -7,9 +7,9 @@
     <string name="nav_header_app_name">Privacy Friendly Tarea</string>
     <string name="toolbar_title_main">Privacy Friendly Tareas</string>
     <string name="todos">Tareas</string>
-    <string name="home">Página de salida</string>
+    <string name="tasks">Tareas</string>
     <string name="calendar_view">Calendario</string>
-    <string name="show_all_tasks">Todas las tareas</string>
+    <string name="show_all_tasks">Mostrar todas las tareas</string>
     <string name="settings">Ajustes</string>
     <string name="other">Otros</string>
     <string name="help">Ayuda</string>

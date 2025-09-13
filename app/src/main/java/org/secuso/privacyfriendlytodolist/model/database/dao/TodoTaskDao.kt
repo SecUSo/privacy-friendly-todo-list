@@ -89,6 +89,13 @@ interface TodoTaskDao {
     @Query("SELECT todoTasks.* FROM todoTasks" +
             " LEFT JOIN todoLists" +
             " ON todoTasks.listId = todoLists.id" +
+            " WHERE isInRecycleBin = 0 AND listId IS NULL" +
+            " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
+    suspend fun getAllNotInListNotInRecycleBin(): Array<TodoTaskData>
+
+    @Query("SELECT todoTasks.* FROM todoTasks" +
+            " LEFT JOIN todoLists" +
+            " ON todoTasks.listId = todoLists.id" +
             " WHERE isInRecycleBin <> 0" +
             " ORDER BY todoLists.sortOrder ASC, todoTasks.sortOrder ASC")
     suspend fun getAllInRecycleBin(): Array<TodoTaskData>

@@ -23,6 +23,7 @@ import org.secuso.privacyfriendlytodolist.R
 import java.util.Calendar
 import java.util.Locale
 import androidx.core.content.edit
+import org.secuso.privacyfriendlytodolist.view.ContentHome
 
 enum class PrefDataType {
     BOOLEAN, STRING
@@ -68,6 +69,7 @@ object PreferenceMgr {
     private val P_SNOOZE_DURATION = PrefMetaData("pref_snooze_duration", PrefDataType.STRING)
     val P_APP_THEME = PrefMetaData("pref_app_theme", PrefDataType.STRING)
     private val P_FIRST_DAY_OF_WEEK = PrefMetaData("pref_first_day_of_week", PrefDataType.STRING)
+    val P_CONTENT_HOME = PrefMetaData("pref_content_home", PrefDataType.STRING)
 
     fun setFirstTimeLaunch(context: Context, isFirstTimeLaunch: Boolean) {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -105,6 +107,14 @@ object PreferenceMgr {
     }
 
     /**
+     * @return The kind of content that should be displayed on the home screen.
+     */
+    fun getContentHome(context: Context): ContentHome {
+        var contentHome = getStringPrefAsLong(context, P_CONTENT_HOME.name, 0)
+        return ContentHome.fromOrdinal(contentHome.toInt(), ContentHome.ALL_TASKS)!!
+    }
+
+    /**
      * @return The selected app theme, as it is stored in the app preference.
      * Or null if no preference is set.
      */
@@ -117,8 +127,7 @@ object PreferenceMgr {
      * @return The first day of a week as weekday-constant from [Calendar] class, e.g. [Calendar.MONDAY].
      */
     fun getFirstDayOfWeek(context: Context): Int {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        var firstDayOfWeek = prefs.getString(P_FIRST_DAY_OF_WEEK.name, "0")?.toInt() ?: 0
+        var firstDayOfWeek = getStringPrefAsLong(context, P_FIRST_DAY_OF_WEEK.name, 0).toInt()
         if (firstDayOfWeek < Calendar.SUNDAY || firstDayOfWeek > Calendar.SATURDAY) {
             val calendar = Calendar.getInstance(Locale.getDefault())
             firstDayOfWeek = calendar.firstDayOfWeek
@@ -126,13 +135,22 @@ object PreferenceMgr {
         return firstDayOfWeek
     }
 
-    private fun getStringPrefAsLong(context: Context, prefName: String): Long {
+    private fun getStringPrefAsLong(context: Context, prefName: String, defaultValue: Long = 0): Long {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         var value = prefs.getString(prefName, null)
         if (null == value) {
             loadDefaultValues(context)
-            value = prefs.getString(prefName, null)!!
+            value = prefs.getString(prefName, null)
         }
-        return value.toLong()
+        if (null == value || value.isEmpty()) {
+            return defaultValue
+        }
+
+        return try {
+            value.toLong()
+        }
+        catch (_: NumberFormatException) {
+            defaultValue
+        }
     }
 }

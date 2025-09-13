@@ -17,7 +17,6 @@
     <string name="yes">Jah</string>
     <string name="no">Ei</string>
     <string name="help_overview_heading">Üldteave</string>
-    <string name="home">Kõik ülesanded</string>
     <string name="settings">Seadistused</string>
     <string name="help">Abiteave</string>
     <string name="navigation_drawer_open">Ava menüü</string>
@@ -125,6 +124,7 @@
     <string name="help_group_lists">Ülesannete haldus</string>
     <string name="help_todo_lists_title">Ülesannete loendid</string>
     <string name="todos">Ülesanded</string>
+    <string name="tasks">Ülesanded</string>
     <string name="help_group_data_backup">Andmete varundus</string>
     <string name="invalid_pin">Palun sisesta 4-numbriline PIN-kood.</string>
     <string name="add_widget">Lisa vidin</string>

@@ -9,7 +9,7 @@
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
-    <string name="home">All tasks</string>
+    <string name="tasks">Tasks</string>
     <string name="show_all_tasks">Show all tasks</string>
     <string name="remove_all_done_tasks">Remove all done tasks</string>
     <string name="calendar_view">Calendar</string>
@@ -182,6 +182,7 @@
         <item>2.5 days before</item>
         <item>3 days before</item>
     </string-array>
+
     <string name="snooze_duration">Snooze duration of reminders</string>
     <string-array name="snooze_duration_values_human">
         <item>5 minutes</item>
@@ -211,12 +212,30 @@
         <item>3 d</item>
         <item>7 d</item>
     </string-array>
+
     <string name="pin_enabled">PIN required on startup</string>
+
     <string name="set_pin">Set PIN</string>
+
+    <string name="pref_content_home_title">Content of home screen</string>
+    <string-array name="pref_content_home_entries">
+        <item>@string/all_tasks</item>
+        <item>Tasks that are not assigned to a list</item>
+    </string-array>
+    <string name="pref_content_home_default" translatable="false">0</string>
+    <string-array name="pref_content_home_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
     <string name="list_quick_access">Quick access for lists</string>
+
     <string name="expand_tasks_with_subtasks">Expand tasks that have subtasks</string>
+
     <string name="auto_progress">Progress by subtasks</string>
+
     <string name="notify">Enable notification sound</string>
+
     <string name="pref_app_theme_title">Theme</string>
     <string-array name="pref_app_theme_entries">
         <item>Light</item>
@@ -229,6 +248,7 @@
         <item>DARK</item>
         <item>SYSTEM</item>
     </string-array>
+
     <string name="pref_first_day_of_week_title">First day of week</string>
     <string-array name="pref_first_day_of_week_entries">
         <item>@string/system_default</item>

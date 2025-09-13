@@ -9,7 +9,7 @@
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do\'s</string>
-    <string name="home">Alle Aufgaben</string>
+    <string name="tasks">Aufgaben</string>
     <string name="show_all_tasks">Alle Aufgaben</string>
     <string name="remove_all_done_tasks">Alle erledigten Aufgaben entfernen</string>
     <string name="calendar_view">Kalenderansicht</string>
@@ -178,6 +178,7 @@
         <item>2,5 Tage vorher</item>
         <item>3 Tage vorher</item>
     </string-array>
+
     <string name="snooze_duration">Schlummer-Dauer von Erinnerungen</string>
     <string-array name="snooze_duration_values_human">
         <item>5 Minuten</item>
@@ -193,18 +194,32 @@
         <item>3 Tage</item>
         <item>7 Tage</item>
     </string-array>
+
     <string name="pin_enabled">PIN bei Programmstart anfordern</string>
+
     <string name="set_pin">PIN festlegen</string>
+
+    <string name="pref_content_home_title">Inhalt des Startbildschirms</string>
+    <string-array name="pref_content_home_entries">
+        <item>@string/all_tasks</item>
+        <item>Aufgaben, die keiner Liste zugeordnet sind</item>
+    </string-array>
+
     <string name="list_quick_access">Schnellzugriff für Listen</string>
+
     <string name="expand_tasks_with_subtasks">Aufgaben mit Unteraufgaben aufklappen</string>
+
     <string name="auto_progress">Fortschritt durch Unteraufgaben</string>
+
     <string name="notify">Benachrichtigungston</string>
+
     <string name="pref_app_theme_title">Design</string>
     <string-array name="pref_app_theme_entries">
         <item>Hell</item>
         <item>Dunkel</item>
         <item>@string/system_default</item>
     </string-array>
+
     <string name="pref_first_day_of_week_title">Erster Tag der Woche</string>
     <string-array name="pref_first_day_of_week_entries">
         <item>@string/system_default</item>

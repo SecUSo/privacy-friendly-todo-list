@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.work.Configuration
@@ -26,6 +27,7 @@ import org.secuso.privacyfriendlytodolist.backup.BackupCreator
 import org.secuso.privacyfriendlytodolist.backup.BackupRestorer
 import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.observer.PreferenceObserver
+import org.secuso.privacyfriendlytodolist.observer.PreferenceObserver.OnPreferenceChangeListener
 import org.secuso.privacyfriendlytodolist.observer.TaskChangeObserver
 import org.secuso.privacyfriendlytodolist.service.JobManager
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -33,7 +35,7 @@ import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidgetPeriodicUpdater
 
-class PFAApplication : Application(), Configuration.Provider {
+class PFAApplication : Application(), Configuration.Provider, OnPreferenceChangeListener {
 
     override val workManagerConfiguration = Configuration.Builder().setMinimumLoggingLevel(Log.INFO).build()
 
@@ -49,12 +51,14 @@ class PFAApplication : Application(), Configuration.Provider {
         Model.registerModelObserver(TaskChangeObserver)
         TodoListWidgetPeriodicUpdater.startPeriodicUpdates(this)
         PreferenceObserver.initialize(this)
-        PreferenceObserver.registerPreferenceChangeListener { _, key ->
-            if (key == PreferenceMgr.P_APP_THEME.name) {
-                applyAppTheme()
-            }
-        }
+        PreferenceObserver.registerPreferenceChangeListener(this)
         applyAppTheme()
+    }
+
+    override fun onPreferenceChange(sharedPreferences: SharedPreferences, key: String?) {
+        if (key == PreferenceMgr.P_APP_THEME.name) {
+            applyAppTheme()
+        }
     }
 
     private fun applyAppTheme() {

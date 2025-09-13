@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">Zadania</string>
     <string name="toolbar_title_main">Zadania</string>
     <string name="todos">Zadania</string>
-    <string name="home">Strona startowa</string>
+    <string name="tasks">Zadania</string>
     <string name="calendar_view">Kalendarz</string>
     <string name="show_all_tasks">Wszystkie zadania</string>
     <string name="settings">Ustawienia</string>

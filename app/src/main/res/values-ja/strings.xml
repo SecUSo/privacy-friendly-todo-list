@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do</string>
-    <string name="home">ホーム</string>
+    <string name="tasks">タスク</string>
     <string name="calendar_view">カレンダー表示</string>
     <string name="show_all_tasks">すべてのタスクを表示</string>
     <string name="settings">設定</string>

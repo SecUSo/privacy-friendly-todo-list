@@ -47,6 +47,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.edit
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -66,6 +67,7 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.observer.PreferenceObserver
+import org.secuso.privacyfriendlytodolist.observer.PreferenceObserver.OnPreferenceChangeListener
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
@@ -83,7 +85,26 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ResultCallback
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 import java.io.StringWriter
-import androidx.core.content.edit
+
+enum class ContentHome {
+    ALL_TASKS, TASKS_NOT_IN_LIST;
+
+    companion object {
+        /** Number of enumeration entries. */
+        @JvmField
+        val LENGTH = entries.size
+
+        /**
+         * Provides the enumeration value that matches the given ordinal number.
+         *
+         * @param ordinal The ordinal number of the requested enumeration value.
+         * @return The requested enumeration value if the given ordinal is valid. Otherwise null.
+         */
+        fun fromOrdinal(ordinal: Int, defaultValue: ContentHome?): ContentHome? {
+            return if (ordinal in 0..<LENGTH) entries[ordinal] else defaultValue
+        }
+    }
+}
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -91,7 +112,7 @@ import androidx.core.content.edit
  * This Activity handles the navigation and operation on lists and tasks.
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ModelObserver {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ModelObserver, OnPreferenceChangeListener {
     // TodoTask administration
     private lateinit var model: ModelServices
     private lateinit var exLv: ExpandableListView
@@ -178,18 +199,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         listQuickAccess = findViewById(R.id.fbl_list_quick_access)
         listQuickAccessButtonTheme = ContextThemeWrapper(this, R.style.AppFlexBoxButtonStyle)
-        PreferenceObserver.registerPreferenceChangeListener { _, key ->
-            if (key == PreferenceMgr.P_LIST_QUICK_ACCESS.name) {
-                // Ensure that quick access for To-Do lists gets shown or hidden when setting changes.
-                addTodoListsToView()
-            }
-        }
 
         val navMenu = navigationView.menu
-        val btnAllTasks = navMenu.findItem(R.id.menu_home)
-        btnAllTasks.setActionView(R.layout.nav_action_view)
-        val actionButton: ImageButton = btnAllTasks.actionView!!.findViewById(R.id.action_button)
-        actionButton.tag = ACT_BTN_ALL_TASKS
+        val btnMenuHome = navMenu.findItem(R.id.menu_home)
+        btnMenuHome.setActionView(R.layout.nav_action_view)
+        if (PreferenceMgr.getContentHome(this) == ContentHome.ALL_TASKS) {
+            btnMenuHome.setTitle(R.string.all_tasks)
+        } else {
+            btnMenuHome.setTitle(R.string.tasks)
+        }
+        val actionButton: ImageButton = btnMenuHome.actionView!!.findViewById(R.id.action_button)
+        actionButton.tag = ACT_BTN_HOME
         actionButton.setOnClickListener {
             registerForContextMenu(actionButton)
             openContextMenu(actionButton)
@@ -260,6 +280,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         addTodoListsToView()
+
+        PreferenceObserver.registerPreferenceChangeListener(this)
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -322,6 +344,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onPreferenceChange(sharedPreferences: SharedPreferences, key: String?) {
+        when (key) {
+            PreferenceMgr.P_LIST_QUICK_ACCESS.name -> {
+                // Ensure that quick access for To-Do lists gets shown or hidden when setting changes.
+                addTodoListsToView()
+            }
+
+            PreferenceMgr.P_CONTENT_HOME.name -> {
+                val btnMenuHome = navigationView.menu.findItem(R.id.menu_home)
+                if (PreferenceMgr.getContentHome(this) == ContentHome.ALL_TASKS) {
+                    btnMenuHome.setTitle(R.string.all_tasks)
+                } else {
+                    btnMenuHome.setTitle(R.string.tasks)
+                }
+                showTasksOfListOrAllTasks(activeListId)
+                addTodoListsToView()
+            }
+        }
+    }
+
     private fun loadTodoData() {
         var isTodoDataLoadedByExtras = false
         val extras = intent.extras
@@ -339,7 +381,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun clearTodoData() {
         Log.d(TAG, "Clearing todo data.")
-        toolbar.setTitle(R.string.home)
+        if (PreferenceMgr.getContentHome(this) == ContentHome.ALL_TASKS) {
+            toolbar.setTitle(R.string.all_tasks)
+        } else {
+            toolbar.setTitle(R.string.tasks)
+        }
         exLv.setAdapter(ExpandableTodoTaskAdapter(
             this, model, ArrayList(0), false))
 
@@ -433,6 +479,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onDestroy() {
         Log.d(TAG, "onDestroy()")
         super.onDestroy()
+        PreferenceObserver.unregisterPreferenceChangeListener(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -661,7 +708,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     && mPref.getBoolean(PreferenceMgr.P_LIST_QUICK_ACCESS.name, true)
             if (isListQuickAccess) {
                 val button = Button(listQuickAccessButtonTheme)
-                button.text = getString(R.string.all_tasks)
+                if (PreferenceMgr.getContentHome(this) == ContentHome.ALL_TASKS) {
+                    button.text = getString(R.string.all_tasks)
+                } else {
+                    button.text = getString(R.string.tasks)
+                }
                 button.setOnClickListener { buttonView ->
                     showAllTasks()
                 }
@@ -756,14 +807,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showAllTasks() {
         activeListId = null
-        toolbar.setTitle(R.string.home)
         uncheckNavigationEntries()
         val homeMenuEntry = navigationView.menu[0]
         homeMenuEntry.isCheckable = true
         homeMenuEntry.isChecked = true
-        model.getAllToDoTasks { todoTasks ->
-            createExpandableTodoTaskAdapter(todoTasks, true)
-            showHints()
+        if (PreferenceMgr.getContentHome(this) == ContentHome.ALL_TASKS) {
+            toolbar.setTitle(R.string.all_tasks)
+            model.getAllToDoTasks { todoTasks ->
+                createExpandableTodoTaskAdapter(todoTasks, true)
+                showHints()
+            }
+        } else {
+            toolbar.setTitle(R.string.tasks)
+            model.getAllToDoTasksNotInList { todoTasks ->
+                createExpandableTodoTaskAdapter(todoTasks, true)
+                showHints()
+            }
         }
     }
 
@@ -845,7 +904,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (pomodoroInstalled) {
                 menu.findItem(workItemId).isVisible = true
             }
-        } else if (v.tag == ACT_BTN_ALL_TASKS) {
+        } else if (v.tag == ACT_BTN_HOME) {
             val menuHeader = Helper.getMenuHeader(layoutInflater, v.rootView, R.string.select_option)
             menu.setHeaderView(menuHeader)
             menuInflater.inflate(R.menu.all_tasks_context, menu)
@@ -1250,7 +1309,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val COMMAND = "command"
         //const val COMMAND_RUN_TODO = 2
         const val COMMAND_UPDATE = 3
-        const val ACT_BTN_ALL_TASKS = "ACT_BTN_ALL_TASKS"
+        const val ACT_BTN_HOME = "ACT_BTN_HOME"
 
         // Keys
         private const val KEY_IS_UNLOCKED = "restore_is_unlocked_key_with_savedinstancestate"

@@ -27,7 +27,6 @@
     <string name="second_alert">新增新事項 &gt;</string>
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
-    <string name="home">所有事項</string>
     <string name="remove_all_done_tasks">移除所有完成的事項</string>
     <string name="export_all_tasks">匯出資料</string>
     <string name="other">其它</string>

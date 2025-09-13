@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">A faire</string>
     <string name="toolbar_title_main">A faire</string>
     <string name="todos">Tâches</string>
-    <string name="home">Site de départ</string>
+    <string name="tasks">Tâches</string>
     <string name="calendar_view">Voir le calandier</string>
     <string name="show_all_tasks">Toutes les tâches</string>
     <string name="settings">Réglages</string>

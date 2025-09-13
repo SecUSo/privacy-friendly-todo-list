@@ -120,16 +120,6 @@ class ModelServices(
         }
     }
 
-    fun deleteTodoTask(todoTask: TodoTask,
-                       deliveryOption: DeliveryOption = DeliveryOption.POST,
-                       resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
-        return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.deleteTodoTaskAndSubtasks(todoTask)
-            dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter.first, counter.second)
-        }
-    }
-
     fun deleteTodoSubtask(subtask: TodoSubtask,
                           deliveryOption: DeliveryOption = DeliveryOption.POST,
                           resultConsumer: ResultConsumer<Int>? = null): Job {
@@ -160,17 +150,6 @@ class ModelServices(
         }
     }
 
-    fun setSubtaskInRecycleBin(subtask: TodoSubtask,
-                               inRecycleBin: Boolean,
-                               deliveryOption: DeliveryOption = DeliveryOption.POST,
-                               resultConsumer: ResultConsumer<Int>? = null): Job {
-        return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.setSubtaskInRecycleBin(subtask, inRecycleBin)
-            dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, 0, counter)
-        }
-    }
-
     /**
      * Returns the number of all to-do-lists (left in tuple) and all to-do-tasks that are not in recycle bin (right in tuple).
      */
@@ -190,11 +169,10 @@ class ModelServices(
         }
     }
 
-    fun getAllToDoTasksOfList(todoListId: Int,
-                              deliveryOption: DeliveryOption = DeliveryOption.POST,
-                              resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+    fun getAllToDoTasksNotInList(deliveryOption: DeliveryOption = DeliveryOption.POST,
+                                 resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
-            val todoTasks = services.getAllToDoTasksOfList(todoListId)
+            val todoTasks = services.getAllToDoTasksNotInList()
             dispatchResult(deliveryOption, resultConsumer, todoTasks)
         }
     }

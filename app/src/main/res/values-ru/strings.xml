@@ -50,6 +50,7 @@
     <string name="initial_alert">НАЖМИТЕ + ДЛЯ НОВОГО СПИСКА</string>
     <string name="second_alert">ДОБАВИТЬ НОВУЮ ЗАДАЧУ &gt;</string>
     <string name="todos">Дела</string>
+    <string name="tasks">Дела</string>
     <string name="settings">Настройки</string>
     <string name="export_all_tasks">Экспортировать данные</string>
     <string name="other">Другое</string>
@@ -157,7 +158,6 @@
     <string name="widget_configuration">Настройки виджета</string>
     <string name="snack_undo">Отменить действие</string>
     <string name="nav_header_app_name">Дела</string>
-    <string name="home">Все задачи</string>
     <string name="calendar_view">Календарь</string>
     <string name="high_priority">Высокий</string>
     <string name="cancel">Отмена</string>

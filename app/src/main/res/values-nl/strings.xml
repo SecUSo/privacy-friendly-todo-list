@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">Te doen</string>
     <string name="toolbar_title_main">Te doen</string>
     <string name="todos">Taken</string>
-    <string name="home">Thuis</string>
+    <string name="tasks">Taken</string>
     <string name="calendar_view">Kalender</string>
     <string name="show_all_tasks">Toon alle taken</string>
     <string name="settings">Instelling</string>
