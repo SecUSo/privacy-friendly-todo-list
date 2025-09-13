@@ -169,7 +169,7 @@
     <string name="select_recurrence_pattern">Seleccionar un patrón de repetición:</string>
     <string name="reminder_smaller_now">Solo las tareas que se repiten pueden tener un recordatorio en el pasado.</string>
     <string name="move_up_list">Subir en la lista</string>
-    <string name="recurrence_interval_hint">...</string>
+    <string name="recurrence_interval_hint">1..n</string>
     <string name="recurrence_interval_invalid">El intervalo de repetición no es un número entero.</string>
     <string name="to_choose_list">¡Seleccione una lista!</string>
     <string name="move_down">Bajar</string>
@@ -193,9 +193,6 @@
     <string name="dialog_need_permission_exact_alarm_message">Es necesaria la autorización para programar recordatorios exactos. De lo contrario, los recordatorios son inexactos.</string>
     <string name="recurring_deadline_approaching">Se acerca el plazo: %1$s (%2$d. repetición)</string>
     <string name="none">Ninguno</string>
-    <string name="daily">Diario(a)</string>
-    <string name="weekly">Semanal</string>
-    <string name="monthly">Mensual</string>
     <string name="slide1_text">Bienvenido/a a tu lista de tareas respetuosa de tu privacidad. Esta aplicación no contiene seguimiento ni publicidad.</string>
     <string name="slide2_heading">Listas</string>
     <string name="slide2_text">Puedes gestionar tus tareas en forma de listas categorizadas.</string>
@@ -236,7 +233,6 @@
     <string name="notif_reminder_ch_desc">Recordatorios para próximas tareas.</string>
     <string name="notif_reminder_act_snooze">Posponer %1$s</string>
     <string name="notif_reminder_act_done">Marcar como hecho</string>
-    <string name="yearly">Anual</string>
     <string name="years">Año(s)</string>
     <string name="tutorial">Tutorial</string>
     <string name="slide1_heading">¡Bienvenido/a!</string>
