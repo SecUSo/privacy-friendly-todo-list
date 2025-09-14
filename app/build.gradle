@@ -109,16 +109,16 @@ dependencies {
     implementation "androidx.work:work-gcm:$work_version"
     androidTestImplementation "androidx.work:work-testing:$work_version"
 
-    // Stuck because of minSdkVersion 21:
+    // Stuck because of min SDK version 21:
     implementation "androidx.core:core-ktx:1.16.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    // Stuck because of minSdkVersion 21:
+    // Stuck because of min SDK version 21:
     implementation "androidx.sqlite:sqlite-ktx:2.5.2"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3"
 
-    // Stuck because of minSdkVersion 21:
+    // Stuck because of min SDK version 21:
     def room_version = "2.7.2"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-common:$room_version"
