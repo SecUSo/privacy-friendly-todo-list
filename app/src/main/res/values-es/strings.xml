@@ -217,7 +217,7 @@
     <string name="snack_undo">Deshacer</string>
     <string name="snack_clear">La papelera de reciclaje está vacía</string>
     <string name="permission_todo_description">Permite a la aplicación Lista de Tareas iniciar el temporizador para un elemento</string>
-    <string name="tasks_removed">%d tarea(s) y %d subtarea(s) eliminada(s).</string>
+    <string name="tasks_removed">%1$d tarea(s) y %2$d subtarea(s) eliminada(s).</string>
     <string name="remove_all_done_tasks">Eliminar las tareas terminadas</string>
     <string name="cancel">Cancelar</string>
     <string name="move_down_list">Bajar en la lista</string>
