@@ -25,7 +25,7 @@
     <string name="about_affiliation">Loodud üheskoos organisatsiooniga</string>
     <string name="privacy_friendly">See rakendus kuulub privaatsussõbralike rakenduste (Privacy Friendly Apps - https://secuso.aifb.kit.edu/english/105.php) hulka, mida arendab Karlsruhe Tehnoloogiainstituut. Lähtekood on litsentseeritud GPL versioon 3 alusel. Piltide autoriõigused kuuluvad Karlsruhe Tehnoloogiainstituudile ja Google Inc\'ile.</string>
     <string name="more_info">Lisateavet leiad:</string>
-    <string name="version_number">Versioon %s</string>
+    <string name="version_number">Versioon %1$s</string>
     <string name="about_author">Autorid:</string>
     <string name="about_author_contributors">ja kaasautorid.</string>
     <string name="slide1_heading">Tere tulemast!</string>

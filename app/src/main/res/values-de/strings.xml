@@ -65,7 +65,7 @@
     <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App.</string>
     <!-- About -->
     <string name="about">Über</string>
-    <string name="version_number">Version v%1$s</string>
+    <string name="version_number">Version %1$s</string>
     <string name="about_author">Autoren:</string>
     <string name="about_author_contributors">und Mitwirkende.</string>
     <string name="about_affiliation">In Zusammenarbeit mit</string>

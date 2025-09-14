@@ -65,7 +65,7 @@
     <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app.</string>
     <!-- About -->
     <string name="about">About</string>
-    <string name="version_number">Version v%1$s</string>
+    <string name="version_number">Version %1$s</string>
     <string name="about_author">Authors:</string>
     <!-- Using no-break-space character \u00A0 between first and last name. -->
     <string name="about_author_names" translatable="false">Sebastian\u00A0Lutz, Dominik\u00A0Püllen, Simon\u00A0Breitfelder, Christian\u00A0Adams</string>

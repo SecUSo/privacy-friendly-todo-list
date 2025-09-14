@@ -207,7 +207,7 @@
     <string name="toolbar_title_main">Tarefas</string>
     <string name="tuesday_abbr">TER</string>
     <string name="tutorial">Tutorial</string>
-    <string name="version_number">Versão v%s</string>
+    <string name="version_number">Versão %1$s</string>
     <string name="wednesday_abbr">QUA</string>
     <string name="weeks">Semana(s)</string>
     <string name="widget_configuration">Configuração do widget</string>

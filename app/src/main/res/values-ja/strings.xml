@@ -45,7 +45,7 @@
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: このアクセス許可は、ユーザーに予定されている期限を知らせたい場合に、デバイスの起動直後にアプリがチェックできるようにします。</string>
     <!-- About -->
     <string name="about">アプリについて</string>
-    <string name="version_number">バージョン v%1$s</string>
+    <string name="version_number">バージョン %1$s</string>
     <string name="about_author">作者:</string>
     <string name="about_author_contributors">と貢献者。</string>
     <string name="about_affiliation">提携</string>

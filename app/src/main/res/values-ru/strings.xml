@@ -72,7 +72,7 @@
     <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: Это разрешение позволяет приложению показывать напоминания с точным временем.</string>
     <string name="help_group_export_import">Экспортирование / импортирование данных</string>
     <string name="help_group_widget">Виджет</string>
-    <string name="version_number">Версия v%s</string>
+    <string name="version_number">Версия %1$s</string>
     <string name="about_author_contributors">и другие участники.</string>
     <string name="about_affiliation">В сотрудничестве с</string>
     <string name="more_info">Больше информации на:</string>
