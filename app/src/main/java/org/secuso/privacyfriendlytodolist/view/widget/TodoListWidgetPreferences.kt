@@ -21,6 +21,7 @@ import org.secuso.privacyfriendlytodolist.view.TaskFilter
 
 data class TodoListWidgetPreferences(
     var todoListId: Int? = null,
+    var onlyTasksNotInList: Boolean = false,
     var taskFilter: TaskFilter = TaskFilter.ALL_TASKS,
     var isGroupingByPriority: Boolean = false,
     var isSortingByDeadline: Boolean = false,

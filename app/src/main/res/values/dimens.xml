@@ -7,8 +7,8 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="img_width_height">120dp</dimen>
-    <dimen name="slide_title">30dp</dimen>
-    <dimen name="slide_desc">16dp</dimen>
+    <dimen name="slide_title">30sp</dimen>
+    <dimen name="slide_desc">16sp</dimen>
     <dimen name="desc_padding">40dp</dimen>
 
     <dimen name="button_width_min">120dp</dimen>

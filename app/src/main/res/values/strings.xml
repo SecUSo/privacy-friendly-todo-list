@@ -97,6 +97,7 @@
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">No tasks available</string>
     <string name="all_tasks">All tasks</string>
+    <string name="all_tasks_not_in_list">Tasks that are not assigned to a list</string>
     <string name="open_tasks">Open tasks</string>
     <string name="completed_tasks">Completed tasks</string>
     <string name="group_by_priority">Group by priority</string>
@@ -204,7 +205,7 @@
     <string name="pref_content_home_title">Content of home screen</string>
     <string-array name="pref_content_home_entries">
         <item>@string/all_tasks</item>
-        <item>Tasks that are not assigned to a list</item>
+        <item>@string/all_tasks_not_in_list</item>
     </string-array>
     <string name="pref_content_home_default" translatable="false">0</string>
     <string-array name="pref_content_home_values" translatable="false">

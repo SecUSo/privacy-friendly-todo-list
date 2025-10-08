@@ -85,6 +85,11 @@ open class TodoListWidgetViewsFactory() {
                     changedTodoTasks = todoList.getTasks()
                 }
             }
+        } else if (pref.onlyTasksNotInList) {
+            job = getModel(context).getAllToDoTasksNotInList(DeliveryOption.DIRECT) { todoTasks ->
+                newListName = defaultListName
+                changedTodoTasks = todoTasks
+            }
         } else {
             job = getModel(context).getAllToDoTasks(DeliveryOption.DIRECT) { todoTasks ->
                 newListName = defaultListName

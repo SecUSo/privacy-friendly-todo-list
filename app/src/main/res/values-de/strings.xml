@@ -93,6 +93,7 @@
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Keine Aufgaben</string>
     <string name="all_tasks">Alle Aufgaben</string>
+    <string name="all_tasks_not_in_list">Aufgaben, die keiner Liste zugeordnet sind</string>
     <string name="open_tasks">Ausstehende Aufgaben</string>
     <string name="completed_tasks">Erledigte Aufgaben</string>
     <string name="group_by_priority">Nach Priorität gruppieren</string>
@@ -186,7 +187,7 @@
     <string name="pref_content_home_title">Inhalt des Startbildschirms</string>
     <string-array name="pref_content_home_entries">
         <item>@string/all_tasks</item>
-        <item>Aufgaben, die keiner Liste zugeordnet sind</item>
+        <item>@string/all_tasks_not_in_list</item>
     </string-array>
     <string name="list_quick_access">Schnellzugriff für Listen</string>
     <string name="expand_tasks_with_subtasks">Aufgaben mit Unteraufgaben aufklappen</string>
