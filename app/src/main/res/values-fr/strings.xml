@@ -165,7 +165,7 @@
     <string name="share_list">Partager la liste</string>
     <string name="sort_by_name_asc">Trier par nom</string>
     <string name="share_task">Partager la tâche</string>
-    <string name="tasks_removed">%d tâche(s) et %d sous-tâche(s) supprimée(s).</string>
+    <string name="tasks_removed">%1$d tâche(s) et %2$d sous-tâche(s) supprimée(s).</string>
     <string name="recurrence_interval_hint">1..n</string>
     <string name="recurrence_pattern_hint">Motif de la récurrence</string>
     <string name="select_recurrence_pattern">Sélectionnez un motif de récurrence :</string>
@@ -189,10 +189,6 @@
     <string name="notif_reminder_ch_name">Rappel des tâches</string>
     <string name="notif_reminder_ch_desc">Rappels pour les tâches à venir.</string>
     <string name="none">Aucun</string>
-    <string name="daily">Quotidien</string>
-    <string name="weekly">Hebdomadaire</string>
-    <string name="monthly">Mensuel</string>
-    <string name="yearly">Annuel</string>
     <string name="days">Jour(s)</string>
     <string name="weeks">Semaine(s)</string>
     <string name="months">Mois</string>
