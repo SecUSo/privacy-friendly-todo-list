@@ -7,7 +7,7 @@
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
     <string name="todos">To-Do</string>
-    <string name="home">ホーム</string>
+    <string name="tasks">タスク</string>
     <string name="calendar_view">カレンダー表示</string>
     <string name="show_all_tasks">すべてのタスクを表示</string>
     <string name="settings">設定</string>
@@ -45,7 +45,7 @@
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: このアクセス許可は、ユーザーに予定されている期限を知らせたい場合に、デバイスの起動直後にアプリがチェックできるようにします。</string>
     <!-- About -->
     <string name="about">アプリについて</string>
-    <string name="version_number">バージョン v%1$s</string>
+    <string name="version_number">バージョン %1$s</string>
     <string name="about_author">作者:</string>
     <string name="about_author_contributors">と貢献者。</string>
     <string name="about_affiliation">提携</string>

@@ -30,6 +30,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.TextView
+import androidx.core.content.edit
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
@@ -91,7 +92,8 @@ class TodoListWidgetConfigureActivity : Activity() {
             // Preferences loaded: This is a re-configuration of the widget, use the loaded preferences.
             pref = loadedPref
             // List selector at first configuration: "Click to choose", at re-configuration: "All tasks"
-            listSelector.text = getString(R.string.all_tasks)
+            listSelector.text = if (pref.onlyTasksNotInList)
+                getString(R.string.all_tasks_not_in_list) else getString(R.string.all_tasks)
         }
         when (pref.taskFilter) {
             TaskFilter.ALL_TASKS -> rbFilterAllTasks.isChecked = true
@@ -137,7 +139,8 @@ class TodoListWidgetConfigureActivity : Activity() {
             saveWidgetPreferences(this, appWidgetId, pref)
 
             // Trigger update after list name was saved to update the widget title with list name.
-            TodoListWidget.triggerWidgetUpdate(this, intArrayOf(appWidgetId))
+            TodoListWidget.triggerWidgetUpdate(this, intArrayOf(appWidgetId),
+                "Widget configuration changed")
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
@@ -164,6 +167,7 @@ class TodoListWidgetConfigureActivity : Activity() {
             val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_list)
             menu.setHeaderView(menuHeader)
             menu.add(Menu.NONE, -1, Menu.NONE, R.string.all_tasks)
+            menu.add(Menu.NONE, -2, Menu.NONE, R.string.all_tasks_not_in_list)
             for (index in todoLists.indices) {
                 menu.add(Menu.NONE, index, Menu.NONE, todoLists[index].getName())
             }
@@ -171,13 +175,23 @@ class TodoListWidgetConfigureActivity : Activity() {
     }
 
     override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
-        val todoList = todoLists.getOrNull(item.itemId)
-        if (null != todoList) {
-            pref.todoListId = todoList.getId()
-            listSelector.text = todoList.getName()
-        } else {
-            pref.todoListId = null
-            listSelector.text = getString(R.string.all_tasks)
+        when (item.itemId) {
+            -1 -> {
+                pref.todoListId = null
+                pref.onlyTasksNotInList = false
+                listSelector.text = getString(R.string.all_tasks)
+            }
+            -2 -> {
+                pref.todoListId = null
+                pref.onlyTasksNotInList = true
+                listSelector.text = getString(R.string.all_tasks_not_in_list)
+            }
+            else -> {
+                val todoList = todoLists[item.itemId]
+                pref.todoListId = todoList.getId()
+                pref.onlyTasksNotInList = false
+                listSelector.text = todoList.getName()
+            }
         }
         return super.onMenuItemSelected(featureId, item)
     }
@@ -186,6 +200,7 @@ class TodoListWidgetConfigureActivity : Activity() {
         private val TAG = LogTag.create(this::class.java.declaringClass)
         private const val PREFS_NAME = "org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget"
         private const val PREF_KEY_LIST_ID = "list_id"
+        private const val PREF_KEY_ONLY_TASKS_NOT_IN_LIST = "only_tasks_not_in_list"
         private const val PREF_KEY_TASK_FILTER = "task_filter"
         private const val PREF_KEY_GROUP_BY_PRIORITY = "group_by_priority"
         private const val PREF_KEY_SORT_BY_DEADLINE = "sort_by_deadline"
@@ -196,14 +211,15 @@ class TodoListWidgetConfigureActivity : Activity() {
 
         private fun saveWidgetPreferences(context: Context, appWidgetId: Int, pref: TodoListWidgetPreferences) {
             val prefix = appWidgetId.toString() + PREFIX
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.putString(prefix + PREF_KEY_LIST_ID, pref.todoListId.toString())
-            prefs.putString(prefix + PREF_KEY_TASK_FILTER, pref.taskFilter.toString())
-            prefs.putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
-            prefs.putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
-            prefs.putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
-            prefs.putBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, pref.isShowingDaysUntilDeadline)
-            prefs.apply()
+            context.getSharedPreferences(PREFS_NAME, 0).edit {
+                putString(prefix + PREF_KEY_LIST_ID, pref.todoListId.toString())
+                putBoolean(prefix + PREF_KEY_ONLY_TASKS_NOT_IN_LIST, pref.onlyTasksNotInList)
+                putString(prefix + PREF_KEY_TASK_FILTER, pref.taskFilter.toString())
+                putBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, pref.isGroupingByPriority)
+                putBoolean(prefix + PREF_KEY_SORT_BY_DEADLINE, pref.isSortingByDeadline)
+                putBoolean(prefix + PREF_KEY_SORT_BY_NAME_ASC, pref.isSortingByNameAsc)
+                putBoolean(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE, pref.isShowingDaysUntilDeadline)
+            }
             Log.d(TAG, "Preferences saved for app widget $appWidgetId: $pref")
         }
 
@@ -220,6 +236,7 @@ class TodoListWidgetConfigureActivity : Activity() {
             if (strValue != PREF_VALUE_NULL) {
                 pref.todoListId = strValue.toInt()
             }
+            pref.onlyTasksNotInList = prefs.getBoolean(prefix + PREF_KEY_ONLY_TASKS_NOT_IN_LIST, false)
             strValue = prefs.getString(prefix + PREF_KEY_TASK_FILTER, null)
             pref.taskFilter = TaskFilter.fromString(strValue)
             pref.isGroupingByPriority = prefs.getBoolean(prefix + PREF_KEY_GROUP_BY_PRIORITY, false)
@@ -232,14 +249,15 @@ class TodoListWidgetConfigureActivity : Activity() {
 
         fun deleteWidgetPreferences(context: Context, appWidgetId: Int) {
             val prefix = appWidgetId.toString() + PREFIX
-            val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
-            prefs.remove(prefix + PREF_KEY_LIST_ID)
-            prefs.remove(prefix + PREF_KEY_TASK_FILTER)
-            prefs.remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
-            prefs.remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
-            prefs.remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
-            prefs.remove(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE)
-            prefs.apply()
+            context.getSharedPreferences(PREFS_NAME, 0).edit {
+                remove(prefix + PREF_KEY_LIST_ID)
+                remove(prefix + PREF_KEY_ONLY_TASKS_NOT_IN_LIST)
+                remove(prefix + PREF_KEY_TASK_FILTER)
+                remove(prefix + PREF_KEY_GROUP_BY_PRIORITY)
+                remove(prefix + PREF_KEY_SORT_BY_DEADLINE)
+                remove(prefix + PREF_KEY_SORT_BY_NAME_ASC)
+                remove(prefix + PREF_KEY_SHOW_DAYS_UNTIL_DEADLINE)
+            }
             Log.d(TAG, "Preferences deleted for app widget $appWidgetId.")
         }
     }

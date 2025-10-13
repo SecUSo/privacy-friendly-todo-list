@@ -17,7 +17,6 @@
     <string name="yes">Jah</string>
     <string name="no">Ei</string>
     <string name="help_overview_heading">Üldteave</string>
-    <string name="home">Kõik ülesanded</string>
     <string name="settings">Seadistused</string>
     <string name="help">Abiteave</string>
     <string name="navigation_drawer_open">Ava menüü</string>
@@ -26,7 +25,7 @@
     <string name="about_affiliation">Loodud üheskoos organisatsiooniga</string>
     <string name="privacy_friendly">See rakendus kuulub privaatsussõbralike rakenduste (Privacy Friendly Apps - https://secuso.aifb.kit.edu/english/105.php) hulka, mida arendab Karlsruhe Tehnoloogiainstituut. Lähtekood on litsentseeritud GPL versioon 3 alusel. Piltide autoriõigused kuuluvad Karlsruhe Tehnoloogiainstituudile ja Google Inc\'ile.</string>
     <string name="more_info">Lisateavet leiad:</string>
-    <string name="version_number">Versioon %s</string>
+    <string name="version_number">Versioon %1$s</string>
     <string name="about_author">Autorid:</string>
     <string name="about_author_contributors">ja kaasautorid.</string>
     <string name="slide1_heading">Tere tulemast!</string>
@@ -125,6 +124,7 @@
     <string name="help_group_lists">Ülesannete haldus</string>
     <string name="help_todo_lists_title">Ülesannete loendid</string>
     <string name="todos">Ülesanded</string>
+    <string name="tasks">Ülesanded</string>
     <string name="help_group_data_backup">Andmete varundus</string>
     <string name="invalid_pin">Palun sisesta 4-numbriline PIN-kood.</string>
     <string name="add_widget">Lisa vidin</string>

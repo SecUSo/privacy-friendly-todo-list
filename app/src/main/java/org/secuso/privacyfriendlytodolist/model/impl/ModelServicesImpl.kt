@@ -247,6 +247,13 @@ class ModelServicesImpl(private val context: Context) {
         return data as MutableList<TodoTask>
     }
 
+    suspend fun getAllToDoTasksNotInList(): MutableList<TodoTask> {
+        val dataArray = getDB().getTodoTaskDao().getAllNotInListNotInRecycleBin()
+        val data = loadTasksSubtasks(false, *dataArray)
+        @Suppress("UNCHECKED_CAST")
+        return data as MutableList<TodoTask>
+    }
+
     suspend fun getAllToDoTasksOfList(listId: Int): MutableList<TodoTask> {
         val dataArray = getDB().getTodoTaskDao().getByListIdNotInRecycleBin(listId)
         val data = loadTasksSubtasks(false, *dataArray)
@@ -460,7 +467,7 @@ class ModelServicesImpl(private val context: Context) {
         val outputStream: OutputStream?
         try {
             outputStream = context.contentResolver.openOutputStream(csvDataUri, "wt")
-        } catch (e: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
             return "Output file not found."
         }
         if (null == outputStream) {
@@ -482,7 +489,7 @@ class ModelServicesImpl(private val context: Context) {
         val inputStream: InputStream?
         try {
             inputStream = context.contentResolver.openInputStream(csvDataUri)
-        } catch (e: FileNotFoundException) {
+        } catch (_: FileNotFoundException) {
             return Pair("Input file not found.", Triple(0, 0, 0))
         }
         if (null == inputStream) {

@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
+import org.secuso.privacyfriendlytodolist.service.JobFactory.JobType
 import org.secuso.privacyfriendlytodolist.util.LogTag
 
 /**
@@ -47,7 +48,7 @@ class JobInstanceMultiplier : JobService() {
     override fun onStartJob(params: JobParameters): Boolean {
         var job = jobs[params.jobId]
         if (null == job) {
-            val jobType = params.extras.getInt(JobManager.KEY_JOB_TYPE, -1)
+            val jobType = params.extras.getInt(JobManager.KEY_JOB_TYPE, JobType.NoJob.ordinal)
             job = JobFactory.createJob(jobType)
             if (null == job) {
                 Log.e(TAG, "Failed to create job of type $jobType.")

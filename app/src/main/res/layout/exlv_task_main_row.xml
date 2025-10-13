@@ -76,7 +76,7 @@
         style="@style/AppBorderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="11dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:contentDescription="@string/edit_task"
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,10 +92,12 @@
 
     <TextView
         android:id="@+id/tv_exlv_task_list_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:text="@string/help_todo_lists_title"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/task_name_bottom_barrier" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -119,19 +121,20 @@
 
     <TextView
         android:id="@+id/tv_exlv_task_deadline"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp"
+        android:layout_marginHorizontal="5dp"
         android:text="@string/deadline"
         app:layout_constraintStart_toEndOf="@id/iv_exlv_task_deadline"
+        app:layout_constraintEnd_toStartOf="@id/tv_exlv_task_reminder"
         app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
         app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier" />
 
     <TextView
         android:id="@+id/tv_exlv_task_reminder"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp"
+        android:layout_marginHorizontal="5dp"
         android:text="@string/reminder"
         app:layout_constraintEnd_toStartOf="@id/iv_exlv_task_reminder"
         app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
@@ -141,11 +144,11 @@
         android:id="@+id/iv_exlv_task_reminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
         android:contentDescription="@string/reminder"
         android:scaleX="0.8"
         android:scaleY="0.8"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/bt_task_menu"
+        app:layout_constraintEnd_toEndOf="@id/bt_task_menu"
         app:layout_constraintTop_toBottomOf="@id/list_name_bottom_barrier"
         app:layout_constraintBottom_toTopOf="@id/recurring_deadline_top_barrier"
         app:srcCompat="@drawable/ic_alarm_clock_24dp" />
@@ -200,11 +203,13 @@
 
     <TextView
         android:id="@+id/tv_exlv_task_recurring_deadline"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:text="@string/nth_recurrence_at"
         app:layout_constraintStart_toEndOf="@id/iv_exlv_task_recurring_deadline"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/deadline_bottom_barrier"
         app:layout_constraintBottom_toTopOf="@id/pb_task_progress" />
 
@@ -220,7 +225,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:indeterminate="false"
         android:max="100"
         android:progress="50"
@@ -230,10 +235,12 @@
 
     <TextView
         android:id="@+id/tv_exlv_task_description"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:text="@string/description_hint"
         app:layout_constraintStart_toEndOf="@id/cb_task_done"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pb_task_progress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

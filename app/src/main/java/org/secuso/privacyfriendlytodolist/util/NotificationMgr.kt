@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.util
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -25,13 +26,17 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
@@ -62,6 +67,31 @@ object NotificationMgr {
             }
         }
         return manager!!
+    }
+
+    fun checkForPermissions(activity: ComponentActivity, requestPermissionCB: (permission: String) -> Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Log.d(TAG, "SDK version is ${Build.VERSION.SDK_INT}. Runtime permissions do not exist.")
+        } else if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS)
+            == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Permission POST_NOTIFICATIONS is already granted.")
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)) {
+            Log.i(TAG, "Requesting permission POST_NOTIFICATIONS and displaying rationale.")
+            MaterialAlertDialogBuilder(activity).apply {
+                setMessage(R.string.dialog_need_permission_post_notifications_message)
+                setPositiveButton(R.string.yes) { _, _ ->
+                    requestPermissionCB(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                setNegativeButton(R.string.no) { _, _ ->
+                }
+                setTitle(R.string.dialog_need_permission_post_notifications_title)
+                show()
+            }
+        }
+        else {
+            Log.i(TAG, "Requesting permission POST_NOTIFICATIONS directly.")
+            requestPermissionCB(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -142,10 +172,6 @@ object NotificationMgr {
         Log.d(TAG, "Posting task notification with ID $notificationId.")
         getManager(context).notify(notificationId, notification)
         return notificationId
-    }
-
-    fun cancelAllNotifications(context: Context) {
-        getManager(context).cancelAll()
     }
 
     fun cancelNotification(context: Context, notificationId: Int) {

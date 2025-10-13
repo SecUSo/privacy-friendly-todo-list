@@ -85,7 +85,6 @@
     <string name="help_todo_lists_title">Listas de Tarefas</string>
     <string name="help_widget">Além disso, este aplicativo oferece um widget que você pode adicionar à tela inicial. O widget apresenta as tarefas que pertencem a uma lista escolhida. Ao clicar em uma tarefa, você é redirecionado para a visualização principal do aplicativo. O botão de sincronização atualiza a lista de tarefas exibidas.</string>
     <string name="high_priority">Alta</string>
-    <string name="home">Todas as tarefas</string>
     <string name="import_failed">Importação falhou</string>
     <string name="import_question_text">Excluir todos os dados existentes (todas as listas de tarefas, tarefas e subtarefas) antes de importar novos dados?</string>
     <string name="import_question_title">Excluir dados existentes?</string>
@@ -196,7 +195,8 @@
     <string name="subtask_removed">Subarefa removida com sucesso.</string>
     <string name="sunday_abbr">DOM</string>
     <string name="task_removed">Tarefa removida com sucesso.</string>
-    <string name="tasks_removed" formatted="false">%1$d tarefa(s) e %2$d subarefa(s) removidas.</string>
+    <string name="tasks">Tarefas</string>
+    <string name="tasks_removed">%1$d tarefa(s) e %2$d subarefa(s) removidas.</string>
     <string name="thursday_abbr">QUI</string>
     <string name="time">Hora</string>
     <string name="to_choose_list">Selecione uma lista!</string>
@@ -207,7 +207,7 @@
     <string name="toolbar_title_main">Tarefas</string>
     <string name="tuesday_abbr">TER</string>
     <string name="tutorial">Tutorial</string>
-    <string name="version_number">Versão v%s</string>
+    <string name="version_number">Versão %1$s</string>
     <string name="wednesday_abbr">QUA</string>
     <string name="weeks">Semana(s)</string>
     <string name="widget_configuration">Configuração do widget</string>

@@ -20,7 +20,7 @@
         android:background="?attr/appColorNavBarHeaderBackground">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/navHeaderImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/imageView"
+            android:layout_toEndOf="@+id/navHeaderImage"
             android:paddingHorizontal="@dimen/activity_horizontal_margin"
             android:textAppearance="@style/AppNavBarHeaderTextStyle"
             android:text="@string/nav_header_app_name"/>

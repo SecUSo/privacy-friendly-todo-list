@@ -41,10 +41,10 @@ import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
  *
  * Activity that can enable/disable particular functionalities.
  */
-class Settings : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings)
+        setContentView(R.layout.activity_settings)
         val toolbar: Toolbar = findViewById(R.id.toolbar_settings)
         setSupportActionBar(toolbar)
         val supportActionBarCopy = supportActionBar
@@ -54,7 +54,7 @@ class Settings : AppCompatActivity() {
         }
 
         onBackPressedDispatcher.addCallback(this) {
-            val intent = Intent(this@Settings, MainActivity::class.java)
+            val intent = Intent(this@SettingsActivity, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             finish()
@@ -145,7 +145,9 @@ class Settings : AppCompatActivity() {
                     }
                 }
             }
-            updatePrefSummary(findPreference(key!!))
+            if (null != key) {
+                updatePrefSummary(findPreference(key))
+            }
         }
     }
 

@@ -6,7 +6,7 @@
     <string name="enter_pin">輸入 PIN</string>
     <string name="import_failed">匯入失敗</string>
     <string name="settings">設定</string>
-    <string name="version_number">版本 v%s</string>
+    <string name="version_number">版本 %1$s</string>
     <string name="import_succeeded">匯入成功</string>
     <string name="delete_existing_data">刪除現存資料</string>
     <string name="keep_existing_data">保留現存資料</string>
@@ -27,7 +27,6 @@
     <string name="second_alert">新增新事項 &gt;</string>
     <string name="nav_header_app_name">To-Do</string>
     <string name="toolbar_title_main">To-Do</string>
-    <string name="home">所有事項</string>
     <string name="remove_all_done_tasks">移除所有完成的事項</string>
     <string name="export_all_tasks">匯出資料</string>
     <string name="other">其它</string>

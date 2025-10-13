@@ -37,6 +37,14 @@
         android:maxLength="32"
         android:title="@string/set_pin" />
 
+    <ListPreference
+        android:key="pref_content_home"
+        android:defaultValue="0"
+        android:entries="@array/pref_content_home_entries"
+        android:entryValues="@array/pref_content_home_values"
+        android:summary="%s"
+        android:title="@string/pref_content_home_title" />
+
     <SwitchPreference
         android:key="pref_list_quick_access"
         android:defaultValue="true"
