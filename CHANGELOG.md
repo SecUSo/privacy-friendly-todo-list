@@ -1,5 +1,20 @@
 # Changelog
 
+<a id="v3.3.0"></a>
+## [ToDo List (Privacy Friendly) v3.3.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.3.0) - 2025-10-13
+
+## What's Changed
+* Translations update from Hosted Weblate by [@weblate](https://github.com/weblate) in [#164](https://github.com/SecUSo/privacy-friendly-todo-list/pull/164)
+* Update changelog for v3.2.1 by [@github-actions](https://github.com/github-actions)[bot] in [#170](https://github.com/SecUSo/privacy-friendly-todo-list/pull/170)
+* Translations update from Hosted Weblate by [@weblate](https://github.com/weblate) in [#176](https://github.com/SecUSo/privacy-friendly-todo-list/pull/176)
+* Update to version 3.3.0 by [@0xC0FFEEC0DE](https://github.com/0xC0FFEEC0DE) in [#174](https://github.com/SecUSo/privacy-friendly-todo-list/pull/174)
+
+
+**Full Changelog**: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.2.1...v3.3.0
+
+[Changes][v3.3.0]
+
+
 <a id="v3.2.1"></a>
 ## [ToDo List (Privacy Friendly) v3.2.1](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.2.1) - 2025-07-25
 
@@ -228,6 +243,7 @@ Privacy Friendly To-Do List belongs to the Privacy Friendly Apps group which are
 [Changes][v1.0]
 
 
+[v3.3.0]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.2.1...v3.3.0
 [v3.2.1]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.1.0...v3.2.1
 [v3.1.0]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.0.0...v3.1.0
 [v3.0.0]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v2.4.2...v3.0.0
