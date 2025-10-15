@@ -1,5 +1,17 @@
 # Changelog
 
+<a id="v3.3.1"></a>
+## [ToDo List (Privacy Friendly) v3.3.1](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.3.1) - 2025-10-15
+
+## What's Changed
+* Fixed issue [#178](https://github.com/SecUSo/privacy-friendly-todo-list/issues/178) with FDroid build by [@0xC0FFEEC0DE](https://github.com/0xC0FFEEC0DE) in [#179](https://github.com/SecUSo/privacy-friendly-todo-list/pull/179)
+
+
+**Full Changelog**: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.3.0...v3.3.1
+
+[Changes][v3.3.1]
+
+
 <a id="v3.3.0"></a>
 ## [ToDo List (Privacy Friendly) v3.3.0](https://github.com/SecUSo/privacy-friendly-todo-list/releases/tag/v3.3.0) - 2025-10-13
 
@@ -243,6 +255,7 @@ Privacy Friendly To-Do List belongs to the Privacy Friendly Apps group which are
 [Changes][v1.0]
 
 
+[v3.3.1]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.3.0...v3.3.1
 [v3.3.0]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.2.1...v3.3.0
 [v3.2.1]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.1.0...v3.2.1
 [v3.1.0]: https://github.com/SecUSo/privacy-friendly-todo-list/compare/v3.0.0...v3.1.0
