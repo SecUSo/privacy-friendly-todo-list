@@ -53,17 +53,17 @@ class ModelServicesImpl(private val context: Context) {
     /**
      * This method does two things:
      * 1) Updates the reminder time of recurring tasks.
-     * 2) Sets every recurring task to undone where the done-date is before a deadline and the
-     * deadline is in the past. In other words: Recurring tasks need to be done again and again and
-     * this algorithm should set them to undone when the done deadline is in the past and next
-     * deadline comes closer.
+     * 2) Mark all recurring tasks as undone if the last deadline day has completely passed and
+     * the done date falls on the last deadline day or an earlier date.
+     * In other words: Recurring tasks need to be done again and again and this algorithm should
+     * set them to undone when the done deadline is in the past and next deadline comes closer.
      *
      * @param now Current time in seconds.
      * @param ignoreReminderState If false, only the outdated reminders with reminder state
      * [TodoTask.ReminderState.DONE] get updated. If true, all outdated reminders get updated.
      * @return The number of updated tasks.
      */
-    private suspend fun updateRecurringTasks(now: Long, ignoreReminderState: Boolean = false): Int {
+    suspend fun updateRecurringTasks(now: Long, ignoreReminderState: Boolean = false): Int {
         var dataArray = if (ignoreReminderState)
             getDB().getTodoTaskDao().getRecurringTasksWithOutdatedRemindersIgnoreState(now) else
             getDB().getTodoTaskDao().getRecurringTasksWithOutdatedReminders(now)

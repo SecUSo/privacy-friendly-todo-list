@@ -58,7 +58,6 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
     override fun onEnabled(context: Context) {
         Log.d(TAG, "onEnabled().")
         Model.registerModelObserver(this)
-        TodoListWidgetPeriodicUpdater.startPeriodicUpdates(context)
         super.onEnabled(context)
     }
 

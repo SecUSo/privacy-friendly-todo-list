@@ -84,6 +84,16 @@ class ModelServices(
         }
     }
 
+    fun updateRecurringTasks(now: Long,
+                             deliveryOption: DeliveryOption = DeliveryOption.POST,
+                             resultConsumer: ResultConsumer<Int>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.updateRecurringTasks(now)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(0, counter, 0)
+        }
+    }
+
     fun getNextTaskToRemind(now: Long,
                             deliveryOption: DeliveryOption = DeliveryOption.POST,
                             resultConsumer: ResultConsumer<TodoTask?>): Job {

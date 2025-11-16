@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package org.secuso.privacyfriendlytodolist.view.widget
+package org.secuso.privacyfriendlytodolist.service
 
 import android.content.Context
 import android.util.Log
@@ -26,36 +26,46 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
+import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 /**
+ * Worker that updates tasks and widgets periodically every 24 hours, short after midnight.
+ *
  * Updating the widget periodically is needed to have up-to-date urgency colors
  * and days-until-deadline. For this purpose it is enough to update the widget
  * once per day, short after midnight. That's the reason why
- * android:updatePeriodMillis is not used.
+ * android:updatePeriodMillis is not used (it needs more updates to be up-to-date).
+ *
+ * Recurring tasks need to be updated to ensure that they get marked as undone when
+ * the next interval begins.
  */
-class TodoListWidgetPeriodicUpdater(private val context: Context,
-                                    workerParams: WorkerParameters): Worker(context, workerParams) {
+class PeriodicUpdater(private val context: Context,
+                      workerParams: WorkerParameters): Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        var numberOfWidgets = 1
+        var subject = "widgets"
         try {
-            numberOfWidgets = TodoListWidget.triggerWidgetUpdate(context, "Periodic update")
+            TodoListWidget.triggerWidgetUpdate(context, "Periodic update")
+
+            subject = "recurring tasks"
+            Log.d(TAG, "Triggering periodic update of recurring tasks.")
+            val viewModel = CustomViewModel(applicationContext)
+            viewModel.model.updateRecurringTasks(Helper.getCurrentTimestamp()) { numberOfTasks ->
+                Log.d(TAG, "$numberOfTasks recurring tasks were updated.")
+            }
         }
         catch (e: Exception) {
-            Log.e(TAG, "Updating widgets failed: $e")
+            Log.e(TAG, "Periodic update of $subject failed: $e")
         }
         finally {
-            if (numberOfWidgets == 0) {
-                Log.d(TAG, "Periodic widget updates cancelled because no widget installed.")
-            } else {
-                // Because the initial delay of PeriodicWorkRequest is initialDelay + interval
-                // it is not used. Instead this updater restarts itself.
-                startPeriodicUpdates(context)
-            }
+            // Because the initial delay of PeriodicWorkRequest is initialDelay + interval
+            // it is not used. Instead this updater restarts itself.
+            startPeriodicUpdates(context)
         }
         return Result.success()
     }
@@ -74,7 +84,7 @@ class TodoListWidgetPeriodicUpdater(private val context: Context,
             calendar.set(Calendar.MILLISECOND, 0)
             val updateTime = calendar.timeInMillis + 31000
             val initialDelay = updateTime - now
-            val request = OneTimeWorkRequestBuilder<TodoListWidgetPeriodicUpdater>()
+            val request = OneTimeWorkRequestBuilder<PeriodicUpdater>()
                 .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(
