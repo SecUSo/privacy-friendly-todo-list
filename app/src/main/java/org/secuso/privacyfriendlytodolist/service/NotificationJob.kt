@@ -114,7 +114,7 @@ class NotificationJob : ModelJobBase("Notification job") {
                 todoTask.setChanged()
                 model.saveTodoTaskInDb(todoTask) { counter ->
                     if (counter > 0) {
-                        Log.i(TAG, "$logPrefix Set task with ID $todoTaskId as done.")
+                        Log.i(TAG, "$logPrefix Set task with ID $todoTaskId as done. Notifying observers!")
                         Model.notifyDataChangedFromOutside(context, 0, counter, 0)
                     } else {
                         Log.e(TAG, "$logPrefix Failed to set task with ID $todoTaskId as done. Result: $counter")

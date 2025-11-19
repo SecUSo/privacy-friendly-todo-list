@@ -24,6 +24,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
@@ -55,8 +56,13 @@ class PeriodicUpdater(private val context: Context,
             subject = "recurring tasks"
             Log.d(TAG, "Triggering periodic update of recurring tasks.")
             val viewModel = CustomViewModel(applicationContext)
-            viewModel.model.updateRecurringTasks(Helper.getCurrentTimestamp()) { numberOfTasks ->
-                Log.d(TAG, "$numberOfTasks recurring tasks were updated.")
+            viewModel.model.updateRecurringTasks(Helper.getCurrentTimestamp()) { numberOfUpdatedTasks ->
+                if (numberOfUpdatedTasks > 0) {
+                    Log.d(TAG, "$numberOfUpdatedTasks recurring tasks were updated. Notifying observers!")
+                    Model.notifyDataChangedFromOutside(context, 0, numberOfUpdatedTasks, 0)
+                } else {
+                    Log.d(TAG, "0 recurring tasks were updated.")
+                }
             }
         }
         catch (e: Exception) {
