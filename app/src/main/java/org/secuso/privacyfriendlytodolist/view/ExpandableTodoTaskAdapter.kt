@@ -492,14 +492,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         snackBar.setAction(R.string.snack_undo) {
                             val inverted = !isChecked
                             buttonView.isChecked = inverted
-                            currentTask.setDone(buttonView.isChecked)
+                            currentTask.setDone(inverted)
                             currentTask.setAllSubtasksDone(inverted)
                             if (hasAutoProgress()) {
                                 currentTask.computeProgress()
                             }
                             currentTask.setChanged()
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
-                                subtask.setDone(inverted)
+                                subtask.setChanged()
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
                                 notifyDataSetChanged()
@@ -515,7 +515,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                             subtask.setChanged()
                         }
-                        model.saveTodoTaskInDb(currentTask) {
+                        model.saveTodoTaskAndSubtasksInDb(currentTask) {
                             notifyDataSetChanged()
                         }
                     }
