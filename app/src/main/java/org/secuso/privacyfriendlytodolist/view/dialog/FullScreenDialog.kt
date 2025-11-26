@@ -50,6 +50,6 @@ abstract class FullScreenDialog<T>(context: Context, private val layoutId: Int) 
         lp.copyFrom(window!!.attributes)
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.horizontalMargin = 40f
-        window!!.setAttributes(lp)
+        window!!.attributes = lp
     }
 }

@@ -97,10 +97,10 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             ////////// Legacy API to set remote adapter //////////
             // Intent to call the Service adding the tasks to the ListView
-            var intent1 = Intent(context, TodoListWidgetViewsService::class.java)
+            val intent1 = Intent(context, TodoListWidgetViewsService::class.java)
             intent1.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             // This line of code causes that for every widget an own WidgetViewsFactory gets created:
-            intent1.setData(intent1.toUri(Intent.URI_INTENT_SCHEME).toUri())
+            intent1.data = intent1.toUri(Intent.URI_INTENT_SCHEME).toUri()
             view.setRemoteAdapter(R.id.listview_widget, intent1)
         } else {
             ////////// Up-to-date API to set remote adapter //////////
@@ -184,7 +184,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
 
         fun registerAsModelObserver(context: Context) {
             val intent = Intent(context, TodoListWidget::class.java)
-            intent.setAction(ACTION_REGISTER_AS_MODEL_OBSERVER)
+            intent.action = ACTION_REGISTER_AS_MODEL_OBSERVER
             context.sendBroadcast(intent)
         }
 
@@ -197,7 +197,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
             if (appWidgetIds.isNotEmpty()) {
                 Log.d(TAG, "Triggering update of widgets ${appWidgetIds.contentToString()}. Reason: $reason.")
                 val intent = Intent(context, TodoListWidget::class.java)
-                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
                 context.sendBroadcast(intent)
             } else {

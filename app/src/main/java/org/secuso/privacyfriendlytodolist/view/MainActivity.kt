@@ -81,7 +81,6 @@ import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoTaskDialog
-import org.secuso.privacyfriendlytodolist.view.dialog.ResultCallback
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 import java.io.StringWriter
@@ -793,7 +792,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Method starting tutorial
     private fun startTut() {
         val intent = Intent(this@MainActivity, TutorialActivity::class.java)
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
     }
 
@@ -969,12 +968,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     val editTaskDialog = ProcessTodoTaskDialog(this, todoTask)
-                    editTaskDialog.setDialogCallback(ResultCallback { changedTodoTask: TodoTask ->
-                        model.saveTodoTaskInDb(changedTodoTask) { counter ->
+                    editTaskDialog.setDialogCallback { changedTodoTask: TodoTask ->
+                        model.saveTodoTaskInDb(changedTodoTask) { _ ->
                             expandableTodoTaskAdapter?.notifyDataSetChanged()
                             showTasksOfListOrAllTasks(activeListId)
                         }
-                    })
+                    }
                     editTaskDialog.show()
                 }
             }
@@ -1025,12 +1024,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val todoSubtask = contextMenuTodoSubtask
                 if (null != todoSubtask) {
                     val dialog = ProcessTodoSubtaskDialog(this, todoSubtask)
-                    dialog.setDialogCallback(ResultCallback { todoSubtask2: TodoSubtask? ->
-                        model.saveTodoSubtaskInDb(todoSubtask2!!) { counter ->
+                    dialog.setDialogCallback { todoSubtask2: TodoSubtask? ->
+                        model.saveTodoSubtaskInDb(todoSubtask2!!) { _ ->
                             expandableTodoTaskAdapter?.notifyDataSetChanged()
                             Log.i(TAG, "Subtask altered")
                         }
-                    })
+                    }
                     dialog.show()
                 }
             }
@@ -1247,7 +1246,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun sendToPomodoro(pomodoro: Intent) {
         pomodoro.setPackage("org.secuso.privacyfriendlyproductivitytimer")
-            .setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                .flags = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
         sendBroadcast(pomodoro, "org.secuso.privacyfriendlytodolist.TODO_PERMISSION")
         finish()
     }
@@ -1288,10 +1287,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (numberOfTasksNotInRecycleBin == 0) {
                 secondAlert.visibility = View.VISIBLE
-                anim.setDuration(1500)
+                anim.duration = 1500
                 anim.startOffset = 20
                 anim.repeatMode = Animation.REVERSE
-                anim.setRepeatCount(Animation.INFINITE)
+                anim.repeatCount = Animation.INFINITE
                 secondAlert.startAnimation(anim)
             } else  /* if numberOfTasksNotInRecycleBin != 0 */ {
                 secondAlert.visibility = View.GONE

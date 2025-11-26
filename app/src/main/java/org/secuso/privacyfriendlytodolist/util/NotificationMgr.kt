@@ -138,7 +138,7 @@ object NotificationMgr {
 
         // Snooze Action -> Restart reminder without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
-        intent.setAction(NotificationReceiver.ACTION_SNOOZE)
+        intent.action = NotificationReceiver.ACTION_SNOOZE
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
         val snoozeDuration = Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context), true)
@@ -152,7 +152,7 @@ object NotificationMgr {
             && TimeUnit.SECONDS.toDays(reminderTimeAtDeadline) > TimeUnit.SECONDS.toDays(now)) {
             // Snooze until Deadline Action -> Restart reminder without showing activity
             intent = Intent(context, NotificationReceiver::class.java)
-            intent.setAction(NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE)
+            intent.action = NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE
             intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
             pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
             actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze_until_deadline)
@@ -161,7 +161,7 @@ object NotificationMgr {
 
         // Done Action -> Set task done without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
-        intent.setAction(NotificationReceiver.ACTION_SET_DONE)
+        intent.action = NotificationReceiver.ACTION_SET_DONE
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
         actionTitle = context.resources.getString(R.string.notif_reminder_act_done)

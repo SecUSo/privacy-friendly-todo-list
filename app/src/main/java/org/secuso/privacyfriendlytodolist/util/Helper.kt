@@ -129,9 +129,9 @@ object Helper {
         var recurrences = 0
         if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
-            recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(recurringDate))
+            recurringDateCal.timeInMillis = TimeUnit.SECONDS.toMillis(recurringDate)
             val nowCal = Calendar.getInstance()
-            nowCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(now))
+            nowCal.timeInMillis = TimeUnit.SECONDS.toMillis(now)
             recurrences = getNextRecurringDateAndCount(recurringDateCal, recurrencePattern,
                 recurrenceInterval, nowCal, offset)
             nextRecurringDate = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
@@ -183,7 +183,7 @@ object Helper {
         var result = timestamp
         if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
-            recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(timestamp))
+            recurringDateCal.timeInMillis = TimeUnit.SECONDS.toMillis(timestamp)
             addInterval(recurringDateCal, recurrencePattern, recurrenceInterval)
             result = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
         }

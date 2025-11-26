@@ -207,9 +207,9 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         // OK button
         val okayButton: Button = findViewById(R.id.bt_process_task_ok)
         okayButton.setOnClickListener { v: View? ->
-            val name = taskName.getText().toString()
-            val description = taskDescription.getText().toString()
-            val recurrenceIntervalText = recurrenceIntervalEditText.getText().toString()
+            val name = taskName.text.toString()
+            val description = taskDescription.text.toString()
+            val recurrenceIntervalText = recurrenceIntervalEditText.text.toString()
             val recurrenceInterval = recurrenceIntervalText.toIntOrNull()
             val isRecurrenceIntervalBad = recurrenceInterval == null || recurrenceInterval < 1
             if (name.isEmpty()) {
@@ -335,7 +335,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             recurrenceIntervalEditText.setText("")
         } else {
             recurrencePatternTextView.text = Helper.recurrencePatternToNounString(context, recurrencePattern)
-            if (recurrenceIntervalEditText.getText().isEmpty()) {
+            if (recurrenceIntervalEditText.text.isEmpty()) {
                 recurrenceIntervalEditText.setText(String.format(Locale.getDefault(), "%d", recurrenceInterval))
             }
         }

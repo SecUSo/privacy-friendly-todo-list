@@ -69,7 +69,7 @@ class ProcessTodoSubtaskDialog : FullScreenDialog<ResultCallback<TodoSubtask>> {
 
         etSubtaskName.setText(subtask.getName())
         okButton.setOnClickListener { v: View? ->
-            val name = etSubtaskName.getText().toString()
+            val name = etSubtaskName.text.toString()
             if (name.isEmpty()) {
                 Toast.makeText(context, context.getString(R.string.todo_name_must_not_be_empty),
                     Toast.LENGTH_SHORT).show()

@@ -65,7 +65,7 @@ class ProcessTodoListDialog(context: Context) :
 
         buttonOkay.setOnClickListener {
             // prepare list data
-            val listName = etName.getText().toString()
+            val listName = etName.text.toString()
             if (listName.isEmpty()) {
                 Toast.makeText(context, context.getString(R.string.list_name_must_not_be_empty),
                     Toast.LENGTH_SHORT).show()

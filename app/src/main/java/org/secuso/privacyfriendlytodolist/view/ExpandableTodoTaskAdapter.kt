@@ -757,11 +757,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 
-    private inner class GroupPriorityViewHolder(
+    private class GroupPriorityViewHolder(
         val priorityFlag: TextView
     )
 
-    private inner class GroupTaskViewHolder(
+    private class GroupTaskViewHolder(
         val name: TextView,
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
@@ -779,7 +779,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val taskDescription: TextView
     )
 
-    private inner class SubtaskViewHolder(
+    private class SubtaskViewHolder(
         val subtaskName: TextView,
         val done: CheckBox,
         val urgencyColorBar: View,
@@ -788,12 +788,12 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val subtaskMenuButton: ImageButton
     )
 
-    private inner class SettingViewHolder(
+    private class SettingViewHolder(
         val addSubtaskButton: LinearLayout,
         val urgencyColorBar: View
     )
 
-    private inner class TaskHolder(val todoTask: TodoTask) {
+    private class TaskHolder(val todoTask: TodoTask) {
         private val subtasksMetaData = MutableList(todoTask.getSubtasks().size) { index ->
             return@MutableList SubtaskMetaData()
         }
@@ -830,7 +830,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
     }
 
-    private inner class SubtaskMetaData(var moveButtonsVisibility: Int = View.GONE) {
+    private class SubtaskMetaData(var moveButtonsVisibility: Int = View.GONE) {
         fun toggleMoveButtonsVisibility() {
             moveButtonsVisibility = if (moveButtonsVisibility == View.GONE) View.VISIBLE else View.GONE
         }

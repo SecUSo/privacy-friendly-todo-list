@@ -42,7 +42,7 @@ class TodoReReceiver : BroadcastReceiver() {
                 .putExtra("todo_id", id)
                 .putExtra("todo_name", name)
                 .putExtra("todo_progress", progress)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(runIntent)
         } else {
             Log.e(TAG, "Todo Intent is not complete.")

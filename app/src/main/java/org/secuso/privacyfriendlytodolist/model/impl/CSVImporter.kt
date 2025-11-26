@@ -187,7 +187,7 @@ class CSVImporter {
         var result = 0
         if (text.isNotEmpty()) {
             result = text.toInt()
-            if (result < minValue || result > maxValue) {
+            if (result !in minValue..maxValue) {
                 throw IllegalFormatException("Integer not in range $minValue..$maxValue.")
             }
         }

@@ -166,7 +166,7 @@ object AlarmMgr {
             flags = flags or PendingIntent.FLAG_NO_CREATE
         }
         val intent = Intent(context, AlarmReceiver::class.java)
-        intent.setAction(AlarmReceiver.ACTION)
+        intent.action = AlarmReceiver.ACTION
         intent.putExtra(KEY_ALARM_ID, alarmId)
         return PendingIntent.getBroadcast(context, alarmId, intent, flags)
     }

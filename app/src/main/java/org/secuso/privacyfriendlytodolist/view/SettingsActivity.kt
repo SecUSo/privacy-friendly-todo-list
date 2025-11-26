@@ -168,7 +168,7 @@ class SettingsActivity : AppCompatActivity() {
             var isValid = true
             if (null != pin && pin.length >= MINIMAL_PIN_LENGTH && pin.length <= MAXIMAL_PIN_LENGTH) {
                 for (c in pin) {
-                    if (c < '0' || c > '9') {
+                    if (c !in '0'..'9') {
                         isValid = false
                         break
                     }

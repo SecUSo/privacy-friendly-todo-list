@@ -93,7 +93,7 @@ class CalendarView : LinearLayout {
 
     fun setGridAdapter(adapter: CalendarGridAdapter?) {
         gridAdapter = adapter
-        calendarGrid.setAdapter(gridAdapter)
+        calendarGrid.adapter = gridAdapter
     }
 
     /**

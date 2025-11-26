@@ -63,11 +63,11 @@ class PFAApplication : Application(), Configuration.Provider, OnPreferenceChange
 
     private fun applyAppTheme() {
         when (val appTheme = PreferenceMgr.getAppTheme(this)) {
-            "LIGHT"  -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "DARK"   -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            "SYSTEM" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            APP_THEME_LIGHT  -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            APP_THEME_DARK   -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            APP_THEME_SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             else     -> {
-                Log.w(TAG, "Unknown value for preference ${PreferenceMgr.P_APP_THEME.name}: $appTheme. Using default.")
+                Log.w(TAG, "Unknown value for preference ${PreferenceMgr.P_APP_THEME.name}: $appTheme. Following system.")
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
@@ -75,5 +75,8 @@ class PFAApplication : Application(), Configuration.Provider, OnPreferenceChange
 
     companion object {
         private val TAG = LogTag.create(this::class.java.declaringClass)
+        private const val APP_THEME_LIGHT = "LIGHT"
+        private const val APP_THEME_DARK = "DARK"
+        private const val APP_THEME_SYSTEM = "SYSTEM"
     }
 }
