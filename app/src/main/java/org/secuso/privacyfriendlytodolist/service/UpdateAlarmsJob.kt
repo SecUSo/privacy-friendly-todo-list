@@ -43,31 +43,43 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarm-job") {
     }
 
     private fun triggerAlarmsForOverdueReminders() {
-        model.getTasksWithOverdueReminders(Helper.getCurrentTimestamp()) { tasksWithOverdueReminders ->
+        model.getTasksWithOverdueReminders(Helper.getCurrentTimestamp()) { tasksAndCounter ->
             if (isJobStopped()) {
                 return@getTasksWithOverdueReminders
             }
 
-            for (todoTask in tasksWithOverdueReminders) {
-                Log.i(TAG, "$logPrefix Due to overdue reminder starting handle-alarm-job for $todoTask.")
-                JobManager.startHandleAlarmJob(context, todoTask.getId())
+            if (tasksAndCounter.first.isNotEmpty()) {
+                for (todoTask in tasksAndCounter.first) {
+                    Log.i(TAG, "$logPrefix Due to overdue reminder starting handle-alarm-job for $todoTask.")
+                    JobManager.startHandleAlarmJob(context, todoTask.getId())
+                }
+            } else {
+                Log.d(TAG, "$logPrefix No task with overdue reminder.")
             }
 
-            doUpdateNextAlarm()
+            doUpdateNextAlarm(tasksAndCounter.second)
         }
     }
 
-    private fun doUpdateNextAlarm() {
-        model.getNextTaskToRemind(Helper.getCurrentTimestamp()) { nextTaskToRemind ->
+    private fun doUpdateNextAlarm(alreadyUpdatedTasks: Int) {
+        model.getNextTaskToRemind(Helper.getCurrentTimestamp()) { taskAndCounter ->
             if (isJobStopped()) {
                 return@getNextTaskToRemind
             }
 
+            val nextTaskToRemind = taskAndCounter.first
             if (null != nextTaskToRemind) {
                 AlarmMgr.setAlarmForNextTaskToRemind(context, nextTaskToRemind)
             } else {
                 Log.d(TAG, "$logPrefix No next task with due reminder so no alarm to set.")
             }
+
+            val overallUpdatedTasks = alreadyUpdatedTasks + taskAndCounter.second
+            if (overallUpdatedTasks > 0) {
+                Log.d(TAG, "$overallUpdatedTasks tasks were updated outside UI while updating alarms. Notifying UI!")
+                model.notifyDataChangedOutsideAppUI(0, overallUpdatedTasks, 0)
+            }
+
             jobFinished()
         }
     }

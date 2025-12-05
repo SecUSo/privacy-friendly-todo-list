@@ -549,7 +549,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val currentTask = currentTaskHolder.todoTask
         when (childType) {
             ChildType.SUBTASK_ROW -> {
-                val subtaskIndex = childPosition
+                @Suppress("UnnecessaryVariable") val subtaskIndex = childPosition
                 val currentSubtask = currentTask.getSubtasks()[subtaskIndex]
                 val currentSubtaskMetaData = currentTaskHolder.getSubtaskMetaData(subtaskIndex)!!
                 val svh: SubtaskViewHolder
@@ -575,7 +575,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 svh.done.jumpDrawablesToCurrentState()
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
-                        currentSubtask.setDone(buttonView.isChecked)
+                        currentSubtask.setDone(isChecked)
                         currentSubtask.setChanged()
                         model.saveTodoSubtaskInDb(currentSubtask) {
                             val doneStatusChanged = currentTask.updateDoneStatus()

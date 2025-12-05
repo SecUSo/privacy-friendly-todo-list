@@ -675,7 +675,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onTodoDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+    override fun onTodoDataChangedOutsideAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+
         Log.i(TAG, "Refreshing task list view because data model was changed from outside.")
         showTasksOfListOrAllTasks(activeListId)
     }

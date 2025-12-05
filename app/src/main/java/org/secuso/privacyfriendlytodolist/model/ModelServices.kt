@@ -96,10 +96,10 @@ class ModelServices(
 
     fun getNextTaskToRemind(now: Long,
                             deliveryOption: DeliveryOption = DeliveryOption.POST,
-                            resultConsumer: ResultConsumer<TodoTask?>): Job {
+                            resultConsumer: ResultConsumer<Pair<TodoTask?, Int>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTask = services.getNextTaskToRemind(now)
-            dispatchResult(deliveryOption, resultConsumer, todoTask.first)
+            dispatchResult(deliveryOption, resultConsumer, todoTask)
             notifyDataChanged(0, todoTask.second, 0)
         }
     }
@@ -112,10 +112,10 @@ class ModelServices(
      * access has finished.
      */
     fun getTasksWithOverdueReminders(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
-                                     resultConsumer: ResultConsumer<MutableList<TodoTask>>): Job {
+                                     resultConsumer: ResultConsumer<Pair<MutableList<TodoTask>, Int>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTasks = services.getTasksWithOverdueReminders(now)
-            dispatchResult(deliveryOption, resultConsumer, todoTasks.first)
+            dispatchResult(deliveryOption, resultConsumer, todoTasks)
             notifyDataChanged(0, todoTasks.second, 0)
         }
     }
@@ -360,10 +360,33 @@ class ModelServices(
     private fun notifyDataChanged(changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
             val success = resultHandler.post {
-                Model.notifyDataChanged(context, changedLists, changedTasks, changedSubtasks)
+                for (modelObserver in Model.modelObservers) {
+                    modelObserver.onTodoDataChangedViaAppUI(context, changedLists, changedTasks, changedSubtasks)
+                }
             }
             if (!success) {
-                Log.e(TAG, "Failed to post Model.notifyDataChanged().")
+                Log.e(TAG, "Failed to post that data was changed via app UI.")
+            }
+        }
+    }
+
+    /**
+     * Notifies observers about data in the data model (lists, tasks, subtasks) that was changed
+     * by an automated action.
+     * For example if a task gets changed and saved by a reminder notification action.
+     * In this case the app UI is not up-to-date and needs this information to perform an update.
+     *
+     * Do always post, never direct. Model changes always need to be handled in GUI thread.
+     */
+    fun notifyDataChangedOutsideAppUI(changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+        if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
+            val success = resultHandler.post {
+                for (modelObserver in Model.modelObservers) {
+                    modelObserver.onTodoDataChangedOutsideAppUI(context, changedLists, changedTasks, changedSubtasks)
+                }
+            }
+            if (!success) {
+                Log.e(TAG, "Failed to post that data was changed outside the app UI.")
             }
         }
     }

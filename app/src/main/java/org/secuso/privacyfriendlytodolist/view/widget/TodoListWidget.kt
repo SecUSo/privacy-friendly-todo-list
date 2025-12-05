@@ -68,7 +68,7 @@ class TodoListWidget : AppWidgetProvider(), ModelObserver {
         factory.destroy()
     }
 
-    override fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+    override fun onTodoDataChangedViaAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
         triggerWidgetUpdate(context, "ToDo data changed")
     }
 

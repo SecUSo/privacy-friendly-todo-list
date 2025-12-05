@@ -170,6 +170,7 @@ class TodoListImpl : BaseTodoImpl, TodoList {
     }
 
     companion object {
+        @Suppress("unused") // Because this class implements Parcelable, it needs the CREATOR.
         @JvmField
         val CREATOR = object : Creator<TodoList> {
             override fun createFromParcel(parcel: Parcel): TodoList {

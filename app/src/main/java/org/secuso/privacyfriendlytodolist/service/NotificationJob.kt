@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.service
 
 import android.util.Log
-import org.secuso.privacyfriendlytodolist.model.Model
 import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
@@ -115,7 +114,7 @@ class NotificationJob : ModelJobBase("Notification job") {
                 model.saveTodoTaskInDb(todoTask) { counter ->
                     if (counter > 0) {
                         Log.i(TAG, "$logPrefix Set task with ID $todoTaskId as done. Notifying observers!")
-                        Model.notifyDataChangedFromOutside(context, 0, counter, 0)
+                        model.notifyDataChangedOutsideAppUI(0, counter, 0)
                     } else {
                         Log.e(TAG, "$logPrefix Failed to set task with ID $todoTaskId as done. Result: $counter")
                     }

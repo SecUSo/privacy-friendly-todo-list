@@ -73,7 +73,7 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
     private lateinit var listSelector: TextView
 
     private enum class GroupId {
-        RECURRENCE_PATTERN, TASK_PRIORITY, NO_TASK_LIST, TASK_LIST_CHOOSE
+        TASK_PRIORITY, NO_TASK_LIST, TASK_LIST_CHOOSE
     }
 
     init {
@@ -162,8 +162,12 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         // Task recurrence pattern
         recurrencePatternTextView = findViewById(R.id.tv_task_recurrence_pattern)
         recurrencePatternTextView.setOnClickListener {
-            registerForContextMenu(recurrencePatternTextView)
-            openContextMenu(recurrencePatternTextView)
+            val dialog = RecurrencePatternDialog(context, recurrencePattern)
+            dialog.setDialogCallback { newRecurrencePattern ->
+                recurrencePattern = newRecurrencePattern
+                updateRecurrencePatternText()
+            }
+            dialog.show()
         }
         recurrencePatternTextView.setOnCreateContextMenuListener(this)
         recurrenceIntervalEditText = findViewById(R.id.tv_task_recurrence_interval)
@@ -199,14 +203,14 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         }
         // Task list
         listSelector = findViewById(R.id.tv_task_list_choose)
-        listSelector.setOnClickListener { v: View? ->
+        listSelector.setOnClickListener {
             registerForContextMenu(listSelector)
             openContextMenu(listSelector)
         }
         listSelector.setOnCreateContextMenuListener(this)
         // OK button
         val okayButton: Button = findViewById(R.id.bt_process_task_ok)
-        okayButton.setOnClickListener { v: View? ->
+        okayButton.setOnClickListener {
             val name = taskName.text.toString()
             val description = taskDescription.text.toString()
             val recurrenceIntervalText = recurrenceIntervalEditText.text.toString()
@@ -226,8 +230,11 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                 todoTask.setDescription(description)
                 todoTask.setDeadline(deadline)
                 todoTask.setRecurrencePattern(recurrencePattern)
-                if ( ! isRecurrenceIntervalBad) {
-                    todoTask.setRecurrenceInterval(recurrenceInterval!!)
+                if (recurrencePattern in RecurrencePattern.WEEKDAYS_M______ .. RecurrencePattern.WEEKDAYS_MTWTFSS) {
+                    // For these pattern an interval of 1 gets forced.
+                    todoTask.setRecurrenceInterval(1)
+                } else if ( ! isRecurrenceIntervalBad) {
+                    todoTask.setRecurrenceInterval(recurrenceInterval)
                 }
                 todoTask.setReminderTime(reminderTime)
                 todoTask.setProgress(taskProgress)
@@ -259,15 +266,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
         when (v.id) {
-            R.id.tv_task_recurrence_pattern -> {
-                val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_recurrence_pattern)
-                menu.setHeaderView(menuHeader)
-                for (pattern in RecurrencePattern.entries) {
-                    menu.add(GroupId.RECURRENCE_PATTERN.ordinal, pattern.ordinal, Menu.NONE,
-                        Helper.recurrencePatternToNounString(context, pattern))
-                }
-            }
-
             R.id.tv_task_priority -> {
                 val menuHeader = Helper.getMenuHeader(layoutInflater, v, R.string.select_priority)
                 menu.setHeaderView(menuHeader)
@@ -290,11 +288,6 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
 
     override fun onMenuItemSelected(featureId: Int, item: MenuItem): Boolean {
         when (item.groupId) {
-            GroupId.RECURRENCE_PATTERN.ordinal -> {
-                recurrencePattern = RecurrencePattern.fromOrdinal(item.itemId)!!
-                updateRecurrencePatternText()
-            }
-
             GroupId.TASK_PRIORITY.ordinal -> {
                 taskPriority = TodoTask.Priority.fromOrdinal(item.itemId)!!
                 prioritySelector.text = Helper.priorityToString(context, taskPriority)
@@ -335,7 +328,11 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
             recurrenceIntervalEditText.setText("")
         } else {
             recurrencePatternTextView.text = Helper.recurrencePatternToNounString(context, recurrencePattern)
-            if (recurrenceIntervalEditText.text.isEmpty()) {
+            val forceInterval1 = (recurrencePattern in RecurrencePattern.WEEKDAYS_M______ .. RecurrencePattern.WEEKDAYS_MTWTFSS)
+            if (forceInterval1) {
+                recurrenceInterval = 1
+            }
+            if (forceInterval1 || recurrenceIntervalEditText.text.isEmpty()) {
                 recurrenceIntervalEditText.setText(String.format(Locale.getDefault(), "%d", recurrenceInterval))
             }
         }

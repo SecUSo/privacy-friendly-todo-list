@@ -68,10 +68,6 @@ abstract class JobBase(private val jobName: String) {
         return isJobStopped
     }
 
-    protected fun isJobNotStopped(): Boolean {
-        return !isJobStopped
-    }
-
     protected fun jobFinished() {
         isJobFinished = true
         if (isJobStopped()) {
@@ -80,10 +76,6 @@ abstract class JobBase(private val jobName: String) {
             Log.d(TAG, "$logPrefix Finished regularly.")
             commonJobService.jobFinished(params, false)
         }
-    }
-
-    protected fun isJobFinished(): Boolean {
-        return isJobFinished
     }
 
     protected fun isJobNotFinished(): Boolean {

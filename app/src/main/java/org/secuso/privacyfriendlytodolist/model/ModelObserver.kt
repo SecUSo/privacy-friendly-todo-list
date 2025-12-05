@@ -21,19 +21,18 @@ import android.content.Context
 
 interface ModelObserver {
     /**
-     * Gets called when a the data in the data model (lists, tasks, subtasks) gets changed.
-     *
-     * For example if a task gets changed by the user and saved.
+     * Gets called when the data in the data model (lists, tasks, subtasks) was changed in the app by the user.
+     * In this case the app UI is up-to-date and does not need this information.
      */
-    fun onTodoDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+    fun onTodoDataChangedViaAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
     }
 
     /**
-     * Gets called when a non-GUI component changes the data in the data model (lists, tasks,
-     * subtasks) to notify the currently registered GUI components.
-     *
+     * Gets called when the data in the data model (lists, tasks, subtasks) was changed by an
+     * automated action.
      * For example if a task gets changed and saved by a reminder notification action.
+     * In this case the app UI is not up-to-date and needs this information to perform an update.
      */
-    fun onTodoDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+    fun onTodoDataChangedOutsideAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
     }
 }

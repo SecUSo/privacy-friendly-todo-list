@@ -33,6 +33,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 @Suppress("MemberVisibilityCanBePrivate")
 object Helper {
@@ -97,83 +98,74 @@ object Helper {
         return TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
     }
 
-    fun getNextRecurringDate(recurringDate: Long, todoTask: TodoTask, now: Long, offset: Int = 0): Long {
+    fun getNextRecurringDate(recurringDate: Long, todoTask: TodoTask, destinationDate: Long): Long {
         return getNextRecurringDateAndCount(recurringDate, todoTask.getRecurrencePattern(),
-            todoTask.getRecurrenceInterval(), now, offset).first
+            todoTask.getRecurrenceInterval(), destinationDate).first
     }
 
-    fun getNextRecurringDateAndCount(recurringDate: Long, todoTask: TodoTask, now: Long, offset: Int = 0): Pair<Long, Int> {
+    fun getNextRecurringDateAndCount(recurringDate: Long, todoTask: TodoTask,
+                                     destinationDate: Long): Pair<Long, Int> {
         return getNextRecurringDateAndCount(recurringDate, todoTask.getRecurrencePattern(),
-            todoTask.getRecurrenceInterval(), now, offset)
+            todoTask.getRecurrenceInterval(), destinationDate)
     }
 
-    /**
-     * @param offset After the next recurring date was determined, a negative or positive number of
-     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
-     * date can be determined.
-     */
     fun getNextRecurringDate(recurringDate: Long, recurrencePattern: RecurrencePattern,
-                             recurrenceInterval: Int, now: Long, offset: Int = 0): Long {
+                             recurrenceInterval: Int, destinationDate: Long): Long {
         return getNextRecurringDateAndCount(recurringDate, recurrencePattern, recurrenceInterval,
-            now, offset).first
+            destinationDate).first
     }
 
-    /**
-     * @param offset After the next recurring date was determined, a negative or positive number of
-     * intervals can be subtracted or added. For example with an offset of -1 the last recurring
-     * date can be determined.
-     */
     fun getNextRecurringDateAndCount(recurringDate: Long, recurrencePattern: RecurrencePattern,
-                                     recurrenceInterval: Int, now: Long, offset: Int = 0): Pair<Long, Int> {
+                                     recurrenceInterval: Int, destinationDate: Long): Pair<Long, Int> {
         var nextRecurringDate = recurringDate
         var recurrences = 0
         if (recurrencePattern != RecurrencePattern.NONE) {
             val recurringDateCal = Calendar.getInstance()
             recurringDateCal.timeInMillis = TimeUnit.SECONDS.toMillis(recurringDate)
             val nowCal = Calendar.getInstance()
-            nowCal.timeInMillis = TimeUnit.SECONDS.toMillis(now)
+            nowCal.timeInMillis = TimeUnit.SECONDS.toMillis(destinationDate)
             recurrences = getNextRecurringDateAndCount(recurringDateCal, recurrencePattern,
-                recurrenceInterval, nowCal, offset)
+                recurrenceInterval, nowCal)
             nextRecurringDate = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
         }
         return Pair(nextRecurringDate, recurrences)
     }
 
-    fun getNextRecurringDateAndCount(recurringDate: Calendar, todoTask: TodoTask, now: Calendar, offset: Int = 0): Int {
+    fun getNextRecurringDateAndCount(recurringDate: Calendar, todoTask: TodoTask,
+                                     destinationDate: Calendar): Int {
         return getNextRecurringDateAndCount(recurringDate, todoTask.getRecurrencePattern(),
-            todoTask.getRecurrenceInterval(), now, offset)
+            todoTask.getRecurrenceInterval(), destinationDate)
     }
 
     /**
-     * Computes the next recurring date, based on the given recurring date, the recurrence pattern
-     * and the recurrence interval. The next recurring date will be greater than 'now' and greater
-     * than or equal to the given recurrence date.
-     *
-     * Optionally an positive or negative offset can be specified to add a number of intervals to
-     * the computed next recurring date.
+     * Depending on a positive / negative recurrence interval, the function increases / decreases
+     * the recurrence date to return the first recurrence date which is greater than / less than
+     * the destination time.
      *
      * @todo When API 26 can be used, use ChronoUnit for a better implementation of this method.
      *
-     * @param recurringDate In: The base recurring date.
-     * Out: The next recurring date. Optionally shifted by a positive or negative number of intervals.
+     * @param recurringDate In: The base recurring date. Out: The computed recurring date.
      * @param recurrencePattern The recurrence pattern.
      * @param recurrenceInterval The recurrence interval.
-     * @param now The current date and time.
-     * @param offset The number of intervals to add to the next recurring date. For example with an
-     * offset of -1 the last recurring date can be determined.
-     * @return The number of recurrences.
+     * @param destinationDate The destination time for the recurrence date computation.
+     * @return The absolute number of recurrences from base recurring date to computed recurring date.
      */
     fun getNextRecurringDateAndCount(recurringDate: Calendar, recurrencePattern: RecurrencePattern,
-                                     recurrenceInterval: Int, now: Calendar, offset: Int = 0): Int {
+                                     recurrenceInterval: Int, destinationDate: Calendar): Int {
         var recurrences = 0
         if (recurrencePattern != RecurrencePattern.NONE) {
-            while (recurringDate <= now) {
-                addInterval(recurringDate, recurrencePattern, recurrenceInterval)
-                ++recurrences
-            }
-            if (offset != 0) {
-                addInterval(recurringDate, recurrencePattern, offset * recurrenceInterval)
-                recurrences += offset
+            if (recurrenceInterval > 0) {
+                while (recurringDate <= destinationDate) {
+                    addInterval(recurringDate, recurrencePattern, recurrenceInterval)
+                    ++recurrences
+                }
+            } else if (recurrenceInterval < 0) {
+                while (recurringDate >= destinationDate) {
+                    addInterval(recurringDate, recurrencePattern, recurrenceInterval)
+                    ++recurrences
+                }
+            } else {
+                Log.e(TAG, "Invalid recurrence interval of zero.")
             }
         }
         return recurrences
@@ -197,7 +189,41 @@ object Helper {
             RecurrencePattern.WEEKLY -> date.add(Calendar.WEEK_OF_YEAR, recurrenceInterval)
             RecurrencePattern.MONTHLY -> date.add(Calendar.MONTH, recurrenceInterval)
             RecurrencePattern.YEARLY -> date.add(Calendar.YEAR, recurrenceInterval)
+            in RecurrencePattern.WEEKDAYS_M______ .. RecurrencePattern.WEEKDAYS_MTWTFSS -> {
+                val weekdaysBitmask = recurrencePattern.ordinal - RecurrencePattern.WEEKDAYS_M______.ordinal + 1
+                var steps = abs(recurrenceInterval)
+                val step = if (recurrenceInterval > 0) 1 else -1
+                while (steps > 0) {
+                    date.add(Calendar.DAY_OF_YEAR, step)
+                    if (dayOfWeekMatchesBitmask(date[Calendar.DAY_OF_WEEK], weekdaysBitmask)) {
+                        --steps
+                    }
+                }
+            }
+            else -> Log.e(TAG, "Unhandled recurrence pattern: $recurrencePattern")
         }
+    }
+
+    private fun dayOfWeekMatchesBitmask(dayOfWeek: Int, weekdaysBitmask: Int): Boolean {
+        var result = false
+        for (index in 0 .. 6) {
+            if ((weekdaysBitmask and (1 shl index)) != 0) {
+                result = when (index) {
+                    0 -> Calendar.MONDAY == dayOfWeek
+                    1 -> Calendar.TUESDAY == dayOfWeek
+                    2 -> Calendar.WEDNESDAY == dayOfWeek
+                    3 -> Calendar.THURSDAY == dayOfWeek
+                    4 -> Calendar.FRIDAY == dayOfWeek
+                    5 -> Calendar.SATURDAY == dayOfWeek
+                    6 -> Calendar.SUNDAY == dayOfWeek
+                    else -> false
+                }
+                if (result) {
+                    break
+                }
+            }
+        }
+        return result
     }
 
     fun compareDeadlines(task1: TodoTask, task2: TodoTask): Int {
@@ -233,12 +259,36 @@ object Helper {
 
     fun recurrencePatternToNounString(context: Context, recurrencePattern: RecurrencePattern?): String {
         return when (recurrencePattern) {
+            null -> "Recurrence pattern is null"
             RecurrencePattern.NONE -> context.resources.getString(R.string.none)
             RecurrencePattern.DAILY -> context.resources.getString(R.string.days)
             RecurrencePattern.WEEKLY -> context.resources.getString(R.string.weeks)
             RecurrencePattern.MONTHLY -> context.resources.getString(R.string.months)
             RecurrencePattern.YEARLY -> context.resources.getString(R.string.years)
+            in RecurrencePattern.WEEKDAYS_M______ .. RecurrencePattern.WEEKDAYS_MTWTFSS -> {
+                val sb = StringBuilder()
+                val weekdaysBitmask = recurrencePattern.ordinal - RecurrencePattern.WEEKDAYS_M______.ordinal + 1
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 0, R.string.monday_abbr)
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 1, R.string.tuesday_abbr)
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 2, R.string.wednesday_abbr)
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 3, R.string.thursday_abbr)
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 4, R.string.friday_abbr)
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 5, R.string.saturday_abbr)
+                appendWeekdayInitial(context, sb, weekdaysBitmask, 6, R.string.sunday_abbr)
+                sb.toString()
+            }
             else -> "Unknown recurrence pattern '$recurrencePattern'"
+        }
+    }
+
+    private fun appendWeekdayInitial(context: Context, stringBuilder: StringBuilder,
+                                     weekdaysBitmask: Int, weekdayBitPosition: Int, stringResId: Int) {
+        val weekdayBit = (1 shl weekdayBitPosition)
+        if ((weekdaysBitmask and weekdayBit) != 0) {
+            stringBuilder.append(context.resources.getString(stringResId))
+            if (weekdaysBitmask >= (weekdayBit shl 1)) {
+                stringBuilder.append(", ")
+            }
         }
     }
 
@@ -288,7 +338,7 @@ object Helper {
         return try {
             packageManager.getPackageInfo(packageName, 0)
             true
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (_: PackageManager.NameNotFoundException) {
             false
         }
     }
