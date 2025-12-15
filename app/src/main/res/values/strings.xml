@@ -247,8 +247,12 @@
     <string name="dialog_need_permission_post_notifications_title">Enable notifications</string>
     <string name="dialog_need_permission_post_notifications_message">Permission to display notifications for reminders is required. Otherwise, reminders will not be displayed.</string>
     <!-- Reminder service -->
-    <string name="deadline_approaching">Deadline is approaching: %1$s</string>
-    <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
+    <string name="deadline_approaching">Deadline approaching: %1$s</string>
+    <string name="deadline_today">Deadline today!</string>
+    <string name="deadline_passed">Deadline passed: %1$s</string>
+    <string name="recurring_deadline_approaching">Deadline approaching: %1$s (%2$d. repetition)</string>
+    <string name="recurring_deadline_today">Deadline today (%1$d. repetition)!</string>
+    <string name="recurring_deadline_passed">Deadline passed: %1$s (%2$d. repetition)</string>
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Task Reminder</string>
     <string name="notif_reminder_ch_desc">Reminders for upcoming tasks.</string>

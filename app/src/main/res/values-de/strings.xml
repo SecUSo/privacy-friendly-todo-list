@@ -219,7 +219,11 @@
     <string name="dialog_need_permission_post_notifications_message">Die Berechtigung, um Benachrichtigungen für Erinnerungen anzuzeigen wird benötigt. Andernfalls werden Erinnerungen nicht angezeigt.</string>
     <!-- Reminder service -->
     <string name="deadline_approaching">Termin rückt näher: %1$s</string>
+    <string name="deadline_today">Termin heute!</string>
+    <string name="deadline_passed">Termin verstrichen: %1$s</string>
     <string name="recurring_deadline_approaching">Termin rückt näher: %1$s (%2$d. Wiederholung)</string>
+    <string name="recurring_deadline_today">Termin heute (%1$d. Wiederholung)!</string>
+    <string name="recurring_deadline_passed">Termin verstrichen: %1$s (%2$d. Wiederholung)</string>
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
     <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
