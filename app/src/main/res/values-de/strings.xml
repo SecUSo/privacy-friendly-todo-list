@@ -123,7 +123,7 @@
     <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl &gt;= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
-     <string name="zero_percent" formatted="false">0 %</string>
+    <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
     <string name="select_no_list">Keine Liste</string>
@@ -232,7 +232,7 @@
     <string name="thursday">Donnerstag</string>
     <string name="friday">Freitag</string>
     <string name="saturday">Samstag</string>
-	<string name="sunday_abbr">SO</string>
+    <string name="sunday_abbr">SO</string>
     <string name="monday_abbr">MO</string>
     <string name="tuesday_abbr">DI</string>
     <string name="wednesday_abbr">MI</string>
