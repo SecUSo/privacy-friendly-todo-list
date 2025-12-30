@@ -232,13 +232,6 @@
     <string name="dialog_need_permission_post_notifications_title">Luba teavitused</string>
     <string name="dialog_need_permission_post_notifications_message">Meeldetuletuste teavituste kuvamiseks on vajalikud õigused. Ilma selleta pole võimalik meeldetuletusi kuvada.</string>
     <string name="notif_reminder_act_snooze_until_deadline">Uinu kuni tähtajani</string>
-    <string name="sunday">Pühapäev</string>
-    <string name="monday">Esmaspäev</string>
-    <string name="tuesday">Teisipäev</string>
-    <string name="wednesday">Kolmapäev</string>
-    <string name="thursday">Neljapäev</string>
-    <string name="friday">Reede</string>
-    <string name="saturday">Laupäev</string>
     <string name="filter_colon">Filter:</string>
     <string name="grouping_colon">Rühmitamine:</string>
     <string name="sorting_colon">Järjestamine:</string>
