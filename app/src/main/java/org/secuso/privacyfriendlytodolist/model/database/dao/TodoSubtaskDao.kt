@@ -22,7 +22,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
 
 @Dao

@@ -27,6 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.secuso.privacyfriendlytodolist.model.impl.ModelServicesImpl
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 /**
  * Created by Christian Adams on 17.02.2024.
@@ -84,7 +85,7 @@ class ModelServices(
         }
     }
 
-    fun updateRecurringTasks(now: Long,
+    fun updateRecurringTasks(now: Timestamp,
                              deliveryOption: DeliveryOption = DeliveryOption.POST,
                              resultConsumer: ResultConsumer<Int>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {
@@ -94,7 +95,7 @@ class ModelServices(
         }
     }
 
-    fun getNextTaskToRemind(now: Long,
+    fun getNextTaskToRemind(now: Timestamp,
                             deliveryOption: DeliveryOption = DeliveryOption.POST,
                             resultConsumer: ResultConsumer<Pair<TodoTask?, Int>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
@@ -111,7 +112,7 @@ class ModelServices(
      * @param resultConsumer Result consumer that will be notified when the asynchronous database
      * access has finished.
      */
-    fun getTasksWithOverdueReminders(now: Long, deliveryOption: DeliveryOption = DeliveryOption.POST,
+    fun getTasksWithOverdueReminders(now: Timestamp, deliveryOption: DeliveryOption = DeliveryOption.POST,
                                      resultConsumer: ResultConsumer<Pair<MutableList<TodoTask>, Int>>): Job {
         return coroutineScope.launch(Dispatchers.IO) {
             val todoTasks = services.getTasksWithOverdueReminders(now)
@@ -326,7 +327,7 @@ class ModelServices(
         }
     }
 
-    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, now: Long,
+    fun importCSVData(deleteAllDataBeforeImport: Boolean, csvDataUri: Uri, now: Timestamp,
                       deliveryOption: DeliveryOption = DeliveryOption.POST,
                       resultConsumer: ResultConsumer<String?>? = null): Job {
         return coroutineScope.launch(Dispatchers.IO) {

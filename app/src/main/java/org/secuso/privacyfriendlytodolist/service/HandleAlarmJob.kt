@@ -21,10 +21,9 @@ import android.util.Log
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
-import java.util.concurrent.TimeUnit
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 /**
  * A job service that handles an alarm which means showing a reminder notification.
@@ -76,27 +75,26 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
 
     private fun getMessage(todoTask: TodoTask): String? {
         val deadline = todoTask.getDeadline() ?: return null
-        // Change timestamp to begin of today to ensure that a deadline which is today is not seen
-        // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
-        val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
-        val today = TimeUnit.SECONDS.toDays(now + (12 * 60 * 60))
+        val now = Timestamp.createCurrent()
+        val today = now.timeInDays
         return if (todoTask.isRecurring()) {
-            val nextDeadlineAndCount = Helper.getNextRecurringDateAndCount(deadline, todoTask, now)
-            val deadlineDay = TimeUnit.SECONDS.toDays(nextDeadlineAndCount.first)
+            // Accept today as 'next recurring date' if it is one.
+            val nextDeadline = deadline.getNextRecurringDate(todoTask, now, acceptDestDate = true)
+            val deadlineDay = nextDeadline.first.timeInDays
             if (today == deadlineDay) {
-                applicationContext.resources.getString(R.string.recurring_deadline_today, nextDeadlineAndCount.second)
+                applicationContext.resources.getString(R.string.recurring_deadline_today, nextDeadline.second)
             } else {
                 val stringId = if (today < deadlineDay) R.string.recurring_deadline_approaching else R.string.recurring_deadline_passed
-                val deadlineStr = Helper.createLocalizedDateString(nextDeadlineAndCount.first)
-                applicationContext.resources.getString(stringId, deadlineStr, nextDeadlineAndCount.second)
+                val deadlineStr = nextDeadline.first.createLocalizedDateString()
+                applicationContext.resources.getString(stringId, deadlineStr, nextDeadline.second)
             }
         } else {
-            val deadlineDay = TimeUnit.SECONDS.toDays(deadline)
+            val deadlineDay = deadline.timeInDays
             if (today == deadlineDay) {
                 applicationContext.resources.getString(R.string.deadline_today)
             } else {
                 val stringId = if (today < deadlineDay) R.string.deadline_approaching else R.string.deadline_passed
-                val deadlineStr = Helper.createLocalizedDateString(deadline)
+                val deadlineStr = deadline.createLocalizedDateString()
                 applicationContext.resources.getString(stringId, deadlineStr)
             }
         }

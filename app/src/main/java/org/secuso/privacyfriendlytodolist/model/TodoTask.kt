@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model
 
 import android.os.Parcelable
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 
 interface TodoTask : BaseTodo, Parcelable {
@@ -115,8 +116,8 @@ interface TodoTask : BaseTodo, Parcelable {
 
     fun setId(id: Int)
     fun getId(): Int
-    fun setCreationTime(creationTime: Long)
-    fun getCreationTime(): Long
+    fun setCreationTime(creationTime: Timestamp)
+    fun getCreationTime(): Timestamp
     fun setName(name: String)
     fun getName(): String
     fun setDescription(description: String)
@@ -131,8 +132,8 @@ interface TodoTask : BaseTodo, Parcelable {
      * @return The ID of the associated list or null if no list is associated.
      */
     fun getListId(): Int?
-    fun setDeadline(deadline: Long?)
-    fun getDeadline(): Long?
+    fun setDeadline(deadline: Timestamp?)
+    fun getDeadline(): Timestamp?
     fun hasDeadline(): Boolean
     fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
     fun getRecurrencePattern(): RecurrencePattern
@@ -145,7 +146,7 @@ interface TodoTask : BaseTodo, Parcelable {
     fun getSubtasks(): MutableList<TodoSubtask>
 
     /**
-     * @param reminderTimeSpan The reminder time span is a relative value in seconds
+     * @param reminderTimeSpanS The reminder time span is a relative value in seconds
      * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
      * Urgency#IMMINENT gets returned.
      * @return Returns Urgency EXCEEDED if the deadline is in the past.
@@ -154,7 +155,7 @@ interface TodoTask : BaseTodo, Parcelable {
      * (the given one or the one set by the user).
      * Returns Urgency NONE in any other case.
      */
-    fun getUrgency(reminderTimeSpan: Long): Urgency
+    fun getUrgency(reminderTimeSpanS: Long): Urgency
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)
@@ -174,17 +175,17 @@ interface TodoTask : BaseTodo, Parcelable {
      * currently is stored.
      */
     fun computeProgress(): Boolean
-    fun setReminderTime(reminderTime: Long?)
-    fun getReminderTime(): Long?
-    fun computeReminderTimeAtDeadline(now: Long): Long?
+    fun setReminderTime(reminderTime: Timestamp?)
+    fun getReminderTime(): Timestamp?
+    fun computeReminderTimeAtDeadline(now: Timestamp): Timestamp?
     fun hasReminderTime(): Boolean
     fun setReminderState(reminderState: ReminderState)
     fun getReminderState(): ReminderState
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
-    fun setDoneTime(doneTime: Long?)
-    fun getDoneTime(): Long?
+    fun setDoneTime(doneTime: Timestamp?)
+    fun getDoneTime(): Timestamp?
 
     /**
      * This method updates the done-status of the task depending on the done-status of all subtasks:

@@ -23,8 +23,8 @@ import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoListData
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.util.Locale
-
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -124,8 +124,8 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         return counter
     }
 
-    override fun getNextDeadline(): Long? {
-        var minDeadLine: Long? = null
+    override fun getNextDeadline(): Timestamp? {
+        var minDeadLine: Timestamp? = null
         for (currentTask in tasks) {
             val currentDeadline = currentTask.getDeadline()
             if (currentTask.isDone() || currentDeadline == null) {

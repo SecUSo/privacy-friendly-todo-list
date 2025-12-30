@@ -96,7 +96,7 @@ class CSVExporter {
             csvBuilder.addField(todoList.getId())
             csvBuilder.addField(todoList.getName())
         } else {
-            for (i in START_COLUMN_LIST..<START_COLUMN_TASK) {
+            (START_COLUMN_LIST..<START_COLUMN_TASK).forEach { _ ->
                 csvBuilder.addEmptyField()
             }
         }
@@ -117,7 +117,7 @@ class CSVExporter {
             csvBuilder.addField(todoTask.getProgress())
             csvBuilder.addField(todoTask.getPriority().toString())
         } else {
-            for (i in START_COLUMN_TASK..<START_COLUMN_SUBTASK) {
+            (START_COLUMN_TASK..<START_COLUMN_SUBTASK).forEach { _ ->
                 csvBuilder.addEmptyField()
             }
         }
@@ -127,7 +127,7 @@ class CSVExporter {
             csvBuilder.addField(todoSubtask.getName())
             csvBuilder.addTimeField(todoSubtask.getDoneTime())
         } else {
-            for (i in START_COLUMN_SUBTASK..<COLUMN_COUNT) {
+            (START_COLUMN_SUBTASK..<COLUMN_COUNT).forEach { _ ->
                 csvBuilder.addEmptyField()
             }
         }

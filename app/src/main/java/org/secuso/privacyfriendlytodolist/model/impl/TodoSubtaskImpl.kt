@@ -21,7 +21,7 @@ import android.os.Parcel
 import android.os.Parcelable.Creator
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoSubtaskData
-import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.util.Locale
 
 /**
@@ -48,7 +48,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         data.id = parcel.readInt()
         data.sortOrder = parcel.readInt()
         data.name = parcel.readString()!!
-        data.doneTime = parcel.readValue(Long::class.java.classLoader) as Long?
+        data.doneTime = Timestamp.createBySecondsIfNotNull(parcel.readValue(Long::class.java.classLoader) as Long?)
         data.isInRecycleBin = parcel.readByte().toInt() != 0
         data.taskId = parcel.readInt()
         // The duplicated object shall not duplicate the RequiredDBAction. The original object shall
@@ -59,7 +59,7 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
         dest.writeInt(data.id)
         dest.writeInt(data.sortOrder)
         dest.writeString(data.name)
-        dest.writeValue(data.doneTime)
+        dest.writeValue(data.doneTime?.timeInSeconds)
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.taskId)
     }
@@ -97,18 +97,18 @@ class TodoSubtaskImpl : BaseTodoImpl, TodoSubtask {
     }
 
     override fun setDone(isDone: Boolean) {
-        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else null
+        data.doneTime = if (isDone) Timestamp.createCurrent() else null
     }
 
     override fun isDone(): Boolean {
         return data.doneTime != null
     }
 
-    override fun setDoneTime(doneTime: Long?) {
+    override fun setDoneTime(doneTime: Timestamp?) {
         data.doneTime = doneTime
     }
 
-    override fun getDoneTime(): Long? {
+    override fun getDoneTime(): Timestamp? {
         return data.doneTime
     }
 

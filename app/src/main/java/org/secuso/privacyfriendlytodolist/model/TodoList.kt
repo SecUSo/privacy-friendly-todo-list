@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model
 
 import android.os.Parcelable
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -37,7 +38,7 @@ interface TodoList : BaseTodo, Parcelable {
     fun getTasks(): MutableList<TodoTask>
     fun getColor(): Int
     fun getDoneTodos(): Int
-    fun getNextDeadline(): Long?
+    fun getNextDeadline(): Timestamp?
     fun checkQueryMatch(query: String?, recursive: Boolean): Boolean
     fun checkQueryMatch(query: String?): Boolean
 }

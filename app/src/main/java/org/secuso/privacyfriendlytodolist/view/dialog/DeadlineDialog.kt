@@ -23,23 +23,24 @@ import android.widget.Button
 import android.widget.DatePicker
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.util.Calendar
 import java.util.GregorianCalendar
-import java.util.concurrent.TimeUnit
 
 interface DeadlineCallback {
-    fun setDeadline(selectedDeadline: Long)
+    fun setDeadline(selectedDeadline: Timestamp)
     fun removeDeadline()
 }
 
-class DeadlineDialog(context: Context, private val deadline: Long?) :
+class DeadlineDialog(context: Context, private val deadline: Timestamp?) :
     FullScreenDialog<DeadlineCallback>(context, R.layout.deadline_dialog) {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val calendar1 = GregorianCalendar.getInstance()
         if (deadline != null) {
-            calendar1.timeInMillis = TimeUnit.SECONDS.toMillis(deadline)
+            calendar1.timeInMillis = deadline.timeInMillis
         } else {
             calendar1.setTime(Calendar.getInstance().time)
         }
@@ -69,7 +70,8 @@ class DeadlineDialog(context: Context, private val deadline: Long?) :
                    With the knowledge of the timezone it would be possible to have the reminder at
                    the local 5 o'clock regardless to which timezone the user travels.
              */
-            getDialogCallback().setDeadline(TimeUnit.MILLISECONDS.toSeconds(calendar2.timeInMillis))
+            val newDeadline = Timestamp.createByCalendar(calendar2)
+            getDialogCallback().setDeadline(newDeadline)
             dismiss()
         }
         val buttonNoDeadline: Button = findViewById(R.id.bt_deadline_nodeadline)

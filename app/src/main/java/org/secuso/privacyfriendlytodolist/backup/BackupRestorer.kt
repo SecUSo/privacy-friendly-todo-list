@@ -20,6 +20,7 @@ package org.secuso.privacyfriendlytodolist.backup
 import android.content.Context
 import android.util.JsonReader
 import android.util.Log
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.runBlocking
 import org.secuso.privacyfriendlybackup.api.backup.DatabaseUtil
@@ -95,17 +96,17 @@ class BackupRestorer : IBackupRestorer {
     private fun readPreferences(reader: JsonReader, context: Context) {
         Log.d(TAG, "Restoring todo list preferences")
         reader.beginObject()
-        val pref = PreferenceManager.getDefaultSharedPreferences(context).edit()
-        while (reader.hasNext()) {
-            val name = reader.nextName()
-            val prefMetaData = PreferenceMgr.ALL_PREFERENCES[name]
-                ?: throw RuntimeException("Unknown preference $name")
-            when (prefMetaData.dataType) {
-                PrefDataType.BOOLEAN -> pref.putBoolean(name, reader.nextBoolean())
-                PrefDataType.STRING -> pref.putString(name, reader.nextString())
+        PreferenceManager.getDefaultSharedPreferences(context).edit {
+            while (reader.hasNext()) {
+                val name = reader.nextName()
+                val prefMetaData = PreferenceMgr.ALL_PREFERENCES[name]
+                    ?: throw RuntimeException("Unknown preference $name")
+                when (prefMetaData.dataType) {
+                    PrefDataType.BOOLEAN -> putBoolean(name, reader.nextBoolean())
+                    PrefDataType.STRING -> putString(name, reader.nextString())
+                }
             }
         }
-        pref.apply()
         reader.endObject()
     }
 

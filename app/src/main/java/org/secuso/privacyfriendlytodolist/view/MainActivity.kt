@@ -75,6 +75,7 @@ import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
 import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
@@ -1208,7 +1209,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun doImport(uri: Uri) {
         Log.i(TAG, "CSV import from $uri starts. Delete existing data: $deleteAllDataBeforeImport")
-        model.importCSVData(deleteAllDataBeforeImport, uri, Helper.getCurrentTimestamp()) { errorMessage ->
+        model.importCSVData(deleteAllDataBeforeImport, uri, Timestamp.createCurrent()) { errorMessage ->
             addTodoListsToView()
             showAllTasks()
             showHints()

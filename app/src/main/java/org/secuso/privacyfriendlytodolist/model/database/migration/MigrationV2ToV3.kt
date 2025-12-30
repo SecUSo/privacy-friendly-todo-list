@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model.database.migration
 
 import androidx.sqlite.db.SupportSQLiteDatabase
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 class MigrationV2ToV3: MigrationBase(2, 3) {
     override fun doMigrate(db: SupportSQLiteDatabase) {
@@ -59,7 +59,7 @@ class MigrationV2ToV3: MigrationBase(2, 3) {
         db.execSQL("UPDATE $TABLE_NAME SET deadline = NULL WHERE deadline = -1")
         db.execSQL("UPDATE $TABLE_NAME SET reminderTime = NULL WHERE reminderTime = -1")
         // Boolean done (0 or 1) has changed to doneTime (timestamp if done, otherwise null).
-        val now = Helper.getCurrentTimestamp()
+        val now = Timestamp.createCurrent().timeInSeconds
         db.execSQL("UPDATE $TABLE_NAME SET doneTime = $now WHERE doneTime <> 0")
         db.execSQL("UPDATE $TABLE_NAME SET doneTime = NULL WHERE doneTime = 0")
         // Set default value in new column creationTime which is the current time in seconds.

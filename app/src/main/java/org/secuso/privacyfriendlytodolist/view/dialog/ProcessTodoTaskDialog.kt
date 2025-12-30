@@ -41,6 +41,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.Locale
 
@@ -54,10 +55,10 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                             private var todoTask: TodoTask):
         FullScreenDialog<ResultCallback<TodoTask>>(context, R.layout.task_dialog) {
 
-    private var deadline: Long?
+    private var deadline: Timestamp?
     private var recurrencePattern: RecurrencePattern
     private var recurrenceInterval: Int
-    private var reminderTime: Long?
+    private var reminderTime: Timestamp?
     private var taskProgress: Int
     private var taskPriority: TodoTask.Priority
     private var assignedTodoListId: Int?
@@ -107,14 +108,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         taskDescription.setText(todoTask.getDescription())
         // Task deadline
         val deadlineTextView: TextView = findViewById(R.id.tv_todo_list_deadline)
-        deadlineTextView.text = if (deadline == null)
-            context.getString(R.string.deadline) else Helper.createLocalizedDateString(deadline!!)
+        deadlineTextView.text = deadline?.createLocalizedDateString() ?: context.getString(R.string.deadline)
         deadlineTextView.setOnClickListener {
             val deadlineDialog = DeadlineDialog(context, deadline)
             deadlineDialog.setDialogCallback(object : DeadlineCallback {
-                override fun setDeadline(selectedDeadline: Long) {
+                override fun setDeadline(selectedDeadline: Timestamp) {
                     deadline = selectedDeadline
-                    deadlineTextView.text = Helper.createLocalizedDateString(selectedDeadline)
+                    deadlineTextView.text = selectedDeadline.createLocalizedDateString()
                 }
 
                 override fun removeDeadline() {
@@ -126,12 +126,11 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
         }
         // Task reminder
         val reminderTextView: TextView = findViewById(R.id.tv_todo_list_reminder)
-        reminderTextView.text = if (reminderTime == null)
-            context.getString(R.string.reminder) else Helper.createLocalizedDateTimeString(reminderTime!!)
+        reminderTextView.text = reminderTime?.createLocalizedDateTimeString() ?: context.getString(R.string.reminder)
         reminderTextView.setOnClickListener {
             val reminderDialog = ReminderDialog(context, reminderTime, deadline)
             reminderDialog.setDialogCallback(object : ReminderCallback {
-                override fun setReminderTime(selectedReminderTime: Long) {
+                override fun setReminderTime(selectedReminderTime: Timestamp) {
                     var resIdErrorMsg = 0
                     val deadlineCopy = deadline
                     if (recurrencePattern == RecurrencePattern.NONE) {
@@ -140,13 +139,13 @@ class ProcessTodoTaskDialog(context: FragmentActivity,
                         } else */
                         if (deadlineCopy != null && deadlineCopy < selectedReminderTime) {
                             resIdErrorMsg = R.string.deadline_smaller_reminder
-                        } else if (selectedReminderTime < Helper.getCurrentTimestamp()) {
+                        } else if (selectedReminderTime < Timestamp.createCurrent()) {
                             resIdErrorMsg = R.string.reminder_smaller_now
                         }
                     }
                     if (resIdErrorMsg == 0) {
                         reminderTime = selectedReminderTime
-                        reminderTextView.text = Helper.createLocalizedDateTimeString(selectedReminderTime)
+                        reminderTextView.text = selectedReminderTime.createLocalizedDateTimeString()
                     } else {
                         Toast.makeText(context, context.getString(resIdErrorMsg), Toast.LENGTH_SHORT).show()
                     }

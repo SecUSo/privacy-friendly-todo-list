@@ -19,8 +19,8 @@ package org.secuso.privacyfriendlytodolist.service
 
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 /**
  * A job service that ensures that an alarm is set for the task with the next reminder.
@@ -43,7 +43,7 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarm-job") {
     }
 
     private fun triggerAlarmsForOverdueReminders() {
-        model.getTasksWithOverdueReminders(Helper.getCurrentTimestamp()) { tasksAndCounter ->
+        model.getTasksWithOverdueReminders(Timestamp.createCurrent()) { tasksAndCounter ->
             if (isJobStopped()) {
                 return@getTasksWithOverdueReminders
             }
@@ -62,7 +62,7 @@ class UpdateAlarmsJob : ModelJobBase("Update-alarm-job") {
     }
 
     private fun doUpdateNextAlarm(alreadyUpdatedTasks: Int) {
-        model.getNextTaskToRemind(Helper.getCurrentTimestamp()) { taskAndCounter ->
+        model.getNextTaskToRemind(Timestamp.createCurrent()) { taskAndCounter ->
             if (isJobStopped()) {
                 return@getNextTaskToRemind
             }

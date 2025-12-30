@@ -24,11 +24,11 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
-import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -55,7 +55,7 @@ class PeriodicUpdater(private val context: Context,
             subject = "recurring tasks"
             Log.d(TAG, "Triggering periodic update of recurring tasks.")
             val viewModel = CustomViewModel(applicationContext)
-            viewModel.model.updateRecurringTasks(Helper.getCurrentTimestamp()) { numberOfUpdatedTasks ->
+            viewModel.model.updateRecurringTasks(Timestamp.createCurrent()) { numberOfUpdatedTasks ->
                 if (numberOfUpdatedTasks > 0) {
                     Log.d(TAG, "$numberOfUpdatedTasks recurring tasks were updated outside UI. Notifying UI!")
                     viewModel.model.notifyDataChangedOutsideAppUI(0, numberOfUpdatedTasks, 0)
@@ -84,31 +84,27 @@ class PeriodicUpdater(private val context: Context,
          * After that the updates will be rescheduled every day short after midnight.
          */
         fun startPeriodicUpdates(context: Context) {
-            val initialDelay = 2 * JobManager.UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS
+            val initialDelayMs = 2 * JobManager.UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS
             val request = OneTimeWorkRequestBuilder<PeriodicUpdater>()
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .setInitialDelay(initialDelayMs, TimeUnit.MILLISECONDS)
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request)
-            Log.i(TAG, "Doing first periodic update in ${initialDelay / 1000} seconds.")
+            Log.i(TAG, "Doing first periodic update in ${TimeUnit.MILLISECONDS.toSeconds(initialDelayMs)} seconds.")
         }
 
         private fun scheduleNextUpdate(context: Context) {
             // Update widgets and tasks daily short after midnight.
-            val calendar = Calendar.getInstance()
-            val now = calendar.timeInMillis
-            calendar.set(Calendar.HOUR_OF_DAY, 23)
-            calendar.set(Calendar.MINUTE, 59)
-            calendar.set(Calendar.SECOND, 59)
-            calendar.set(Calendar.MILLISECOND, 0)
-            val updateTime = calendar.timeInMillis + 31000
-            val initialDelay = updateTime - now
+            val now = Timestamp.createCurrent()
+            val updateTime = now
+                .addInterval(TodoTask.RecurrencePattern.DAILY, 1)
+                .setTimePart(0, 0, 30)
+            val initialDelayS = updateTime.timeInSeconds - now.timeInSeconds
             val request = OneTimeWorkRequestBuilder<PeriodicUpdater>()
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .setInitialDelay(initialDelayS, TimeUnit.SECONDS)
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request)
-            Log.i(TAG, "Next periodic update scheduled for " +
-                    "${Helper.createCanonicalDateTimeString(TimeUnit.MILLISECONDS.toSeconds(updateTime))} " +
-                    "which is in ${initialDelay.toDuration(DurationUnit.MILLISECONDS)}.")
+            Log.i(TAG, "Next periodic update scheduled for $updateTime " +
+                    "which is in ${initialDelayS.toDuration(DurationUnit.SECONDS)}.")
         }
     }
 }

@@ -20,10 +20,10 @@ package org.secuso.privacyfriendlytodolist.service
 import android.util.Log
 import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
 import org.secuso.privacyfriendlytodolist.util.AlarmMgr
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 
 /**
@@ -58,8 +58,8 @@ class NotificationJob : ModelJobBase("Notification job") {
     private fun doSnooze(todoTaskId: Int) {
         NotificationMgr.cancelNotification(context, todoTaskId)
 
-        val alarmTime = Helper.getCurrentTimestamp() + PreferenceMgr.getSnoozeDuration(context)
-        Log.d(TAG, "$logPrefix Snoozing task $todoTaskId until ${Helper.createCanonicalDateTimeString(alarmTime)}.")
+        val alarmTime = Timestamp.createCurrent().addSeconds(PreferenceMgr.getSnoozeDuration(context))
+        Log.d(TAG, "$logPrefix Snoozing task $todoTaskId until $alarmTime.")
         AlarmMgr.setAlarmForTask(context, todoTaskId, alarmTime)
         jobFinished()
     }
@@ -76,16 +76,16 @@ class NotificationJob : ModelJobBase("Notification job") {
             if (null == todoTask) {
                 Log.e(TAG, "$logPrefix Unable to snooze until deadline. No task with ID $todoTaskId was found.")
             } else {
-                val now = Helper.getCurrentTimestamp()
+                val now = Timestamp.createCurrent()
                 var reminderTimeAtDeadline = todoTask.computeReminderTimeAtDeadline(now)
                 if (reminderTimeAtDeadline == null) {
                     Log.e(TAG, "$logPrefix Unable to snooze until deadline. $todoTask has no deadline.")
                 } else {
-                    val earliest = now + (15 * 60)
+                    val earliest = now.addSeconds(15 * 60)
                     if (reminderTimeAtDeadline < earliest) {
                         reminderTimeAtDeadline = earliest
                     }
-                    Log.d(TAG, "$logPrefix Snoozing $todoTask until deadline: ${Helper.createCanonicalDateTimeString(reminderTimeAtDeadline)}.")
+                    Log.d(TAG, "$logPrefix Snoozing $todoTask until deadline: $reminderTimeAtDeadline.")
                     AlarmMgr.setAlarmForTask(context, todoTaskId, reminderTimeAtDeadline)
                 }
             }

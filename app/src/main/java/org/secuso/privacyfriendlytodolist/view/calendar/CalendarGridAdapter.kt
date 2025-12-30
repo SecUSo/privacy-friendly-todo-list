@@ -32,12 +32,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -103,8 +102,8 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         }
 
         // add color bar if a task has its deadline on this day
-        val day = TimeUnit.MILLISECONDS.toDays(dateAtPos.time)
-        val tasksToday = tasksPerDay[day]
+        val key = Timestamp.createByMillis(dateAtPos.time).timeInDays
+        val tasksToday = tasksPerDay[key]
         if (tasksToday != null) {
             var border: Drawable? = null
             for (t in tasksToday) {
@@ -147,25 +146,23 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         startCal[Calendar.YEAR] = currentYear
         startCal[Calendar.MONTH] = currentMonth
         startCal.add(Calendar.MONTH, -1)
+        val startDate = Timestamp.createByCalendar(startCal)
         val endCal = Calendar.getInstance()
         endCal.timeInMillis = 0
         endCal[Calendar.YEAR] = currentYear
         endCal[Calendar.MONTH] = currentMonth
         endCal.add(Calendar.MONTH, 2)
         endCal.add(Calendar.DAY_OF_MONTH, -1)
+        val endDate = Timestamp.createByCalendar(endCal)
 
         tasksPerDay.clear()
         for (todoTask in allTodoTasks) {
-            var deadline: Long = todoTask.getDeadline() ?: continue
+            val deadline = todoTask.getDeadline() ?: continue
             if (todoTask.isRecurring()) {
-                val recurringDateCal = Calendar.getInstance()
-                recurringDateCal.timeInMillis = TimeUnit.SECONDS.toMillis(deadline)
-                Helper.getNextRecurringDateAndCount(recurringDateCal, todoTask, startCal)
-                while (recurringDateCal < endCal) {
-                    deadline = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
-                    addTaskOfDay(todoTask, deadline)
-                    Helper.addInterval(recurringDateCal,
-                        todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval())
+                var recurringDeadline = deadline.getNextRecurringDate(todoTask, startDate).first
+                while (recurringDeadline < endDate) {
+                    addTaskOfDay(todoTask, recurringDeadline)
+                    recurringDeadline = recurringDeadline.addInterval(todoTask)
                 }
             } else {
                 addTaskOfDay(todoTask, deadline)
@@ -174,8 +171,8 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         tasksPerDayNeedUpdate = false
     }
 
-    private fun addTaskOfDay(todoTask: TodoTask, deadline: Long) {
-        val key = TimeUnit.SECONDS.toDays(deadline)
+    private fun addTaskOfDay(todoTask: TodoTask, deadline: Timestamp) {
+        val key = deadline.timeInDays
         var tasksOfDay = tasksPerDay[key]
         if (null == tasksOfDay) {
             tasksOfDay = ArrayList()
@@ -186,7 +183,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
 
     fun getTasksOfDay(position: Int): ArrayList<TodoTask>? {
         val selectedDate = getItem(position) ?: return null
-        val key = TimeUnit.MILLISECONDS.toDays(selectedDate.time)
+        val key = Timestamp.createByMillis(selectedDate.time).timeInDays
         return tasksPerDay[key]
     }
 

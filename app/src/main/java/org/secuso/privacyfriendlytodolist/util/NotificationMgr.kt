@@ -41,7 +41,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
 import org.secuso.privacyfriendlytodolist.view.MainActivity
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -146,10 +145,10 @@ object NotificationMgr {
         builder.addAction(R.drawable.ic_snooze_black_24dp, actionTitle, pendingIntent)
 
         // If deadline is available, in future and not today provide action to snooze until deadline.
-        val now = Helper.getCurrentTimestamp()
+        val now = Timestamp.createCurrent()
         val reminderTimeAtDeadline = task.computeReminderTimeAtDeadline(now)
         if (reminderTimeAtDeadline != null
-            && TimeUnit.SECONDS.toDays(reminderTimeAtDeadline) > TimeUnit.SECONDS.toDays(now)) {
+            && reminderTimeAtDeadline.timeInDays > now.timeInDays) {
             // Snooze until Deadline Action -> Restart reminder without showing activity
             intent = Intent(context, NotificationReceiver::class.java)
             intent.action = NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE

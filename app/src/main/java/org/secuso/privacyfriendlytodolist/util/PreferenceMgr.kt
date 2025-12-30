@@ -100,7 +100,7 @@ object PreferenceMgr {
     }
 
     /**
-     * @return The snooze duration, as it is stored in the app preference.
+     * @return The snooze duration in seconds, as it is stored in the app preference.
      */
     fun getSnoozeDuration(context: Context): Long {
         return getStringPrefAsLong(context, P_SNOOZE_DURATION.name)

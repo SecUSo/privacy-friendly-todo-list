@@ -41,6 +41,7 @@ import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.TaskComparator
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 
 /**
@@ -443,7 +444,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 val deadline = currentTask.getDeadline()
                 if (deadline != null) {
-                    tvh.deadline.text = Helper.createLocalizedDateString(deadline)
+                    tvh.deadline.text = deadline.createLocalizedDateString()
                     tvh.deadlineIcon.visibility = View.VISIBLE
                     tvh.deadline.visibility = View.VISIBLE
                 } else {
@@ -452,7 +453,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 val reminderTime = currentTask.getReminderTime()
                 if (isExpanded && reminderTime != null) {
-                    tvh.reminder.text = Helper.createLocalizedDateTimeString(reminderTime)
+                    tvh.reminder.text = reminderTime.createLocalizedDateTimeString()
                     tvh.reminderIcon.visibility = View.VISIBLE
                     tvh.reminder.visibility = View.VISIBLE
                 } else {
@@ -460,12 +461,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.reminder.visibility = View.GONE
                 }
                 if (isExpanded && currentTask.isRecurring() && currentTask.hasDeadline()) {
-                    // Change timestamp to begin of today to ensure that a deadline which is today is not seen
-                    // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
-                    val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
-                    val recurringDeadlineAndCount = Helper.getNextRecurringDateAndCount(
-                        currentTask.getDeadline()!!, currentTask, now)
-                    val recurringDeadlineString = Helper.createLocalizedDateString(recurringDeadlineAndCount.first)
+                    val now = Timestamp.createCurrent()
+                    val recurringDeadlineAndCount = currentTask.getDeadline()!!.getNextRecurringDate(
+                        currentTask, now, acceptDestDate = true)
+                    val recurringDeadlineString = recurringDeadlineAndCount.first.createLocalizedDateString()
                     tvh.recurringDeadline.text = context.getString(R.string.nth_recurrence_at,
                         recurringDeadlineAndCount.second, recurringDeadlineString)
                     tvh.recurringDeadlineIcon.visibility = View.VISIBLE
@@ -549,7 +548,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val currentTask = currentTaskHolder.todoTask
         when (childType) {
             ChildType.SUBTASK_ROW -> {
-                @Suppress("UnnecessaryVariable") val subtaskIndex = childPosition
+                val subtaskIndex = childPosition
                 val currentSubtask = currentTask.getSubtasks()[subtaskIndex]
                 val currentSubtaskMetaData = currentTaskHolder.getSubtaskMetaData(subtaskIndex)!!
                 val svh: SubtaskViewHolder
@@ -794,7 +793,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     )
 
     private class TaskHolder(val todoTask: TodoTask) {
-        private val subtasksMetaData = MutableList(todoTask.getSubtasks().size) { index ->
+        private val subtasksMetaData = MutableList(todoTask.getSubtasks().size) { _ ->
             return@MutableList SubtaskMetaData()
         }
 

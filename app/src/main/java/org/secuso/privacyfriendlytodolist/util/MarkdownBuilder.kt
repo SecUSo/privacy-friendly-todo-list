@@ -38,7 +38,7 @@ class MarkdownBuilder(private val writer: Writer, private val deadlineString: St
         if (deadline != null) {
             writer.append(deadlineString)
             writer.append(" ")
-            writer.append(Helper.createLocalizedDateString(deadline))
+            writer.append(deadline.createLocalizedDateString())
             writer.append(": ")
         }
         writer.append(todoTask.getName())
