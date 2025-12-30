@@ -214,13 +214,6 @@
     <string name="list_quick_access">Accès rapide aux listes</string>
     <string name="pref_first_day_of_week_title">Premier jour de semaine</string>
     <string name="dialog_need_permission_post_notifications_title">Activer les notifications</string>
-    <string name="sunday">Dimanche</string>
-    <string name="monday">Lundi</string>
-    <string name="tuesday">Mardi</string>
-    <string name="wednesday">Mercredi</string>
-    <string name="thursday">Jeudi</string>
-    <string name="friday">Vendredi</string>
-    <string name="saturday">Samedi</string>
     <string name="bin">Corbeille</string>
     <string name="btn_clear">Vider la corbeille</string>
     <string name="bin_toolbar">Corbeille</string>
