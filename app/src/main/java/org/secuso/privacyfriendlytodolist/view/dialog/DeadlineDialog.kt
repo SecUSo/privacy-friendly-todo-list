@@ -39,7 +39,7 @@ class DeadlineDialog(context: Context, private val deadline: Long?) :
 
         val calendar1 = GregorianCalendar.getInstance()
         if (deadline != null) {
-            calendar1.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline))
+            calendar1.timeInMillis = TimeUnit.SECONDS.toMillis(deadline)
         } else {
             calendar1.setTime(Calendar.getInstance().time)
         }
@@ -69,7 +69,7 @@ class DeadlineDialog(context: Context, private val deadline: Long?) :
                    With the knowledge of the timezone it would be possible to have the reminder at
                    the local 5 o'clock regardless to which timezone the user travels.
              */
-            getDialogCallback().setDeadline(TimeUnit.MILLISECONDS.toSeconds(calendar2.getTimeInMillis()))
+            getDialogCallback().setDeadline(TimeUnit.MILLISECONDS.toSeconds(calendar2.timeInMillis))
             dismiss()
         }
         val buttonNoDeadline: Button = findViewById(R.id.bt_deadline_nodeadline)

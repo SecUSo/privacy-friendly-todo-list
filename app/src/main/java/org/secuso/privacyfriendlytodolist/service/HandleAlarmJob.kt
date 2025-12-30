@@ -24,6 +24,7 @@ import org.secuso.privacyfriendlytodolist.util.AlarmMgr
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
+import java.util.concurrent.TimeUnit
 
 /**
  * A job service that handles an alarm which means showing a reminder notification.
@@ -53,22 +54,7 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
             if (null != todoTask) {
                 Log.i(TAG, "$logPrefix Notifying about alarm for $todoTask.")
                 val title = todoTask.getName()
-                var message: String? = null
-                val deadline = todoTask.getDeadline()
-                if (null != deadline) {
-                    message = if (todoTask.isRecurring()) {
-                        // Change timestamp to begin of today to ensure that a deadline which is today is not seen
-                        // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
-                        val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
-                        val nextDeadlineAndCount = Helper.getNextRecurringDateAndCount(deadline, todoTask, now)
-                        val deadlineStr = Helper.createLocalizedDateString(nextDeadlineAndCount.first)
-                        applicationContext.resources.getString(R.string.recurring_deadline_approaching,
-                            deadlineStr, nextDeadlineAndCount.second)
-                    } else {
-                        val deadlineStr = Helper.createLocalizedDateString(deadline)
-                        applicationContext.resources.getString(R.string.deadline_approaching, deadlineStr)
-                    }
-                }
+                val message = getMessage(todoTask)
                 NotificationMgr.postTaskNotification(context, title, message, todoTask)
 
                 todoTask.setReminderState(TodoTask.ReminderState.DONE)
@@ -84,6 +70,34 @@ class HandleAlarmJob : ModelJobBase("Handle-alarm-job") {
             } else {
                 Log.e(TAG, "$logPrefix Unable to process alarm. No task with ID $todoTaskId was found.")
                 jobFinished()
+            }
+        }
+    }
+
+    private fun getMessage(todoTask: TodoTask): String? {
+        val deadline = todoTask.getDeadline() ?: return null
+        // Change timestamp to begin of today to ensure that a deadline which is today is not seen
+        // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
+        val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
+        val today = TimeUnit.SECONDS.toDays(now + (12 * 60 * 60))
+        return if (todoTask.isRecurring()) {
+            val nextDeadlineAndCount = Helper.getNextRecurringDateAndCount(deadline, todoTask, now)
+            val deadlineDay = TimeUnit.SECONDS.toDays(nextDeadlineAndCount.first)
+            if (today == deadlineDay) {
+                applicationContext.resources.getString(R.string.recurring_deadline_today, nextDeadlineAndCount.second)
+            } else {
+                val stringId = if (today < deadlineDay) R.string.recurring_deadline_approaching else R.string.recurring_deadline_passed
+                val deadlineStr = Helper.createLocalizedDateString(nextDeadlineAndCount.first)
+                applicationContext.resources.getString(stringId, deadlineStr, nextDeadlineAndCount.second)
+            }
+        } else {
+            val deadlineDay = TimeUnit.SECONDS.toDays(deadline)
+            if (today == deadlineDay) {
+                applicationContext.resources.getString(R.string.deadline_today)
+            } else {
+                val stringId = if (today < deadlineDay) R.string.deadline_approaching else R.string.deadline_passed
+                val deadlineStr = Helper.createLocalizedDateString(deadline)
+                applicationContext.resources.getString(stringId, deadlineStr)
             }
         }
     }

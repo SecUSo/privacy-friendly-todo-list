@@ -91,7 +91,7 @@ class TutorialActivity : AppCompatActivity() {
     private fun launchHomeScreen() {
         PreferenceMgr.setFirstTimeLaunch(this, false)
         val intent = Intent(this@TutorialActivity, MainActivity::class.java)
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
         finish()
     }

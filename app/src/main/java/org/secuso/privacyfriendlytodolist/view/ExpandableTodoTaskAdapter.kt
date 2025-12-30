@@ -492,14 +492,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         snackBar.setAction(R.string.snack_undo) {
                             val inverted = !isChecked
                             buttonView.isChecked = inverted
-                            currentTask.setDone(buttonView.isChecked)
+                            currentTask.setDone(inverted)
                             currentTask.setAllSubtasksDone(inverted)
                             if (hasAutoProgress()) {
                                 currentTask.computeProgress()
                             }
                             currentTask.setChanged()
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
-                                subtask.setDone(inverted)
+                                subtask.setChanged()
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
                                 notifyDataSetChanged()
@@ -515,7 +515,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                             subtask.setChanged()
                         }
-                        model.saveTodoTaskInDb(currentTask) {
+                        model.saveTodoTaskAndSubtasksInDb(currentTask) {
                             notifyDataSetChanged()
                         }
                     }
@@ -549,7 +549,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val currentTask = currentTaskHolder.todoTask
         when (childType) {
             ChildType.SUBTASK_ROW -> {
-                val subtaskIndex = childPosition
+                @Suppress("UnnecessaryVariable") val subtaskIndex = childPosition
                 val currentSubtask = currentTask.getSubtasks()[subtaskIndex]
                 val currentSubtaskMetaData = currentTaskHolder.getSubtaskMetaData(subtaskIndex)!!
                 val svh: SubtaskViewHolder
@@ -575,7 +575,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 svh.done.jumpDrawablesToCurrentState()
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
-                        currentSubtask.setDone(buttonView.isChecked)
+                        currentSubtask.setDone(isChecked)
                         currentSubtask.setChanged()
                         model.saveTodoSubtaskInDb(currentSubtask) {
                             val doneStatusChanged = currentTask.updateDoneStatus()
@@ -757,11 +757,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 
-    private inner class GroupPriorityViewHolder(
+    private class GroupPriorityViewHolder(
         val priorityFlag: TextView
     )
 
-    private inner class GroupTaskViewHolder(
+    private class GroupTaskViewHolder(
         val name: TextView,
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
@@ -779,7 +779,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val taskDescription: TextView
     )
 
-    private inner class SubtaskViewHolder(
+    private class SubtaskViewHolder(
         val subtaskName: TextView,
         val done: CheckBox,
         val urgencyColorBar: View,
@@ -788,12 +788,12 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val subtaskMenuButton: ImageButton
     )
 
-    private inner class SettingViewHolder(
+    private class SettingViewHolder(
         val addSubtaskButton: LinearLayout,
         val urgencyColorBar: View
     )
 
-    private inner class TaskHolder(val todoTask: TodoTask) {
+    private class TaskHolder(val todoTask: TodoTask) {
         private val subtasksMetaData = MutableList(todoTask.getSubtasks().size) { index ->
             return@MutableList SubtaskMetaData()
         }
@@ -830,7 +830,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
     }
 
-    private inner class SubtaskMetaData(var moveButtonsVisibility: Int = View.GONE) {
+    private class SubtaskMetaData(var moveButtonsVisibility: Int = View.GONE) {
         fun toggleMoveButtonsVisibility() {
             moveButtonsVisibility = if (moveButtonsVisibility == View.GONE) View.VISIBLE else View.GONE
         }

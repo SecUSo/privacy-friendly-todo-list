@@ -110,7 +110,7 @@ object PreferenceMgr {
      * @return The kind of content that should be displayed on the home screen.
      */
     fun getContentHome(context: Context): ContentHome {
-        var contentHome = getStringPrefAsLong(context, P_CONTENT_HOME.name, 0)
+        val contentHome = getStringPrefAsLong(context, P_CONTENT_HOME.name, 0)
         return ContentHome.fromOrdinal(contentHome.toInt(), ContentHome.ALL_TASKS)!!
     }
 

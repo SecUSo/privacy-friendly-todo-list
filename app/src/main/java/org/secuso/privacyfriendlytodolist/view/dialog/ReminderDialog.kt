@@ -61,7 +61,7 @@ class ReminderDialog(context: Context, private val reminderTime: Long?, private 
                 now + PreferenceMgr.getDefaultReminderTimeSpan(context)
             }
         val calendar = GregorianCalendar.getInstance()
-        calendar.setTimeInMillis(TimeUnit.SECONDS.toMillis(reminderTimeSuggestion))
+        calendar.timeInMillis = TimeUnit.SECONDS.toMillis(reminderTimeSuggestion)
 
         val datePicker: DatePicker = findViewById(R.id.dp_reminder)
         datePicker.init(
@@ -73,6 +73,7 @@ class ReminderDialog(context: Context, private val reminderTime: Long?, private 
         }
         datePicker.firstDayOfWeek = PreferenceMgr.getFirstDayOfWeek(context)
         val timePicker: TimePicker = findViewById(R.id.tp_reminder)
+        @Suppress("UsePropertyAccessSyntax")
         timePicker.setIs24HourView(DateFormat.is24HourFormat(context))
         timePicker.currentHour = calendar[Calendar.HOUR_OF_DAY]
         timePicker.currentMinute = calendar[Calendar.MINUTE]
@@ -94,7 +95,7 @@ class ReminderDialog(context: Context, private val reminderTime: Long?, private 
                 datePicker.dayOfMonth,
                 timePicker.currentHour,
                 timePicker.currentMinute)
-            val reminderTime = TimeUnit.MILLISECONDS.toSeconds(calendar2.getTimeInMillis())
+            val reminderTime = TimeUnit.MILLISECONDS.toSeconds(calendar2.timeInMillis)
             getDialogCallback().setReminderTime(reminderTime)
             dismiss()
         }

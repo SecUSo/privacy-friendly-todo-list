@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 object JobManager {
     const val KEY_JOB_TYPE = "KEY_JOB_TYPE"
     private val TAG = LogTag.create(this::class.java)
-    private const val UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS = 10000L
+    const val UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS = 10000L
     /**
      * WorkManager uses ID range 0 .. Integer#MAX_VALUE. The JobInfo ID range must not overlap with
      * this range. See androidx.work.Configuration.Builder#setJobSchedulerJobIdRange() for details.
