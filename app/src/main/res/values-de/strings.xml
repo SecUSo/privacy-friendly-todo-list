@@ -37,7 +37,7 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <!-- Help -->
-    <string name="help_overview_heading">Allgemein</string>
+    <string name="help_overview_heading">Allgemeine Informationen</string>
     <string name="help_intro">Die Privacy Friendly To-Do Liste kann zur Organisation und persönlichen Zeitplanung verwendet werden.</string>
     <string name="help_group_lists">Verwaltung von Aufgaben</string>
     <string name="help_todo_lists_title">To-Do Listen</string>
@@ -110,7 +110,7 @@
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="share_task">Aufgabe teilen</string>
     <string name="remove_task">Aufgabe entfernen</string>
-    <string name="task_removed">Aufgabe wurde entfernt</string>
+    <string name="task_removed">Aufgabe erfolgreich entfernt.</string>
     <string name="tasks_removed">%1$d Aufgabe(n) und %2$d Unteraufgabe(n) entfernt.</string>
     <string name="deadline">Termin</string>
     <string name="recurrence_every">Wiederholung alle</string>
@@ -133,7 +133,7 @@
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
     <string name="delete_subtask">Unteraufgabe löschen</string>
-    <string name="subtask_removed">Unteraufgabe wurde gelöscht</string>
+    <string name="subtask_removed">Unteraufgabe erfolgreich gelöscht.</string>
     <string name="to_choose_list">Liste auswählen!</string>
     <string name="click_to_choose">Klicken zum Wählen!</string>
     <string name="list_colon">Liste:</string>
@@ -214,7 +214,7 @@
     </string-array>
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Genaue Erinnerungen aktivieren</string>
-    <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung, um Erinnerungen zeitlich genau zu melden wird benötigt. Andernfalls erfolgen die Erinnerungen zeitlich ungenau.</string>
+    <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung zum Planen genauer Erinnerungen ist erforderlich. Andernfalls sind Erinnerungen ungenau.</string>
     <string name="dialog_need_permission_post_notifications_title">Benachrichtigungen aktivieren</string>
     <string name="dialog_need_permission_post_notifications_message">Die Berechtigung, um Benachrichtigungen für Erinnerungen anzuzeigen wird benötigt. Andernfalls werden Erinnerungen nicht angezeigt.</string>
     <!-- Reminder service -->

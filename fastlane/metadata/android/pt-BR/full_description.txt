@@ -1,0 +1,35 @@
+A Lista de Tarefas com Proteção de Privacidade pode ser usada para manter suas tarefas pendentes em mente e organizar sua agenda pessoal. Este aplicativo permite criar listas de tarefas que podem ser gerenciadas individualmente. Cada lista contém um conjunto de tarefas. Cada tarefa pode ter um prazo, um lembrete e uma lista de subtarefas. Ao definir um lembrete, o usuário será notificado. É possível exibir todas as tarefas em um calendário, proteger o aplicativo com um PIN secreto e classificar e priorizar as tarefas dentro de uma lista. As cores indicam a urgência de uma tarefa (levando em consideração o prazo).
+
+Recursos da Lista de Tarefas com Proteção de Privacidade
+
+1. Proteção por PIN
+Abra o menu Configurações para configurar a proteção por PIN para o seu aplicativo. O PIN precisa ser um número com 4 dígitos. Você será solicitado a digitá-lo sempre que iniciar o aplicativo ou acessar a tela principal.
+
+2. Lembrete
+Você pode definir um lembrete para suas tarefas que o notificará quando um prazo estiver se aproximando. As configurações permitem ativar um som de notificação.
+
+ 3. Widget
+Além disso, este aplicativo oferece um widget que você pode adicionar à tela inicial do seu dispositivo. O widget apresenta as tarefas que pertencem a uma lista selecionada. Clicar em uma tarefa ou em sua caixa de seleção leva à visualização principal da Lista de Tarefas com Privacidade Amigável.
+
+4. Progresso por subtarefas
+Por padrão, o progresso pode ser escolhido livremente pelo usuário ao criar ou editar uma tarefa. A Lista de Tarefas com Privacidade Amigável oferece a opção de calcular e exibir automaticamente o progresso de uma tarefa com base em suas subtarefas concluídas. Portanto, acesse as Configurações e ative o progresso por subtarefas.
+
+Nosso aplicativo com Privacidade Amigável difere de outros aplicativos em três aspectos:
+
+1) Permissões mínimas
+A Lista de Tarefas com Privacidade Amigável não utiliza mais permissões do que o estritamente necessário para fornecer sua funcionalidade.
+
+2) Sem anúncios
+A Lista de Tarefas com Privacidade Amigável dispensa completamente os anúncios.
+
+Muitos outros aplicativos gratuitos na Google Play Store exibem anúncios irritantes que também reduzem a duração da bateria.
+
+ 3) Sem rastreamento
+A Lista de Tarefas com Privacidade Amigável não utiliza nenhum rastreador.
+
+A Lista de Tarefas com Privacidade Amigável faz parte do grupo de Aplicativos com Privacidade Amigável desenvolvido pelo grupo de pesquisa SECUSO do Instituto de Tecnologia de Karlsruhe. Mais informações em: https://secuso.org/pfa
+
+Você pode nos contatar através de:
+X - @SECUSOResearch https://x.com/secusoresearch
+Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
+Ofertas de emprego - https://secuso.aifb.kit.edu/english/Job_Offers.php
