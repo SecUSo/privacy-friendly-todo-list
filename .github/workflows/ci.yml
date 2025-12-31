@@ -23,7 +23,20 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Run local unit tests
-        run: bash ./gradlew test --stacktrace --debug
+        run: bash ./gradlew test --stacktrace --info
+
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-results
+          path: '**/build/test-results/test/**'
+
+      - name: Show detailed log if test fails
+        if: failure()
+        run: |
+          echo "Test failed. See test log for details:"
+          cat build/test-results/test/TEST-*.xml
 
   build:
     runs-on: ubuntu-latest
