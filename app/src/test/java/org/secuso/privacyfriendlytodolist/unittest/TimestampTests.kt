@@ -196,23 +196,21 @@ class TimestampTests {
 
     @Test
     fun setTimePartTest() {
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT+01:00"))
-
-        // Epoch timestamp in milliseconds: 1766185200000
-        // Date and time (GMT): Friday, 19. December 2025 23:00:00
-        // Date and time (current): Saturday, 20. December 2025 00:00:00 GMT+01:00
+        // Epoch timestamp in milliseconds: 1766188800000
+        // Date and time (GMT): Saturday, 20. December 2025 00:00:00
         var dateStr = "2025-12-20"
-        var dateInMillis = 1766185200000
+        var dateInMillis = 1766188800000
+        dateInMillis -= TimeZone.getDefault().getOffset(dateInMillis)
         setAndCheckTimePart(dateStr, 0, 0, 0, dateInMillis)
         setAndCheckTimePart(dateStr, 8, 30, 0, dateInMillis + Duration.parse("8h 30m").inWholeMilliseconds)
         setAndCheckTimePart(dateStr, 12, 13, 14, dateInMillis + Duration.parse("12h 13m 14s").inWholeMilliseconds)
         setAndCheckTimePart(dateStr, 23, 59, 59, dateInMillis + Duration.parse("23h 59m 59s").inWholeMilliseconds)
 
-        // Epoch timestamp in milliseconds: -284086800000
-        //Date and time (GMT): Friday, 30. December 1960 23:00:00
-        //Date and time (current): Saturday, 31. December 1960 00:00:00 GMT+01:00
+        // Epoch timestamp in milliseconds: -284083200000
+        // Date and time (GMT): Saturday, 31. December 1960 00:00:00
         dateStr = "1960-12-31"
-        dateInMillis = -284086800000
+        dateInMillis = -284083200000
+        dateInMillis -= TimeZone.getDefault().getOffset(dateInMillis)
         setAndCheckTimePart(dateStr, 0, 0, 0, dateInMillis)
         setAndCheckTimePart(dateStr, 8, 30, 0, dateInMillis + Duration.parse("8h 30m").inWholeMilliseconds)
         setAndCheckTimePart(dateStr, 12, 13, 14, dateInMillis + Duration.parse("12h 13m 14s").inWholeMilliseconds)
@@ -259,19 +257,22 @@ class TimestampTests {
 
         val newTimestamp = timestamp.setTimePart(hourOfDay, minute, second)
         val timeInMillisActual = newTimestamp.timeInMillis
-        val diff = (timeInMillisActual - timeInMillisExpected).toDuration(DurationUnit.MILLISECONDS)
 
         if (null != timeInMillisExpectedManually) {
-            assertEquals("Difference: $diff.", timeInMillisExpectedManually, timeInMillisExpected)
-            assertEquals("Difference: $diff.", timeInMillisExpectedManually, timeInMillisActual)
+            assertEquals("Difference: ${getDuration(timeInMillisExpectedManually, timeInMillisExpected)}.", timeInMillisExpectedManually, timeInMillisExpected)
+            assertEquals("Difference: ${getDuration(timeInMillisExpectedManually, timeInMillisActual)}.", timeInMillisExpectedManually, timeInMillisActual)
         }
         
         val stringExpected = String.format("${dateStr}T%02d:%02d:%02d", hourOfDay, minute, second)
         val stringTimestamp = DATE_TIME_FORMAT.format(Date(timeInMillisActual))
         val stringCalendar = DATE_TIME_FORMAT.format(calendar.time)
-        assertEquals("Difference: $diff (str: $stringExpected vs $stringTimestamp).", timeInMillisExpected, timeInMillisActual)
+        assertEquals("Difference: ${getDuration(timeInMillisExpected, timeInMillisActual)} (str: $stringExpected vs $stringTimestamp).", timeInMillisExpected, timeInMillisActual)
         assertEquals("Timestamp string", stringExpected, stringTimestamp)
         assertEquals("Calendar string", stringExpected, stringCalendar)
+    }
+
+    private fun getDuration(timestamp1: Long, timestamp2: Long): String {
+        return (timestamp2 - timestamp1).toDuration(DurationUnit.MILLISECONDS).toString()
     }
 
     private fun dateStrToTimestamp(dateStr: String): Timestamp {
