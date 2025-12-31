@@ -25,6 +25,12 @@ jobs:
       - name: Run local unit tests
         run: bash ./gradlew test --stacktrace
 
+      - name: Show detailed logs if tests fail
+        if: failure()
+        run: |
+          echo "Tests failed. See test log for details:"
+          cat build/test-results/test/TEST-*.xml
+
   build:
     runs-on: ubuntu-latest
     steps:
