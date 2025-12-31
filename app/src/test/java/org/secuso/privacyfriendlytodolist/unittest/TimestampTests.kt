@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -195,14 +196,28 @@ class TimestampTests {
 
     @Test
     fun setTimePartTest() {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+01:00"))
+
         // Epoch timestamp in milliseconds: 1766185200000
         // Date and time (GMT): Friday, 19. December 2025 23:00:00
-        // Date and time (your time zone): Samstag, 20. Dezember 2025 00:00:00 GMT+01:00
-        val dateStr = "2025-12-20"
-        setAndCheckTimePart(dateStr, 0, 0, 0, 1766185200000)
-        setAndCheckTimePart(dateStr, 8, 30, 0)
-        setAndCheckTimePart(dateStr, 12, 13, 14)
-        setAndCheckTimePart(dateStr, 23, 59, 59)
+        // Date and time (current): Saturday, 20. December 2025 00:00:00 GMT+01:00
+        var dateStr = "2025-12-20"
+        var dateInMillis = 1766185200000
+        setAndCheckTimePart(dateStr, 0, 0, 0, dateInMillis)
+        setAndCheckTimePart(dateStr, 8, 30, 0, dateInMillis + Duration.parse("8h 30m").inWholeMilliseconds)
+        setAndCheckTimePart(dateStr, 12, 13, 14, dateInMillis + Duration.parse("12h 13m 14s").inWholeMilliseconds)
+        setAndCheckTimePart(dateStr, 23, 59, 59, dateInMillis + Duration.parse("23h 59m 59s").inWholeMilliseconds)
+
+        // Epoch timestamp in milliseconds: -284086800000
+        //Date and time (GMT): Friday, 30. December 1960 23:00:00
+        //Date and time (current): Saturday, 31. December 1960 00:00:00 GMT+01:00
+        dateStr = "1960-12-31"
+        dateInMillis = -284086800000
+        setAndCheckTimePart(dateStr, 0, 0, 0, dateInMillis)
+        setAndCheckTimePart(dateStr, 8, 30, 0, dateInMillis + Duration.parse("8h 30m").inWholeMilliseconds)
+        setAndCheckTimePart(dateStr, 12, 13, 14, dateInMillis + Duration.parse("12h 13m 14s").inWholeMilliseconds)
+        setAndCheckTimePart(dateStr, 23, 59, 59, dateInMillis + Duration.parse("23h 59m 59s").inWholeMilliseconds)
+
         var timeInSeconds = 0L
         setAndCheckTimePart(timeInSeconds, 0, 0, 0)
         setAndCheckTimePart(timeInSeconds, 8, 30, 0)
