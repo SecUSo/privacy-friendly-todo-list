@@ -25,18 +25,18 @@ jobs:
       - name: Run local unit tests
         run: bash ./gradlew test --stacktrace --info
 
-      - name: Archive test results
+      - name: Archive unit test output
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: junit-results
-          path: '**/build/test-results/test/**'
+          name: junit-outputs-${{ matrix.runs-on }}
+          path: app/build/outputs/unit-test-outputs.txt
 
-      - name: Show detailed log if test fails
+      - name: Show unit test output if unit test fails
         if: failure()
         run: |
-          echo "Test failed. See test log for details:"
-          cat build/test-results/test/TEST-*.xml
+          echo "Unit test failed. See output for details:"
+          cat app/build/outputs/unit-test-outputs.txt
 
   build:
     runs-on: ubuntu-latest
