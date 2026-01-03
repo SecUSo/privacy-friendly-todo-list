@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 
-class Urgency(private val level: Level, val daysUntilDeadline: Long?) {
+class Urgency(private val level: Level, val daysUntilDeadline: Long?): Comparable<Urgency> {
 
     /**
      * The urgency of a to-do task.
@@ -30,17 +30,39 @@ class Urgency(private val level: Level, val daysUntilDeadline: Long?) {
      * urgency (last entry).
      */
     enum class Level(val colorId: Int) {
-        /** Task has no deadline or the deadline is far away. */
+        /** The task is done or the task has no deadline or the deadline is far away. */
         NONE(R.color.urgencyNone),
-        /** The deadline is near. */
+        /** The task is not done and the deadline is near. */
         IMMINENT(R.color.urgencyImminent),
-        /** The deadline is now. */
+        /** The task is not done and the deadline is now. */
         DUE(R.color.urgencyDue),
-        /** The deadline has been exceeded. */
+        /** The task is not done and the deadline has been exceeded. */
         EXCEEDED(R.color.urgencyExceeded);
     }
 
     fun getColor(context: Context): Int {
         return ContextCompat.getColor(context, level.colorId)
+    }
+
+    override fun compareTo(other: Urgency): Int {
+        var result = level.ordinal - other.level.ordinal
+        if (result == 0 && daysUntilDeadline != null && other.daysUntilDeadline != null) {
+            result = (other.daysUntilDeadline - daysUntilDeadline).toInt()
+        }
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is Urgency && other.level == level && other.daysUntilDeadline == daysUntilDeadline
+    }
+
+    override fun hashCode(): Int {
+        var result = daysUntilDeadline?.hashCode() ?: 0
+        result = 31 * result + level.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return level.name
     }
 }

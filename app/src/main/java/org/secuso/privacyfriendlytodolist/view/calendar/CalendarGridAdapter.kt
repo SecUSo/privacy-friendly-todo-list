@@ -19,8 +19,9 @@ package org.secuso.privacyfriendlytodolist.view.calendar
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -32,6 +33,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.model.Urgency
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -47,6 +50,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     ArrayAdapter<Date?>(context, resource, ArrayList()) {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
+    private val reminderTimeSpan = PreferenceMgr.getDefaultReminderTimeSpan(context)
     private var oldColors: ColorStateList? = null
     private var currentMonth = -1
     private var currentYear = -1
@@ -105,16 +109,22 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         val key = Timestamp.createByMillis(dateAtPos.time).timeInDays
         val tasksToday = tasksPerDay[key]
         if (tasksToday != null) {
-            var border: Drawable? = null
+            var maxUrgency: Urgency? = null
             for (t in tasksToday) {
-                if (!t.isDone()) {
-                    // Use blue border if there are undone tasks.
-                    border = ContextCompat.getDrawable(context, R.drawable.border_blue)
-                    break
+                if (t.isDone()) {
+                    continue
+                }
+                val urgency = t.getUrgency(reminderTimeSpan)
+                if (maxUrgency == null || urgency > maxUrgency) {
+                    maxUrgency = urgency
                 }
             }
-            // Use green border if all tasks are done.
-            dayTextView.background = border ?: ContextCompat.getDrawable(context, R.drawable.border_green)
+            // If there are urgent tasks, use the color of the highest urgency.
+            // Otherwise use a special color for done tasks.
+            val color = maxUrgency?.getColor(context) ?: ContextCompat.getColor(context, R.color.taskDone)
+            val border = ContextCompat.getDrawable(context, R.drawable.border_calendar_day)
+            border?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+            dayTextView.background = border
         } else {
             dayTextView.setBackgroundResource(0)
         }
