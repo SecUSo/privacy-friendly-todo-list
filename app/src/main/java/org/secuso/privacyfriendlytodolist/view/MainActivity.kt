@@ -53,6 +53,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.flexbox.FlexboxLayout
@@ -216,7 +217,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             unregisterForContextMenu(actionButton)
         }
 
-        exLv.setOnChildClickListener { parent: AdapterView<*>?, view: View?, groupPosition: Int, position: Int, id: Long ->
+        exLv.setOnChildClickListener { _: AdapterView<*>?, _: View?, groupPosition: Int, position: Int, _: Long ->
             expandableTodoTaskAdapter?.onClickSubtask(groupPosition, position)
             return@setOnChildClickListener false
         }
@@ -231,10 +232,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        fabNewTodoTask.setOnClickListener { v: View? ->
+        fabNewTodoTask.setOnClickListener {
             val pt = ProcessTodoTaskDialog(this@MainActivity, activeListId)
             pt.setDialogCallback { todoTask ->
-                model.saveTodoTaskInDb(todoTask) { counter ->
+                model.saveTodoTaskInDb(todoTask) {
                     showHints()
                     showTasksOfListOrAllTasks(todoTask.getListId())
                     if (todoTask.hasReminderTime()) {
@@ -281,6 +282,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         addTodoListsToView()
 
+        Model.registerModelObserver(this)
         PreferenceObserver.registerPreferenceChangeListener(this)
     }
 
@@ -434,8 +436,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Clear task list view so that tasks are not visible before the right pin was entered.
             clearTodoData()
         }
-
-        Model.unregisterModelObserver(this)
     }
 
     override fun onNewIntent(newIntent: Intent?) {
@@ -448,8 +448,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         Log.d(TAG, "onResume() action: ${intent?.action}, extras: ${Helper.bundleToString(intent?.extras)}")
         super.onResume()
-
-        Model.registerModelObserver(this)
 
         // Check if Pomodoro is installed
         pomodoroInstalled = checkIfPomodoroInstalled()
@@ -480,6 +478,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d(TAG, "onDestroy()")
         super.onDestroy()
         PreferenceObserver.unregisterPreferenceChangeListener(this)
+        Model.unregisterModelObserver(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -676,10 +675,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onTodoDataChangedOutsideAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+    override fun onTodoDataChangedViaAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+        if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+            Log.i(TAG, "Todo data was changed via app UI while this activity isn't visible. Discarding todo data.")
+            isTodoDataLoaded = false
+        }
+    }
 
-        Log.i(TAG, "Refreshing task list view because data model was changed from outside.")
-        showTasksOfListOrAllTasks(activeListId)
+    override fun onTodoDataChangedOutsideAppUI(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
+        if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+            Log.i(TAG, "Todo data changed from outside while this activity isn't visible. Discarding todo data.")
+            isTodoDataLoaded = false
+        } else {
+            Log.i(TAG, "Todo data changed from outside while this activity is visible. Refreshing task list view.")
+            showTasksOfListOrAllTasks(activeListId)
+        }
     }
 
     override fun onUserLeaveHint() {
@@ -714,7 +724,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } else {
                     button.text = getString(R.string.tasks)
                 }
-                button.setOnClickListener { buttonView ->
+                button.setOnClickListener {
                     showAllTasks()
                 }
                 listQuickAccess.addView(button)
@@ -753,7 +763,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun startAddListDialog() {
         val pl = ProcessTodoListDialog(this)
         pl.setDialogCallback { todoList ->
-            model.saveTodoListInDb(todoList) { counter ->
+            model.saveTodoListInDb(todoList) {
                 showHints()
                 addTodoListsToView()
                 Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} added.")
@@ -926,7 +936,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 MaterialAlertDialogBuilder(this).apply {
                     setMessage(R.string.alert_done_tasks_remove)
                     setCancelable(true)
-                    setPositiveButton(R.string.yes) { dialog, setId ->
+                    setPositiveButton(R.string.yes) { _, _ ->
                         model.setAllDoneTasksInRecycleBin { counters ->
                             val msg = getString(R.string.tasks_removed, counters.first, counters.second)
                             Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
@@ -935,7 +945,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             }
                         }
                     }
-                    setNegativeButton(R.string.cancel) { dialog, id ->
+                    setNegativeButton(R.string.cancel) { dialog, _ ->
                         dialog.cancel()
                     }
                     show()
@@ -991,7 +1001,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val todoTask = contextMenuTodoTask
                 if (null != todoTask) {
                     val snackBar = Snackbar.make(fabNewTodoTask, R.string.task_removed, Snackbar.LENGTH_LONG)
-                    snackBar.setAction(R.string.snack_undo) { v: View? ->
+                    snackBar.setAction(R.string.snack_undo) {
                         model.setTaskAndSubtasksInRecycleBin(todoTask, false) { counter ->
                             if (counter.first > 0) {
                                 showTasksOfListOrAllTasks(activeListId)
@@ -1126,7 +1136,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             MaterialAlertDialogBuilder(this).apply {
                 setMessage(R.string.alert_list_delete)
                 setCancelable(true)
-                setPositiveButton(R.string.yes) { dialog, setId ->
+                setPositiveButton(R.string.yes) { dialog, _ ->
                     model.deleteTodoList(todoList.getId()) { counter ->
                         if (counter.first > 0) {
                             Log.i(TAG, "List '${todoList.getName()}' with ID ${todoList.getId()} deleted.")
@@ -1145,7 +1155,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         dialog.cancel()
                     }
                 }
-                setNegativeButton(R.string.cancel) { dialog, id ->
+                setNegativeButton(R.string.cancel) { dialog, _ ->
                     dialog.cancel()
                 }
                 show()
