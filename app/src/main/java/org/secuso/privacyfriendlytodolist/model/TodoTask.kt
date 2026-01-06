@@ -146,6 +146,10 @@ interface TodoTask : BaseTodo, Parcelable {
     fun getSubtasks(): MutableList<TodoSubtask>
 
     /**
+     * Computes the [Urgency] for the deadline of the task. If it is a recurring task,
+     * the upcoming deadline is used for the computation.
+     *
+     * @param now The current time.
      * @param reminderTimeSpanS The reminder time span is a relative value in seconds
      * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
      * Urgency#IMMINENT gets returned.
@@ -155,7 +159,27 @@ interface TodoTask : BaseTodo, Parcelable {
      * (the given one or the one set by the user).
      * Returns Urgency NONE in any other case.
      */
-    fun getUrgency(reminderTimeSpanS: Long): Urgency
+    fun getUrgency(now: Timestamp, reminderTimeSpanS: Long): Urgency
+    /**
+     * Computes the [Urgency] of this task by the given deadline or the internal deadline.
+     *
+     * If it is a recurring task and the deadline is in the past, [Urgency.Level.NONE] will be returned,
+     * because only the upcoming recurring deadline has higher urgency.
+     *
+     * @param now The current time.
+     * @param reminderTimeSpanS The reminder time span is a relative value in seconds
+     * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
+     * Urgency#IMMINENT gets returned.
+     * @param deadline The deadline to be used for the computation.
+     * If null, the internal deadline gets used. This is the same as calling the
+     * overloaded version of [getUrgency] without deadline-argument.
+     * @return Returns Urgency EXCEEDED if the deadline is in the past.
+     * Returns Urgency DUE if the deadline is today.
+     * Returns Urgency IMMINENT if the deadline is later than today but within reminder time span
+     * (the given one or the one set by the user).
+     * Returns Urgency NONE in any other case.
+     */
+    fun getUrgency(now: Timestamp, reminderTimeSpanS: Long, deadline: Timestamp?): Urgency
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)

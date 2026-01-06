@@ -74,12 +74,11 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         updateTasksPerDay()
         var view = convertView
         val dayTextView: TextView
-        val dateAtPos = getItem(position)
-        val todayDate = Date()
         val todayCal = Calendar.getInstance()
         val posCal = Calendar.getInstance()
-        todayCal.setTime(todayDate)
-        posCal.setTime(dateAtPos!!)
+        val posDate = getItem(position) ?: throw IllegalArgumentException("No date object at position $position.")
+        posCal.setTime(posDate)
+        val posTimestamp = Timestamp.createByCalendar(posCal)
         if (view?.tag is CalendarDayViewHolder) {
             val dayViewHolder = view.tag as CalendarDayViewHolder
             dayTextView = dayViewHolder.dayText
@@ -106,27 +105,22 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         }
 
         // add color bar if a task has its deadline on this day
-        val key = Timestamp.createByMillis(dateAtPos.time).timeInDays
+        val key = Timestamp.createByMillis(posDate.time).timeInDays
         val tasksToday = tasksPerDay[key]
         if (tasksToday != null) {
-            var maxUrgency: Urgency? = null
+            val now = Timestamp.createCurrent()
+            var maxUrgency = Urgency(Urgency.Level.NONE, null)
             for (t in tasksToday) {
-                if (t.isDone()) {
-                    continue
-                }
-                val urgency = t.getUrgency(reminderTimeSpan)
-                if (maxUrgency == null || urgency > maxUrgency) {
+                val urgency = t.getUrgency(now, reminderTimeSpan, posTimestamp)
+                if (urgency > maxUrgency) {
                     maxUrgency = urgency
                 }
             }
-            // If there are urgent tasks, use the color of the highest urgency.
-            // Otherwise use a special color for done tasks.
-            val color = maxUrgency?.getColor(context) ?: ContextCompat.getColor(context, R.color.taskDone)
             val border = ContextCompat.getDrawable(context, R.drawable.border_calendar_day)
-            border?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)
+            border?.colorFilter = PorterDuffColorFilter(maxUrgency.getColor(context), PorterDuff.Mode.SRC_IN)
             dayTextView.background = border
         } else {
-            dayTextView.setBackgroundResource(0)
+            dayTextView.background = null
         }
         dayTextView.text = spanString
         return view!!
@@ -191,10 +185,12 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         tasksOfDay.add(todoTask)
     }
 
-    fun getTasksOfDay(position: Int): ArrayList<TodoTask>? {
+    fun getTasksOfDay(position: Int): Pair<ArrayList<TodoTask>, Timestamp>? {
         val selectedDate = getItem(position) ?: return null
-        val key = Timestamp.createByMillis(selectedDate.time).timeInDays
-        return tasksPerDay[key]
+        val deadline = Timestamp.createByMillis(selectedDate.time)
+        val key = deadline.timeInDays
+        val tasksOfDay = tasksPerDay[key]
+        return if (null != tasksOfDay) Pair(tasksOfDay, deadline) else null
     }
 
     private class CalendarDayViewHolder(val dayText: TextView)

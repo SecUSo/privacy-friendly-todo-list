@@ -32,6 +32,7 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.TaskComparator
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.TaskFilter
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.ArrayList
@@ -117,13 +118,14 @@ open class TodoListWidgetViewsFactory() {
         val fillInIntent = Intent()
         fillInIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         fillInIntent.putExtra(TodoListWidget.EXTRA_TODO_WIDGET_LIST_ID, pref.todoListId.toString())
+        val now = Timestamp.createCurrent()
         val reminderTimeSpan = PreferenceMgr.getDefaultReminderTimeSpan(context)
         for (todoTask in changedTodoTasks) {
             if (   (pref.taskFilter == TaskFilter.OPEN_TASKS      &&   todoTask.isDone())
                 || (pref.taskFilter == TaskFilter.COMPLETED_TASKS && ! todoTask.isDone())) {
                 continue
             }
-            val item = createItem(context, todoTask, reminderTimeSpan, fillInIntent, pref.isShowingDaysUntilDeadline)
+            val item = createItem(context, todoTask, now, reminderTimeSpan, fillInIntent, pref.isShowingDaysUntilDeadline)
             val tuple = Pair(todoTask.getId(), item)
             items.add(tuple)
         }
@@ -131,11 +133,11 @@ open class TodoListWidgetViewsFactory() {
         return items
     }
 
-    private fun createItem(context: Context, todoTask: TodoTask,
+    private fun createItem(context: Context, todoTask: TodoTask, now: Timestamp,
                            reminderTimeSpan: Long, fillInIntent: Intent,
                            isShowingDaysUntilDeadline: Boolean): RemoteViews {
         val view = RemoteViews(context.packageName, R.layout.widget_task)
-        val urgency = todoTask.getUrgency(reminderTimeSpan)
+        val urgency = todoTask.getUrgency(now, reminderTimeSpan)
         view.setInt(R.id.ll_widget_urgency_task, "setBackgroundColor", urgency.getColor(context))
         view.setImageViewResource(R.id.iv_widget_task_state, if (todoTask.isDone()) R.drawable.ic_done_black_24dp else ResourcesCompat.ID_NULL)
         view.setTextViewText(R.id.tv_widget_task_name, todoTask.getName())

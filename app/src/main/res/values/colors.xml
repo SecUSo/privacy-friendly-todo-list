@@ -15,11 +15,11 @@
     <color name="green">#68E504</color>
 
     <!-- Urgency of tasks -->
-    <color name="urgencyNone">#024265</color>
+    <color name="urgencyNone">#0d960f</color>
+    <color name="urgencyLow">#024265</color>
     <color name="urgencyImminent">#F6D126</color>
     <color name="urgencyDue">#FF9100</color>
     <color name="urgencyExceeded">#EF0606</color>
-    <color name="taskDone">#68E504</color>
 
     <!-- Dots for tutorial-slides -->
     <color name="dotInactive">#026499</color>

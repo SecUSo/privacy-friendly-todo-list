@@ -29,6 +29,7 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.MainActivity
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 
@@ -67,10 +68,10 @@ class CalendarActivity : AppCompatActivity() {
             calendarView.incMonth(-1)
             calendarView.refresh()
         }
-        calendarView.setDayOnClickListener { parent, view, position, id ->
-            val tasksOfToday = calendarGridAdapter.getTasksOfDay(position)
-            if (tasksOfToday != null) {
-                showDeadlineTasks(tasksOfToday)
+        calendarView.setDayOnClickListener { _, _, position, _ ->
+            val tasksOfDay = calendarGridAdapter.getTasksOfDay(position)
+            if (tasksOfDay != null) {
+                showDeadlineTasks(tasksOfDay.first, tasksOfDay.second)
             } else {
                 Toast.makeText(applicationContext, getString(R.string.no_deadline_today),
                     Toast.LENGTH_SHORT).show()
@@ -95,10 +96,11 @@ class CalendarActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDeadlineTasks(tasks: ArrayList<TodoTask>) {
+    private fun showDeadlineTasks(tasks: ArrayList<TodoTask>, deadline: Timestamp) {
         val intent = Intent(this, CalendarPopup::class.java)
         val b = Bundle()
-        b.putParcelableArrayList(PARCELABLE_KEY_FOR_DEADLINES, tasks)
+        b.putLong(PARCELABLE_KEY_FOR_DEADLINE, deadline.timeInSeconds)
+        b.putParcelableArrayList(PARCELABLE_KEY_FOR_DEADLINE_TASKS, tasks)
         intent.putExtras(b)
         startActivity(intent)
     }
@@ -117,6 +119,7 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val PARCELABLE_KEY_FOR_DEADLINES = "PARCELABLE_KEY_FOR_DEADLINES"
+        const val PARCELABLE_KEY_FOR_DEADLINE = "PARCELABLE_KEY_FOR_DEADLINE"
+        const val PARCELABLE_KEY_FOR_DEADLINE_TASKS = "PARCELABLE_KEY_FOR_DEADLINE_TASKS"
     }
 }

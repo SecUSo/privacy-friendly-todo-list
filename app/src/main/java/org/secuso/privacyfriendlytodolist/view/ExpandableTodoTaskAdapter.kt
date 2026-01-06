@@ -53,10 +53,14 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
  * @param showListNames Normally the toolbar title contains the list name. However, if all tasks are
  * displayed in a dummy list it is not obvious to what list a tasks belongs. This missing
  * information is then added to each task in an additional text view.
+ * @param givenDeadline If the list contains recurring tasks and all those recurring tasks have the same deadline and
+ * this deadline is different from the next recurring deadline, it can be specified here.
+ * It is used to determine the right urgency.
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ExpandableTodoTaskAdapter(private val context: Context, private val model: ModelServices,
-    private val todoTasks: MutableList<TodoTask>, private val showListNames: Boolean) : BaseExpandableListAdapter() {
+    private val todoTasks: MutableList<TodoTask>, private val showListNames: Boolean,
+    private val givenDeadline: Timestamp? = null) : BaseExpandableListAdapter() {
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun interface OnDataInitiallyLoadedListener {
@@ -480,7 +484,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 } else {
                     tvh.taskDescription.visibility = View.GONE
                 }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgency = currentTask.getUrgency(
+                    Timestamp.createCurrent(),
+                    PreferenceMgr.getDefaultReminderTimeSpan(context),
+                    givenDeadline)
                 val urgencyColor = urgency.getColor(context)
                 tvh.urgencyColorBar.setBackgroundColor(urgencyColor)
                 tvh.done.isChecked = currentTask.isDone()
@@ -567,7 +574,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     )
                     actualConvertView.tag = svh
                 }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgency = currentTask.getUrgency(
+                    Timestamp.createCurrent(),
+                    PreferenceMgr.getDefaultReminderTimeSpan(context),
+                    givenDeadline)
                 val urgencyColor = urgency.getColor(context)
                 svh.urgencyColorBar.setBackgroundColor(urgencyColor)
                 svh.done.isChecked = currentSubtask.isDone()
@@ -629,7 +639,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     }
                     newSubtaskDialog.show()
                 }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
+                val urgency = currentTask.getUrgency(
+                    Timestamp.createCurrent(),
+                    PreferenceMgr.getDefaultReminderTimeSpan(context),
+                    givenDeadline)
                 val urgencyColor = urgency.getColor(context)
                 sevh.urgencyColorBar.setBackgroundColor(urgencyColor)
             }

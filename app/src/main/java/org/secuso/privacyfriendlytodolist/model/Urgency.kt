@@ -30,13 +30,15 @@ class Urgency(private val level: Level, val daysUntilDeadline: Long?): Comparabl
      * urgency (last entry).
      */
     enum class Level(val colorId: Int) {
-        /** The task is done or the task has no deadline or the deadline is far away. */
+        /** The task is done. */
         NONE(R.color.urgencyNone),
+        /** The task is not done and the task has no deadline or the deadline is far away. */
+        LOW(R.color.urgencyLow),
         /** The task is not done and the deadline is near. */
         IMMINENT(R.color.urgencyImminent),
-        /** The task is not done and the deadline is now. */
+        /** The task is not done and the deadline is today. */
         DUE(R.color.urgencyDue),
-        /** The task is not done and the deadline has been exceeded. */
+        /** The task is not done and the deadline is in the past. */
         EXCEEDED(R.color.urgencyExceeded);
     }
 

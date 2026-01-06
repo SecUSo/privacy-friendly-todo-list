@@ -180,44 +180,65 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return subtasks
     }
 
-    override fun getUrgency(reminderTimeSpanS: Long): Urgency {
-        var level = Urgency.Level.NONE
+    override fun getUrgency(now: Timestamp, reminderTimeSpanS: Long): Urgency {
         var deadline = data.deadline
-        var daysUntilDeadline: Long? = null
-        if (!isDone() && deadline != null) {
-            // Change timestamps to begin of day to ensure that computations of durations work correctly.
-            // The computations shall bring the same result, independent from current time of day.
-            val now = Timestamp.createCurrent()
+        return if (isDone()) {
+            Urgency(Urgency.Level.NONE, null)
+        } else if (deadline == null) {
+            Urgency(Urgency.Level.LOW, null)
+        } else {
             if (isRecurring()) {
                 // If today is the deadline, the result should not be the upcoming deadline but today.
                 deadline = deadline.getNextRecurringDate(data.recurrencePattern, data.recurrenceInterval,
                     now, acceptDestDate = true).first
             }
-            daysUntilDeadline = deadline.timeInDays - now.timeInDays
-            if (daysUntilDeadline < 0L) {
-                level = Urgency.Level.EXCEEDED
+            getUrgencyInternal(now, reminderTimeSpanS, deadline)
+        }
+    }
+
+    override fun getUrgency(now: Timestamp, reminderTimeSpanS: Long, deadline: Timestamp?): Urgency {
+        return if (null != deadline) getUrgencyInternal(now, reminderTimeSpanS, deadline)
+               else getUrgency(now, reminderTimeSpanS)
+    }
+
+    private fun getUrgencyInternal(now: Timestamp, reminderTimeSpanS: Long, deadline: Timestamp): Urgency {
+        val level: Urgency.Level
+        val daysUntilDeadline = deadline.timeInDays - now.timeInDays
+        if (isDone()) {
+            level = Urgency.Level.NONE
+        }
+        else if (daysUntilDeadline < 0L) {
+            level = if (isRecurring()) {
+                // Past recurring task are assumed to be done or obsolete.
+                // Only recurring tasks in the future can have higher urgency.
+                // As consequence it is not possible to have exceeded recurring tasks.
+                Urgency.Level.NONE
+            } else {
+                Urgency.Level.EXCEEDED
             }
-            else if (daysUntilDeadline == 0L) {
-                level = Urgency.Level.DUE
+        }
+        else if (daysUntilDeadline == 0L) {
+            level = Urgency.Level.DUE
+        }
+        else {
+            var finalReminderTimeSpanS = reminderTimeSpanS
+            val reminderTime = data.reminderTime
+            // Here it is important that time-part of deadline is 00:00:00 to ensure that
+            // the comparison with reminder time span doesn't overlap with deadline-day.
+            // For example if deadline has time-part of 12:00:00 and reminder time span is
+            // 0.5 day it would not get 'imminent' before the deadline-day begins.
+            // But it should get 'imminent' 0.5 day before deadline day begins.
+            val beginOfDeadlineDay = deadline.setTimePart(0, 0, 0)
+            if (reminderTime != null && reminderTime < beginOfDeadlineDay) {
+                // If there is a reminder and it hasn't been passed, use it instead of
+                // the default 'reminderTimeSpanS' to determine the urgency.
+                finalReminderTimeSpanS = beginOfDeadlineDay.timeInSeconds - reminderTime.timeInSeconds
             }
-            else {
-                var finalReminderTimeSpanS = reminderTimeSpanS
-                val reminderTime = data.reminderTime
-                // Here it is important that time-part of deadline is 00:00:00 to ensure that
-                // the comparison with reminder time span doesn't overlap with deadline-day.
-                // For example if deadline has time-part of 12:00:00 and reminder time span is
-                // 0.5 day it would not get 'imminent' before the deadline-day begins.
-                // But it should get 'imminent' 0.5 day before deadline day begins.
-                deadline = deadline.setTimePart(0, 0, 0)
-                if (reminderTime != null && reminderTime < deadline) {
-                    // If there is a reminder and it hasn't been passed, use it instead of
-                    // the default 'reminderTimeSpanS' to determine the urgency.
-                    finalReminderTimeSpanS = deadline.timeInSeconds - reminderTime.timeInSeconds
-                }
-                // If distance between now and deadline is <= the finalReminderTimeSpanS it is imminent.
-                if ((deadline.timeInSeconds - now.timeInSeconds) <= finalReminderTimeSpanS) {
-                    level = Urgency.Level.IMMINENT
-                }
+            // If distance between now and deadline is <= the finalReminderTimeSpanS it is imminent.
+            level = if ((beginOfDeadlineDay.timeInSeconds - now.timeInSeconds) <= finalReminderTimeSpanS) {
+                Urgency.Level.IMMINENT
+            } else {
+                Urgency.Level.LOW
             }
         }
         return Urgency(level, daysUntilDeadline)
