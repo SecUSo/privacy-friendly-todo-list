@@ -21,7 +21,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 
-class Urgency(private val level: Level, val daysUntilDeadline: Long?): Comparable<Urgency> {
+class Urgency(val level: Level, val daysUntilDeadline: Long?): Comparable<Urgency> {
 
     /**
      * The urgency of a to-do task.
