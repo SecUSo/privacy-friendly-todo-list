@@ -109,15 +109,25 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         val tasksToday = tasksPerDay[key]
         if (tasksToday != null) {
             val now = Timestamp.createCurrent()
-            var maxUrgency = Urgency(Urgency.Level.NONE, null)
+            var maxUrgencyLevel = Urgency.Level.NONE
             for (t in tasksToday) {
-                val urgency = t.getUrgency(now, reminderTimeSpan, posTimestamp)
-                if (urgency > maxUrgency) {
-                    maxUrgency = urgency
+                val urgencyLevel = t.getUrgency(now, reminderTimeSpan, posTimestamp).level
+                if (urgencyLevel > maxUrgencyLevel) {
+                    maxUrgencyLevel = urgencyLevel
                 }
             }
+            val colorId = if (maxUrgencyLevel == Urgency.Level.NONE) {
+                // Level NONE has the same color as level LOW, because this looks better
+                // in the list view. But for the calendar the done tasks (level NONE) shall have
+                // a striking color.
+                R.color.urgencyNoneStriking
+            } else {
+                maxUrgencyLevel.colorId
+            }
             val border = ContextCompat.getDrawable(context, R.drawable.border_calendar_day)
-            border?.colorFilter = PorterDuffColorFilter(maxUrgency.getColor(context), PorterDuff.Mode.SRC_IN)
+            border?.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor(context, colorId),
+                PorterDuff.Mode.SRC_IN)
             dayTextView.background = border
         } else {
             dayTextView.background = null

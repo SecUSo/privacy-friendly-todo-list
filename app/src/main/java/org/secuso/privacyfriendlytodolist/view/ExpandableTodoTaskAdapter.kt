@@ -38,7 +38,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoSubtask
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
@@ -638,15 +637,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private fun getUrgencyColor(todoTask: TodoTask): Int {
-        var level = todoTask.getUrgency(
+        val urgency = todoTask.getUrgency(
             Timestamp.createCurrent(),
             PreferenceMgr.getDefaultReminderTimeSpan(context),
-            givenDeadline).level
-        if (level == Urgency.Level.NONE) {
-            // Level NONE normally has a striking color. Use the color of Level LOW instead.
-            level = Urgency.Level.LOW
-        }
-        return ContextCompat.getColor(context, level.colorId)
+            givenDeadline)
+        return ContextCompat.getColor(context, urgency.level.colorId)
     }
 
     private fun moveTask(taskHolder: TaskHolder, groupPosition: Int, moveUp: Boolean) {
