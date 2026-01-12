@@ -217,4 +217,5 @@
     <string name="snack_check">У задачи был изменён статус</string>
     <string name="alert_clear">Действительно очистить?</string>
     <string name="permission_todo_name">TODO Интеграция</string>
+    <string name="system_default">Как в системе</string>
 </resources>
