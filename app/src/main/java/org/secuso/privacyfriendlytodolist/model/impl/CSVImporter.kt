@@ -25,8 +25,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.util.CSVBuilder
 import org.secuso.privacyfriendlytodolist.util.CSVParser
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.io.Reader
-import java.util.concurrent.TimeUnit
 
 /**
  * Imports To-Do lists, tasks and subtasks from comma separated values (CSV).
@@ -170,13 +170,13 @@ class CSVImporter {
         return row[columnIndex].trim()
     }
 
-    private fun getTimestamp(row: List<String>, offset: Int, index: Int): Long? {
+    private fun getTimestamp(row: List<String>, offset: Int, index: Int): Timestamp? {
         columnIndex = offset + index
         val text = row[columnIndex].trim()
-        var result: Long? = null
+        var result: Timestamp? = null
         if (text.isNotEmpty()) {
             val date = CSVBuilder.DATE_TIME_FORMAT.parse(text)
-            result = TimeUnit.MILLISECONDS.toSeconds(date!!.time)
+            result = Timestamp.createByMillis(date!!.time)
         }
         return result
     }
@@ -187,7 +187,7 @@ class CSVImporter {
         var result = 0
         if (text.isNotEmpty()) {
             result = text.toInt()
-            if (result < minValue || result > maxValue) {
+            if (result !in minValue..maxValue) {
                 throw IllegalFormatException("Integer not in range $minValue..$maxValue.")
             }
         }

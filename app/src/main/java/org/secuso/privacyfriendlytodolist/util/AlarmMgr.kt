@@ -28,9 +28,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.AlarmReceiver
-import java.util.concurrent.TimeUnit
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 object AlarmMgr {
     const val KEY_ALARM_ID = "KEY_ALARM_ID"
@@ -95,7 +92,7 @@ object AlarmMgr {
             return null
         }
 
-        val now = Helper.getCurrentTimestamp()
+        val now = Timestamp.createCurrent()
         if (reminderTime < now) {
             Log.i(TAG, "No alarm set because reminder time of $todoTask is in the past.")
             return null
@@ -103,15 +100,9 @@ object AlarmMgr {
 
         // Use task's database ID as unique alarm ID.
         val alarmId = todoTask.getId()
-        // Cut off the seconds part to have the event at full minute.
-        val alarmTime = reminderTime - (reminderTime % 60)
-        val timestamp = Helper.createCanonicalDateTimeString(alarmTime)
-        val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
+        val kindOfAlarm = setAlarm(context, alarmId, reminderTime)
         lastTaskToRemindAlarmID = alarmId
-        // Logging.
-        val duration = (alarmTime - now).toDuration(DurationUnit.SECONDS)
-        Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $timestamp which is in $duration.")
-
+        Log.i(TAG, "$kindOfAlarm alarm set for $todoTask at $reminderTime which is in ${now.getDuration(reminderTime)}.")
         return alarmId
     }
 
@@ -124,26 +115,26 @@ object AlarmMgr {
      *
      * @return The alarm ID as given to this method.
      */
-    fun setAlarmForTask(context: Context, alarmId: Int, alarmTime: Long): Int {
+    fun setAlarmForTask(context: Context, alarmId: Int, alarmTime: Timestamp): Int {
         // Use task's database ID as unique alarm ID.
         cancelAlarmForTask(context, alarmId)
 
         val kindOfAlarm = setAlarm(context, alarmId, alarmTime)
-        Log.i(TAG, "$kindOfAlarm alarm set for task $alarmId at ${Helper.createCanonicalDateTimeString(alarmTime)}.")
+        Log.i(TAG, "$kindOfAlarm alarm set for task $alarmId at $alarmTime.")
         return alarmId
     }
 
-    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Long): String {
+    private fun setAlarm(context: Context, alarmId: Int, alarmTime: Timestamp): String {
         // Use task's database ID as unique alarm ID.
         val pendingIntent = getPendingAlarmIntent(context, alarmId, true)!!
         val manager = getManager(context)
         // On targets with SDK_INT < VERSION_CODES.S exact alarms can always be scheduled.
         // On targets with SDK_INT >= VERSION_CODES.S exact alarms can be scheduled if user grants permissions.
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || manager.canScheduleExactAlarms()) {
-            manager.setExact(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+            manager.setExact(AlarmManager.RTC_WAKEUP, alarmTime.timeInMillis, pendingIntent)
             "Exact"
         } else {
-            manager.set(AlarmManager.RTC_WAKEUP, TimeUnit.SECONDS.toMillis(alarmTime), pendingIntent)
+            manager.set(AlarmManager.RTC_WAKEUP, alarmTime.timeInMillis, pendingIntent)
             "Inexact"
         }
     }
@@ -166,7 +157,7 @@ object AlarmMgr {
             flags = flags or PendingIntent.FLAG_NO_CREATE
         }
         val intent = Intent(context, AlarmReceiver::class.java)
-        intent.setAction(AlarmReceiver.ACTION)
+        intent.action = AlarmReceiver.ACTION
         intent.putExtra(KEY_ALARM_ID, alarmId)
         return PendingIntent.getBroadcast(context, alarmId, intent, flags)
     }

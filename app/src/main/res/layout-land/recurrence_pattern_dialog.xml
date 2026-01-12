@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/task_dialog_title"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@string/select_recurrence_pattern"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                android:layout_marginVertical="@dimen/activity_vertical_margin">
+
+                <RadioButton
+                    android:id="@+id/rb_pattern_none"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/none"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
+
+                <RadioButton
+                    android:id="@+id/rb_pattern_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/days"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
+
+                <RadioButton
+                    android:id="@+id/rb_pattern_weeks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/weeks"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
+
+                <RadioButton
+                    android:id="@+id/rb_pattern_months"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/months"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
+
+                <RadioButton
+                    android:id="@+id/rb_pattern_years"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/years"
+                    android:textAppearance="@style/AppClickableTextAppearance"
+                    android:textColor="@null" />
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/weekdays"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_monday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/monday" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_tuesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tuesday" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_wednesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wednesday" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_thursday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/thursday" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_friday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/friday" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_saturday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/saturday" />
+
+                <CheckBox
+                    android:id="@+id/cb_weekday_sunday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sunday" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lightGrey" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <Button
+                android:id="@+id/bt_pattern_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@android:string/cancel" />
+
+            <Button
+                android:id="@+id/bt_pattern_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppButtonBarButtonStyle"
+                android:text="@string/ok" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -37,7 +37,7 @@
             android:paddingVertical="@dimen/activity_vertical_margin">
 
             <ImageView
-                android:id="@+id/barcodeLogo"
+                android:contentDescription="@string/about_privacy_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
@@ -96,7 +96,7 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:contentDescription="@string/about_secuso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

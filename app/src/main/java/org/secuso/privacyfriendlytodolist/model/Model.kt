@@ -55,7 +55,7 @@ object Model {
         return TodoSubtaskImpl()
     }
 
-    private val modelObservers = ArrayList<ModelObserver>()
+    val modelObservers = ArrayList<ModelObserver>()
 
     fun registerModelObserver(modelObserver: ModelObserver) {
         if (!modelObservers.contains(modelObserver)) {
@@ -65,21 +65,5 @@ object Model {
 
     fun unregisterModelObserver(modelObserver: ModelObserver) {
         modelObservers.remove(modelObserver)
-    }
-
-    fun notifyDataChanged(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
-        if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
-            for (modelObserver in modelObservers) {
-                modelObserver.onTodoDataChanged(context, changedLists, changedTasks, changedSubtasks)
-            }
-        }
-    }
-
-    fun notifyDataChangedFromOutside(context: Context, changedLists: Int, changedTasks: Int, changedSubtasks: Int) {
-        if (changedLists > 0 || changedTasks > 0 || changedSubtasks > 0) {
-            for (modelObserver in modelObservers) {
-                modelObserver.onTodoDataChangedFromOutside(context, changedLists, changedTasks, changedSubtasks)
-            }
-        }
     }
 }

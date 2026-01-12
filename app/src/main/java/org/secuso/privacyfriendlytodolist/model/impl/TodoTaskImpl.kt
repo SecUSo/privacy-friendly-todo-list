@@ -26,11 +26,9 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.TodoTask.ReminderState
 import org.secuso.privacyfriendlytodolist.model.Urgency
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
-import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.Timestamp
+import java.util.Calendar
 import java.util.Locale
-import java.util.concurrent.TimeUnit
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -59,14 +57,14 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         data.listId = parcel.readValue(Int::class.java.classLoader) as Int?
         data.name = parcel.readString()!!
         data.description = parcel.readString()!!
-        data.creationTime = parcel.readLong()
-        data.doneTime = parcel.readValue(Long::class.java.classLoader) as Long?
+        data.creationTime = Timestamp.createBySeconds(parcel.readLong())
+        data.doneTime = Timestamp.createBySecondsIfNotNull(parcel.readValue(Long::class.java.classLoader) as Long?)
         data.isInRecycleBin = parcel.readByte() != 0.toByte()
         data.progress = parcel.readInt()
-        data.deadline = parcel.readValue(Long::class.java.classLoader) as Long?
+        data.deadline = Timestamp.createBySecondsIfNotNull(parcel.readValue(Long::class.java.classLoader) as Long?)
         data.recurrencePattern = RecurrencePattern.fromOrdinal(parcel.readInt())!!
         data.recurrenceInterval = parcel.readInt()
-        data.reminderTime = parcel.readValue(Long::class.java.classLoader) as Long?
+        data.reminderTime = Timestamp.createBySecondsIfNotNull(parcel.readValue(Long::class.java.classLoader) as Long?)
         data.reminderState = ReminderState.fromOrdinal(parcel.readInt())!!
         data.sortOrder = parcel.readInt()
         data.priority = Priority.fromOrdinal(parcel.readInt())!!
@@ -80,14 +78,14 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         dest.writeValue(data.listId)
         dest.writeString(data.name)
         dest.writeString(data.description)
-        dest.writeLong(data.creationTime)
-        dest.writeValue(data.doneTime)
+        dest.writeLong(data.creationTime.timeInSeconds)
+        dest.writeValue(data.doneTime?.timeInSeconds)
         dest.writeByte((if (data.isInRecycleBin) 1 else 0).toByte())
         dest.writeInt(data.progress)
-        dest.writeValue(data.deadline)
+        dest.writeValue(data.deadline?.timeInSeconds)
         dest.writeInt(data.recurrencePattern.ordinal)
         dest.writeInt(data.recurrenceInterval)
-        dest.writeValue(data.reminderTime)
+        dest.writeValue(data.reminderTime?.timeInSeconds)
         dest.writeInt(data.reminderState.ordinal)
         dest.writeInt(data.sortOrder)
         dest.writeInt(data.priority.ordinal)
@@ -102,11 +100,11 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.id
     }
 
-    override fun setCreationTime(creationTime: Long) {
+    override fun setCreationTime(creationTime: Timestamp) {
         data.creationTime = creationTime
     }
 
-    override fun getCreationTime(): Long {
+    override fun getCreationTime(): Timestamp {
         return data.creationTime
     }
 
@@ -134,11 +132,11 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return data.listId
     }
 
-    override fun setDeadline(deadline: Long?) {
+    override fun setDeadline(deadline: Timestamp?) {
         data.deadline = deadline
     }
 
-    override fun getDeadline(): Long? {
+    override fun getDeadline(): Timestamp? {
         return data.deadline
     }
 
@@ -182,43 +180,65 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return subtasks
     }
 
-    override fun getUrgency(reminderTimeSpan: Long): Urgency {
-        var level = Urgency.Level.NONE
+    override fun getUrgency(now: Timestamp, reminderTimeSpanS: Long): Urgency {
         var deadline = data.deadline
-        var daysUntilDeadline: Long? = null
-        if (!isDone() && deadline != null) {
-            // Change timestamps to begin of day to ensure that computations of durations work correctly.
-            // The computations shall bring the same result, independent from current time of day.
-            val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
-            deadline = Helper.changeTimePartToZero(deadline)
+        return if (isDone()) {
+            Urgency(Urgency.Level.NONE, null)
+        } else if (deadline == null) {
+            Urgency(Urgency.Level.LOW, null)
+        } else {
             if (isRecurring()) {
                 // If today is the deadline, the result should not be the upcoming deadline but today.
-                // To ensure this, temporarily use timestamp for now which is a bit smaller, for
-                // the case that 'now' and 'deadline' are equal.
-                deadline = Helper.getNextRecurringDate(deadline,
-                    data.recurrencePattern, data.recurrenceInterval, now - 1)
+                deadline = deadline.getNextRecurringDate(data.recurrencePattern, data.recurrenceInterval,
+                    now, acceptDestDate = true).first
             }
-            daysUntilDeadline = (deadline - now).toDuration(DurationUnit.SECONDS).inWholeDays
-            if (daysUntilDeadline < 0L) {
-                level = Urgency.Level.EXCEEDED
+            getUrgencyInternal(now, reminderTimeSpanS, deadline)
+        }
+    }
+
+    override fun getUrgency(now: Timestamp, reminderTimeSpanS: Long, deadline: Timestamp?): Urgency {
+        return if (null != deadline) getUrgencyInternal(now, reminderTimeSpanS, deadline)
+               else getUrgency(now, reminderTimeSpanS)
+    }
+
+    private fun getUrgencyInternal(now: Timestamp, reminderTimeSpanS: Long, deadline: Timestamp): Urgency {
+        val level: Urgency.Level
+        val daysUntilDeadline = deadline.timeInDays - now.timeInDays
+        if (isDone()) {
+            level = Urgency.Level.NONE
+        }
+        else if (daysUntilDeadline < 0L) {
+            level = if (isRecurring()) {
+                // Past recurring task are assumed to be done or obsolete.
+                // Only recurring tasks in the future can have higher urgency.
+                // As consequence it is not possible to have exceeded recurring tasks.
+                Urgency.Level.NONE
+            } else {
+                Urgency.Level.EXCEEDED
             }
-            else if (daysUntilDeadline == 0L) {
-                level = Urgency.Level.DUE
+        }
+        else if (daysUntilDeadline == 0L) {
+            level = Urgency.Level.DUE
+        }
+        else {
+            var finalReminderTimeSpanS = reminderTimeSpanS
+            val reminderTime = data.reminderTime
+            // Here it is important that time-part of deadline is 00:00:00 to ensure that
+            // the comparison with reminder time span doesn't overlap with deadline-day.
+            // For example if deadline has time-part of 12:00:00 and reminder time span is
+            // 0.5 day it would not get 'imminent' before the deadline-day begins.
+            // But it should get 'imminent' 0.5 day before deadline day begins.
+            val beginOfDeadlineDay = deadline.setTimePart(0, 0, 0)
+            if (reminderTime != null && reminderTime < beginOfDeadlineDay) {
+                // If there is a reminder and it hasn't been passed, use it instead of
+                // the default 'reminderTimeSpanS' to determine the urgency.
+                finalReminderTimeSpanS = beginOfDeadlineDay.timeInSeconds - reminderTime.timeInSeconds
             }
-            else {
-                // Here it is also important that time-part is 00:00:00 to ensure that comparison
-                // with reminder time span doesn't overlap with deadline-day.
-                // For example if deadline has time-part of 12:00:00 and reminder time span is
-                // 0.5 day it would not get 'imminent' before the deadline-day begins.
-                // But it should get 'imminent' 0.5 day before deadline day begins.
-                val reminderTime = data.reminderTime
-                var finalReminderTimeSpan = reminderTimeSpan
-                if (reminderTime != null && reminderTime < deadline) {
-                    finalReminderTimeSpan = deadline - reminderTime
-                }
-                if ((deadline - finalReminderTimeSpan) <= now) {
-                    level = Urgency.Level.IMMINENT
-                }
+            // If distance between now and deadline is <= the finalReminderTimeSpanS it is imminent.
+            level = if ((beginOfDeadlineDay.timeInSeconds - now.timeInSeconds) <= finalReminderTimeSpanS) {
+                Urgency.Level.IMMINENT
+            } else {
+                Urgency.Level.LOW
             }
         }
         return Urgency(level, daysUntilDeadline)
@@ -264,28 +284,30 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
         return 0
     }
 
-    override fun setReminderTime(reminderTime: Long?) {
+    override fun setReminderTime(reminderTime: Timestamp?) {
         data.reminderTime = reminderTime
         data.reminderState = ReminderState.INITIAL
     }
 
-    override fun getReminderTime(): Long? {
+    override fun getReminderTime(): Timestamp? {
         return data.reminderTime
     }
 
-    override fun computeReminderTimeAtDeadline(now: Long): Long? {
-        var result: Long? = null
+    override fun computeReminderTimeAtDeadline(now: Timestamp): Timestamp? {
+        var result: Timestamp? = null
         if (hasDeadline()) {
             val deadline =
                 if (isRecurring()) {
-                    Helper.getNextRecurringDate(data.deadline!!, this, now)
+                    data.deadline!!.getNextRecurringDate(this, now).first
                 } else {
                     data.deadline!!
                 }
             // Use date-part from deadline, use time-part from 'now' because deadline is just a date.
-            val datePart = TimeUnit.DAYS.toSeconds(TimeUnit.SECONDS.toDays(deadline))
-            val timePart = Helper.getCurrentTimestamp() % Helper.SECONDS_PER_DAY
-            result = datePart + timePart
+            val nowCalendar = now.toCalendar()
+            result = deadline.setTimePart(
+                nowCalendar[Calendar.HOUR_OF_DAY],
+                nowCalendar[Calendar.MINUTE],
+                nowCalendar[Calendar.SECOND])
         }
         return result
     }
@@ -309,18 +331,18 @@ class TodoTaskImpl : BaseTodoImpl, TodoTask {
     }
 
     override fun setDone(isDone: Boolean) {
-        data.doneTime = if (isDone) Helper.getCurrentTimestamp() else null
+        data.doneTime = if (isDone) Timestamp.createCurrent() else null
     }
 
     override fun isDone(): Boolean {
         return data.doneTime != null
     }
 
-    override fun setDoneTime(doneTime: Long?) {
+    override fun setDoneTime(doneTime: Timestamp?) {
         data.doneTime = doneTime
     }
 
-    override fun getDoneTime(): Long? {
+    override fun getDoneTime(): Timestamp? {
         return data.doneTime
     }
 

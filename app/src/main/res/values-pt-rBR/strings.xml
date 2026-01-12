@@ -56,7 +56,7 @@
     <string name="export_list">Exportar lista</string>
     <string name="export_succeeded">Exportação concluída com sucesso</string>
     <string name="february">Fevereiro</string>
-    <string name="friday_abbr">SEX</string>
+    <string name="friday_abbr">Sex</string>
     <string name="group_by_priority">Agrupar por prioridade</string>
     <string name="help">Ajuda</string>
     <string name="help_data_backup">Você pode usar o aplicativo de backup amigável à privacidade separado para fazer backup e restaurar os dados e configurações deste aplicativo. Isso também pode ser usado para transferir seus dados para outro dispositivo.</string>
@@ -103,7 +103,7 @@
     <string name="may">Maio</string>
     <string name="medium_priority">Média</string>
     <string name="menu_about">Sobre</string>
-    <string name="monday_abbr">SEG</string>
+    <string name="monday_abbr">Seg</string>
     <string name="months">Mês(ese)</string>
     <string name="more_info">Mais informações podem ser encontradas em:</string>
     <string name="move_down">Mover para baixo</string>
@@ -157,7 +157,7 @@
     <string name="reset_application_button">Redefinir aplicativo</string>
     <string name="reset_application_msg">Deseja realmente redefinir o aplicativo? Isso removerá a proteção por PIN e excluirá todas as Listas de Tarefas.</string>
     <string name="restore">Restaurar tarefa</string>
-    <string name="saturday_abbr">SAB</string>
+    <string name="saturday_abbr">Sab</string>
     <string name="search">Procurar</string>
     <string name="second_alert">ADICIONAR NOVA TAREFA &gt;</string>
     <string name="select_list">Selecione uma lista:</string>
@@ -193,11 +193,11 @@
     <string name="sort_by_deadline">Classificar por prazo</string>
     <string name="sort_by_name_asc">Classificar por nome</string>
     <string name="subtask_removed">Subarefa removida com sucesso.</string>
-    <string name="sunday_abbr">DOM</string>
+    <string name="sunday_abbr">Dom</string>
     <string name="task_removed">Tarefa removida com sucesso.</string>
     <string name="tasks">Tarefas</string>
     <string name="tasks_removed">%1$d tarefa(s) e %2$d subarefa(s) removidas.</string>
-    <string name="thursday_abbr">QUI</string>
+    <string name="thursday_abbr">Qui</string>
     <string name="time">Hora</string>
     <string name="to_choose_list">Selecione uma lista!</string>
     <string name="toast_del">A lixeira está limpa.</string>
@@ -205,10 +205,10 @@
     <string name="todo_name_must_not_be_empty">Por favor, digite o nome da tarefa.</string>
     <string name="todos">Tarefas TODO</string>
     <string name="toolbar_title_main">Tarefas</string>
-    <string name="tuesday_abbr">TER</string>
+    <string name="tuesday_abbr">Ter</string>
     <string name="tutorial">Tutorial</string>
     <string name="version_number">Versão %1$s</string>
-    <string name="wednesday_abbr">QUA</string>
+    <string name="wednesday_abbr">Qua</string>
     <string name="weeks">Semana(s)</string>
     <string name="widget_configuration">Configuração do widget</string>
     <string name="work_subtask">Trabalhar nesta subarefa</string>
@@ -218,4 +218,11 @@
     <string name="yes">Sim</string>
     <string name="zero_percent">0 %</string>
     <string name="system_default">Padrão do sistema</string>
+    <string name="monday">Segunda-feira</string>
+    <string name="tuesday">Terça-feira</string>
+    <string name="wednesday">Quarta-feira</string>
+    <string name="thursday">Quinta-feira</string>
+    <string name="friday">Sexta-feira</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
 </resources>

@@ -21,7 +21,6 @@ import java.io.Writer
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class CSVBuilder(private val writer: Writer) {
     private var isFirstFieldInRow = true
@@ -53,10 +52,10 @@ class CSVBuilder(private val writer: Writer) {
         writer.write(escapedContent)
     }
 
-    fun addTimeField(time: Long?) {
+    fun addTimeField(time: Timestamp?) {
         addFieldSeparator()
         if (time != null) {
-            val dateTime = Date(TimeUnit.SECONDS.toMillis(time))
+            val dateTime = Date(time.timeInMillis)
             val dateTimeString = DATE_TIME_FORMAT.format(dateTime)
             writer.write(dateTimeString)
         }

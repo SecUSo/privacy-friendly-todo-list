@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <View
-        android:id="@+id/v_setting_deadline_color_bar"
+        android:id="@+id/v_setting_urgency_color_bar"
         android:layout_width="5dp"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary" />

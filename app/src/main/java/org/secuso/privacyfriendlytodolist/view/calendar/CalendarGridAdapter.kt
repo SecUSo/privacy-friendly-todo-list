@@ -19,8 +19,9 @@ package org.secuso.privacyfriendlytodolist.view.calendar
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
@@ -32,12 +33,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
-import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.model.Urgency
+import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -48,6 +50,7 @@ class CalendarGridAdapter(context: Context, resource: Int) :
     ArrayAdapter<Date?>(context, resource, ArrayList()) {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val dateFormat = SimpleDateFormat("d", Locale.getDefault())
+    private val reminderTimeSpan = PreferenceMgr.getDefaultReminderTimeSpan(context)
     private var oldColors: ColorStateList? = null
     private var currentMonth = -1
     private var currentYear = -1
@@ -71,12 +74,11 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         updateTasksPerDay()
         var view = convertView
         val dayTextView: TextView
-        val dateAtPos = getItem(position)
-        val todayDate = Date()
         val todayCal = Calendar.getInstance()
         val posCal = Calendar.getInstance()
-        todayCal.setTime(todayDate)
-        posCal.setTime(dateAtPos!!)
+        val posDate = getItem(position) ?: throw IllegalArgumentException("No date object at position $position.")
+        posCal.setTime(posDate)
+        val posTimestamp = Timestamp.createByCalendar(posCal)
         if (view?.tag is CalendarDayViewHolder) {
             val dayViewHolder = view.tag as CalendarDayViewHolder
             dayTextView = dayViewHolder.dayText
@@ -103,21 +105,32 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         }
 
         // add color bar if a task has its deadline on this day
-        val day = TimeUnit.MILLISECONDS.toDays(dateAtPos.time)
-        val tasksToday = tasksPerDay[day]
+        val key = Timestamp.createByMillis(posDate.time).timeInDays
+        val tasksToday = tasksPerDay[key]
         if (tasksToday != null) {
-            var border: Drawable? = null
+            val now = Timestamp.createCurrent()
+            var maxUrgencyLevel = Urgency.Level.NONE
             for (t in tasksToday) {
-                if (!t.isDone()) {
-                    // Use blue border if there are undone tasks.
-                    border = ContextCompat.getDrawable(context, R.drawable.border_blue)
-                    break
+                val urgencyLevel = t.getUrgency(now, reminderTimeSpan, posTimestamp).level
+                if (urgencyLevel > maxUrgencyLevel) {
+                    maxUrgencyLevel = urgencyLevel
                 }
             }
-            // Use green border if all tasks are done.
-            dayTextView.background = border ?: ContextCompat.getDrawable(context, R.drawable.border_green)
+            val colorId = if (maxUrgencyLevel == Urgency.Level.NONE) {
+                // Level NONE has the same color as level LOW, because this looks better
+                // in the list view. But for the calendar the done tasks (level NONE) shall have
+                // a striking color.
+                R.color.urgencyNoneStriking
+            } else {
+                maxUrgencyLevel.colorId
+            }
+            val border = ContextCompat.getDrawable(context, R.drawable.border_calendar_day)
+            border?.colorFilter = PorterDuffColorFilter(
+                ContextCompat.getColor(context, colorId),
+                PorterDuff.Mode.SRC_IN)
+            dayTextView.background = border
         } else {
-            dayTextView.setBackgroundResource(0)
+            dayTextView.background = null
         }
         dayTextView.text = spanString
         return view!!
@@ -147,25 +160,23 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         startCal[Calendar.YEAR] = currentYear
         startCal[Calendar.MONTH] = currentMonth
         startCal.add(Calendar.MONTH, -1)
+        val startDate = Timestamp.createByCalendar(startCal)
         val endCal = Calendar.getInstance()
         endCal.timeInMillis = 0
         endCal[Calendar.YEAR] = currentYear
         endCal[Calendar.MONTH] = currentMonth
         endCal.add(Calendar.MONTH, 2)
         endCal.add(Calendar.DAY_OF_MONTH, -1)
+        val endDate = Timestamp.createByCalendar(endCal)
 
         tasksPerDay.clear()
         for (todoTask in allTodoTasks) {
-            var deadline: Long = todoTask.getDeadline() ?: continue
+            val deadline = todoTask.getDeadline() ?: continue
             if (todoTask.isRecurring()) {
-                val recurringDateCal = Calendar.getInstance()
-                recurringDateCal.setTimeInMillis(TimeUnit.SECONDS.toMillis(deadline))
-                Helper.getNextRecurringDateAndCount(recurringDateCal, todoTask, startCal)
-                while (recurringDateCal < endCal) {
-                    deadline = TimeUnit.MILLISECONDS.toSeconds(recurringDateCal.timeInMillis)
-                    addTaskOfDay(todoTask, deadline)
-                    Helper.addInterval(recurringDateCal,
-                        todoTask.getRecurrencePattern(), todoTask.getRecurrenceInterval())
+                var recurringDeadline = deadline.getNextRecurringDate(todoTask, startDate).first
+                while (recurringDeadline < endDate) {
+                    addTaskOfDay(todoTask, recurringDeadline)
+                    recurringDeadline = recurringDeadline.addInterval(todoTask)
                 }
             } else {
                 addTaskOfDay(todoTask, deadline)
@@ -174,8 +185,8 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         tasksPerDayNeedUpdate = false
     }
 
-    private fun addTaskOfDay(todoTask: TodoTask, deadline: Long) {
-        val key = TimeUnit.SECONDS.toDays(deadline)
+    private fun addTaskOfDay(todoTask: TodoTask, deadline: Timestamp) {
+        val key = deadline.timeInDays
         var tasksOfDay = tasksPerDay[key]
         if (null == tasksOfDay) {
             tasksOfDay = ArrayList()
@@ -184,11 +195,13 @@ class CalendarGridAdapter(context: Context, resource: Int) :
         tasksOfDay.add(todoTask)
     }
 
-    fun getTasksOfDay(position: Int): ArrayList<TodoTask>? {
+    fun getTasksOfDay(position: Int): Pair<ArrayList<TodoTask>, Timestamp>? {
         val selectedDate = getItem(position) ?: return null
-        val key = TimeUnit.MILLISECONDS.toDays(selectedDate.time)
-        return tasksPerDay[key]
+        val deadline = Timestamp.createByMillis(selectedDate.time)
+        val key = deadline.timeInDays
+        val tasksOfDay = tasksPerDay[key]
+        return if (null != tasksOfDay) Pair(tasksOfDay, deadline) else null
     }
 
-    private inner class CalendarDayViewHolder(val dayText: TextView)
+    private class CalendarDayViewHolder(val dayText: TextView)
 }

@@ -33,8 +33,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.model.database.TodoListDatabase
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import java.io.IOException
 
 
@@ -130,7 +130,8 @@ class DBMigrationTest {
         id = 0
         for (taskId in 1..12) {
             val subtaskCount = taskId % 3
-            for (subtask in 1..subtaskCount) {
+            // Iterate over subtasks
+            (1..subtaskCount).forEach { _ ->
                 ++id
                 query += "('$id', '$taskId', 'Test subtask $id', '${id % 2}'), "
             }
@@ -163,7 +164,7 @@ class DBMigrationTest {
             assertFalse(cursor.moveToNext())
         }
 
-        val now = Helper.getCurrentTimestamp()
+        val now = Timestamp.createCurrent().timeInSeconds
         val nowRange = LongRange(now - 120, now)
 
         val taskIds = ArrayList<Int>()
@@ -175,7 +176,8 @@ class DBMigrationTest {
             val sortOrders = mutableMapOf<Int?, Int>()
             for (listCounter in 1..3) {
                 ++pos
-                for (task in 1..4) {
+                // Iterate over tasks
+                (1..4).forEach { _ ->
                     ++id
                     if (id == 1) {
                         assertTrue(cursor.moveToFirst())
@@ -232,7 +234,8 @@ class DBMigrationTest {
             val sortOrders = mutableMapOf<Int, Int>()
             for (taskId in 1..12) {
                 val subtaskCount = taskId % 3
-                for (subtask in 1..subtaskCount) {
+                // Iterate over subtasks
+                (1..subtaskCount).forEach { _ ->
                     ++id
                     if (id == 1) {
                         assertTrue(cursor.moveToFirst())

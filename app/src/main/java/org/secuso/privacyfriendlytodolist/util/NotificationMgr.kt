@@ -41,7 +41,6 @@ import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.receiver.NotificationReceiver
 import org.secuso.privacyfriendlytodolist.view.MainActivity
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Lutz on 12.03.2018.
@@ -138,7 +137,7 @@ object NotificationMgr {
 
         // Snooze Action -> Restart reminder without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
-        intent.setAction(NotificationReceiver.ACTION_SNOOZE)
+        intent.action = NotificationReceiver.ACTION_SNOOZE
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
         val snoozeDuration = Helper.snoozeDurationToString(context, PreferenceMgr.getSnoozeDuration(context), true)
@@ -146,13 +145,13 @@ object NotificationMgr {
         builder.addAction(R.drawable.ic_snooze_black_24dp, actionTitle, pendingIntent)
 
         // If deadline is available, in future and not today provide action to snooze until deadline.
-        val now = Helper.getCurrentTimestamp()
+        val now = Timestamp.createCurrent()
         val reminderTimeAtDeadline = task.computeReminderTimeAtDeadline(now)
         if (reminderTimeAtDeadline != null
-            && TimeUnit.SECONDS.toDays(reminderTimeAtDeadline) > TimeUnit.SECONDS.toDays(now)) {
+            && reminderTimeAtDeadline.timeInDays > now.timeInDays) {
             // Snooze until Deadline Action -> Restart reminder without showing activity
             intent = Intent(context, NotificationReceiver::class.java)
-            intent.setAction(NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE)
+            intent.action = NotificationReceiver.ACTION_SNOOZE_UNTIL_DEADLINE
             intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
             pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
             actionTitle = context.resources.getString(R.string.notif_reminder_act_snooze_until_deadline)
@@ -161,7 +160,7 @@ object NotificationMgr {
 
         // Done Action -> Set task done without showing activity
         intent = Intent(context, NotificationReceiver::class.java)
-        intent.setAction(NotificationReceiver.ACTION_SET_DONE)
+        intent.action = NotificationReceiver.ACTION_SET_DONE
         intent.putExtra(EXTRA_NOTIFICATION_TASK_ID, task.getId())
         pendingIntent = PendingIntent.getBroadcast(context, ++uniqueRequestCode, intent, flags)
         actionTitle = context.resources.getString(R.string.notif_reminder_act_done)

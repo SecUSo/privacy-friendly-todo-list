@@ -123,13 +123,20 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Zbliżający się termin: %1$s</string>
     <!-- Date and Time -->
-	<string name="sunday_abbr">NIE</string>
-    <string name="monday_abbr">PON</string>
-    <string name="tuesday_abbr">WT</string>
-    <string name="wednesday_abbr">ŚR</string>
-    <string name="thursday_abbr">CZW</string>
-    <string name="friday_abbr">PT</string>
-    <string name="saturday_abbr">SOB</string>
+    <string name="monday">Poniedziałek</string>
+    <string name="tuesday">Wtorek</string>
+    <string name="wednesday">Środa</string>
+    <string name="thursday">Czwartek</string>
+    <string name="friday">Piątek</string>
+    <string name="saturday">Sobota</string>
+    <string name="sunday">Niedziela</string>
+    <string name="monday_abbr">Pon</string>
+    <string name="tuesday_abbr">Wt</string>
+    <string name="wednesday_abbr">Śr</string>
+    <string name="thursday_abbr">Czw</string>
+    <string name="friday_abbr">Pt</string>
+    <string name="saturday_abbr">Sob</string>
+    <string name="sunday_abbr">Nie</string>
     <string name="january">Styczeń</string>
     <string name="february">Luty</string>
     <string name="march">Marzec</string>

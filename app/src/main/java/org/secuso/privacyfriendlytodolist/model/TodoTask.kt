@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model
 
 import android.os.Parcelable
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 
 interface TodoTask : BaseTodo, Parcelable {
@@ -27,7 +28,23 @@ interface TodoTask : BaseTodo, Parcelable {
         DAILY,
         WEEKLY,
         MONTHLY,
-        YEARLY;
+        YEARLY,
+                          WEEKDAYS_M______, WEEKDAYS__T_____, WEEKDAYS_MT_____, WEEKDAYS___W____, WEEKDAYS_M_W____, WEEKDAYS__TW____, WEEKDAYS_MTW____,
+        WEEKDAYS____T___, WEEKDAYS_M__T___, WEEKDAYS__T_T___, WEEKDAYS_MT_T___, WEEKDAYS___WT___, WEEKDAYS_M_WT___, WEEKDAYS__TWT___, WEEKDAYS_MTWT___,
+        WEEKDAYS_____F__, WEEKDAYS_M___F__, WEEKDAYS__T__F__, WEEKDAYS_MT__F__, WEEKDAYS___W_F__, WEEKDAYS_M_W_F__, WEEKDAYS__TW_F__, WEEKDAYS_MTW_F__,
+        WEEKDAYS____TF__, WEEKDAYS_M__TF__, WEEKDAYS__T_TF__, WEEKDAYS_MT_TF__, WEEKDAYS___WTF__, WEEKDAYS_M_WTF__, WEEKDAYS__TWTF__, WEEKDAYS_MTWTF__,
+        WEEKDAYS______S_, WEEKDAYS_M____S_, WEEKDAYS__T___S_, WEEKDAYS_MT___S_, WEEKDAYS___W__S_, WEEKDAYS_M_W__S_, WEEKDAYS__TW__S_, WEEKDAYS_MTW__S_,
+        WEEKDAYS____T_S_, WEEKDAYS_M__T_S_, WEEKDAYS__T_T_S_, WEEKDAYS_MT_T_S_, WEEKDAYS___WT_S_, WEEKDAYS_M_WT_S_, WEEKDAYS__TWT_S_, WEEKDAYS_MTWT_S_,
+        WEEKDAYS_____FS_, WEEKDAYS_M___FS_, WEEKDAYS__T__FS_, WEEKDAYS_MT__FS_, WEEKDAYS___W_FS_, WEEKDAYS_M_W_FS_, WEEKDAYS__TW_FS_, WEEKDAYS_MTW_FS_,
+        WEEKDAYS____TFS_, WEEKDAYS_M__TFS_, WEEKDAYS__T_TFS_, WEEKDAYS_MT_TFS_, WEEKDAYS___WTFS_, WEEKDAYS_M_WTFS_, WEEKDAYS__TWTFS_, WEEKDAYS_MTWTFS_,
+        WEEKDAYS_______S, WEEKDAYS_M_____S, WEEKDAYS__T____S, WEEKDAYS_MT____S, WEEKDAYS___W___S, WEEKDAYS_M_W___S, WEEKDAYS__TW___S, WEEKDAYS_MTW___S,
+        WEEKDAYS____T__S, WEEKDAYS_M__T__S, WEEKDAYS__T_T__S, WEEKDAYS_MT_T__S, WEEKDAYS___WT__S, WEEKDAYS_M_WT__S, WEEKDAYS__TWT__S, WEEKDAYS_MTWT__S,
+        WEEKDAYS_____F_S, WEEKDAYS_M___F_S, WEEKDAYS__T__F_S, WEEKDAYS_MT__F_S, WEEKDAYS___W_F_S, WEEKDAYS_M_W_F_S, WEEKDAYS__TW_F_S, WEEKDAYS_MTW_F_S,
+        WEEKDAYS____TF_S, WEEKDAYS_M__TF_S, WEEKDAYS__T_TF_S, WEEKDAYS_MT_TF_S, WEEKDAYS___WTF_S, WEEKDAYS_M_WTF_S, WEEKDAYS__TWTF_S, WEEKDAYS_MTWTF_S,
+        WEEKDAYS______SS, WEEKDAYS_M____SS, WEEKDAYS__T___SS, WEEKDAYS_MT___SS, WEEKDAYS___W__SS, WEEKDAYS_M_W__SS, WEEKDAYS__TW__SS, WEEKDAYS_MTW__SS,
+        WEEKDAYS____T_SS, WEEKDAYS_M__T_SS, WEEKDAYS__T_T_SS, WEEKDAYS_MT_T_SS, WEEKDAYS___WT_SS, WEEKDAYS_M_WT_SS, WEEKDAYS__TWT_SS, WEEKDAYS_MTWT_SS,
+        WEEKDAYS_____FSS, WEEKDAYS_M___FSS, WEEKDAYS__T__FSS, WEEKDAYS_MT__FSS, WEEKDAYS___W_FSS, WEEKDAYS_M_W_FSS, WEEKDAYS__TW_FSS, WEEKDAYS_MTW_FSS,
+        WEEKDAYS____TFSS, WEEKDAYS_M__TFSS, WEEKDAYS__T_TFSS, WEEKDAYS_MT_TFSS, WEEKDAYS___WTFSS, WEEKDAYS_M_WTFSS, WEEKDAYS__TWTFSS, WEEKDAYS_MTWTFSS;
 
         companion object {
             /** Number of enumeration entries. */
@@ -99,8 +116,8 @@ interface TodoTask : BaseTodo, Parcelable {
 
     fun setId(id: Int)
     fun getId(): Int
-    fun setCreationTime(creationTime: Long)
-    fun getCreationTime(): Long
+    fun setCreationTime(creationTime: Timestamp)
+    fun getCreationTime(): Timestamp
     fun setName(name: String)
     fun getName(): String
     fun setDescription(description: String)
@@ -115,8 +132,8 @@ interface TodoTask : BaseTodo, Parcelable {
      * @return The ID of the associated list or null if no list is associated.
      */
     fun getListId(): Int?
-    fun setDeadline(deadline: Long?)
-    fun getDeadline(): Long?
+    fun setDeadline(deadline: Timestamp?)
+    fun getDeadline(): Timestamp?
     fun hasDeadline(): Boolean
     fun setRecurrencePattern(recurrencePattern: RecurrencePattern)
     fun getRecurrencePattern(): RecurrencePattern
@@ -129,7 +146,11 @@ interface TodoTask : BaseTodo, Parcelable {
     fun getSubtasks(): MutableList<TodoSubtask>
 
     /**
-     * @param reminderTimeSpan The reminder time span is a relative value in seconds
+     * Computes the [Urgency] for the deadline of the task. If it is a recurring task,
+     * the upcoming deadline is used for the computation.
+     *
+     * @param now The current time.
+     * @param reminderTimeSpanS The reminder time span is a relative value in seconds
      * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
      * Urgency#IMMINENT gets returned.
      * @return Returns Urgency EXCEEDED if the deadline is in the past.
@@ -138,16 +159,38 @@ interface TodoTask : BaseTodo, Parcelable {
      * (the given one or the one set by the user).
      * Returns Urgency NONE in any other case.
      */
-    fun getUrgency(reminderTimeSpan: Long): Urgency
+    fun getUrgency(now: Timestamp, reminderTimeSpanS: Long): Urgency
+    /**
+     * Computes the [Urgency] of this task by the given deadline or the internal deadline.
+     *
+     * If it is a recurring task and the deadline is in the past, [Urgency.Level.NONE] will be returned,
+     * because only the upcoming recurring deadline has higher urgency.
+     *
+     * @param now The current time.
+     * @param reminderTimeSpanS The reminder time span is a relative value in seconds
+     * (e.g. 86400 s == 1 day). This is the time span before the deadline elapses where
+     * Urgency#IMMINENT gets returned.
+     * @param deadline The deadline to be used for the computation.
+     * If null, the internal deadline gets used. This is the same as calling the
+     * overloaded version of [getUrgency] without deadline-argument.
+     * @return Returns Urgency EXCEEDED if the deadline is in the past.
+     * Returns Urgency DUE if the deadline is today.
+     * Returns Urgency IMMINENT if the deadline is later than today but within reminder time span
+     * (the given one or the one set by the user).
+     * Returns Urgency NONE in any other case.
+     */
+    fun getUrgency(now: Timestamp, reminderTimeSpanS: Long, deadline: Timestamp?): Urgency
     fun setPriority(priority: Priority)
     fun getPriority(): Priority
     fun setProgress(progress: Int)
+
     /**
      * The progress of a task is the number of done subtasks compared to the overall number of subtasks.
      *
      * @return The progress of the task in percent (value in range 0 - 100).
      */
     fun getProgress(): Int
+
     /**
      * Computes the progress of the task depending on the subtasks done-state. This progress gets
      * stored and can be retrieved by [getProgress].
@@ -156,17 +199,17 @@ interface TodoTask : BaseTodo, Parcelable {
      * currently is stored.
      */
     fun computeProgress(): Boolean
-    fun setReminderTime(reminderTime: Long?)
-    fun getReminderTime(): Long?
-    fun computeReminderTimeAtDeadline(now: Long): Long?
+    fun setReminderTime(reminderTime: Timestamp?)
+    fun getReminderTime(): Timestamp?
+    fun computeReminderTimeAtDeadline(now: Timestamp): Timestamp?
     fun hasReminderTime(): Boolean
     fun setReminderState(reminderState: ReminderState)
     fun getReminderState(): ReminderState
     fun setAllSubtasksDone(isDone: Boolean)
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
-    fun setDoneTime(doneTime: Long?)
-    fun getDoneTime(): Long?
+    fun setDoneTime(doneTime: Timestamp?)
+    fun getDoneTime(): Timestamp?
 
     /**
      * This method updates the done-status of the task depending on the done-status of all subtasks:

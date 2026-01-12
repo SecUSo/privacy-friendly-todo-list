@@ -123,13 +123,20 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Date limite prochaine: %1$s</string>
     <!-- Date and Time -->
-	<string name="sunday_abbr">DI</string>
-    <string name="monday_abbr">LU</string>
-    <string name="tuesday_abbr">MA</string>
-    <string name="wednesday_abbr">ME</string>
-    <string name="thursday_abbr">JE</string>
-    <string name="friday_abbr">VE</string>
-    <string name="saturday_abbr">SA</string>
+    <string name="monday">Lundi</string>
+    <string name="tuesday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="thursday">Jeudi</string>
+    <string name="friday">Vendredi</string>
+    <string name="saturday">Samedi</string>
+    <string name="sunday">Dimanche</string>
+    <string name="monday_abbr">Lu</string>
+    <string name="tuesday_abbr">Ma</string>
+    <string name="wednesday_abbr">Me</string>
+    <string name="thursday_abbr">Je</string>
+    <string name="friday_abbr">Ve</string>
+    <string name="saturday_abbr">Sa</string>
+    <string name="sunday_abbr">Di</string>
     <string name="january">Janvier</string>
     <string name="february">Février</string>
     <string name="march">Mars</string>
@@ -207,13 +214,6 @@
     <string name="list_quick_access">Accès rapide aux listes</string>
     <string name="pref_first_day_of_week_title">Premier jour de semaine</string>
     <string name="dialog_need_permission_post_notifications_title">Activer les notifications</string>
-    <string name="sunday">Dimanche</string>
-    <string name="monday">Lundi</string>
-    <string name="tuesday">Mardi</string>
-    <string name="wednesday">Mercredi</string>
-    <string name="thursday">Jeudi</string>
-    <string name="friday">Vendredi</string>
-    <string name="saturday">Samedi</string>
     <string name="bin">Corbeille</string>
     <string name="btn_clear">Vider la corbeille</string>
     <string name="bin_toolbar">Corbeille</string>

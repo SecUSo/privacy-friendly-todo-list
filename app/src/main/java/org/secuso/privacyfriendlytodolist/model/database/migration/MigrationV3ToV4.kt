@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model.database.migration
 
 import androidx.sqlite.db.SupportSQLiteDatabase
-import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 class MigrationV3ToV4: MigrationBase(3, 4) {
     override fun doMigrate(db: SupportSQLiteDatabase) {
@@ -29,7 +29,7 @@ class MigrationV3ToV4: MigrationBase(3, 4) {
 
         db.execSQL("ALTER TABLE todoTasks ADD reminderState INTEGER NOT NULL DEFAULT `0`")
         // Set all reminders as done where the reminder time is in the past.
-        val now = Helper.getCurrentTimestamp()
+        val now = Timestamp.createCurrent().timeInSeconds
         db.execSQL("UPDATE todoTasks SET reminderState = 1 WHERE reminderTime IS NOT NULL AND reminderTime < $now")
 
         // Nothing to do for "todoSubtasks"

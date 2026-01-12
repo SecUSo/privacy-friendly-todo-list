@@ -130,13 +130,20 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Deadline nadert: %1$s</string>
     <!-- Date and Time -->
-	<string name="sunday_abbr">ZO</string>
-    <string name="monday_abbr">MA</string>
-    <string name="tuesday_abbr">DI</string>
-    <string name="wednesday_abbr">WO</string>
-    <string name="thursday_abbr">DO</string>
-    <string name="friday_abbr">VR</string>
-    <string name="saturday_abbr">ZA</string>
+    <string name="monday">Maandag</string>
+    <string name="tuesday">Dinsdag</string>
+    <string name="wednesday">Woensdag</string>
+    <string name="thursday">Donderdag</string>
+    <string name="friday">Vrijdag</string>
+    <string name="saturday">Zaterdag</string>
+    <string name="sunday">Zondag</string>
+    <string name="monday_abbr">Ma</string>
+    <string name="tuesday_abbr">Di</string>
+    <string name="wednesday_abbr">Wo</string>
+    <string name="thursday_abbr">Do</string>
+    <string name="friday_abbr">Vr</string>
+    <string name="saturday_abbr">Za</string>
+    <string name="sunday_abbr">Zo</string>
     <string name="january">januari</string>
     <string name="february">februari</string>
     <string name="march">maart</string>

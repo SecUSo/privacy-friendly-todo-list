@@ -15,7 +15,9 @@
     <color name="green">#68E504</color>
 
     <!-- Urgency of tasks -->
-    <color name="urgencyNone">#024265</color>
+    <color name="urgencyNone">@color/colorPrimary</color>
+    <color name="urgencyNoneStriking">#0d960f</color>
+    <color name="urgencyLow">@color/colorPrimary</color>
     <color name="urgencyImminent">#F6D126</color>
     <color name="urgencyDue">#FF9100</color>
     <color name="urgencyExceeded">#EF0606</color>

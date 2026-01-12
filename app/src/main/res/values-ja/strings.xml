@@ -123,13 +123,20 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">期限が近づいています: %1$s</string>
     <!-- Date and Time -->
-	<string name="sunday_abbr">日</string>
+    <string name="monday">月曜日</string>
+    <string name="tuesday">火曜日</string>
+    <string name="wednesday">水曜日</string>
+    <string name="thursday">木曜日</string>
+    <string name="friday">金曜日</string>
+    <string name="saturday">土曜日</string>
+    <string name="sunday">日曜日</string>
     <string name="monday_abbr">月</string>
     <string name="tuesday_abbr">火</string>
     <string name="wednesday_abbr">水</string>
     <string name="thursday_abbr">木</string>
     <string name="friday_abbr">金</string>
     <string name="saturday_abbr">土</string>
+    <string name="sunday_abbr">日</string>
     <string name="january">1 月</string>
     <string name="february">2 月</string>
     <string name="march">3 月</string>

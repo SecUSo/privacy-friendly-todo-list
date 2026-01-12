@@ -51,4 +51,11 @@
     <string name="skip">דילוג</string>
     <string name="okay">בסדר</string>
     <string name="slide1_heading">ברוך בואך!</string>
+    <string name="monday">יום שני</string>
+    <string name="tuesday">יום שלישי</string>
+    <string name="wednesday">יום רביעי</string>
+    <string name="thursday">יום חמישי</string>
+    <string name="friday">יום שישי</string>
+    <string name="saturday">שבת</string>
+    <string name="sunday">יום ראשון</string>
 </resources>
