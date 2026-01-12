@@ -147,7 +147,7 @@
     <string name="progress_colon">Progresso:</string>
     <string name="recurrence_every">Recorrência a cada</string>
     <string name="recurrence_interval_hint">1..n</string>
-    <string name="recurrence_interval_invalid">O intervalo de recorrência não é um inteiro >= 1.</string>
+    <string name="recurrence_interval_invalid">O intervalo de recorrência não é um inteiro &gt;= 1.</string>
     <string name="recurrence_pattern_hint">Padrão de recorrência</string>
     <string name="recurring_deadline_approaching">Prazo se aproximando: %1$s (%2$d. repetição)</string>
     <string name="reminder">Lembrete</string>
@@ -159,7 +159,7 @@
     <string name="restore">Restaurar tarefa</string>
     <string name="saturday_abbr">SAB</string>
     <string name="search">Procurar</string>
-    <string name="second_alert">ADICIONAR NOVA TAREFA ></string>
+    <string name="second_alert">ADICIONAR NOVA TAREFA &gt;</string>
     <string name="select_list">Selecione uma lista:</string>
     <string name="select_no_list">Nenhuma lista</string>
     <string name="select_option">Selecione uma opção</string>
@@ -217,4 +217,5 @@
     <string name="years">Ano(s)</string>
     <string name="yes">Sim</string>
     <string name="zero_percent">0 %</string>
+    <string name="system_default">Padrão do sistema</string>
 </resources>
