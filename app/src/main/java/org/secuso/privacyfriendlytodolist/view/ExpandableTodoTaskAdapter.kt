@@ -31,6 +31,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import org.secuso.privacyfriendlytodolist.R
@@ -41,6 +42,7 @@ import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.TaskComparator
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 
 /**
@@ -52,10 +54,14 @@ import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
  * @param showListNames Normally the toolbar title contains the list name. However, if all tasks are
  * displayed in a dummy list it is not obvious to what list a tasks belongs. This missing
  * information is then added to each task in an additional text view.
+ * @param givenDeadline If the list contains recurring tasks and all those recurring tasks have the same deadline and
+ * this deadline is different from the next recurring deadline, it can be specified here.
+ * It is used to determine the right urgency.
  */
 @Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class ExpandableTodoTaskAdapter(private val context: Context, private val model: ModelServices,
-    private val todoTasks: MutableList<TodoTask>, private val showListNames: Boolean) : BaseExpandableListAdapter() {
+    private val todoTasks: MutableList<TodoTask>, private val showListNames: Boolean,
+    private val givenDeadline: Timestamp? = null) : BaseExpandableListAdapter() {
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     fun interface OnDataInitiallyLoadedListener {
@@ -107,7 +113,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         get() = taskComparator.isSortingByNameAsc
         set(value) { taskComparator.isSortingByNameAsc = value }
     private val filteredTasks: MutableList<TaskHolder> = ArrayList() // data after filtering process
-    private val priorityBarPositions = mutableMapOf<TodoTask.Priority, Int>()
+    private val priorityRowPositions = mutableMapOf<TodoTask.Priority, Int>()
     private var listNames = mapOf<Int, String>()
 
     private var dataInitiallyLoaded = false
@@ -200,11 +206,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      * Count how many tasks belong to each priority group (tasks are now sorted by priority).
      *
      * If [ExpandableTodoTaskAdapter.sortTasks] sorted by the priority, this method must be
-     * called. It computes the position of the dividing bars between the priority ranges. These
+     * called. It computes the position of the dividing rows between the priority ranges. These
      * positions are necessary to distinguish of what group type the current row is.
      */
     private fun countTasksPerPriority() {
-        priorityBarPositions.clear()
+        priorityRowPositions.clear()
         if (filteredTasks.isNotEmpty()) {
             var pos = 0
             var currentPriority: TodoTask.Priority
@@ -213,7 +219,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 currentPriority = taskHolder.todoTask.getPriority()
                 if (!priorityAlreadySeen.contains(currentPriority)) {
                     priorityAlreadySeen.add(currentPriority)
-                    priorityBarPositions[currentPriority] = pos
+                    priorityRowPositions[currentPriority] = pos
                     ++pos // skip the current priority-line
                 }
                 ++pos
@@ -223,23 +229,23 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     /**
      * @param groupPosition position of current row. For that reason the offset to the task must be
-     * computed taking into account all preceding dividing priority bars
+     * computed taking into account all preceding dividing priority rows
      * @return null if there is no task at @param groupPosition (but a divider row) or the wanted task
      */
     private fun getTaskHolderByPosition(groupPosition: Int): TaskHolder? {
-        var seenPriorityBars = 0
+        var seenPriorityRows = 0
         if (isGroupingByPriority) {
             for (priority in TodoTask.Priority.entries) {
-                val priorityPos = priorityBarPositions[priority]
+                val priorityPos = priorityRowPositions[priority]
                 if (null != priorityPos) {
                     if (groupPosition < priorityPos) {
                         break
                     }
-                    ++seenPriorityBars
+                    ++seenPriorityRows
                 }
             }
         }
-        val taskIndex = groupPosition - seenPriorityBars
+        val taskIndex = groupPosition - seenPriorityRows
         if (taskIndex >= 0 && taskIndex < filteredTasks.size) {
             return filteredTasks[taskIndex]
         }
@@ -249,7 +255,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     /**
      * @param groupPosition position of current row. For that reason the offset to the task must be
-     * computed taking into account all preceding dividing priority bars
+     * computed taking into account all preceding dividing priority rows
      * @return null if there is no task at @param groupPosition (but a divider row) or the wanted task
      */
     fun getTaskByPosition(groupPosition: Int): TodoTask? {
@@ -259,9 +265,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     private fun getPositionByTask(taskIndex: Int): Int {
         var groupPosition = taskIndex
         if (isGroupingByPriority) {
-            val sortedPriorityBarPositions = priorityBarPositions.values.sorted()
-            for (priorityBarPosition in sortedPriorityBarPositions) {
-                if (priorityBarPosition <= groupPosition) {
+            val sortedPriorityRowPositions = priorityRowPositions.values.sorted()
+            for (priorityRowPosition in sortedPriorityRowPositions) {
+                if (priorityRowPosition <= groupPosition) {
                     ++groupPosition
                 }
             }
@@ -270,7 +276,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     override fun getGroupCount(): Int {
-        return if (isGroupingByPriority) filteredTasks.size + priorityBarPositions.size else filteredTasks.size
+        return if (isGroupingByPriority) filteredTasks.size + priorityRowPositions.size else filteredTasks.size
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
@@ -290,7 +296,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      * @param groupPosition Position of group in range 0 - number of groups minus one.
      */
     private fun getGroupTypeEnum(groupPosition: Int): GroupType {
-        return if (isGroupingByPriority && priorityBarPositions.values.contains(groupPosition)) {
+        return if (isGroupingByPriority && priorityRowPositions.values.contains(groupPosition)) {
             GroupType.PRIORITY_ROW
         } else {
             GroupType.TASK_ROW
@@ -346,9 +352,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         return childPosition
     }
 
-    private fun getPriorityNameByBarPos(groupPosition: Int): String {
+    private fun getPriorityNameByRowPos(groupPosition: Int): String {
         var priority: TodoTask.Priority? = null
-        for ((key, value) in priorityBarPositions) {
+        for ((key, value) in priorityRowPositions) {
             if (value == groupPosition) {
                 priority = key
                 break
@@ -403,7 +409,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         actualConvertView.findViewById(R.id.tv_exlv_task_reminder),
                         actualConvertView.findViewById(R.id.tv_exlv_task_list_name),
                         actualConvertView.findViewById(R.id.cb_task_done),
-                        actualConvertView.findViewById(R.id.v_urgency_task),
+                        actualConvertView.findViewById(R.id.v_task_urgency_color_bar),
                         actualConvertView.findViewById(R.id.pb_task_progress),
                         actualConvertView.findViewById(R.id.tv_exlv_task_description)
                     )
@@ -443,7 +449,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 val deadline = currentTask.getDeadline()
                 if (deadline != null) {
-                    tvh.deadline.text = Helper.createLocalizedDateString(deadline)
+                    tvh.deadline.text = deadline.createLocalizedDateString()
                     tvh.deadlineIcon.visibility = View.VISIBLE
                     tvh.deadline.visibility = View.VISIBLE
                 } else {
@@ -452,7 +458,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 }
                 val reminderTime = currentTask.getReminderTime()
                 if (isExpanded && reminderTime != null) {
-                    tvh.reminder.text = Helper.createLocalizedDateTimeString(reminderTime)
+                    tvh.reminder.text = reminderTime.createLocalizedDateTimeString()
                     tvh.reminderIcon.visibility = View.VISIBLE
                     tvh.reminder.visibility = View.VISIBLE
                 } else {
@@ -460,12 +466,10 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     tvh.reminder.visibility = View.GONE
                 }
                 if (isExpanded && currentTask.isRecurring() && currentTask.hasDeadline()) {
-                    // Change timestamp to begin of today to ensure that a deadline which is today is not seen
-                    // as past because it's time-part (12:00) is behind the current time of day (e.g. 14:00).
-                    val now = Helper.changeTimePartToZero(Helper.getCurrentTimestamp())
-                    val recurringDeadlineAndCount = Helper.getNextRecurringDateAndCount(
-                        currentTask.getDeadline()!!, currentTask, now)
-                    val recurringDeadlineString = Helper.createLocalizedDateString(recurringDeadlineAndCount.first)
+                    val now = Timestamp.createCurrent()
+                    val recurringDeadlineAndCount = currentTask.getDeadline()!!.getNextRecurringDate(
+                        currentTask, now, acceptDestDate = true)
+                    val recurringDeadlineString = recurringDeadlineAndCount.first.createLocalizedDateString()
                     tvh.recurringDeadline.text = context.getString(R.string.nth_recurrence_at,
                         recurringDeadlineAndCount.second, recurringDeadlineString)
                     tvh.recurringDeadlineIcon.visibility = View.VISIBLE
@@ -481,9 +485,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                 } else {
                     tvh.taskDescription.visibility = View.GONE
                 }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
-                val urgencyColor = urgency.getColor(context)
-                tvh.urgencyColorBar.setBackgroundColor(urgencyColor)
+                tvh.urgencyColorBar.setBackgroundColor(getUrgencyColor(currentTask))
                 tvh.done.isChecked = currentTask.isDone()
                 tvh.done.jumpDrawablesToCurrentState()
                 tvh.done.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -492,14 +494,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         snackBar.setAction(R.string.snack_undo) {
                             val inverted = !isChecked
                             buttonView.isChecked = inverted
-                            currentTask.setDone(buttonView.isChecked)
+                            currentTask.setDone(inverted)
                             currentTask.setAllSubtasksDone(inverted)
                             if (hasAutoProgress()) {
                                 currentTask.computeProgress()
                             }
                             currentTask.setChanged()
                             for (subtask: TodoSubtask in currentTask.getSubtasks()) {
-                                subtask.setDone(inverted)
+                                subtask.setChanged()
                             }
                             model.saveTodoTaskAndSubtasksInDb(currentTask) {
                                 notifyDataSetChanged()
@@ -515,7 +517,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         for (subtask: TodoSubtask in currentTask.getSubtasks()) {
                             subtask.setChanged()
                         }
-                        model.saveTodoTaskInDb(currentTask) {
+                        model.saveTodoTaskAndSubtasksInDb(currentTask) {
                             notifyDataSetChanged()
                         }
                     }
@@ -528,13 +530,13 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     pvh = actualConvertView.tag as GroupPriorityViewHolder
                 } else {
                     actualConvertView =
-                        LayoutInflater.from(context).inflate(R.layout.exlv_prio_bar, parent, false)
+                        LayoutInflater.from(context).inflate(R.layout.exlv_priority_row, parent, false)
                     pvh = GroupPriorityViewHolder(
-                        actualConvertView.findViewById(R.id.tv_exlv_priority_bar)
+                        actualConvertView.findViewById(R.id.tv_priority_name)
                     )
                     actualConvertView.tag = pvh
                 }
-                pvh.priorityFlag.text = getPriorityNameByBarPos(groupPosition)
+                pvh.priorityName.text = getPriorityNameByRowPos(groupPosition)
                 actualConvertView!!.isClickable = true
             }
         }
@@ -561,21 +563,19 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     svh = SubtaskViewHolder(
                         actualConvertView.findViewById(R.id.tv_subtask_name),
                         actualConvertView.findViewById(R.id.cb_subtask_done),
-                        actualConvertView.findViewById(R.id.v_subtask_deadline_color_bar),
+                        actualConvertView.findViewById(R.id.v_subtask_urgency_color_bar),
                         actualConvertView.findViewById(R.id.bt_subtask_move_up),
                         actualConvertView.findViewById(R.id.bt_subtask_move_down),
                         actualConvertView.findViewById(R.id.bt_subtask_menu)
                     )
                     actualConvertView.tag = svh
                 }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
-                val urgencyColor = urgency.getColor(context)
-                svh.urgencyColorBar.setBackgroundColor(urgencyColor)
+                svh.urgencyColorBar.setBackgroundColor(getUrgencyColor(currentTask))
                 svh.done.isChecked = currentSubtask.isDone()
                 svh.done.jumpDrawablesToCurrentState()
                 svh.done.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (buttonView.isPressed) {
-                        currentSubtask.setDone(buttonView.isChecked)
+                        currentSubtask.setDone(isChecked)
                         currentSubtask.setChanged()
                         model.saveTodoSubtaskInDb(currentSubtask) {
                             val doneStatusChanged = currentTask.updateDoneStatus()
@@ -614,7 +614,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                         .inflate(R.layout.exlv_setting_row, parent, false)
                     sevh = SettingViewHolder(
                         actualConvertView.findViewById(R.id.ll_add_subtask),
-                        actualConvertView.findViewById(R.id.v_setting_deadline_color_bar)
+                        actualConvertView.findViewById(R.id.v_setting_urgency_color_bar)
                     )
                     actualConvertView.tag = sevh
                     if (currentTask.isInRecycleBin()) actualConvertView.visibility = View.GONE
@@ -630,12 +630,18 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
                     }
                     newSubtaskDialog.show()
                 }
-                val urgency = currentTask.getUrgency(PreferenceMgr.getDefaultReminderTimeSpan(context))
-                val urgencyColor = urgency.getColor(context)
-                sevh.urgencyColorBar.setBackgroundColor(urgencyColor)
+                sevh.urgencyColorBar.setBackgroundColor(getUrgencyColor(currentTask))
             }
         }
         return actualConvertView
+    }
+
+    private fun getUrgencyColor(todoTask: TodoTask): Int {
+        val urgency = todoTask.getUrgency(
+            Timestamp.createCurrent(),
+            PreferenceMgr.getDefaultReminderTimeSpan(context),
+            givenDeadline)
+        return ContextCompat.getColor(context, urgency.level.colorId)
     }
 
     private fun moveTask(taskHolder: TaskHolder, groupPosition: Int, moveUp: Boolean) {
@@ -757,11 +763,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         return prefs.getBoolean(PreferenceMgr.P_IS_AUTO_PROGRESS.name, false)
     }
 
-    private inner class GroupPriorityViewHolder(
-        val priorityFlag: TextView
+    private class GroupPriorityViewHolder(
+        val priorityName: TextView
     )
 
-    private inner class GroupTaskViewHolder(
+    private class GroupTaskViewHolder(
         val name: TextView,
         val moveUpButton: ImageButton,
         val moveDownButton: ImageButton,
@@ -779,7 +785,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val taskDescription: TextView
     )
 
-    private inner class SubtaskViewHolder(
+    private class SubtaskViewHolder(
         val subtaskName: TextView,
         val done: CheckBox,
         val urgencyColorBar: View,
@@ -788,13 +794,13 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         val subtaskMenuButton: ImageButton
     )
 
-    private inner class SettingViewHolder(
+    private class SettingViewHolder(
         val addSubtaskButton: LinearLayout,
         val urgencyColorBar: View
     )
 
-    private inner class TaskHolder(val todoTask: TodoTask) {
-        private val subtasksMetaData = MutableList(todoTask.getSubtasks().size) { index ->
+    private class TaskHolder(val todoTask: TodoTask) {
+        private val subtasksMetaData = MutableList(todoTask.getSubtasks().size) { _ ->
             return@MutableList SubtaskMetaData()
         }
 
@@ -830,7 +836,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
     }
 
-    private inner class SubtaskMetaData(var moveButtonsVisibility: Int = View.GONE) {
+    private class SubtaskMetaData(var moveButtonsVisibility: Int = View.GONE) {
         fun toggleMoveButtonsVisibility() {
             moveButtonsVisibility = if (moveButtonsVisibility == View.GONE) View.VISIBLE else View.GONE
         }

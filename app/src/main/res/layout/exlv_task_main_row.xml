@@ -14,12 +14,12 @@
         android:layout_height="1dp"
         android:layout_marginHorizontal="5dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintStart_toEndOf="@id/v_urgency_task"
+        app:layout_constraintStart_toEndOf="@id/v_task_urgency_color_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/v_urgency_task"
+        android:id="@+id/v_task_urgency_color_bar"
         android:layout_width="5dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
@@ -34,7 +34,7 @@
         android:layout_marginStart="9dp"
         android:paddingStart="0dp"
         android:paddingEnd="8dp"
-        app:layout_constraintStart_toEndOf="@id/v_urgency_task"
+        app:layout_constraintStart_toEndOf="@id/v_task_urgency_color_bar"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_exlv_task_name" />
 
     <TextView

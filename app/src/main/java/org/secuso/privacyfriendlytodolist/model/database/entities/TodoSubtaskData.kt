@@ -21,6 +21,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 @Entity(tableName = "todoSubtasks",
     indices = [
@@ -45,6 +46,6 @@ data class TodoSubtaskData(
      */
     var sortOrder: Int = -1,
     var name: String = "",
-    var doneTime: Long? = null,
+    var doneTime: Timestamp? = null,
     var isInRecycleBin: Boolean = false
 )

@@ -64,6 +64,8 @@
     <string name="help_group_widget">Widget</string>
     <string name="help_widget">In addition, this app provides a widget that you can add to your home screen. The widget presents you tasks that belong to a chosen list. Clicking on a task leads you to the main view of the app.</string>
     <!-- About -->
+    <string name="about_privacy_heading">Privacy Friendly Apps</string>
+    <string name="about_secuso">SECUSO - Security, Usability, Society</string>
     <string name="about">About</string>
     <string name="version_number">Version %1$s</string>
     <string name="about_author">Authors:</string>
@@ -71,7 +73,7 @@
     <string name="about_author_names" translatable="false">Sebastian\u00A0Lutz, Dominik\u00A0Püllen, Simon\u00A0Breitfelder, Christian\u00A0Adams</string>
     <string name="about_author_contributors">and contributors.</string>
     <string name="about_affiliation">In affiliation with</string>
-    <string name="privacy_friendly">This application belongs to the group of Privacy Friendly Apps developed by Karlsruhe Institute of Technology. Sourcecode licensed under GPLv3 license. Images copyright KIT and Google Inc.</string>
+    <string name="privacy_friendly">This application belongs to the group of Privacy Friendly Apps developed by Karlsruhe Institute of Technology. Source code licensed under GPLv3 license. Images copyright KIT and Google Inc.</string>
     <string name="more_info">More information can be found on:</string>
     <string name="github" translatable="false"><a href="https://github.com/SecUSo/privacy-friendly-todo-list">Github-Repo</a></string>
     <string name="url" translatable="false"><a href="https://www.secuso.org/pfa">SECUSO-Website</a></string>
@@ -245,8 +247,12 @@
     <string name="dialog_need_permission_post_notifications_title">Enable notifications</string>
     <string name="dialog_need_permission_post_notifications_message">Permission to display notifications for reminders is required. Otherwise, reminders will not be displayed.</string>
     <!-- Reminder service -->
-    <string name="deadline_approaching">Deadline is approaching: %1$s</string>
-    <string name="recurring_deadline_approaching">Deadline is approaching: %1$s (%2$d. repetition)</string>
+    <string name="deadline_approaching">Deadline approaching: %1$s</string>
+    <string name="deadline_today">Deadline today!</string>
+    <string name="deadline_passed">Deadline passed: %1$s</string>
+    <string name="recurring_deadline_approaching">Deadline approaching: %1$s (%2$d. repetition)</string>
+    <string name="recurring_deadline_today">Deadline today (%1$d. repetition)!</string>
+    <string name="recurring_deadline_passed">Deadline passed: %1$s (%2$d. repetition)</string>
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Task Reminder</string>
     <string name="notif_reminder_ch_desc">Reminders for upcoming tasks.</string>
@@ -254,20 +260,21 @@
     <string name="notif_reminder_act_snooze_until_deadline">Snooze until deadline</string>
     <string name="notif_reminder_act_done">Set done</string>
     <!-- Date and Time -->
-    <string name="sunday">Sunday</string>
+    <string name="weekdays">Weekdays</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
-    <string name="sunday_abbr">SUN</string>
-    <string name="monday_abbr">MON</string>
-    <string name="tuesday_abbr">TUE</string>
-    <string name="wednesday_abbr">WED</string>
-    <string name="thursday_abbr">THU</string>
-    <string name="friday_abbr">FRI</string>
-    <string name="saturday_abbr">SAT</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday_abbr">Mon</string>
+    <string name="tuesday_abbr">Tue</string>
+    <string name="wednesday_abbr">Wed</string>
+    <string name="thursday_abbr">Thu</string>
+    <string name="friday_abbr">Fri</string>
+    <string name="saturday_abbr">Sat</string>
+    <string name="sunday_abbr">Sun</string>
     <string name="january">January</string>
     <string name="february">February</string>
     <string name="march">March</string>

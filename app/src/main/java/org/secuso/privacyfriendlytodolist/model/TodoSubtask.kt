@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package org.secuso.privacyfriendlytodolist.model
 
 import android.os.Parcelable
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 interface TodoSubtask : BaseTodo, Parcelable {
     fun setId(id: Int)
@@ -30,8 +31,8 @@ interface TodoSubtask : BaseTodo, Parcelable {
     fun getSortOrder(): Int
     fun setDone(isDone: Boolean)
     fun isDone(): Boolean
-    fun setDoneTime(doneTime: Long?)
-    fun getDoneTime(): Long?
+    fun setDoneTime(doneTime: Timestamp?)
+    fun getDoneTime(): Timestamp?
     fun setInRecycleBin(isInRecycleBin: Boolean)
     fun isInRecycleBin(): Boolean
     fun checkQueryMatch(query: String?): Boolean

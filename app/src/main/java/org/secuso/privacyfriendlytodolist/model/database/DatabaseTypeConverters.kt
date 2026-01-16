@@ -21,20 +21,9 @@ import androidx.room.TypeConverter
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.TodoTask.ReminderState
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 object DatabaseTypeConverters {
-    @TypeConverter
-    @JvmStatic
-    fun fromRecurrencePattern(recurrencePattern: RecurrencePattern?): Int? {
-        return recurrencePattern?.ordinal
-    }
-
-    @TypeConverter
-    @JvmStatic
-    fun toRecurrencePattern(ordinal: Int?): RecurrencePattern? {
-        return if (null != ordinal) RecurrencePattern.fromOrdinal(ordinal) else null
-    }
-
     @TypeConverter
     @JvmStatic
     fun fromPriority(priority: Priority?): Int? {
@@ -49,6 +38,18 @@ object DatabaseTypeConverters {
 
     @TypeConverter
     @JvmStatic
+    fun fromRecurrencePattern(recurrencePattern: RecurrencePattern?): Int? {
+        return recurrencePattern?.ordinal
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toRecurrencePattern(ordinal: Int?): RecurrencePattern? {
+        return if (null != ordinal) RecurrencePattern.fromOrdinal(ordinal) else null
+    }
+
+    @TypeConverter
+    @JvmStatic
     fun fromReminderState(reminderState: ReminderState?): Int? {
         return reminderState?.ordinal
     }
@@ -57,5 +58,17 @@ object DatabaseTypeConverters {
     @JvmStatic
     fun toReminderState(ordinal: Int?): ReminderState? {
         return if (null != ordinal) ReminderState.fromOrdinal(ordinal) else null
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromTimestamp(timestamp: Timestamp?): Long? {
+        return timestamp?.timeInSeconds
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toTimestamp(timeInSeconds: Long?): Timestamp? {
+        return Timestamp.createBySecondsIfNotNull(timeInSeconds)
     }
 }

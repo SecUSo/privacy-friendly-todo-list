@@ -55,7 +55,7 @@ class PinDialog(context: Context, private val allowReset: Boolean) :
         buttonOkay.setOnClickListener {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val pinExpected = prefs.getString(PreferenceMgr.P_PIN.name, "")
-            if (pinExpected == textEditPin.getText().toString()) {
+            if (pinExpected == textEditPin.text.toString()) {
                 getDialogCallback().accepted()
                 setOnDismissListener(null)
                 dismiss()

@@ -23,8 +23,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-
 import org.secuso.privacyfriendlytodolist.model.database.entities.TodoTaskData
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 @Dao
 interface TodoTaskDao {
@@ -55,17 +55,27 @@ interface TodoTaskDao {
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL AND reminderTime > :now" +
             " ORDER BY reminderTime ASC LIMIT 1")
-    suspend fun getNextTaskToRemind(now: Long): TodoTaskData?
+    suspend fun getNextTaskToRemind(now: Timestamp): TodoTaskData?
 
+    /**
+     * The reminder of a recurring task is obsolete if the reminder time is in the past and
+     * the reminder has been displayed or the task is done.
+     *
+     * Note: [getTasksWithOverdueReminders] returns those tasks, where the reminder time is
+     * in the past and the reminder has NOT been displayed and the task is NOT done.
+     */
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL" +
-            " AND reminderTime <= :now AND reminderState = 1")
-    suspend fun getRecurringTasksWithOutdatedReminders(now: Long): Array<TodoTaskData>
+            " AND reminderTime <= :now AND (reminderState = 1 OR doneTime IS NOT NULL)")
+    suspend fun getRecurringTasksWithObsoleteReminders(now: Timestamp): Array<TodoTaskData>
 
+    /**
+     * The reminder of a recurring task is outdated if the reminder time is in the past.
+     */
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND reminderTime IS NOT NULL" +
             " AND reminderTime <= :now")
-    suspend fun getRecurringTasksWithOutdatedRemindersIgnoreState(now: Long): Array<TodoTaskData>
+    suspend fun getRecurringTasksWithOutdatedReminders(now: Timestamp): Array<TodoTaskData>
 
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND recurrencePattern <> 0 AND doneTime IS NOT NULL")
@@ -74,7 +84,7 @@ interface TodoTaskDao {
     @Query("SELECT * FROM todoTasks" +
             " WHERE isInRecycleBin = 0 AND doneTime IS NULL AND reminderTime IS NOT NULL" +
             " AND reminderTime <= :now AND reminderState = 0")
-    suspend fun getTasksWithOverdueReminders(now: Long): Array<TodoTaskData>
+    suspend fun getTasksWithOverdueReminders(now: Timestamp): Array<TodoTaskData>
 
     @Query("SELECT * FROM todoTasks WHERE isInRecycleBin = 0 AND doneTime IS NOT NULL")
     suspend fun getAllDoneNotInRecycleBin(): Array<TodoTaskData>
@@ -110,5 +120,5 @@ interface TodoTaskDao {
     suspend fun updateSortOrderToLast(id: Int, listId: Int?): Int
 
     @Query("UPDATE todoTasks SET name = :name, progress = :progress, doneTime = :doneTime WHERE id = :id")
-    suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Long?): Int
+    suspend fun updateValuesFromPomodoro(id: Int, name: String, progress: Int, doneTime: Timestamp?): Int
 }

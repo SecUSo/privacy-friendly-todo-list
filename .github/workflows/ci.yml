@@ -23,7 +23,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: Run local unit tests
-        run: bash ./gradlew test --stacktrace
+        run: bash ./gradlew test --stacktrace --info
 
   build:
     runs-on: ubuntu-latest

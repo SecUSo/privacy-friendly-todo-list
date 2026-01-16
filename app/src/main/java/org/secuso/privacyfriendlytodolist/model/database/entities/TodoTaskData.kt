@@ -24,7 +24,7 @@ import androidx.room.PrimaryKey
 import org.secuso.privacyfriendlytodolist.model.TodoTask.Priority
 import org.secuso.privacyfriendlytodolist.model.TodoTask.RecurrencePattern
 import org.secuso.privacyfriendlytodolist.model.TodoTask.ReminderState
-import org.secuso.privacyfriendlytodolist.util.Helper
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 
 @Entity(
     tableName = "todoTasks",
@@ -52,13 +52,13 @@ data class TodoTaskData(
     var name: String = "",
     var description: String = "",
     var priority: Priority = Priority.DEFAULT_VALUE,
-    var deadline: Long? = null,
+    var deadline: Timestamp? = null,
     var recurrencePattern: RecurrencePattern = RecurrencePattern.NONE,
     var recurrenceInterval: Int = 1,
-    var reminderTime: Long? = null,
+    var reminderTime: Timestamp? = null,
     var reminderState: ReminderState = ReminderState.INITIAL,
     var progress: Int = 0,
-    var creationTime: Long = Helper.getCurrentTimestamp(),
-    var doneTime: Long? = null,
+    var creationTime: Timestamp = Timestamp.createCurrent(),
+    var doneTime: Timestamp? = null,
     var isInRecycleBin: Boolean = false
 )

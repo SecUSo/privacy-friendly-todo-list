@@ -26,6 +26,7 @@ import androidx.core.os.BundleCompat
 import androidx.lifecycle.ViewModelProvider
 import org.secuso.privacyfriendlytodolist.R
 import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.ExpandableTodoTaskAdapter
 import org.secuso.privacyfriendlytodolist.viewmodel.LifecycleViewModel
 
@@ -48,14 +49,15 @@ class CalendarPopup : AppCompatActivity() {
             supportActionBarCopy.setDisplayHomeAsUpEnabled(true)
             supportActionBarCopy.setDisplayShowHomeEnabled(true)
         }
+        var deadline: Timestamp? = null
         var tasks: java.util.ArrayList<TodoTask>? = null
         val bundle = intent.extras
         if (null != bundle) {
+            deadline = Timestamp.createBySeconds(bundle.getLong(CalendarActivity.PARCELABLE_KEY_FOR_DEADLINE))
             tasks = BundleCompat.getParcelableArrayList(bundle,
-                CalendarActivity.PARCELABLE_KEY_FOR_DEADLINES, TodoTask::class.java)
+                CalendarActivity.PARCELABLE_KEY_FOR_DEADLINE_TASKS, TodoTask::class.java)
         }
-        val adapter = ExpandableTodoTaskAdapter(this, model,
-            tasks ?: ArrayList(0), true)
+        val adapter = ExpandableTodoTaskAdapter(this, model, tasks ?: ArrayList(0), true, deadline)
         val lv = findViewById<ExpandableListView>(R.id.deadline_tasks)
         lv.setAdapter(adapter)
     }

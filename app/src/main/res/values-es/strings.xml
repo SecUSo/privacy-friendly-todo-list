@@ -123,13 +123,20 @@
     <!-- Reminder service -->
     <string name="deadline_approaching">Próxima fecha límite: %1$s</string>
     <!-- Date and Time -->
-	<string name="sunday_abbr">DO</string>
-    <string name="monday_abbr">LU</string>
-    <string name="tuesday_abbr">MA</string>
-    <string name="wednesday_abbr">MI</string>
-    <string name="thursday_abbr">JU</string>
-    <string name="friday_abbr">VI</string>
-    <string name="saturday_abbr">SA</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
+    <string name="monday_abbr">Lu</string>
+    <string name="tuesday_abbr">Ma</string>
+    <string name="wednesday_abbr">Mi</string>
+    <string name="thursday_abbr">Ju</string>
+    <string name="friday_abbr">Vi</string>
+    <string name="saturday_abbr">Sa</string>
+    <string name="sunday_abbr">Do</string>
     <string name="january">Enero</string>
     <string name="february">Febrero</string>
     <string name="march">Marzo</string>

@@ -37,7 +37,7 @@
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <!-- Help -->
-    <string name="help_overview_heading">Allgemein</string>
+    <string name="help_overview_heading">Allgemeine Informationen</string>
     <string name="help_intro">Die Privacy Friendly To-Do Liste kann zur Organisation und persönlichen Zeitplanung verwendet werden.</string>
     <string name="help_group_lists">Verwaltung von Aufgaben</string>
     <string name="help_todo_lists_title">To-Do Listen</string>
@@ -64,6 +64,8 @@
     <string name="help_group_widget">Widget</string>
     <string name="help_widget">Zu dieser App gibt es ein Widget, das Sie auf Ihren Homescreen hinzufügen können. Das Widget zeigt Ihnen die Aufgaben zu einer ausgewählten Liste an. Wenn Sie auf eine Aufgabe tippen, öffnet sich die Hauptansicht der App.</string>
     <!-- About -->
+    <string name="about_privacy_heading">Privacy Friendly Apps</string>
+    <string name="about_secuso">SECUSO - Security, Usability, Society</string>
     <string name="about">Über</string>
     <string name="version_number">Version %1$s</string>
     <string name="about_author">Autoren:</string>
@@ -108,7 +110,7 @@
     <string name="edit_task">Aufgabe bearbeiten</string>
     <string name="share_task">Aufgabe teilen</string>
     <string name="remove_task">Aufgabe entfernen</string>
-    <string name="task_removed">Aufgabe wurde entfernt</string>
+    <string name="task_removed">Aufgabe erfolgreich entfernt.</string>
     <string name="tasks_removed">%1$d Aufgabe(n) und %2$d Unteraufgabe(n) entfernt.</string>
     <string name="deadline">Termin</string>
     <string name="recurrence_every">Wiederholung alle</string>
@@ -123,7 +125,7 @@
     <string name="recurrence_interval_invalid">Wiederkehr-Intervall ist keine Ganzzahl &gt;= 1.</string>
     <string name="progress_colon">Fortschritt:</string>
     <string name="priority_colon">Priorität:</string>
-     <string name="zero_percent" formatted="false">0 %</string>
+    <string name="zero_percent" formatted="false">0 %</string>
     <string name="select_priority">Priorität wählen:</string>
     <string name="select_list">Liste wählen:</string>
     <string name="select_no_list">Keine Liste</string>
@@ -131,7 +133,7 @@
     <string name="todo_name_must_not_be_empty">Bitte geben Sie einen Namen ein.</string>
     <string name="edit_subtask">Unteraufgabe bearbeiten</string>
     <string name="delete_subtask">Unteraufgabe löschen</string>
-    <string name="subtask_removed">Unteraufgabe wurde gelöscht</string>
+    <string name="subtask_removed">Unteraufgabe erfolgreich gelöscht.</string>
     <string name="to_choose_list">Liste auswählen!</string>
     <string name="click_to_choose">Klicken zum Wählen!</string>
     <string name="list_colon">Liste:</string>
@@ -212,12 +214,16 @@
     </string-array>
     <!-- Permission request dialog -->
     <string name="dialog_need_permission_exact_alarm_title">Genaue Erinnerungen aktivieren</string>
-    <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung, um Erinnerungen zeitlich genau zu melden wird benötigt. Andernfalls erfolgen die Erinnerungen zeitlich ungenau.</string>
+    <string name="dialog_need_permission_exact_alarm_message">Die Berechtigung zum Planen genauer Erinnerungen ist erforderlich. Andernfalls sind Erinnerungen ungenau.</string>
     <string name="dialog_need_permission_post_notifications_title">Benachrichtigungen aktivieren</string>
     <string name="dialog_need_permission_post_notifications_message">Die Berechtigung, um Benachrichtigungen für Erinnerungen anzuzeigen wird benötigt. Andernfalls werden Erinnerungen nicht angezeigt.</string>
     <!-- Reminder service -->
     <string name="deadline_approaching">Termin rückt näher: %1$s</string>
+    <string name="deadline_today">Termin heute!</string>
+    <string name="deadline_passed">Termin verstrichen: %1$s</string>
     <string name="recurring_deadline_approaching">Termin rückt näher: %1$s (%2$d. Wiederholung)</string>
+    <string name="recurring_deadline_today">Termin heute (%1$d. Wiederholung)!</string>
+    <string name="recurring_deadline_passed">Termin verstrichen: %1$s (%2$d. Wiederholung)</string>
     <!-- Notifications -->
     <string name="notif_reminder_ch_name">Aufgaben-Erinnerung</string>
     <string name="notif_reminder_ch_desc">Erinnerungen für anstehende Aufgaben.</string>
@@ -225,20 +231,20 @@
     <string name="notif_reminder_act_snooze_until_deadline">Bis Termin schlummern</string>
     <string name="notif_reminder_act_done">Abhaken</string>
     <!-- Date and Time -->
-    <string name="sunday">Sonntag</string>
     <string name="monday">Montag</string>
     <string name="tuesday">Dienstag</string>
     <string name="wednesday">Mittwoch</string>
     <string name="thursday">Donnerstag</string>
     <string name="friday">Freitag</string>
     <string name="saturday">Samstag</string>
-	<string name="sunday_abbr">SO</string>
-    <string name="monday_abbr">MO</string>
-    <string name="tuesday_abbr">DI</string>
-    <string name="wednesday_abbr">MI</string>
-    <string name="thursday_abbr">DO</string>
-    <string name="friday_abbr">FR</string>
-    <string name="saturday_abbr">SA</string>
+    <string name="sunday">Sonntag</string>
+    <string name="monday_abbr">Mo</string>
+    <string name="tuesday_abbr">Di</string>
+    <string name="wednesday_abbr">Mi</string>
+    <string name="thursday_abbr">Do</string>
+    <string name="friday_abbr">Fr</string>
+    <string name="saturday_abbr">Sa</string>
+    <string name="sunday_abbr">So</string>
     <string name="january">Januar</string>
     <string name="february">Februar</string>
     <string name="march">März</string>

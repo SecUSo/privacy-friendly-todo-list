@@ -1,0 +1,110 @@
+/*
+Privacy Friendly To-Do List
+Copyright (C) 2025  Christian Adams
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+package org.secuso.privacyfriendlytodolist.service
+
+import android.content.Context
+import android.util.Log
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import org.secuso.privacyfriendlytodolist.model.TodoTask
+import org.secuso.privacyfriendlytodolist.util.LogTag
+import org.secuso.privacyfriendlytodolist.util.Timestamp
+import org.secuso.privacyfriendlytodolist.view.widget.TodoListWidget
+import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
+import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+
+/**
+ * Worker that updates tasks and widgets periodically every 24 hours, short after midnight.
+ *
+ * Updating the widget periodically is needed to have up-to-date urgency colors
+ * and days-until-deadline. For this purpose it is enough to update the widget
+ * once per day, short after midnight. That's the reason why
+ * android:updatePeriodMillis is not used (it needs more updates to be up-to-date).
+ *
+ * Recurring tasks need to be updated to ensure that they get marked as undone when
+ * the next interval begins.
+ */
+class PeriodicUpdater(private val context: Context,
+                      workerParams: WorkerParameters): Worker(context, workerParams) {
+
+    override fun doWork(): Result {
+        var subject = "widgets"
+        try {
+            TodoListWidget.triggerWidgetUpdate(context, "Periodic update")
+
+            subject = "recurring tasks"
+            Log.d(TAG, "Triggering periodic update of recurring tasks.")
+            val viewModel = CustomViewModel(applicationContext)
+            viewModel.model.updateRecurringTasks(Timestamp.createCurrent()) { numberOfUpdatedTasks ->
+                if (numberOfUpdatedTasks > 0) {
+                    Log.d(TAG, "$numberOfUpdatedTasks recurring tasks were updated outside UI. Notifying UI!")
+                    viewModel.model.notifyDataChangedOutsideAppUI(0, numberOfUpdatedTasks, 0)
+                } else {
+                    Log.d(TAG, "0 recurring tasks were updated.")
+                }
+            }
+        }
+        catch (e: Exception) {
+            Log.e(TAG, "Periodic update of $subject failed: $e")
+        }
+        finally {
+            // Because the initial delay of PeriodicWorkRequest is initialDelay + interval
+            // it is not used. Instead this updater restarts itself.
+            scheduleNextUpdate(context)
+        }
+        return Result.success()
+    }
+
+    companion object {
+        private val TAG = LogTag.create(this::class.java.declaringClass)
+        private const val WORK_NAME = "PERIODIC_UPDATE"
+
+        /**
+         * Triggers the first periodic update right now (with a small delay to avoid high load at app start).
+         * After that the updates will be rescheduled every day short after midnight.
+         */
+        fun startPeriodicUpdates(context: Context) {
+            val initialDelayMs = 2 * JobManager.UPDATE_ALARM_JOB_MINIMUM_LATENCY_MS
+            val request = OneTimeWorkRequestBuilder<PeriodicUpdater>()
+                .setInitialDelay(initialDelayMs, TimeUnit.MILLISECONDS)
+                .build()
+            WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request)
+            Log.i(TAG, "Doing first periodic update in ${TimeUnit.MILLISECONDS.toSeconds(initialDelayMs)} seconds.")
+        }
+
+        private fun scheduleNextUpdate(context: Context) {
+            // Update widgets and tasks daily short after midnight.
+            val now = Timestamp.createCurrent()
+            val updateTime = now
+                .addInterval(TodoTask.RecurrencePattern.DAILY, 1)
+                .setTimePart(0, 0, 30)
+            val initialDelayS = updateTime.timeInSeconds - now.timeInSeconds
+            val request = OneTimeWorkRequestBuilder<PeriodicUpdater>()
+                .setInitialDelay(initialDelayS, TimeUnit.SECONDS)
+                .build()
+            WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request)
+            Log.i(TAG, "Next periodic update scheduled for $updateTime " +
+                    "which is in ${initialDelayS.toDuration(DurationUnit.SECONDS)}.")
+        }
+    }
+}
