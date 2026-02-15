@@ -240,4 +240,11 @@
     <string name="help_recurring_tasks">Pidevalt korduvate ülesannete jaoks saad lisada kordumise mustri. Kui oled lisanud ka meeldetuletuse, siis käivitub see vastavalt korduvuse mustrile. Kui ülesanne on märgutud tehtuks, siis korduva ülesande puhul see eemaldub enne järgmist tähtaega.</string>
     <string name="all_tasks_not_in_list">Ülesanded, mis pole ühessegi loendisse lisatud</string>
     <string name="nth_recurrence_at">%1$d. kordub: %2$s</string>
+    <string name="about_privacy_heading">Privaatsussõbralikud rakendused</string>
+    <string name="about_secuso">SECUSO - Turvalisus, kasutatavus, kogukond</string>
+    <string name="deadline_today">Tähtaeg on täna!</string>
+    <string name="deadline_passed">Tähtaeg on möödunud: %1$s</string>
+    <string name="recurring_deadline_today">Tähtaeg on täna (%1$d. kordus)!</string>
+    <string name="recurring_deadline_passed">Tähtaeg on möödunud: %1$s (%2$d. kordus)</string>
+    <string name="weekdays">Tööpäevad</string>
 </resources>
