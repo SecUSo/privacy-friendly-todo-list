@@ -49,7 +49,7 @@
     <string name="about_author">Autores:</string>
     <string name="about_author_contributors">y contribuyentes.</string>
     <string name="about_affiliation">En colaboración con</string>
-    <string name="privacy_friendly">Esta aplicación pertenece al grupo de Aplicaciones que Respetan la Privacidad desarrolladas por el Instituto de Tecnología de Karlsruhe. Código de fuente bajo licencia GPLv3. Derechos de autor de las imágenes KIT y Google Inc.</string>
+    <string name="privacy_friendly">Esta aplicación pertenece al grupo de Privacy Friendly Apps desarrollado por el Instituto de Tecnología de Karlsruhe. El código fuente está licenciado bajo GPLv3. Las imágenes son propiedad de KIT y Google Inc.</string>
     <string name="more_info">Más información en:</string>
     <!-- To-Do list overview -->
 	<string name="done">hecho</string>
@@ -121,7 +121,7 @@
     <string name="pin_enabled">Contraseña activa</string>
     <string name="set_pin">Introducir una contraseña</string>
     <!-- Reminder service -->
-    <string name="deadline_approaching">Próxima fecha límite: %1$s</string>
+    <string name="deadline_approaching">La fecha límite se acerca: %1$s</string>
     <!-- Date and Time -->
     <string name="monday">Lunes</string>
     <string name="tuesday">Martes</string>
@@ -169,7 +169,7 @@
     <string name="recurrence_pattern_hint">Patrón de repetición</string>
     <string name="set_deadline_if_recurring">Una tarea que se repite necesita una fecha límite.</string>
     <string name="help_data_backup">Puede utilizar la aplicación independiente Privacy Friendly Backup para realizar copias de seguridad y restaurar los datos y la configuración de esta aplicación. También se puede utilizar para transferir los datos a otro dispositivo.</string>
-    <string name="help_widget">Además, esta aplicación proporciona un widget que puedes añadir a tu pantalla de inicio. El widget te presenta las tareas que pertenecen a una lista elegida. Al hacer clic en una tarea se accede a la vista principal de la aplicación. El botón de sincronización puede actualizar la lista de tareas mostradas.</string>
+    <string name="help_widget">Además, esta aplicación proporciona un widget que puedes añadir a la pantalla de inicio. El widget muestra las tareas que pertenecen a una lista seleccionada. Al hacer clic en una tarea, se accede a la vista principal de la aplicación.</string>
     <string name="edit_list">Editar la lista</string>
     <string name="export_list">Exportar la lista</string>
     <string name="recurrence_every">Repetir cada</string>
@@ -191,14 +191,14 @@
     <string name="slide5_text">Puede agregar una protección mediante un PIN en la configuración.</string>
     <string name="import_succeeded">Importación terminada con éxito</string>
     <string name="import_failed">Importación fallida</string>
-    <string name="permission_todo_name">Integrar Lista de Tareas</string>
+    <string name="permission_todo_name">Integración con To‑Do</string>
     <string name="work_task">Trabajar en esta tarea</string>
     <string name="notif_reminder_ch_name">Recordatorio de tarea</string>
     <string name="days">Día(s)</string>
     <string name="toast_del">Papelera de reciclaje vaciada.</string>
     <string name="pref_app_theme_title">Tema</string>
-    <string name="dialog_need_permission_exact_alarm_message">Es necesaria la autorización para programar recordatorios exactos. De lo contrario, los recordatorios son inexactos.</string>
-    <string name="recurring_deadline_approaching">Se acerca el plazo: %1$s (%2$d. repetición)</string>
+    <string name="dialog_need_permission_exact_alarm_message">Se requiere permiso para programar recordatorios exactos. De lo contrario, los recordatorios serán inexactos.</string>
+    <string name="recurring_deadline_approaching">La fecha límite se acerca: %1$s (%2$d. repetición)</string>
     <string name="none">Ninguno</string>
     <string name="slide1_text">Bienvenido/a a tu lista de tareas respetuosa de tu privacidad. Esta aplicación no contiene seguimiento ni publicidad.</string>
     <string name="slide2_heading">Listas</string>
@@ -223,7 +223,7 @@
     <string name="snack_check">Cambio en el estado de la tarea</string>
     <string name="snack_undo">Deshacer</string>
     <string name="snack_clear">La papelera de reciclaje está vacía</string>
-    <string name="permission_todo_description">Permite a la aplicación Lista de Tareas iniciar el temporizador para un elemento</string>
+    <string name="permission_todo_description">Permite a la aplicación To‑Do iniciar el temporizador con una tarea determinada.</string>
     <string name="tasks_removed">%1$d tarea(s) y %2$d subtarea(s) eliminada(s).</string>
     <string name="remove_all_done_tasks">Eliminar las tareas terminadas</string>
     <string name="cancel">Cancelar</string>
@@ -249,4 +249,27 @@
     <string name="todo_activity">Tareas por hacer</string>
     <string name="alert_done_tasks_remove">¿Eliminar todas las tareas realizadas?</string>
     <string name="alert_clear">¿Eliminar todo?</string>
+    <string name="system_default">Predeterminado del sistema</string>
+    <string name="help_recurring_tasks">Para tareas que se repiten regularmente, puedes configurar un patrón de recurrencia. Si también se ha establecido un recordatorio, este se repetirá según el patrón seleccionado. Una vez que la tarea se marque como completada, la marca se eliminará automáticamente después de la siguiente fecha de vencimiento.</string>
+    <string name="about_privacy_heading">Privacy Friendly Apps</string>
+    <string name="about_secuso">SECUSO - Security, Usability, Society</string>
+    <string name="all_tasks_not_in_list">Tareas que no están asignadas a ninguna lista</string>
+    <string name="nth_recurrence_at">%1$d. repetición a las %2$s</string>
+    <string name="pref_content_home_title">Contenido de la pantalla de inicio</string>
+    <string name="list_quick_access">Acceso rápido a las listas</string>
+    <string name="expand_tasks_with_subtasks">Expandir tareas que tienen subtareas</string>
+    <string name="pref_first_day_of_week_title">Primer día de la semana</string>
+    <string name="dialog_need_permission_post_notifications_title">Activar notificaciones</string>
+    <string name="dialog_need_permission_post_notifications_message">Se requiere permiso para mostrar notificaciones de recordatorios. De lo contrario, los recordatorios no se mostrarán.</string>
+    <string name="deadline_today">¡La fecha límite es hoy!</string>
+    <string name="deadline_passed">La fecha límite ha pasado: %1$s</string>
+    <string name="recurring_deadline_today">¡La fecha límite es hoy (%1$d. repetición)!</string>
+    <string name="recurring_deadline_passed">La fecha límite ha pasado: %1$s (%2$d. repetición)</string>
+    <string name="notif_reminder_act_snooze_until_deadline">Posponer hasta la fecha límite</string>
+    <string name="weekdays">Días de la semana</string>
+    <string name="filter_colon">Filtro:</string>
+    <string name="grouping_colon">Agrupación:</string>
+    <string name="sorting_colon">Ordenación:</string>
+    <string name="various_colon">Varios:</string>
+    <string name="show_days_until_deadline">Mostrar el número de días hasta la fecha límite</string>
 </resources>

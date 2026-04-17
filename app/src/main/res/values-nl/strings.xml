@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application Specific -->
-	<string name="app_name">To-Do List</string>
-    <string name="app_name_long">Privacy Friendly To-Do List</string>
+	<string name="app_name">Takenlijst</string>
+    <string name="app_name_long">Privacy Friendly Takenlijst</string>
     <!-- Menu -->
     <string name="nav_header_app_name">Te doen</string>
     <string name="toolbar_title_main">Te doen</string>
@@ -10,8 +10,8 @@
     <string name="tasks">Taken</string>
     <string name="calendar_view">Kalender</string>
     <string name="show_all_tasks">Toon alle taken</string>
-    <string name="settings">Instelling</string>
-    <string name="other">Ander</string>
+    <string name="settings">Instellingen</string>
+    <string name="other">Anders</string>
     <string name="help">Help</string>
     <string name="menu_about">Over</string>
     <string name="search">Zoeken</string>
@@ -30,20 +30,20 @@
     <string name="yes">Ja</string>
     <string name="no">Nee</string>
     <!-- Help -->
-    <string name="help_overview_heading">Overzicht</string>
-    <string name="help_intro">Deze app kan gebruikt worden om taken te organiseren en om herinneringen in te stellen.</string>
+    <string name="help_overview_heading">Algemene informatie</string>
+    <string name="help_intro">Deze app kan worden gebruikt om openstaande taken bij te houden en een persoonlijke planning te organiseren.</string>
     <string name="help_group_lists">Beheer lijsten</string>
     <string name="help_todo_lists_title">To-Do lijsten</string>
-    <string name="help_todo_lists">Een To-Do lijst is een groep van taken en kan gemaakt worden door de + knop in het hoofdmenu. Taken in een To-Do lijst kunnen aangevinkt worden om vooruitgang aan te duiden.</string>
+    <string name="help_todo_lists">Een takenlijst is een groep taken en kan worden aangemaakt met de knop + in de werkbalk. De lijsten verschijnen in het navigatiemenu en kunnen daar worden opgeroepen. Taken in een takenlijst kunnen worden gecontroleerd, bewerkt en verwijderd.</string>
     <string name="help_subtasks_title">Ondertaken</string>
     <string name="help_subtasks">Ondertaken kunnen worden toegevoegd aan een lijst om vooruitgang aan te duiden. Ze kunnen gemaakt worden door op een taak te tikken als je ze als lijst bekijkt.</string>
     <string name="help_deadline_reminder_title">Deadlines en herinneringen</string>
     <string name="help_deadline_reminder">Deadlines en herinneringen kunnen alleen voor taken gemaakt worden. Je kan ze instellen als je een taak maakt of als je een taak bewerkt. Houd een taak ingedrukt om hem te bewerken.</string>
-    <string name="help_group_app">Applicatie</string>
-    <string name="help_pin_title">PIN bescherming</string>
+    <string name="help_group_app">Instellingen</string>
+    <string name="help_pin_title">Instellingen</string>
     <string name="help_pin">Open het instellingsmenu om PIN bescherming in te stellen. De PIN moet een nummer zijn met 4 cijfers. Je zal ernaar gevraagd worden elke keer je de applicatie opent.</string>
     <string name="help_group_privacy">Privacy Info</string>
-    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Deze toelating zorgt ervoor dat de app kan controleren of de gebruiker gemeld wil worden over een deadline die nadert.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Met deze toestemming kan de app direct na het opstarten van het apparaat controleren of de gebruiker op de hoogte wil worden gehouden van een naderende deadline.</string>
     <!-- About -->
     <string name="about">Over</string>
     <string name="version_number">Versie %1$s</string>
@@ -65,9 +65,9 @@
     <string name="new_todo_list">Nieuwe To-Do lijst</string>
     <string name="list_name_must_not_be_empty">Gelieve een lijstnaam in te vullen.</string>
     <string name="show_description">Toon beschrijving</string>
-    <string name="no_description_available">Geen bescrijving beschikbaar.</string>
+    <string name="no_description_available">Geen beschrijving beschikbaar.</string>
     <!-- To-Do tasks overview -->
-    <string name="empty_todo_list">Geen taken beschikbaar.</string>
+    <string name="empty_todo_list">Geen taken beschikbaar</string>
     <string name="all_tasks">Alle taken</string>
     <string name="open_tasks">Open taken</string>
     <string name="completed_tasks">Voltooide taken</string>
@@ -87,8 +87,8 @@
     <string name="set_deadline_before_reminder">Gelieve een deadline in te vullen voor de herinneringstijd.</string>
     <string name="progress_colon">Vooruitgang:</string>
     <string name="priority_colon">Prioriteit:</string>
-     <string name="zero_percent" formatted="false">0 %</string>
-    <string name="select_priority">Gelieve een prioriteit te selecteren!</string>
+    <string name="zero_percent" formatted="false">0 %</string>
+    <string name="select_priority">Kies een prioriteit:</string>
     <string name="new_todo_subtask">Nieuwe ondertaak</string>
     <string name="todo_name_must_not_be_empty">Gelieve een naam te geven aan de taak.</string>
     <string name="edit_subtask">Bewerk ondertaak</string>
@@ -156,4 +156,55 @@
     <string name="october">october</string>
     <string name="november">november</string>
     <string name="december">december</string>
+    <string name="second_alert">NIEUWE TAAK TOEVOEGEN</string>
+    <string name="initial_alert">DRUK OP + VOOR EEN NIEUWE LIJST</string>
+    <string name="share_all_tasks">Gegevens delen</string>
+    <string name="export_all_tasks">Gegevens exporteren</string>
+    <string name="import_tasks">Gegevens importeren</string>
+    <string name="remove_all_done_tasks">Verwijder alle voltooide taken</string>
+    <string name="cancel">Afbreken</string>
+    <string name="help_recurring_tasks">Voor regelmatig terugkerende taken kunt u een terugkerend patroon instellen. Als er ook een herinnering is ingesteld, zal deze terugkeren volgens het geselecteerde terugkerende patroon. Zodra de taak is afgevinkt, wordt het vinkje automatisch verwijderd na de volgende vervaldatum.</string>
+    <string name="help_sound">Bovendien kunt u kiezen of er een meldingsgeluid moet worden afgespeeld wanneer u een melding ontvangt.</string>
+    <string name="help_privacy">Deze app bevat geen tracking of advertenties. Er worden geen andere toestemmingen gebruikt dan hieronder vermeld.</string>
+    <string name="help_permission_post_notifications">POST_NOTIFICATIONS: Met deze toestemming kan de app herinneringen voor naderende taken weergeven.</string>
+    <string name="help_permission_schedule_exact_alarm">SCHEDULE_EXACT_ALARM: Met deze toestemming kan de app herinneringen met een exacte timing weergeven.</string>
+    <string name="help_group_data_backup">Backup gegevens</string>
+    <string name="help_data_backup">U kunt de aparte app Privacy Friendly Backup gebruiken om een back-up te maken van de gegevens en instellingen van deze applicatie en deze te herstellen. Deze app kan ook worden gebruikt om uw gegevens over te zetten naar een ander apparaat.</string>
+    <string name="help_group_export_import">Gegevens exporteren / importeren</string>
+    <string name="help_export">De gegevens van deze applicatie kunnen worden geëxporteerd in CSV-formaat (kommagescheiden waarden, UTF-8 codering) voor verdere verwerking in andere applicaties.</string>
+    <string name="help_import">De gegevens van deze applicatie kunnen worden geïmporteerd vanuit een bestand in CSV-formaat. Het formaat van dit bestand komt overeen met het formaat van het CSV-exportbestand.</string>
+    <string name="help_group_widget">Widget</string>
+    <string name="help_widget">Daarnaast biedt deze app een widget die u aan uw startscherm kunt toevoegen. De widget toont u taken die behoren tot een gekozen lijst. Als u op een taak klikt, gaat u naar het hoofdscherm van de app.</string>
+    <string name="about_privacy_heading">Privacy Friendly Apps</string>
+    <string name="about_secuso">SECUSO - Security, Usability, Society</string>
+    <string name="share_list">Lijst delen</string>
+    <string name="move_up_list">Lijst omhoog</string>
+    <string name="move_down_list">Lijst omlaag</string>
+    <string name="edit_list">Lijst bewerken</string>
+    <string name="export_list">Lijst exporteren</string>
+    <string name="all_tasks_not_in_list">Taken die niet aan een lijst zijn toegewezen</string>
+    <string name="sort_by_name_asc">Sorteer op naam</string>
+    <string name="edit_todo_task">Bewerk taak</string>
+    <string name="share_task">Deel taak</string>
+    <string name="tasks_removed">%1$d ta(a)k(en) en %2$d onderta(a)k(en) verwijderd.</string>
+    <string name="recurrence_every">Herhaling elke</string>
+    <string name="recurrence_interval_hint">1..n</string>
+    <string name="recurrence_pattern_hint">Herhaalpatroon</string>
+    <string name="select_recurrence_pattern">Kies een herhaalpatroon:</string>
+    <string name="reminder_smaller_now">Alleen terugkerende taken kunnen een herinneringstijd in het verleden hebben.</string>
+    <string name="set_deadline_if_recurring">Een terugkerende taak heeft een deadline nodig.</string>
+    <string name="recurrence_interval_invalid">Herhalingsinterval is geen heel getal &gt;= 1.</string>
+    <string name="select_list">Kies een lijst:</string>
+    <string name="select_no_list">Geen lijst</string>
+    <string name="to_choose_list">Kies een lijst!</string>
+    <string name="click_to_choose">Klik om te selecteren!</string>
+    <string name="list_colon">Lijst:</string>
+    <string name="work_subtask">Werk aan deze ondertaak</string>
+    <string name="work_task">Werk aan deze taak</string>
+    <string name="move_up">Omhoog verplaatsen</string>
+    <string name="move_down">Omlaag verplaatsen</string>
+    <string name="cant_move_task_if_diff_lists">Taak kan niet worden verplaatst als er verschillende lijsten worden weergegeven.</string>
+    <string name="cant_move_task_if_filter_group_sort">Taak kan niet worden verplaatst als filteren, groeperen of sorteren actief is.</string>
+    <string name="nth_recurrence_at">%1$d. herhaling om %2$s</string>
+    <string name="snooze_duration">Snooze-duur van herinneringen</string>
 </resources>
