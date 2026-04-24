@@ -20,7 +20,7 @@
     <string name="navigation_drawer_close">Fermer le menu</string>
     <string name="name">Nom</string>
     <string name="description_hint">Description</string>
-    <string name="ok">D\'accord</string>
+    <string name="ok">Ok</string>
     <!-- Common model strings -->
     <string name="select_option">Choisir une option</string>
     <string name="high_priority">Très important</string>
@@ -33,16 +33,16 @@
     <string name="help_intro">L\'application peut être utilisé pour organiser des tâches et pour obtenir des notifications.</string>
     <string name="help_group_lists">Administration des listes de tâches</string>
     <string name="help_todo_lists_title">Listes de tâches</string>
-    <string name="help_todo_lists">Une liste de tâches est un groupe de tâches et peut être créée en choissant le bouton dans le menu. Les tâches dedans une liste de tâches peuvent ?tre marquées comme faites.</string>
+    <string name="help_todo_lists">Une liste de tâches est un groupe de tâches, elle peut être créée en choissant le bouton dans le menu. Les tâches dedans une liste de tâches peuvent ?tre marquées comme faites.</string>
     <string name="help_subtasks_title">Sous-tâches</string>
-    <string name="help_subtasks">Les sous-tâches sont les pas qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
-    <string name="help_deadline_reminder_title">Dates limites et alarmes</string>
-    <string name="help_deadline_reminder">Les dates limites et les rappels ne peuvent être créées que pour les tâches. Vous pouvez soit les indiquer pendant la création d\'une tâche, soit pendant son édition.</string>
+    <string name="help_subtasks">Les sous-tâches sont les étapes qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
+    <string name="help_deadline_reminder_title">Echéances et alarmes</string>
+    <string name="help_deadline_reminder">Les échéances et les rappels ne peuvent être créés que pour les tâches. Vous pouvez les indiquer soit pendant la création d\'une tâche, soit pendant son édition.</string>
     <string name="help_group_app">Application</string>
     <string name="help_pin_title">Mot de passe</string>
     <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
     <string name="help_group_privacy">Information sur la vie privée</string>
-    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Cela permet de verifier si l\'utiliseteur souhaite être informé sur les prochaines dates limites juste après avoir mis en marche le périphérique.</string>
+    <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Cela permet de vérifier si l\'utiliseteur souhaite être informé sur les prochaines échéances juste après avoir mis en marche le périphérique.</string>
     <!-- About -->
     <string name="about">À propos</string>
     <string name="version_number">Version %1$s</string>
@@ -54,8 +54,8 @@
     <!-- To-Do list overview -->
 	<string name="done">Fait</string>
     <string name="no_todo_lists_available">Aucune liste de tâches disponible</string>
-    <string name="next_deadline_dd">La prochaine date limite: %1$s</string>
-    <string name="no_next_deadline">Aucune date limite à venir</string>
+    <string name="next_deadline_dd">La prochaine échéance: %1$s</string>
+    <string name="no_next_deadline">Aucune échéance à venir</string>
     <string name="add_list_feedback">%1$s ajouté</string>
     <string name="edit_todo_list">Editer la liste de tâches</string>
     <string name="delete_list">Supprimer la liste</string>
@@ -70,20 +70,20 @@
     <string name="all_tasks">Toutes les tâches</string>
     <string name="open_tasks">Tâches non accomplies</string>
     <string name="completed_tasks">Tâches accomplies</string>
-    <string name="group_by_priority">Classer par le niveau d\'importance</string>
-    <string name="sort_by_deadline">Classer par la date limite</string>
+    <string name="group_by_priority">Classer par niveau d\'importance</string>
+    <string name="sort_by_deadline">Classer par échéance</string>
     <string name="add_subtask">Créer une sous-tâche</string>
     <!-- Create/Edit To-Do task dialog -->
     <string name="new_todo_task">Nouvelle tâche</string>
-    <string name="deadline_dd">Date limite:</string>
-    <string name="no_deadline">Aucune date limite</string>
+    <string name="deadline_dd">Echéance:</string>
+    <string name="no_deadline">Aucune échéance</string>
     <string name="edit_task">Editer la tâche</string>
     <string name="remove_task">Supprimer la tâche</string>
     <string name="task_removed">Tâche supprimée avec succès.</string>
-    <string name="deadline">Date limite</string>
+    <string name="deadline">Echéance</string>
     <string name="reminder">Alarme</string>
-    <string name="deadline_smaller_reminder">La date limite ne peut pas précéder l\'alarme.</string>
-    <string name="set_deadline_before_reminder">Il faut mettre l\'alarme d\'abord.</string>
+    <string name="deadline_smaller_reminder">L'échéance ne peut pas précéder l\'alarme.</string>
+    <string name="set_deadline_before_reminder">Il faut d\'abord mettre l\'alarme.</string>
     <string name="progress_colon">Progrès:</string>
     <string name="priority_colon">Importance:</string>
     <string name="zero_percent" formatted="false">0 %</string>
@@ -104,13 +104,13 @@
 	<string name="enter_pin">Introduire le mot de passe</string>
     <string name="wrong_pin">Mot de passe incorrect</string>
     <string name="reset_application_button">Restarter l\'application</string>
-    <string name="invalid_pin">Entrez votre mot de pass à 4 chiffres.</string>
-    <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
+    <string name="invalid_pin">Entrez votre mot de passe à 4 chiffres.</string>
+    <string name="reset_application_msg">Voulez-vous vraiment redémarrer cette application? Cela supprimera le mot de passe et toutes les listes de tâches.</string>
     <string name="add_pin">Mettez votre mot de passe pour pouvoir ouvrir l\'application. Le mot de passe doit contenir au moins 4 chiffres.</string>
     <!-- Settings -->
 	<string name="default_reminder_time">Alarme standard</string>
     <string-array name="default_reminder_times_human">
-        <item>Avec la date limite</item>
+        <item>A l'échéance</item>
         <item>0.5 jour avant</item>
         <item>1 jour avant</item>
         <item>1.5 jour avant</item>
@@ -121,7 +121,7 @@
     <string name="pin_enabled">Demander le mot de passe à l\'entrée</string>
     <string name="set_pin">Régler le mot de passe</string>
     <!-- Reminder service -->
-    <string name="deadline_approaching">Date limite prochaine: %1$s</string>
+    <string name="deadline_approaching">Echéance imminente: %1$s</string>
     <!-- Date and Time -->
     <string name="monday">Lundi</string>
     <string name="tuesday">Mardi</string>
@@ -151,7 +151,7 @@
     <string name="december">Décembre</string>
     <string name="next">Suivant</string>
     <string name="second_alert">AJOUTER UNE NOUVELLE TÂCHE &gt;</string>
-    <string name="help_sound">Également vous pouvez choisir si un son doit être émit à la réception d\'une notification.</string>
+    <string name="help_sound">Vous pouvez également choisir si un son doit être émis à la réception d\'une notification.</string>
     <string name="help_data_backup">Vous pouvez utiliser l\'application de Sauvegarde respectueuse de la Vie Privée pour sauvegarder et restaurer les données et paramètres de cette application. Il est également possible de l\'utiliser pour transférer vos données à un autre appareil.</string>
     <string name="help_group_export_import">Importation / exportation des données</string>
     <string name="help_group_widget">Widget</string>
@@ -179,7 +179,7 @@
     <string name="move_up_list">Remonter la liste</string>
     <string name="move_down_list">Descendre la liste</string>
     <string name="recurrence_every">Récurrence tous les</string>
-    <string name="help_widget">De plus, cette application fournit un widget que vous pouvez ajouter à votre écran d\'accueil. Le widget vous montre les taches qui appartiennent à une liste choisie. Cliquer sur une tâche vous amènera à la vue principale de l\'application. Le bouton de synchronisation peut mettre à jour la liste de tâchesv affichée.</string>
+    <string name="help_widget">De plus, cette application fournit un widget que vous pouvez ajouter à votre écran d\'accueil. Le widget vous montre les tâches qui appartiennent à une liste choisie. Cliquer sur une tâche vous amènera à la vue principale de l\'application. Le bouton de synchronisation peut mettre à jour la liste de tâches affichée.</string>
     <string name="reminder_smaller_now">Seules les tâches récurrentes peuvent avoir un rappel dans le passé.</string>
     <string name="set_deadline_if_recurring">Une tâche récurrente requiert une date de fin.</string>
     <string name="select_list">Sélectionnez une liste :</string>
