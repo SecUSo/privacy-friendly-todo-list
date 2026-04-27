@@ -47,7 +47,7 @@
     <string name="about">O aplikacji</string>
     <string name="version_number">Wersja %1$s</string>
     <string name="about_author">Autorzy:</string>
-    <string name="about_author_contributors">i współtwórcy.</string>
+    <string name="about_author_contributors">i współtwórcy.</string>
     <string name="about_affiliation">We współpracy z</string>
     <string name="privacy_friendly">Ta aplikacja należy do Privacy Friendly Apps</string>
     <string name="more_info">Więcej informacji można znaleźć na:</string>
@@ -210,7 +210,7 @@
     <string name="slide1_heading">Witamy!</string>
     <string name="slide2_heading">Listy</string>
     <string name="pref_app_theme_title">Motyw</string>
-    <string name="okay">OK</string>
+    <string name="okay">Ok</string>
     <string name="next">Dalej</string>
     <string name="skip">Pomiń</string>
     <string name="recurrence_interval_hint">1..n</string>
@@ -222,4 +222,5 @@
     <string name="help_export">Dane tej aplikacji można eksportować w formacie CSV (wartości rozdzielone przecinkami, kodowanie UTF-8) w celu dalszego przetwarzania w innych aplikacjach.</string>
     <string name="help_import">Dane tej aplikacji można importować z pliku w formacie CSV. Format tego pliku odpowiada formatowi pliku eksportu CSV.</string>
     <string name="help_widget">Ponadto ta aplikacja zapewnia widżet, który możesz dodać do ekranu głównego. Widget prezentuje zadania należące do wybranej listy. Kliknięcie zadania prowadzi do głównego widoku aplikacji. Przycisk synchronizacji może aktualizować listę wyświetlanych zadań.</string>
+    <string name="system_default">Domyślne ustawienie systemu</string>
 </resources>
