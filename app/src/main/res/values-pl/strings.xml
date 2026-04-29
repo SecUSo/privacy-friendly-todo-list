@@ -210,7 +210,7 @@
     <string name="slide1_heading">Witamy!</string>
     <string name="slide2_heading">Listy</string>
     <string name="pref_app_theme_title">Motyw</string>
-    <string name="okay">Ok</string>
+    <string name="okay">OK</string>
     <string name="next">Dalej</string>
     <string name="skip">Pomiń</string>
     <string name="recurrence_interval_hint">1..n</string>
