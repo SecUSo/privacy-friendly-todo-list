@@ -232,4 +232,18 @@
     <string name="show_days_until_deadline">Afficher le nombre de jours jusqu\'à échéance</string>
     <string name="snack_undo">Annuler l\'action</string>
     <string name="initial_alert">Cliquez sur + pour créer une liste</string>
+    <string name="all_tasks_not_in_list">Tâches non affectées à une liste</string>
+    <string name="cant_move_task_if_filter_group_sort">Impossible de déplacer une tâche lorsque le filtrage, le regroupement ou le tri est actif.</string>
+    <string name="expand_tasks_with_subtasks">Déplier les tâches ayant des sous-tâches</string>
+    <string name="dialog_need_permission_post_notifications_message">L\'autorisation d\'afficher des notifications est requise, sinon les rappels ne seront pas affichés.</string>
+    <string name="deadline_today">Échéance aujourd\'hui !</string>
+    <string name="deadline_passed">Échéance dépassée : %1$s</string>
+    <string name="weekdays">Jours de la semaine</string>
+    <string name="toast_del">La corbeille a été vidée.</string>
+    <string name="alert_list_delete">Souhaitez-vous réellement supprimer cette liste ?</string>
+    <string name="add_widget">Ajouter un widget</string>
+    <string name="widget_configuration">Paramétrage du widget</string>
+    <string name="various_colon">Divers :</string>
+    <string name="snack_check">Statut de la tâche modifié</string>
+    <string name="snack_clear">La corbeille est désormais vide</string>
 </resources>
