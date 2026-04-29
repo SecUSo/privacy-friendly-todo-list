@@ -1,0 +1,34 @@
+Lista zadań do wykonania, przyjazna dla prywatności, może być używana do pamiętania o zaległych zadaniach i organizowania osobistego harmonogramu. Ta aplikacja umożliwia tworzenie list zadań, którymi można zarządzać indywidualnie. Każda lista zawiera zestaw zadań. Każde zadanie może mieć termin wykonania, godzinę przypomnienia i listę podzadań. Po ustawieniu godziny przypomnienia użytkownik zostanie poinformowany powiadomieniem. Możliwe jest wyświetlanie wszystkich zadań w kalendarzu, zabezpieczenie aplikacji tajnym kodem PIN oraz sortowanie i priorytetyzowanie zadań na liście. Kolory wskazują na pilność zadania (biorąc pod uwagę termin).
+
+Funkcje listy zadań do wykonania, przyjaznej dla prywatności
+
+1. Ochrona PIN-em
+Otwórz menu Ustawienia, aby skonfigurować ochronę PIN-em dla swojej aplikacji. PIN musi być liczbą składającą się z 4 cyfr. Zostaniesz o niego poproszony przy każdym uruchomieniu aplikacji lub widoku głównego.
+
+2. Przypomnienie
+Możesz ustawić przypomnienie dla swoich zadań, które powiadomi Cię o zbliżającym się terminie. Ustawienia umożliwiają włączenie dźwięku powiadomienia.
+
+3. Widżet
+Dodatkowo ta aplikacja oferuje widżet, który można dodać do ekranu głównego urządzenia. Widżet prezentuje zadania należące do wybranej listy. Kliknięcie zadania lub jego pola wyboru prowadzi do głównego widoku listy zadań do wykonania, zgodnej z zasadami prywatności.
+
+4. Postęp według podzadań
+Domyślnie postęp może być dowolnie wybierany przez użytkownika podczas tworzenia lub edycji zadania. Lista zadań umożliwia automatyczne obliczanie i wyświetlanie postępu zadania w zależności od wykonanych podzadań. Dlatego przejdź do Ustawień i włącz postęp według podzadań.
+
+Nasza aplikacja przyjazna prywatności różni się od innych aplikacji w trzech aspektach:
+
+1) Minimalne uprawnienia
+Lista zadań do wykonania, zgodna z zasadami prywatności, nie używa więcej uprawnień niż jest to absolutnie niezbędne do jej działania.
+
+2) Brak reklam
+Lista zadań do wykonania, zgodna z zasadami prywatności, całkowicie rezygnuje z reklam.
+Wiele innych darmowych aplikacji w Sklepie Google Play wyświetla irytujące reklamy, które dodatkowo skracają czas pracy baterii.
+
+3) Brak śledzenia
+Lista zadań do wykonania (Privacy Friendly To-Do List) nie korzysta z żadnych trackerów.
+
+Lista zadań do wykonania (Privacy Friendly To-Do List) jest częścią grupy aplikacji Privacy Friendly Apps opracowanej przez grupę badawczą SECUSO w Instytucie Technologii w Karlsruhe. Więcej informacji na stronie: https://secuso.org/pfa
+
+Możesz się z nami skontaktować za pośrednictwem:
+X - @SECUSOResearch https://x.com/secusoresearch
+Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
+Oferty pracy - https://secuso.aifb.kit.edu/english/Job_Offers.php
