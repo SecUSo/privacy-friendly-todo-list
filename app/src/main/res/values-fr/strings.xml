@@ -8,7 +8,7 @@
     <string name="toolbar_title_main">A faire</string>
     <string name="todos">Tâches</string>
     <string name="tasks">Tâches</string>
-    <string name="calendar_view">Voir le calandier</string>
+    <string name="calendar_view">Voir le calendrier</string>
     <string name="show_all_tasks">Toutes les tâches</string>
     <string name="settings">Réglages</string>
     <string name="other">Autres</string>
@@ -30,17 +30,17 @@
     <string name="no">Non</string>
     <!-- Help -->
     <string name="help_overview_heading">Vue d\'ensemble</string>
-    <string name="help_intro">L\'application peut être utilisé pour organiser des tâches et pour obtenir des notifications.</string>
+    <string name="help_intro">L\'application peut être utilisée pour organiser des tâches et pour obtenir des notifications.</string>
     <string name="help_group_lists">Administration des listes de tâches</string>
     <string name="help_todo_lists_title">Listes de tâches</string>
-    <string name="help_todo_lists">Une liste de tâches est un groupe de tâches et peut être créée en choissant le bouton dans le menu. Les tâches dedans une liste de tâches peuvent ?tre marquées comme faites.</string>
+    <string name="help_todo_lists">Une liste de tâches est un groupe de tâches et peut être créée en choissant le bouton dans le menu. Les tâches dans une liste de tâches peuvent être marquées comme faites.</string>
     <string name="help_subtasks_title">Sous-tâches</string>
     <string name="help_subtasks">Les sous-tâches sont les pas qui permettent d\'accomplir une tâche. Elles peuvent être créées en cliquant sur la tâche dans la liste de tâches.</string>
     <string name="help_deadline_reminder_title">Dates limites et alarmes</string>
     <string name="help_deadline_reminder">Les dates limites et les rappels ne peuvent être créées que pour les tâches. Vous pouvez soit les indiquer pendant la création d\'une tâche, soit pendant son édition.</string>
     <string name="help_group_app">Application</string>
     <string name="help_pin_title">Mot de passe</string>
-    <string name="help_pin">Ouvriez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvriez l\'application.</string>
+    <string name="help_pin">Ouvrez le menu de réglages pour introduire le mot de passe. Le mot de passe doit contenir 4 chiffres. Vous devez introduire le mot de passe chaque fois que vous ouvrez l\'application.</string>
     <string name="help_group_privacy">Information sur la vie privée</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Cela permet de verifier si l\'utiliseteur souhaite être informé sur les prochaines dates limites juste après avoir mis en marche le périphérique.</string>
     <!-- About -->
@@ -103,7 +103,7 @@
     <!-- PIN -->
 	<string name="enter_pin">Introduire le mot de passe</string>
     <string name="wrong_pin">Mot de passe incorrect</string>
-    <string name="reset_application_button">Restarter l\'application</string>
+    <string name="reset_application_button">Redémarrer l\'application</string>
     <string name="invalid_pin">Entrez votre mot de pass à 4 chiffres.</string>
     <string name="reset_application_msg">Voulez-vous vraiment restarter cette application? Cela enlevera le mot de passe et toutes les listes de tâches.</string>
     <string name="add_pin">Mettez votre mot de passe pour pouvoir ouvrir l\'application. Le mot de passe doit contenir au moins 4 chiffres.</string>
@@ -140,7 +140,7 @@
     <string name="january">Janvier</string>
     <string name="february">Février</string>
     <string name="march">Mars</string>
-    <string name="april">April</string>
+    <string name="april">Avril</string>
     <string name="may">Mai</string>
     <string name="june">Juin</string>
     <string name="july">Juillet</string>
