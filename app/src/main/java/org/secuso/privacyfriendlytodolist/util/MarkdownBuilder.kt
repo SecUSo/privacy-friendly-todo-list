@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2024-2025  Christian Adams
+Copyright (C) 2024-2026  Christian Adams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,15 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.util
 
-import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.model.TodoTask
 import java.io.Writer
 
 class MarkdownBuilder(private val writer: Writer, private val deadlineString: String) {
-    fun addList(todoList: TodoList) {
+    fun addList(listName: String, todoTasks: List<TodoTask>) {
         writer.append("### ")
-        writer.appendLine(todoList.getName())
-        for (task in todoList.getTasks()) {
+        writer.appendLine(listName)
+        for (task in todoTasks) {
             addTask(task)
         }
     }

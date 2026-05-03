@@ -36,7 +36,7 @@ import org.secuso.privacyfriendlytodolist.model.ModelServices
 import org.secuso.privacyfriendlytodolist.model.TodoList
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
-import org.secuso.privacyfriendlytodolist.view.TaskFilter
+import org.secuso.privacyfriendlytodolist.util.TaskFilter
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 
 /**

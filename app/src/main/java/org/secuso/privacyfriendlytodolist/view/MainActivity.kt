@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2025  Sebastian Lutz
+Copyright (C) 2018-2026  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -76,6 +76,8 @@ import org.secuso.privacyfriendlytodolist.util.MarkdownBuilder
 import org.secuso.privacyfriendlytodolist.util.NotificationMgr
 import org.secuso.privacyfriendlytodolist.util.PinUtil
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
+import org.secuso.privacyfriendlytodolist.util.TaskFilter
+import org.secuso.privacyfriendlytodolist.util.TaskFilterSorter
 import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
 import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
@@ -490,15 +492,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 collapseAll()
-                expandableTodoTaskAdapter?.queryString = query
-                expandableTodoTaskAdapter?.notifyDataSetChanged()
+                val tempExpTodoTaskAdapter = expandableTodoTaskAdapter
+                if (null != tempExpTodoTaskAdapter) {
+                    tempExpTodoTaskAdapter.taskFilterSorter.queryString = query
+                    tempExpTodoTaskAdapter.notifyDataSetChanged()
+                }
                 return false
             }
 
             override fun onQueryTextChange(query: String): Boolean {
                 collapseAll()
-                expandableTodoTaskAdapter?.queryString = query
-                expandableTodoTaskAdapter?.notifyDataSetChanged()
+                val tempExpTodoTaskAdapter = expandableTodoTaskAdapter
+                if (null != tempExpTodoTaskAdapter) {
+                    tempExpTodoTaskAdapter.taskFilterSorter.queryString = query
+                    tempExpTodoTaskAdapter.notifyDataSetChanged()
+                }
                 return false
             }
         })
@@ -540,43 +548,46 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.ac_show_all_tasks -> {
                 item.isChecked = true
-                expTaskAdapter.taskFilter = TaskFilter.ALL_TASKS
+                expTaskAdapter.taskFilterSorter.taskFilter = TaskFilter.ALL_TASKS
                 expTaskAdapter.notifyDataSetChanged()
-                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name) }
+                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name,
+                    expTaskAdapter.taskFilterSorter.taskFilter.name) }
                 return true
             }
 
             R.id.ac_show_open_tasks -> {
                 item.isChecked = true
-                expTaskAdapter.taskFilter = TaskFilter.OPEN_TASKS
+                expTaskAdapter.taskFilterSorter.taskFilter = TaskFilter.OPEN_TASKS
                 expTaskAdapter.notifyDataSetChanged()
-                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name) }
+                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name,
+                    expTaskAdapter.taskFilterSorter.taskFilter.name) }
                 return true
             }
 
             R.id.ac_show_completed_tasks -> {
                 item.isChecked = true
-                expTaskAdapter.taskFilter = TaskFilter.COMPLETED_TASKS
+                expTaskAdapter.taskFilterSorter.taskFilter = TaskFilter.COMPLETED_TASKS
                 expTaskAdapter.notifyDataSetChanged()
-                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name, expTaskAdapter.taskFilter.name) }
+                mPref.edit { putString(PreferenceMgr.P_TASK_FILTER.name,
+                    expTaskAdapter.taskFilterSorter.taskFilter.name) }
                 return true
             }
 
             R.id.ac_group_by_prio -> {
                 item.isChecked = !item.isChecked
-                expTaskAdapter.isGroupingByPriority = item.isChecked
+                expTaskAdapter.taskFilterSorter.isGroupingByPriority = item.isChecked
                 mPref.edit { putBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, item.isChecked) }
             }
 
             R.id.ac_sort_by_deadline -> {
                 item.isChecked = !item.isChecked
-                expTaskAdapter.isSortingByDeadline = item.isChecked
+                expTaskAdapter.taskFilterSorter.isSortingByDeadline = item.isChecked
                 mPref.edit { putBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, item.isChecked) }
             }
 
             R.id.ac_sort_by_name_asc -> {
                 item.isChecked = !item.isChecked
-                expTaskAdapter.isSortingByNameAsc = item.isChecked
+                expTaskAdapter.taskFilterSorter.isSortingByNameAsc = item.isChecked
                 mPref.edit{ putBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, item.isChecked) }
             }
 
@@ -1120,9 +1131,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
                 return@getToDoListById
             }
+            // Apply current filtering and sorting settings to shared tasks.
+            val taskFilterSorter = TaskFilterSorter(this)
+            val fiSoTasks = taskFilterSorter.filterAndSortTasks(todoList.getTasks())
             val text = StringWriter()
             val builder = MarkdownBuilder(text, getString(R.string.deadline))
-            builder.addList(todoList)
+            builder.addList(todoList.getName(), fiSoTasks)
             shareMarkdownText(text.toString())
         }
     }
@@ -1172,9 +1186,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun shareAllTasks() {
         model.getAllToDoTasks { todoTasks ->
+            // Apply current filtering and sorting settings to shared tasks.
+            val taskFilterSorter = TaskFilterSorter(this)
+            val fiSoTasks = taskFilterSorter.filterAndSortTasks(todoTasks)
             val text = StringWriter()
             val builder = MarkdownBuilder(text, getString(R.string.deadline))
-            for (todoTask in todoTasks) {
+            for (todoTask in fiSoTasks) {
                 builder.addTask(todoTask)
             }
             shareMarkdownText(text.toString())
