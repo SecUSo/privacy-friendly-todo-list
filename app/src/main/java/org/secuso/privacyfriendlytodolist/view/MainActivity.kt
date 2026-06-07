@@ -80,6 +80,7 @@ import org.secuso.privacyfriendlytodolist.util.TaskFilter
 import org.secuso.privacyfriendlytodolist.util.TaskFilterSorter
 import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.calendar.CalendarActivity
+import org.secuso.privacyfriendlytodolist.view.dialog.DuplicateTodoListDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.PinCallback
 import org.secuso.privacyfriendlytodolist.view.dialog.PinDialog
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoListDialog
@@ -812,6 +813,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    // Method to duplicate an To do-List
+    private fun startDuplicateListDialog() {
+        model.getToDoListById(selectedTodoListId) { existingTodoList ->
+            if (null == existingTodoList) {
+                Log.e(TAG, "Todo list with ID $selectedTodoListId not found.")
+                return@getToDoListById
+            }
+            val pl = DuplicateTodoListDialog(this, existingTodoList)
+            pl.setDialogCallback { newTodoList ->
+                model.saveTodoListAndTasksAndSubtasksInDb(newTodoList) { counter ->
+                    if (counter.first == 1) {
+                        showHints()
+                        addTodoListsToView()
+                        showTasksOfListOrAllTasks(newTodoList.getId())
+                        Log.i(TAG, "Duplicated list '${existingTodoList.getName()}' to '${newTodoList.getName()}': "
+                            + "ID ${newTodoList.getId()}, tasks ${counter.second}, subtasks ${counter.third}")
+                    } else {
+                        Log.e(TAG, "Failed to save duplicated list.")
+                    }
+                }
+            }
+            pl.show()
+        }
+    }
+
     // Method starting tutorial
     private fun startTut() {
         val intent = Intent(this@MainActivity, TutorialActivity::class.java)
@@ -973,6 +999,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.edit_list -> {
                 startEditListDialog()
+            }
+
+            R.id.duplicate_list -> {
+                startDuplicateListDialog()
             }
 
             R.id.share_list -> {
