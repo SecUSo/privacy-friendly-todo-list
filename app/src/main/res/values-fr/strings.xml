@@ -8,9 +8,9 @@
     <string name="toolbar_title_main">A faire</string>
     <string name="todos">Tâches</string>
     <string name="tasks">Tâches</string>
-    <string name="calendar_view">Voir le calandier</string>
+    <string name="calendar_view">Calendrier</string>
     <string name="show_all_tasks">Toutes les tâches</string>
-    <string name="settings">Réglages</string>
+    <string name="settings">Préférences</string>
     <string name="other">Autres</string>
     <string name="help">Aide</string>
     <string name="menu_about">Auteurs</string>
@@ -121,7 +121,7 @@
     <string name="pin_enabled">Demander le mot de passe à l\'entrée</string>
     <string name="set_pin">Régler le mot de passe</string>
     <!-- Reminder service -->
-    <string name="deadline_approaching">Date limite prochaine: %1$s</string>
+    <string name="deadline_approaching">Prochaine échéance : %1$s</string>
     <!-- Date and Time -->
     <string name="monday">Lundi</string>
     <string name="tuesday">Mardi</string>
@@ -232,4 +232,24 @@
     <string name="show_days_until_deadline">Afficher le nombre de jours jusqu\'à échéance</string>
     <string name="snack_undo">Annuler l\'action</string>
     <string name="initial_alert">Cliquez sur + pour créer une liste</string>
+    <string name="all_tasks_not_in_list">Tâches non affectées à une liste</string>
+    <string name="cant_move_task_if_filter_group_sort">Impossible de déplacer une tâche lorsque le filtrage, le regroupement ou le tri est actif.</string>
+    <string name="expand_tasks_with_subtasks">Déplier les tâches ayant des sous-tâches</string>
+    <string name="dialog_need_permission_post_notifications_message">L\'autorisation d\'afficher des notifications est requise, sinon les rappels ne seront pas affichés.</string>
+    <string name="deadline_today">Échéance aujourd\'hui !</string>
+    <string name="deadline_passed">Échéance dépassée : %1$s</string>
+    <string name="weekdays">Jours de la semaine</string>
+    <string name="toast_del">La corbeille a été vidée.</string>
+    <string name="alert_list_delete">Souhaitez-vous réellement supprimer cette liste ?</string>
+    <string name="add_widget">Ajouter un widget</string>
+    <string name="widget_configuration">Paramétrage du widget</string>
+    <string name="various_colon">Divers :</string>
+    <string name="snack_check">Statut de la tâche modifié</string>
+    <string name="snack_clear">La corbeille est désormais vide</string>
+    <string name="about_privacy_heading">Privacy Friendly Apps</string>
+    <string name="notif_reminder_act_snooze">Répéter %1$s</string>
+    <string name="slide5_text">Vous pouvez ajouter une protection par code PIN dans les paramètres.</string>
+    <string name="alert_done_tasks_remove">Supprimer toutes les tâches terminées ?</string>
+    <string name="cant_move_task_if_diff_lists">Impossible de déplacer la tâche lorsque des listes différentes sont affichées.</string>
+    <string name="todo_activity">Tâches à traiter</string>
 </resources>
