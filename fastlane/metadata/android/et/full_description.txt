@@ -1,0 +1,34 @@
+Privaatsussõbralikku ülesannete loendit saad kasutada pooleliolevate ülesannete meelespidamiseks ja isikliku ajakava haldamiseks. See rakendus võimaldab luua ülesannete loendeid, mida saad eraldi hallata. Iga loend sisaldab ülesannete kogumit. Igal ülesandel võib olla tähtaeg, meeldetuletuse aeg ja alamülesannete loend. Meeldetuletuse aja määramisel teavitatakse kasutajat märguandega. Kõiki ülesandeid on võimalik kuvada kalendris, kaitsta rakendust PIN-koodiga ning järjestada ja prioritiseerida ülesandeid loendi sees. Värvid näitavad ülesande kiireloomulisust (võttes arvesse tähtaega).
+
+Privaatsussõbraliku ülesannete loendi funktsionaalsus
+
+1. Kaitse PIN-koodiga
+Ava seadistuste menüü, et lisada oma rakendusele kaitse PIN-koodiga. PIN peab olema 4-kohaline number. Seda küsitakse iga kord, kui käivitad rakenduse või avad põhivaate.
+
+2. Meeldetuletus
+Saad määrata oma ülesannetele meeldetuletuse, mis teavitab sind lähenevast tähtajast. Seadistustes on võimalik lubada helilise märguande kasutamine.
+
+3. Vidin
+Lisaks pakub see rakendus vidinat, mille saad lisada oma nutiseadme avalehele. Vidin kuvab valitud loendisse kuuluvad ülesanded. Ülesandel või selle märkeruudul klõpsamine avab Privaatsussõbraliku ülesannete loendi põhivaate.
+
+4. Edenemine alamülesannete järgi
+ Vaikimisi saab kasutaja ülesande loomisel või muutmisel edenemist vabalt määrata. Ülesannete loend võimaldab automaatselt arvutada ja kuvada ülesande edenemist vastavalt lõpetatud alamülesannetele. Selleks ava Seaditused ja luba edenemise hindamine alamülesannete järgi.
+
+Meie privaatsussõbralik rakendus erineb teistest rakendustest kolme aspekti poolest:
+
+1. Minimaalsed õigused
+Privaatsussõbralik ülesannete loend ei kasuta rohkem õigusi, kui on selle funktsionaalsuse pakkumiseks rangelt vajalik.
+
+2. Reklaamide puudumine
+Privaatsussõbralik ülesannete loend on täielikult välistanud reklaamid.
+Paljud teised tasuta rakendused Google Play poes kuvavad tüütuid reklaame, mis lühendavad ka aku tööiga.
+
+3. Jälitamise puudumine
+Privaatsussõbralik ülesannnete loend ei kasuta jälgitajaid.
+
+Privaatsussõbralik ülesannnete loend kuulub Privaatsussõbralike rakenduste (Privacy Friendly Apps) gruppi, mille on välja töötanud Karlsruhe Tehnoloogiainstituudi uurimisrühm SECUSO. Lisateave: https://secuso.org/pfa
+
+Meiega saad ühendust võtta järgmiste kanalite kaudu:
+X – @SECUSOResearch [https://x.com/secusoresearch](https://x.com/secusoresearch)
+Mastodon – @SECUSO_Research@bawü.social [https://xn--baw-joa.social/@SECUSO_Research/](https://xn--baw-joa.social/@SECUSO_Research/)
+Tööpakkumised – [https://secuso.aifb.kit.edu/english/Job_Offers.php](https://secuso.aifb.kit.edu/english/Job_Offers.php)
