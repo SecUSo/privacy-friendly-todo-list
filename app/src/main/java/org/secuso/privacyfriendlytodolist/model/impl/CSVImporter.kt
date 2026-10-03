@@ -103,6 +103,7 @@ class CSVImporter {
                 task = Model.createNewTodoTask()
                 tasks[id] = Pair(list, task)
                 if (null != list) {
+                    list.getTasks().add(task)
                     task.setListId(list.getId())
                 }
                 // Task ID is not set. It gets set while saving in DB.
@@ -139,6 +140,7 @@ class CSVImporter {
             }
             val subtask = Model.createNewTodoSubtask()
             subtasks[id] = Pair(task, subtask)
+            task.getSubtasks().add(subtask)
             subtask.setTaskId(task.getId())
             // Subtask ID is not set. It gets set while saving in DB.
             subtask.setName(getName(row, CSVExporter.START_COLUMN_SUBTASK))

@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2024-2025  Christian Adams
+Copyright (C) 2024-2026  Christian Adams
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package org.secuso.privacyfriendlytodolist.view
+package org.secuso.privacyfriendlytodolist.util
 
 enum class TaskFilter {
     ALL_TASKS,

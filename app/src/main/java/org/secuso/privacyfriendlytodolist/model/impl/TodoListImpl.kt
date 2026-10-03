@@ -69,6 +69,41 @@ class TodoListImpl : BaseTodoImpl, TodoList {
         dest.writeTypedList(tasks)
     }
 
+    override fun deepCopy(reset: Boolean, copySubtasksToo: Boolean): TodoList {
+        val parcel = Parcel.obtain()
+        writeToParcel(parcel, 0)
+        parcel.setDataPosition(0)
+        val listImpl = TodoListImpl(parcel)
+        parcel.recycle()
+        // New item needs to be stored in database.
+        listImpl.requiredDBAction = RequiredDBAction.INSERT
+        listImpl.data.id = 0
+        for (task in listImpl.getTasks()) {
+            val taskImpl = task as TodoTaskImpl
+            taskImpl.requiredDBAction = RequiredDBAction.INSERT
+            taskImpl.data.id = 0
+            taskImpl.data.listId = 0
+            if (reset) {
+                taskImpl.setDone(false)
+                taskImpl.setProgress(0)
+            }
+            if (copySubtasksToo) {
+                for (subtask in taskImpl.getSubtasks()) {
+                    val subtaskImpl = subtask as TodoSubtaskImpl
+                    subtaskImpl.requiredDBAction = RequiredDBAction.INSERT
+                    subtaskImpl.data.id = 0
+                    subtaskImpl.data.taskId = 0
+                    if (reset) {
+                        subtaskImpl.setDone(false)
+                    }
+                }
+            } else {
+                taskImpl.getSubtasks().clear()
+            }
+        }
+        return listImpl
+    }
+
     override fun setId(id: Int) {
         data.id = id
         isDummyList = false

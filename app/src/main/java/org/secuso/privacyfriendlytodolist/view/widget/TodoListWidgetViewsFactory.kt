@@ -33,7 +33,7 @@ import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
 import org.secuso.privacyfriendlytodolist.util.TaskComparator
 import org.secuso.privacyfriendlytodolist.util.Timestamp
-import org.secuso.privacyfriendlytodolist.view.TaskFilter
+import org.secuso.privacyfriendlytodolist.util.TaskFilter
 import org.secuso.privacyfriendlytodolist.viewmodel.CustomViewModel
 import java.util.ArrayList
 
