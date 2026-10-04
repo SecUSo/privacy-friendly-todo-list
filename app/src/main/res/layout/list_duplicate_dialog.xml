@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/list_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/duplicate_todo_list"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <EditText
+        android:id="@+id/et_todo_list_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:minHeight="48dip"
+        android:hint="@string/name"
+        android:inputType="text"
+        android:autofillHints="" />
+
+    <CheckBox
+        android:id="@+id/cb_reset_tasks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:minHeight="48dip"
+        android:text="@string/reset_tasks"
+        android:checked="true" />
+
+    <CheckBox
+        android:id="@+id/cb_subtasks_too"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:minHeight="48dip"
+        android:text="@string/duplicate_subtasks_too"
+        android:checked="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/lightGrey" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <Button
+            android:id="@+id/bt_todo_list_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppButtonBarButtonStyle"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/bt_todo_list_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppButtonBarButtonStyle"
+            android:text="@string/ok" />
+
+    </LinearLayout>
+
+</LinearLayout>

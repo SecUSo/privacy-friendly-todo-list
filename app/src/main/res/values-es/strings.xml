@@ -20,12 +20,12 @@
     <string name="navigation_drawer_close">Cerrar el menú</string>
     <string name="name">Nombre</string>
     <string name="description_hint">Descripción</string>
-    <string name="ok">OK</string>
+    <string name="ok">Ok</string>
     <!-- Common model strings -->
     <string name="select_option">Elegir</string>
-    <string name="high_priority">Muy importante</string>
-    <string name="medium_priority">Importante</string>
-    <string name="low_priority">Poco importante</string>
+    <string name="high_priority">Alta</string>
+    <string name="medium_priority">Media</string>
+    <string name="low_priority">Baja</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
     <!-- Help -->
@@ -40,14 +40,14 @@
     <string name="help_deadline_reminder">Las fechas límites y las alarmas se las puede crear solo para las tareas. Puedes introducirlas cuando creas una tarea nueva o editándola.</string>
     <string name="help_group_app">Ajustes</string>
     <string name="help_pin_title">Ajustes</string>
-    <string name="help_pin">Abrir los ajustes  para instalar la contraseña. La contraseña tiene que contener 4 cifras. Hay que introducir la contraseña cada vez al abrir la aplicación.</string>
+    <string name="help_pin">Abre el menú de ajustes para configurar la protección mediante PIN. El PIN debe tener al menos 4 dígitos. Se te pedirá cada vez que inicies la aplicación.</string>
     <string name="help_group_privacy">Información sobre la privacidad</string>
     <string name="help_permission_receive_boot_completed">RECEIVE_BOOT_COMPLETED: Esto permite comprobar si el usuario desea enterarse de las próximas fechas límite justo después de haber puesto en marcha el dispositivo.</string>
     <!-- About -->
     <string name="about">Sobre nosotros</string>
     <string name="version_number">Versión %1$s</string>
     <string name="about_author">Autores:</string>
-    <string name="about_author_contributors">y contribuyentes.</string>
+    <string name="about_author_contributors">y colaboradores.</string>
     <string name="about_affiliation">En colaboración con</string>
     <string name="privacy_friendly">Esta aplicación pertenece al grupo de Privacy Friendly Apps desarrollado por el Instituto de Tecnología de Karlsruhe. El código fuente está licenciado bajo GPLv3. Las imágenes son propiedad de KIT y Google Inc.</string>
     <string name="more_info">Más información en:</string>
@@ -80,7 +80,7 @@
     <string name="edit_task">Editar la tarea</string>
     <string name="remove_task">Eliminar la tarea</string>
     <string name="task_removed">Tarea eliminada.</string>
-    <string name="deadline">Facha límite</string>
+    <string name="deadline">Fecha límite</string>
     <string name="reminder">Alarma</string>
     <string name="deadline_smaller_reminder">La fecha límite no puede preceder la alarma.</string>
     <string name="set_deadline_before_reminder">Introduce la fecha límite antes de introducir la alarma.</string>
@@ -118,7 +118,7 @@
         <item>2.5 días antes</item>
         <item>3 días antes</item>
     </string-array>
-    <string name="pin_enabled">Contraseña activa</string>
+    <string name="pin_enabled">PIN requerido al iniciar</string>
     <string name="set_pin">Introducir una contraseña</string>
     <!-- Reminder service -->
     <string name="deadline_approaching">La fecha límite se acerca: %1$s</string>
@@ -223,7 +223,7 @@
     <string name="snack_check">Cambio en el estado de la tarea</string>
     <string name="snack_undo">Deshacer</string>
     <string name="snack_clear">La papelera de reciclaje está vacía</string>
-    <string name="permission_todo_description">Permite a la aplicación To‑Do iniciar el temporizador con una tarea determinada.</string>
+    <string name="permission_todo_description">Permite a la aplicación To‑Do iniciar el temporizador con una tarea determinada</string>
     <string name="tasks_removed">%1$d tarea(s) y %2$d subtarea(s) eliminada(s).</string>
     <string name="remove_all_done_tasks">Eliminar las tareas terminadas</string>
     <string name="cancel">Cancelar</string>
@@ -250,17 +250,17 @@
     <string name="alert_done_tasks_remove">¿Eliminar todas las tareas realizadas?</string>
     <string name="alert_clear">¿Eliminar todo?</string>
     <string name="system_default">Predeterminado del sistema</string>
-    <string name="help_recurring_tasks">Para tareas que se repiten regularmente, puedes configurar un patrón de recurrencia. Si también se ha establecido un recordatorio, este se repetirá según el patrón seleccionado. Una vez que la tarea se marque como completada, la marca se eliminará automáticamente después de la siguiente fecha de vencimiento.</string>
+    <string name="help_recurring_tasks">Para tareas que se repiten regularmente, puedes configurar un patrón de recurrencia. Si también has establecido un recordatorio, este se repetirá según el patrón elegido. Una vez que marques la tarea como completada, la marca se eliminará automáticamente después de la siguiente fecha de vencimiento.</string>
     <string name="about_privacy_heading">Privacy Friendly Apps</string>
     <string name="about_secuso">SECUSO - Security, Usability, Society</string>
     <string name="all_tasks_not_in_list">Tareas que no están asignadas a ninguna lista</string>
-    <string name="nth_recurrence_at">%1$d. repetición a las %2$s</string>
+    <string name="nth_recurrence_at">%1$d. repetición en %2$s</string>
     <string name="pref_content_home_title">Contenido de la pantalla de inicio</string>
     <string name="list_quick_access">Acceso rápido a las listas</string>
-    <string name="expand_tasks_with_subtasks">Expandir tareas que tienen subtareas</string>
+    <string name="expand_tasks_with_subtasks">Expandir las tareas que tengan subtareas</string>
     <string name="pref_first_day_of_week_title">Primer día de la semana</string>
     <string name="dialog_need_permission_post_notifications_title">Activar notificaciones</string>
-    <string name="dialog_need_permission_post_notifications_message">Se requiere permiso para mostrar notificaciones de recordatorios. De lo contrario, los recordatorios no se mostrarán.</string>
+    <string name="dialog_need_permission_post_notifications_message">Se requiere permiso para mostrar las notificaciones de los recordatorios. De lo contrario, no se mostrarán.</string>
     <string name="deadline_today">¡La fecha límite es hoy!</string>
     <string name="deadline_passed">La fecha límite ha pasado: %1$s</string>
     <string name="recurring_deadline_today">¡La fecha límite es hoy (%1$d. repetición)!</string>

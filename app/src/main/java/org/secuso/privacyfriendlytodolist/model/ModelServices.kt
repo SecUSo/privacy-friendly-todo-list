@@ -238,7 +238,16 @@ class ModelServices(
         }
     }
 
-    // returns the id of the todolist
+    fun saveTodoListAndTasksAndSubtasksInDb(todoList: TodoList,
+                         deliveryOption: DeliveryOption = DeliveryOption.POST,
+                         resultConsumer: ResultConsumer<Triple<Int, Int, Int>>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.saveTodoListAndTasksAndSubtasksInDb(todoList)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(counter.first, counter.second, counter.third)
+        }
+    }
+
     fun saveTodoListInDb(todoList: TodoList,
                          deliveryOption: DeliveryOption = DeliveryOption.POST,
                          resultConsumer: ResultConsumer<Int>? = null): Job {
@@ -249,16 +258,6 @@ class ModelServices(
         }
     }
 
-    fun saveTodoTaskInDb(todoTask: TodoTask,
-                         deliveryOption: DeliveryOption = DeliveryOption.POST,
-                         resultConsumer: ResultConsumer<Int>? = null): Job {
-        return coroutineScope.launch(Dispatchers.IO) {
-            val counter = services.saveTodoTaskInDb(todoTask)
-            dispatchResult(deliveryOption, resultConsumer, counter)
-            notifyDataChanged(0, counter, 0)
-        }
-    }
-
     fun saveTodoTaskAndSubtasksInDb(todoTask: TodoTask,
                                     deliveryOption: DeliveryOption = DeliveryOption.POST,
                                     resultConsumer: ResultConsumer<Pair<Int, Int>>? = null): Job {
@@ -266,6 +265,16 @@ class ModelServices(
             val counter = services.saveTodoTaskAndSubtasksInDb(todoTask)
             dispatchResult(deliveryOption, resultConsumer, counter)
             notifyDataChanged(0, counter.first, counter.second)
+        }
+    }
+
+    fun saveTodoTaskInDb(todoTask: TodoTask,
+                         deliveryOption: DeliveryOption = DeliveryOption.POST,
+                         resultConsumer: ResultConsumer<Int>? = null): Job {
+        return coroutineScope.launch(Dispatchers.IO) {
+            val counter = services.saveTodoTaskInDb(todoTask)
+            dispatchResult(deliveryOption, resultConsumer, counter)
+            notifyDataChanged(0, counter, 0)
         }
     }
 

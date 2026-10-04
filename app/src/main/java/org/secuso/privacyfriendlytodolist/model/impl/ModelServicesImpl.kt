@@ -335,7 +335,25 @@ class ModelServicesImpl(private val context: Context) {
         return todoList
     }
 
-    // returns the id of the todolist
+    suspend fun saveTodoListAndTasksAndSubtasksInDb(todoList: TodoList): Triple<Int, Int, Int> {
+        val counterLists = saveTodoListInDb(todoList)
+
+        var counterTasks = 0
+        var counterSubtasks = 0
+        for (task in todoList.getTasks()) {
+            // Ensure that the list ID is set.
+            if (task.getListId() != todoList.getId()) {
+                task.setListId(todoList.getId())
+                task.setChanged()
+            }
+            val counters = saveTodoTaskAndSubtasksInDb(task)
+            counterTasks += counters.first
+            counterSubtasks += counters.second
+        }
+
+        return Triple(counterLists, counterTasks, counterSubtasks)
+    }
+
     suspend fun saveTodoListInDb(todoList: TodoList): Int {
         val todoListImpl = todoList as TodoListImpl
         val data = todoListImpl.data
@@ -368,6 +386,11 @@ class ModelServicesImpl(private val context: Context) {
         val counterTasks = saveTodoTaskInDb(todoTask)
         var counterSubtasks = 0
         for (subtask in todoTask.getSubtasks()) {
+            // Ensure that the task ID is set.
+            if (subtask.getTaskId() != todoTask.getId()) {
+                subtask.setTaskId(todoTask.getId())
+                subtask.setChanged()
+            }
             counterSubtasks += saveTodoSubtaskInDb(subtask)
         }
         return Pair(counterTasks, counterSubtasks)
@@ -532,26 +555,23 @@ class ModelServicesImpl(private val context: Context) {
             deleteAllData()
         }
 
+        // Store all lists with it's tasks and subtasks in the DB.
         var counterLists = 0
-        for (list in csvImporter.lists.values) {
-            counterLists += saveTodoListInDb(list)
-        }
         var counterTasks = 0
-        for (task in csvImporter.tasks.values) {
-            // The tasks list gets its ID while saving it in DB.
-            // So update the list ID at the task after the list was saved in DB.
-            val list = task.first
-            if (null != list) {
-                task.second.setListId(list.getId())
-            }
-            counterTasks += saveTodoTaskInDb(task.second)
-        }
         var counterSubtasks = 0
-        for (subtask in csvImporter.subtasks.values) {
-            // The subtasks task gets its ID while saving it in DB.
-            // So update the task ID at the subtask after the task was saved in DB.
-            subtask.second.setTaskId(subtask.first.getId())
-            counterSubtasks += saveTodoSubtaskInDb(subtask.second)
+        for (list in csvImporter.lists.values) {
+            val counters = saveTodoListAndTasksAndSubtasksInDb(list)
+            counterLists += counters.first
+            counterTasks += counters.second
+            counterSubtasks += counters.third
+        }
+        // Store all tasks that are not in a list with it's subtasks in the DB.
+        for (task in csvImporter.tasks.values) {
+            if (null == task.first) {
+                val counters = saveTodoTaskAndSubtasksInDb(task.second)
+                counterTasks += counters.first
+                counterSubtasks += counters.second
+            }
         }
         // Update imported recurring tasks to have correct reminder times.
         val updatedTasks = updateRecurringTasks(now, true)

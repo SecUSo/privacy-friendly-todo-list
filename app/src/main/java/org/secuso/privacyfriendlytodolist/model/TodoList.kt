@@ -26,6 +26,7 @@ import org.secuso.privacyfriendlytodolist.util.Timestamp
  * Class to set up a To-Do List and its parameters.
  */
 interface TodoList : BaseTodo, Parcelable {
+    fun deepCopy(reset: Boolean, copySubtasksToo: Boolean): TodoList
     fun setId(id: Int)
     fun getId(): Int
     fun isDummyList(): Boolean
