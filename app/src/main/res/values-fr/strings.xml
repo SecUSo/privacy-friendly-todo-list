@@ -82,7 +82,7 @@
     <string name="task_removed">Tâche supprimée avec succès.</string>
     <string name="deadline">Echéance</string>
     <string name="reminder">Alarme</string>
-    <string name="deadline_smaller_reminder">L'échéance ne peut pas précéder l\'alarme.</string>
+    <string name="deadline_smaller_reminder">L\'échéance ne peut pas précéder l\'alarme.</string>
     <string name="set_deadline_before_reminder">Il faut d\'abord mettre l\'alarme.</string>
     <string name="progress_colon">Progrès:</string>
     <string name="priority_colon">Importance:</string>
@@ -110,7 +110,7 @@
     <!-- Settings -->
 	<string name="default_reminder_time">Alarme standard</string>
     <string-array name="default_reminder_times_human">
-        <item>A l'échéance</item>
+        <item>A l\'échéance</item>
         <item>0.5 jour avant</item>
         <item>1 jour avant</item>
         <item>1.5 jour avant</item>
