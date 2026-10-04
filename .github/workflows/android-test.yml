@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: ["35", "${{ needs.check-if-tests-exist.outputs.min-sdk-version }}", "${{ needs.check-if-tests-exist.outputs.target-sdk-version }}"]
+        api-level: [34, "${{ needs.check-if-tests-exist.outputs.min-sdk-version }}", "${{ needs.check-if-tests-exist.outputs.target-sdk-version }}"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -65,7 +65,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 21
+          java-version: 17
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'

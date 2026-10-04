@@ -10,6 +10,9 @@
         android:id="@+id/edit_list"
         android:title="@string/edit_list" />
     <item
+        android:id="@+id/duplicate_list"
+        android:title="@string/duplicate_list" />
+    <item
         android:id="@+id/share_list"
         android:title="@string/share_list" />
     <item
