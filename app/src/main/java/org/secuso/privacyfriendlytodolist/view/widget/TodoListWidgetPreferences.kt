@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package org.secuso.privacyfriendlytodolist.view.widget
 
-import org.secuso.privacyfriendlytodolist.view.TaskFilter
+import org.secuso.privacyfriendlytodolist.util.TaskFilter
 
 data class TodoListWidgetPreferences(
     var todoListId: Int? = null,

@@ -83,15 +83,19 @@
     <string name="move_up_list">Liste hochschieben</string>
     <string name="move_down_list">Liste runterschieben</string>
     <string name="edit_list">Liste bearbeiten</string>
+    <string name="duplicate_list">Liste duplizieren</string>
     <string name="export_list">Liste exportieren</string>
     <string name="share_list">Liste teilen</string>
     <string name="delete_list">Liste löschen</string>
     <string name="delete_list_feedback">%1$s gelöscht</string>
-    <!-- Create/Edit To-Do list dialog -->
+    <!-- Create/Edit/Duplicate To-Do list dialog -->
     <string name="new_todo_list">Neue To-Do Liste</string>
+    <string name="duplicate_todo_list">To-Do Liste duplizieren</string>
     <string name="list_name_must_not_be_empty">Bitte geben Sie einen Listennamen ein.</string>
     <string name="show_description">Beschreibung anzeigen</string>
     <string name="no_description_available">Keine Beschreibung vorhanden.</string>
+    <string name="reset_tasks">(Unter-)Aufgaben zurücksetzen</string>
+    <string name="duplicate_subtasks_too">Unteraufgaben auch duplizieren</string>
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">Keine Aufgaben</string>
     <string name="all_tasks">Alle Aufgaben</string>

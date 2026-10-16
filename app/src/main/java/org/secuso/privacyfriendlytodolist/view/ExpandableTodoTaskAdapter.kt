@@ -1,6 +1,6 @@
 /*
 Privacy Friendly To-Do List
-Copyright (C) 2018-2025  Sebastian Lutz
+Copyright (C) 2018-2026  Sebastian Lutz
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ import org.secuso.privacyfriendlytodolist.model.TodoTask
 import org.secuso.privacyfriendlytodolist.util.Helper
 import org.secuso.privacyfriendlytodolist.util.LogTag
 import org.secuso.privacyfriendlytodolist.util.PreferenceMgr
-import org.secuso.privacyfriendlytodolist.util.TaskComparator
+import org.secuso.privacyfriendlytodolist.util.TaskFilter
+import org.secuso.privacyfriendlytodolist.util.TaskFilterSorter
 import org.secuso.privacyfriendlytodolist.util.Timestamp
 import org.secuso.privacyfriendlytodolist.view.dialog.ProcessTodoSubtaskDialog
 
@@ -81,11 +82,8 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private var onDataInitiallyLoadedListener: OnDataInitiallyLoadedListener? = null
-
     private var onTaskMenuClickListener: OnTaskMenuClickListener? = null
-
     private var onSubtaskMenuClickListener: OnSubtaskMenuClickListener? = null
-
     private var onTasksSwappedListener: OnTasksSwappedListener? = null
 
 
@@ -99,32 +97,14 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         SETTING_ROW
     }
 
-    // FILTER AND SORTING OPTIONS MADE BY THE USER
-    var queryString: String?
-    var taskFilter: TaskFilter
-    private val taskComparator = TaskComparator()
-    var isGroupingByPriority: Boolean
-        get() = taskComparator.isGroupingByPriority
-        set(value) { taskComparator.isGroupingByPriority = value }
-    var isSortingByDeadline: Boolean
-        get() = taskComparator.isSortingByDeadline
-        set(value) { taskComparator.isSortingByDeadline = value }
-    var isSortingByNameAsc: Boolean
-        get() = taskComparator.isSortingByNameAsc
-        set(value) { taskComparator.isSortingByNameAsc = value }
-    private val filteredTasks: MutableList<TaskHolder> = ArrayList() // data after filtering process
+    val taskFilterSorter = TaskFilterSorter(context)
+    /** List of to-do tasks after filtering and sorting. */
+    private val filteredTasks: MutableList<TaskHolder> = ArrayList()
     private val priorityRowPositions = mutableMapOf<TodoTask.Priority, Int>()
     private var listNames = mapOf<Int, String>()
-
     private var dataInitiallyLoaded = false
 
     init {
-        val taskFilterString = prefs.getString(PreferenceMgr.P_TASK_FILTER.name, TaskFilter.ALL_TASKS.name)
-        taskFilter = TaskFilter.fromString(taskFilterString)
-        isGroupingByPriority = prefs.getBoolean(PreferenceMgr.P_GROUP_BY_PRIORITY.name, false)
-        isSortingByDeadline = prefs.getBoolean(PreferenceMgr.P_SORT_BY_DEADLINE.name, false)
-        isSortingByNameAsc = prefs.getBoolean(PreferenceMgr.P_SORT_BY_NAME_ASC.name, false)
-        queryString = null
         notifyDataSetChanged()
     }
 
@@ -159,45 +139,23 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         this.onTasksSwappedListener = onTasksSwappedListener
     }
 
-    /**
-     * filter tasks by "done" criterion (show "all", only "open" or only "completed" tasks)
-     * If the user changes the filter, it is crucial to call "sortTasks" again.
-     */
-    private fun filterTasks() {
+    private fun filterAndSortTasks() {
         val newFilteredTasks: MutableList<TaskHolder> = ArrayList()
-        val notOpen = taskFilter != TaskFilter.OPEN_TASKS
-        val notCompleted = taskFilter != TaskFilter.COMPLETED_TASKS
-        for (task in todoTasks) {
-            if ((notOpen && task.isDone() || notCompleted && !task.isDone())
-                && task.checkQueryMatch(queryString)) {
-                // Try to reuse task-holder to keep meta data while sorting
-                var taskHolder = filteredTasks.find { other ->
-                    return@find other.todoTask == task
-                }
-                if (null == taskHolder) {
-                    taskHolder = TaskHolder(task)
-                }
-                newFilteredTasks.add(taskHolder)
+        val fiSoTasks = taskFilterSorter.filterAndSortTasks(todoTasks)
+        for (task in fiSoTasks) {
+            // Try to reuse task-holder to keep meta data while sorting
+            var taskHolder = filteredTasks.find { other ->
+                return@find other.todoTask == task
             }
+            if (null == taskHolder) {
+                taskHolder = TaskHolder(task)
+            }
+            newFilteredTasks.add(taskHolder)
         }
         filteredTasks.clear()
         filteredTasks.addAll(newFilteredTasks)
 
-        // Call this method even if sorting is disabled. In the case of enabled sorting, all
-        // sorting patterns are automatically employed after having changed the filter on tasks.
-        sortTasks()
-    }
-
-    /**
-     * Sort tasks by selected criteria (priority and/or deadline)
-     * This method works on [ExpandableTodoTaskAdapter.filteredTasks]. For that reason it is
-     * important to keep [ExpandableTodoTaskAdapter.filteredTasks] up-to-date.
-     */
-    private fun sortTasks() {
-        filteredTasks.sortWith { taskHolder1, taskHolder2 ->
-            taskComparator.compare(taskHolder1.todoTask, taskHolder2.todoTask)
-        }
-        if (isGroupingByPriority) {
+        if (taskFilterSorter.isGroupingByPriority) {
             countTasksPerPriority()
         }
     }
@@ -205,9 +163,9 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     /**
      * Count how many tasks belong to each priority group (tasks are now sorted by priority).
      *
-     * If [ExpandableTodoTaskAdapter.sortTasks] sorted by the priority, this method must be
-     * called. It computes the position of the dividing rows between the priority ranges. These
-     * positions are necessary to distinguish of what group type the current row is.
+     * If [ExpandableTodoTaskAdapter.taskFilterSorter] sorted by the priority, this method
+     * must be called. It computes the position of the dividing rows between the priority ranges.
+     * These positions are necessary to distinguish of what group type the current row is.
      */
     private fun countTasksPerPriority() {
         priorityRowPositions.clear()
@@ -234,7 +192,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      */
     private fun getTaskHolderByPosition(groupPosition: Int): TaskHolder? {
         var seenPriorityRows = 0
-        if (isGroupingByPriority) {
+        if (taskFilterSorter.isGroupingByPriority) {
             for (priority in TodoTask.Priority.entries) {
                 val priorityPos = priorityRowPositions[priority]
                 if (null != priorityPos) {
@@ -264,7 +222,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
 
     private fun getPositionByTask(taskIndex: Int): Int {
         var groupPosition = taskIndex
-        if (isGroupingByPriority) {
+        if (taskFilterSorter.isGroupingByPriority) {
             val sortedPriorityRowPositions = priorityRowPositions.values.sorted()
             for (priorityRowPosition in sortedPriorityRowPositions) {
                 if (priorityRowPosition <= groupPosition) {
@@ -276,7 +234,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     override fun getGroupCount(): Int {
-        return if (isGroupingByPriority) filteredTasks.size + priorityRowPositions.size else filteredTasks.size
+        return if (taskFilterSorter.isGroupingByPriority) filteredTasks.size + priorityRowPositions.size else filteredTasks.size
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
@@ -296,7 +254,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
      * @param groupPosition Position of group in range 0 - number of groups minus one.
      */
     private fun getGroupTypeEnum(groupPosition: Int): GroupType {
-        return if (isGroupingByPriority && priorityRowPositions.values.contains(groupPosition)) {
+        return if (taskFilterSorter.isGroupingByPriority && priorityRowPositions.values.contains(groupPosition)) {
             GroupType.PRIORITY_ROW
         } else {
             GroupType.TASK_ROW
@@ -375,7 +333,7 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
     }
 
     private fun finishDataSetChangedNotification() {
-        filterTasks()
+        filterAndSortTasks()
         super.notifyDataSetChanged()
         if (!dataInitiallyLoaded) {
             dataInitiallyLoaded = true
@@ -664,11 +622,11 @@ class ExpandableTodoTaskAdapter(private val context: Context, private val model:
         }
 
         // Can't move task if filtering, grouping or sorting is active.
-        if (   null != queryString
-            || taskFilter != TaskFilter.ALL_TASKS
-            || isGroupingByPriority
-            || isSortingByDeadline
-            || isSortingByNameAsc) {
+        if (   null != taskFilterSorter.queryString
+            || taskFilterSorter.taskFilter != TaskFilter.ALL_TASKS
+            || taskFilterSorter.isGroupingByPriority
+            || taskFilterSorter.isSortingByDeadline
+            || taskFilterSorter.isSortingByNameAsc) {
             Toast.makeText(context, context.getString(R.string.cant_move_task_if_filter_group_sort),
                 Toast.LENGTH_SHORT).show()
             return

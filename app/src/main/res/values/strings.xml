@@ -87,15 +87,19 @@
     <string name="move_up_list">Move up list</string>
     <string name="move_down_list">Move down list</string>
     <string name="edit_list">Edit list</string>
+    <string name="duplicate_list">Duplicate list</string>
     <string name="export_list">Export list</string>
     <string name="share_list">Share list</string>
     <string name="delete_list">Delete list</string>
     <string name="delete_list_feedback">%1$s deleted</string>
-    <!-- Create/Edit To-Do list dialog -->
+    <!-- Create/Edit/Duplicate To-Do list dialog -->
     <string name="new_todo_list">New To-Do list</string>
+    <string name="duplicate_todo_list">Duplicate To-Do list</string>
     <string name="list_name_must_not_be_empty">Please enter a list name.</string>
     <string name="show_description">Show description</string>
     <string name="no_description_available">No description available.</string>
+    <string name="reset_tasks">Reset (sub-)tasks</string>
+    <string name="duplicate_subtasks_too">Duplicate subtasks too</string>
     <!-- To-Do tasks overview -->
     <string name="empty_todo_list">No tasks available</string>
     <string name="all_tasks">All tasks</string>
