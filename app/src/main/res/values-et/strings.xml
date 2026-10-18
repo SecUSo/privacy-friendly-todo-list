@@ -247,4 +247,8 @@
     <string name="recurring_deadline_today">Tähtaeg on täna (%1$d. kordus)!</string>
     <string name="recurring_deadline_passed">Tähtaeg on möödunud: %1$s (%2$d. kordus)</string>
     <string name="weekdays">Tööpäevad</string>
+    <string name="duplicate_list">Tee loendist koopia</string>
+    <string name="duplicate_todo_list">Tegemiste loendi koopia</string>
+    <string name="reset_tasks">Lähtesta (alam)ülesanded</string>
+    <string name="duplicate_subtasks_too">Tee koopia ka alamülesannetest</string>
 </resources>

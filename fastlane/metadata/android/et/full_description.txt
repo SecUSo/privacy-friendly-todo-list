@@ -29,6 +29,6 @@ Privaatsussõbralik ülesannnete loend ei kasuta jälgitajaid.
 Privaatsussõbralik ülesannnete loend kuulub Privaatsussõbralike rakenduste (Privacy Friendly Apps) gruppi, mille on välja töötanud Karlsruhe Tehnoloogiainstituudi uurimisrühm SECUSO. Lisateave: https://secuso.org/pfa
 
 Meiega saad ühendust võtta järgmiste kanalite kaudu:
-X – @SECUSOResearch [https://x.com/secusoresearch](https://x.com/secusoresearch)
-Mastodon – @SECUSO_Research@bawü.social [https://xn--baw-joa.social/@SECUSO_Research/](https://xn--baw-joa.social/@SECUSO_Research/)
-Tööpakkumised – [https://secuso.aifb.kit.edu/english/Job_Offers.php](https://secuso.aifb.kit.edu/english/Job_Offers.php)
+BlueSky - https://bsky.app/profile/secusoresearch.bsky.social
+Mastodon - @SECUSO_Research@bawü.social https://xn--baw-joa.social/@SECUSO_Research/
+Tööpakkumised - https://secuso.aifb.kit.edu/english/Job_Offers.php
